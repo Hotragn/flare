@@ -20,3 +20,7 @@ design/exports/
 
 # Claude Code agent worktrees
 .claude/worktrees/
+
+# App build output
+apps/web/.svelte-kit/
+apps/web/build/

@@ -1,0 +1,15 @@
+{
+  "name": "@flare/hub",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "main": "src/main.ts",
+  "dependencies": {
+    "@flare/shared": "0.1.0",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/ws": "8.18.2"
+  }
+}

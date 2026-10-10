@@ -1,0 +1,135 @@
+-- Flare schema v1 (docs/architecture/06-erd-and-data-dictionary.md).
+-- Rules: no readable names, places or coordinates (ADR-0009); every per-gathering row
+-- has expires_at and is removed by ON DELETE CASCADE from gatherings plus the sweeper
+-- (ADR-0004, BR-D-1, BR-D-2). ct = AES-256-GCM ciphertext made on a phone.
+
+create table groups (
+  id uuid primary key,
+  channel text not null default 'link' check (channel in ('link', 'telegram')),
+  telegram_chat_id bigint unique,
+  created_at timestamptz not null default now(),
+  last_gathering_at timestamptz
+);
+
+create table members (
+  id uuid primary key,
+  group_id uuid not null references groups(id) on delete cascade,
+  name_ct bytea not null,
+  write_token_hash bytea not null,
+  telegram_user_id bigint,
+  joined_at timestamptz not null default now(),
+  unique (group_id, telegram_user_id)
+);
+create index members_group on members(group_id);
+
+create table gatherings (
+  id uuid primary key,
+  group_id uuid not null references groups(id) on delete cascade,
+  kind text not null check (kind in ('flare', 'plan')),
+  state text not null check (state in ('kindling', 'lit', 'ember', 'gone')),
+  short_code text not null,
+  host_member_id uuid not null references members(id) on delete cascade,
+  quorum smallint not null check (quorum between 2 and 6),
+  tz text not null,
+  sealed bytea not null,
+  telegram_plain jsonb,
+  ember_candidates text[] not null default '{}',
+  ember_choice text,
+  ladder_steps smallint check (ladder_steps is null or ladder_steps = 4),
+  current_step smallint check (current_step is null or current_step between 1 and 4),
+  chosen_set uuid[] not null default '{}',
+  created_at timestamptz not null default now(),
+  deadline_at timestamptz,
+  start_at timestamptz,
+  lit_at timestamptz,
+  done_at timestamptz,
+  headcount smallint,
+  expires_at timestamptz not null
+);
+create unique index gatherings_live_code on gatherings(short_code) where state <> 'gone';
+create index gatherings_expiry on gatherings(expires_at);
+
+create table photos (
+  gathering_id uuid primary key references gatherings(id) on delete cascade,
+  ct bytea not null,
+  blur_preview bytea,
+  expires_at timestamptz not null
+);
+
+create table responses (
+  id uuid primary key,
+  gathering_id uuid not null references gatherings(id) on delete cascade,
+  member_id uuid references members(id) on delete cascade,
+  status text not null check (status in ('yes', 'taken_back', 'cant_make_it')),
+  ember_only boolean not null default false,
+  rules jsonb not null default '[]',
+  spot_checks jsonb not null default '{}',
+  faded boolean not null default false,
+  arrived_at timestamptz,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  unique (gathering_id, member_id)
+);
+
+create table jobs (
+  id uuid primary key,
+  gathering_id uuid not null references gatherings(id) on delete cascade,
+  kind text not null check (kind in ('ember', 'gone', 'plan_deadline', 'delete')),
+  due_at timestamptz not null,
+  expires_at timestamptz not null
+);
+create index jobs_due on jobs(due_at);
+
+create table bot_messages (
+  gathering_id uuid not null references gatherings(id) on delete cascade,
+  chat_id bigint not null,
+  message_id bigint not null,
+  expires_at timestamptz not null,
+  primary key (chat_id, message_id)
+);
+
+create table live_locations (
+  gathering_id uuid not null references gatherings(id) on delete cascade,
+  member_id uuid not null references members(id) on delete cascade,
+  ct bytea not null,
+  at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  primary key (gathering_id, member_id)
+);
+
+create table push_subscriptions (
+  member_id uuid primary key references members(id) on delete cascade,
+  endpoint text not null,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz not null default now()
+);
+
+create table sparks (
+  id uuid primary key,
+  group_id uuid not null references groups(id) on delete cascade,
+  place_key_hash bytea not null,
+  text_ct bytea not null,
+  created_at timestamptz not null default now()
+);
+create index sparks_group_place on sparks(group_id, place_key_hash);
+
+create table hotspots (
+  group_id uuid primary key references groups(id) on delete cascade,
+  blob_ct bytea not null,
+  version integer not null default 1
+);
+
+create table counters (
+  group_id uuid not null references groups(id) on delete cascade,
+  name text not null,
+  bucket text not null default '',
+  value bigint not null default 0,
+  primary key (group_id, name, bucket)
+);
+
+create table idempotency (
+  key text primary key,
+  response jsonb not null,
+  expires_at timestamptz not null
+);

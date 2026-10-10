@@ -1,0 +1,47 @@
+{
+  "name": "flare-outside",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Flare: snap where you are; if enough friends quietly say yes, it's on.",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "engines": {
+    "node": ">=24.21.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "check-env": "node scripts/check-env.ts",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit && npm run -w apps/web check",
+    "test": "vitest run",
+    "build": "npm run -w apps/web build",
+    "contracts": "node scripts/check-contracts.ts",
+    "dev:server": "node --watch apps/server/src/main.ts",
+    "dev:hub": "node --watch apps/hub/src/main.ts",
+    "dev:web": "npm run -w apps/web dev",
+    "start": "node apps/server/src/main.ts",
+    "hub": "node apps/hub/src/main.ts",
+    "e2e:hello": "node scripts/e2e-hello.ts",
+    "ci": "npm run lint && npm run typecheck && npm run test && npm run contracts && npm run build"
+  },
+  "devDependencies": {
+    "@asyncapi/parser": "3.6.3",
+    "@biomejs/biome": "2.5.15",
+    "@redocly/cli": "2.62.1",
+    "@types/node": "24.19.2",
+    "playwright-core": "1.64.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "yaml": "2.9.1"
+  },
+  "allowScripts": {
+    "@scarf/scarf": false
+  },
+  "overrides": {
+    "@sveltejs/kit": "3.0.1"
+  }
+}
