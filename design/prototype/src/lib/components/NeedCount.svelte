@@ -1,8 +1,9 @@
 <!-- "Need N more". Dots show how many are in (count only, never who). -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   let { have = 1, quorum = 2, lit = false }: { have?: number; quorum?: number; lit?: boolean } = $props();
   const need = $derived(Math.max(0, quorum - have));
-  const text = $derived(lit ? "It's lit." : need === 0 ? "Enough. Lighting now." : `Need ${need} more.`);
+  const text = $derived(lit ? t("need.lit") : need === 0 ? t("need.enough") : t("need.more", { n: need }));
 </script>
 
 <div class="need" role="status" aria-live="polite">

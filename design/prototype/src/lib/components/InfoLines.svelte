@@ -1,6 +1,7 @@
 <!-- Access line (SRS-ACC-2) and nature line (SRS-NAT-1). Never says "step-free". -->
 <script lang="ts">
   import Icon from "./Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
   let {
     bench = 40,
     restroom = 180,
@@ -11,11 +12,11 @@
   }: { bench?: number | null; restroom?: number | null; water?: number | null; steps?: boolean; nature?: string; compact?: boolean } = $props();
 </script>
 
-<ul class="lines" class:compact aria-label="Near the spot">
-  {#if bench !== null}<li><Icon name="bench" size={22} /><span>Bench {bench} m</span></li>{/if}
-  {#if restroom !== null}<li><Icon name="restroom" size={22} /><span>Restroom {restroom} m</span></li>{/if}
-  {#if water !== null}<li><Icon name="water" size={22} /><span>Water {water} m</span></li>{/if}
-  <li><Icon name="steps" size={22} /><span>{steps ? "Steps mapped" : "No steps mapped"}</span></li>
+<ul class="lines" class:compact aria-label={t("access.aria")}>
+  {#if bench !== null}<li><Icon name="bench" size={22} /><span>{t("access.bench", { m: bench })}</span></li>{/if}
+  {#if restroom !== null}<li><Icon name="restroom" size={22} /><span>{t("access.restroom", { m: restroom })}</span></li>{/if}
+  {#if water !== null}<li><Icon name="water" size={22} /><span>{t("access.water", { m: water })}</span></li>{/if}
+  <li><Icon name="steps" size={22} /><span>{steps ? t("access.steps") : t("access.noSteps")}</span></li>
   {#if nature}<li class="nature"><Icon name="sunset" size={22} /><span>{nature}</span></li>{/if}
 </ul>
 

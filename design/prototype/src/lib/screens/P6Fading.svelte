@@ -4,24 +4,29 @@
   import Button from "../components/Button.svelte";
   import Sheet from "../components/Sheet.svelte";
   import Ladder from "../components/Ladder.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { plan } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "confirm", theme = "sun", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
+  const next = plan.steps[2];
+  // The sample Plan lit with 3 people, so the small-group line shows (R19).
+  const smallGroup = true;
 </script>
 
 <Screen {theme} {wire} title={plan.ask}>
   <Ladder steps={plan.steps} current={view === "notice" ? 3 : 2} />
   {#snippet overlay()}
     {#if view === "confirm"}
-      <Sheet inline title="Make it one step smaller?" description="Everyone sees 'Smaller plan.' Nobody sees it was you.">
-        <p class="t-sun">Next: {plan.steps[2].name}, {plan.steps[2].minutes} min.</p>
-        <Button>Make it smaller</Button>
-        <Button variant="text">Keep going</Button>
+      <Sheet inline title={t("fade.title")} description={t("fade.body")}>
+        <p class="t-sun">{t("fade.next", { step: next.name, min: next.minutes })}</p>
+        {#if smallGroup}<p class="t-small t-muted">{t("fade.smallGroup")}</p>{/if}
+        <Button>{t("fade.yes")}</Button>
+        <Button variant="text">{t("fade.no")}</Button>
       </Sheet>
     {:else}
-      <Sheet inline title="Smaller plan.">
-        <p class="t-sun">{plan.steps[2].name}, {plan.steps[2].minutes} min. Same spot.</p>
-        <Button variant="secondary">Got it</Button>
+      <Sheet inline title={t("planLit.smaller", { step: next.name })}>
+        <p class="t-sun">{t("fade.sameSpot", { step: next.name, min: next.minutes })}</p>
+        <Button variant="secondary">{t("fade.ok")}</Button>
       </Sheet>
     {/if}
   {/snippet}

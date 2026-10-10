@@ -5,25 +5,28 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Icon from "../components/Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
+  import { phoneModel } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "unavailable", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
+  const mb = phoneModel.mb;
 </script>
 
-<Screen {theme} {wire} title="AI on this phone">
-  <h1 class="t-title">{view === "unavailable" ? "Your words come from our laptop." : view === "ready" ? "Conditions now run on this phone." : "Run conditions on this phone?"}</h1>
+<Screen {theme} {wire} title={t("ai.title")}>
+  <h1 class="t-title">{view === "unavailable" ? t("ai.hubHeadline") : view === "ready" ? t("ai.ready") : t("ai.offer")}</h1>
   {#if view === "unavailable"}
-    <p>Photo AI doesn't fit in a phone browser yet. Our laptop runs Gemma 4 and replies in about 3 seconds.</p>
-    <p class="t-muted t-small">If it can't be reached, you write the six words yourself.</p>
+    <p>{t("check.tier2")} {t("ai.hubBody")}</p>
+    <p class="t-muted t-small">{t("ai.hubFallback")}</p>
   {:else}
-    <p>A small open model reads conditions like "after 2" right here, even with no signal.</p>
+    <p>{t("ai.offerBody")}</p>
     <div class="dl">
       <Icon name="info" size={20} />
-      <span>{view === "downloading" ? "Downloading… 38% of 290 MB" : view === "failed" ? "Download stopped. Flare still works." : "290 MB, Wi-Fi only"}</span>
+      <span>{view === "downloading" ? t("ai.downloading", { pct: phoneModel.pct, mb }) : view === "failed" ? t("ai.failed") : t("ai.size", { mb })}</span>
     </div>
-    {#if view === "downloading"}<div class="bar" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" aria-label="Download"><span style:width="38%"></span></div>{/if}
+    {#if view === "downloading"}<div class="bar" role="progressbar" aria-valuenow={phoneModel.pct} aria-valuemin="0" aria-valuemax="100" aria-label={t("ai.progressAria")}><span style:width="{phoneModel.pct}%"></span></div>{/if}
   {/if}
   {#snippet actions()}
-    {#if view === "available"}<Button>Download</Button>{:else if view === "failed"}<Button>Try again</Button>{:else if view === "downloading"}<Button variant="text">Stop</Button>{:else}<Button variant="secondary">Close</Button>{/if}
+    {#if view === "available"}<Button>{t("ai.download")}</Button>{:else if view === "failed"}<Button>{t("err.retry")}</Button>{:else if view === "downloading"}<Button variant="text">{t("ai.stop")}</Button>{:else}<Button variant="secondary">{t("gone.close")}</Button>{/if}
   {/snippet}
 </Screen>
 

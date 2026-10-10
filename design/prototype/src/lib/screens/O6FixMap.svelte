@@ -3,32 +3,34 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import PhotoPrint from "../components/PhotoPrint.svelte";
+  import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let { view = "review", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
   const tags = $derived<[string, string, string][]>([["amenity", "bench", "keep"], ["backrest", "yes", "keep"], ["material", "wood", view === "ready" ? "keep" : ""], ["seats", "3", view === "ready" ? "change" : ""]]);
-  const reviewed = $derived(tags.every((t) => t[2]));
+  const reviewed = $derived(tags.every((tag) => tag[2]));
+  const left = $derived(tags.filter((tag) => !tag[2]).length);
 </script>
 
-<Screen {theme} {wire} heading="Fix the map" title="Fix the map">
-  <PhotoPrint state={view === "drafting" ? "developing" : "developed"} scene="A wooden bench with a backrest by a path." height={190} tilt={-1.5} />
+<Screen {theme} {wire} heading={t("map.title")} title={t("map.title")}>
+  <PhotoPrint state={view === "drafting" ? "developing" : "developed"} scene={t("map.scene")} height={190} tilt={-1.5} />
   {#if view === "drafting"}
-    <p class="t-muted" role="status">Drafting tags on our laptop…</p>
+    <p class="t-muted" role="status">{t("map.drafting")}</p>
   {:else}
-    <p class="t-small t-muted">Check every tag. Nothing goes to OpenStreetMap from here.</p>
+    <p class="t-small t-muted">{t("map.review")}</p>
     <ul class="tags">
       {#each tags as [k, v, s]}
         <li>
           <code>{k}={v}</code>
-          <div class="acts" role="group" aria-label="Review {k}">
-            <button aria-pressed={s === "keep"}>Keep</button><button aria-pressed={s === "change"}>Change</button><button aria-pressed={s === "remove"}>Remove</button>
+          <div class="acts" role="group" aria-label={t("map.groupAria", { key: k })}>
+            <button aria-pressed={s === "keep"}>{t("map.keep")}</button><button aria-pressed={s === "change"}>{t("map.change")}</button><button aria-pressed={s === "remove"}>{t("map.remove")}</button>
           </div>
         </li>
       {/each}
     </ul>
   {/if}
   {#snippet actions()}
-    <Button disabled={!reviewed || view === "drafting"}>Export note</Button>
-    <p class="t-small t-muted center">{reviewed ? "Ready. You choose where to post it." : `${tags.filter((t) => !t[2]).length} tags left to check`}</p>
+    <Button disabled={!reviewed || view === "drafting"}>{t("map.export")}</Button>
+    <p class="t-small t-muted center">{reviewed ? t("map.ready") : t("map.left", { n: left })}</p>
   {/snippet}
 </Screen>
 

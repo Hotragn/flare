@@ -4,6 +4,8 @@
   import Button from "../components/Button.svelte";
   import TextField from "../components/TextField.svelte";
   import Flame from "../components/Flame.svelte";
+  import { t } from "#lib/copy/index.ts";
+  import { people } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "empty", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
   let name = $state("");
@@ -13,12 +15,12 @@
 <Screen {theme} {wire}>
   <div class="intro">
     <Flame state="lit" size={84} />
-    <h1 class="t-title">Fuego's friends</h1>
-    <p>You're joining a group. No account, no password.</p>
+    <h1 class="t-title">{t("join.group", { host: people.host })}</h1>
+    <p>{t("join.intro")}</p>
   </div>
-  <TextField label="Your first name" bind:value={name} placeholder="Amor" hint="Only this group sees it." error={view === "error" ? "Add a name, even a nickname." : ""} max={24} />
+  <TextField label={t("join.nameLabel")} bind:value={name} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} error={view === "error" ? t("join.nameError") : ""} max={24} />
   {#snippet actions()}
-    <Button>Join</Button>
+    <Button>{t("join.cta")}</Button>
   {/snippet}
 </Screen>
 

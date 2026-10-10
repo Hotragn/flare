@@ -5,36 +5,37 @@
   import Icon from "../components/Icon.svelte";
   import Sheet from "../components/Sheet.svelte";
   import SampleScene from "../components/SampleScene.svelte";
+  import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let { view = "live", theme = "light", wire = false, onshoot, onmenu }: { view?: string; theme?: Theme; wire?: boolean; onshoot?: () => void; onmenu?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} heading="Take a photo of where you are" menu close={false} grain={false} {onmenu}>
+<Screen {theme} {wire} heading={t("camera.heading")} menu close={false} grain={false} {onmenu}>
   <div class="viewfinder" class:off={view !== "live"}>
     {#if view === "live"}
       <div class="live photo-art"><SampleScene /></div>
       <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     {:else if view === "loading"}
-      <p class="msg t-heading" role="status">Opening camera…</p>
+      <p class="msg t-heading" role="status">{t("camera.loading")}</p>
     {:else if view === "denied"}
-      <div class="msg"><Icon name="camera" size={40} /><p class="t-heading">Camera is off.</p><p class="t-muted">Pick a photo of where you are instead.</p></div>
+      <div class="msg"><Icon name="camera" size={40} /><p class="t-heading">{t("camera.denied.title")}</p><p class="t-muted">{t("camera.denied.body")}</p></div>
     {/if}
   </div>
-  <p class="hint t-small t-muted">{view === "denied" ? "You can turn the camera on in Settings." : "Point at where you are."}</p>
+  <p class="hint t-small t-muted">{view === "denied" ? t("camera.denied.howto") : t("camera.hint")}</p>
   {#snippet actions()}
     {#if view === "denied"}
-      <Button icon="camera">Pick a photo</Button>
+      <Button icon="camera">{t("camera.pick")}</Button>
     {:else}
       <div class="shutter-row">
-        <button class="shutter" aria-label="Take the photo" disabled={view !== "live"} onclick={onshoot}><span></span></button>
+        <button class="shutter" aria-label={t("camera.shutter")} disabled={view !== "live"} onclick={onshoot}><span></span></button>
       </div>
     {/if}
   {/snippet}
   {#snippet overlay()}
     {#if view === "permission"}
-      <Sheet inline title="Snap where you are" description="Flare uses the camera for one photo. It's encrypted before it leaves your phone.">
-        <Button icon="camera">Allow camera</Button>
-        <Button variant="text">Pick a photo</Button>
+      <Sheet inline title={t("perm.camera.title")} description={t("perm.camera.body")}>
+        <Button icon="camera">{t("perm.camera.allow")}</Button>
+        <Button variant="text">{t("perm.camera.alt")}</Button>
       </Sheet>
     {/if}
   {/snippet}

@@ -3,17 +3,18 @@
   import Screen from "../components/Screen.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { sparks } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "list", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
 </script>
 
-<Screen {theme} {wire} title="Hot spots">
-  <h1 class="t-title">Where your group meets</h1>
+<Screen {theme} {wire} title={t("hot.title")}>
+  <h1 class="t-title">{t("hot.headline")}</h1>
   {#if view === "empty"}
     <div class="empty">
       <Flame state="kindling" size={90} />
-      <p>No places yet. Your first meetup starts the list.</p>
+      <p>{t("hot.empty")}</p>
     </div>
   {:else}
     <ol class="list">
@@ -22,13 +23,13 @@
           <span class="rank" aria-hidden="true">{i + 1}</span>
           <div class="body">
             <b>{s.place}</b>
-            <span class="t-small t-muted">Met here {s.times + (i === 0 ? 1 : 0)} {s.times + (i === 0 ? 1 : 0) === 1 ? "time" : "times"}</span>
-            {#if s.line}<span class="t-small spark"><Icon name="spark" size={16} />"{s.line}"</span>{/if}
+            <span class="t-small t-muted">{t("hot.met", { n: s.times + (i === 0 ? 1 : 0) })}</span>
+            {#if s.line}<span class="t-small spark"><Icon name="spark" size={16} />{t("invite.sparkQuote", { line: s.line })}</span>{/if}
           </div>
         </li>
       {/each}
     </ol>
-    <p class="t-small t-muted">Only your group can read this list. It's deleted after 180 quiet days.</p>
+    <p class="t-small t-muted">{t("hot.private")} {t("hot.retention")}</p>
   {/if}
 </Screen>
 

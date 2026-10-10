@@ -4,29 +4,29 @@
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
   import InfoLines from "../components/InfoLines.svelte";
-  import { flare } from "../sample";
+  import { t, dot } from "#lib/copy/index.ts";
+  import { flare, people } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "lit", theme = "sun", wire = false, onfind, onhere }: { view?: string; theme?: Theme; wire?: boolean; onfind?: () => void; onhere?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title="Fuego's Flare" offline={view === "offline" ? "Offline. Saved at 2:14 PM." : ""}>
+<Screen {theme} {wire} title={t("lit.title", { host: people.host })} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Hearth state="lit" size={190} celebrate={view === "lit"} />
     {#if view === "smaller"}
-      <h1 class="t-display">Smaller plan.</h1>
-      <p class="t-sun">15 min at {flare.emberBench}.</p>
+      <h1 class="t-title">{t("ember.headline", { bench: flare.emberBench })}</h1>
     {:else}
-      <h1 class="t-display">It's lit.</h1>
+      <h1 class="t-display">{t("lit.headline")}</h1>
       <p class="t-sun">{flare.hostLine}</p>
     {/if}
-    <p class="t-muted">{flare.walk} · {flare.sunset}</p>
+    <p class="t-muted">{dot(flare.walk, flare.sunset)}</p>
   </div>
   <InfoLines nature="" />
   {#snippet actions()}
-    <Button icon="compass" onclick={onfind}>Find them</Button>
+    <Button icon="compass" onclick={onfind}>{t("lit.find")}</Button>
     <div class="row">
-      <Button variant="secondary" icon="here" onclick={onhere}>I'm here</Button>
-      <Button variant="text">Can't make it</Button>
+      <Button variant="secondary" icon="here" onclick={onhere}>{t("lit.here")}</Button>
+      <Button variant="text">{t("lit.cant")}</Button>
     </div>
   {/snippet}
 </Screen>

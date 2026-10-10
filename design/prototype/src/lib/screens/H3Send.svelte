@@ -7,6 +7,7 @@
   import TextField from "../components/TextField.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { flare } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "ready", theme = "light", wire = false, onsend }: { view?: string; theme?: Theme; wire?: boolean; onsend?: () => void } = $props();
@@ -14,23 +15,23 @@
   let hostLine = $state(flare.hostLine);
 </script>
 
-<Screen {theme} {wire} heading="Send it" title="Send it" offline={view === "offline" ? "Offline. It sends when you're back." : ""}>
+<Screen {theme} {wire} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}>
   <div class="top">
     <div class="thumb"><PhotoPrint scene={flare.scene} height={150} tilt={-3} /></div>
     <p class="t-title words">{flare.words}</p>
   </div>
-  <Choice label="Goes ahead when this many are in, you included" bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
+  <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
   {#if view === "editing"}
-    <TextField label="Where you'll be" bind:value={hostLine} hint="Friends see this when it's lit." max={80} />
+    <TextField label={t("send.hostLineLabel")} bind:value={hostLine} hint={t("send.hostLineHint")} max={80} />
   {:else}
-    <p class="hostline"><span>{hostLine}</span><button class="edit" aria-label="Edit where you'll be"><Icon name="edit" /></button></p>
+    <p class="hostline"><span>{hostLine}</span><button class="edit" aria-label={t("send.hostLineEdit")}><Icon name="edit" /></button></p>
   {/if}
   <InfoLines nature={flare.sunset} />
   {#if view === "error"}
-    <p class="err" role="alert"><Icon name="warning" />Didn't send. Check your signal and try again.</p>
+    <p class="err" role="alert"><Icon name="warning" />{t("err.network")}</p>
   {/if}
   {#snippet actions()}
-    <Button icon="share" loading={view === "sending"} onclick={onsend}>{view === "error" ? "Try again" : view === "offline" ? "Send later" : "Send it"}</Button>
+    <Button icon="share" loading={view === "sending"} onclick={onsend}>{view === "error" ? t("err.retry") : view === "offline" ? t("send.later") : t("send.cta")}</Button>
   {/snippet}
 </Screen>
 

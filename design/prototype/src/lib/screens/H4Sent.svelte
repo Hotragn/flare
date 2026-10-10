@@ -3,6 +3,7 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
+  import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let { view = "success", theme = "light", wire = false, ondone }: { view?: string; theme?: Theme; wire?: boolean; ondone?: () => void } = $props();
 </script>
@@ -10,13 +11,13 @@
 <Screen {theme} {wire} close={false}>
   <div class="center">
     <Hearth state="kindling" progress={0.15} size={170} />
-    <h1 class="t-display">Sent.</h1>
-    <p class="t-sun">Phone in your pocket. We'll buzz you when it's lit.</p>
-    <p class="t-muted">Goes small at 30 min if nobody's free.</p>
+    <h1 class="t-display">{t("sent.title")}</h1>
+    <p class="t-sun">{t("sent.body")}</p>
+    <p class="t-muted">{t("sent.shrinkNote")}</p>
   </div>
   {#snippet actions()}
-    <Button onclick={ondone}>Pocket it</Button>
-    <Button variant="text" icon="share">Share again</Button>
+    <Button onclick={ondone}>{t("sent.pocket")}</Button>
+    <Button variant="text" icon="share">{t("sent.shareAgain")}</Button>
   {/snippet}
 </Screen>
 

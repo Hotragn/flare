@@ -3,6 +3,8 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Compass from "../components/Compass.svelte";
+  import { t } from "#lib/copy/index.ts";
+  import { flare } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "pointing", theme = "sun", wire = false, onhere }: { view?: string; theme?: Theme; wire?: boolean; onhere?: () => void } = $props();
   const status = $derived((view === "offline" ? "pointing" : view) as "pointing" | "facing" | "no-orientation" | "no-gps");
@@ -10,14 +12,14 @@
   const bearing = $derived(view === "facing" ? 4 : -35);
 </script>
 
-<Screen {theme} {wire} heading="Find them" title="Find them" offline={view === "offline" ? "Offline. Pointing to the spot saved at 2:14 PM." : ""}>
+<Screen {theme} {wire} heading={t("compass.heading")} title={t("compass.heading")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Compass {status} {meters} {bearing} />
   </div>
-  <p class="note t-small t-muted">Finds your friend. Not for navigation or emergencies.</p>
+  <p class="note t-small t-muted">{t("compass.disclaimer")}</p>
   {#snippet actions()}
-    <Button icon="here" onclick={onhere}>I'm here</Button>
-    <Button variant="text">Stop talking</Button>
+    <Button icon="here" onclick={onhere}>{t("lit.here")}</Button>
+    <Button variant="text">{t("compass.stop")}</Button>
   {/snippet}
 </Screen>
 
