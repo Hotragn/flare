@@ -26,7 +26,7 @@ From: Architect. Date: Sat 2026-10-10. Next: Engineering lead (build the P0 rele
 | --- | --- |
 | `npm run ci` (local, Node 26.8.1) | secret scan 0 findings; Biome clean; tsc and svelte-check 0 errors; 44 tests pass; contracts ok; build ok; 57.1 KB gzipped JS of 150; 36 diagrams render |
 | Tests on Node 24.21.0 | 44/44 (`npx -y node@24.21.0 node_modules/vitest/vitest.mjs run`) |
-| GitHub Actions | First run green in 42 s: https://github.com/Hotragn/flare/actions/runs/38088313532 |
+| GitHub Actions | Green. First run 42 s (https://github.com/Hotragn/flare/actions/runs/38088313532); latest, with the diagram check, 63 s (https://github.com/Hotragn/flare/actions/runs/38089740828) |
 | Hello world end to end | `npm run e2e:hello`: Chrome at 390 x 844 picks a photo, the server relays it to the hub, Ollama answers, the page shows "Meet by the water's edge", tier hub, 3.6 s on the hub, 3.8 s in the browser, no console errors or CSP violations ([evidence](../architecture/evidence/e2e-hello.txt)). Passed 10 runs in a row |
 | `npm run check-env` | Every setting reported as set, missing or invalid; no value printed (4 tests) |
 | `npm audit` | 0 vulnerabilities |
