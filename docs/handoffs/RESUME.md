@@ -59,5 +59,8 @@ History rewritten before any push to drop design/exports; full exports are git-i
 ## Status after the 3:50 PM reset
 First motion and copy subagents stopped on the usage limit before changing any files (their worktrees were auto-removed, nothing to merge). Both restarted at the same prompts in fresh worktrees, with instructions to commit early.
 
+## Copy (4d): DONE and merged (e60a92c). Handoff 06. BUG-013 fixed (scripts create design/exports).
+## Motion (4c): running in worktree .claude/worktrees/agent-a56d126a707147353 (branch worktree-agent-a56d126a707147353).
+
 ## Exact next step now
-Wait for both subagents. Then: `git worktree list`, merge each branch into main (copy and motion own separate files; expect small conflicts only in scripts/*.mjs PORT lines and docs/BUGLOG.md), wire copy-deck strings into motion-owned components (FlameMeter, Compass) per handoff 06, then run in design/prototype: npm run check, npm run build, npm run export, npm run a11y, node scripts/focus-audit.mjs, node scripts/copy-lint.mjs; refresh docs/design/screens curated JPEGs; commit; send the founder one combined summary.
+When motion reports: merge its branch (expect conflicts only in scripts PORT lines, BUGLOG ids, maybe FlameMeter/Compass text), wire copy keys into motion-owned components per docs/handoffs/06-copy.md, renumber BUGLOG duplicates, then the full re-verify in design/prototype and the combined summary.

@@ -46,6 +46,7 @@ const all = results.flatMap((r) => r.violations.map((v) => ({ ...v, target: r.ta
 const bad = all.filter((v) => v.impact === "serious" || v.impact === "critical");
 const byRule = {};
 for (const v of all) { byRule[v.id] ??= { impact: v.impact, help: v.help, targets: 0, sample: `${v.target}: ${v.sample}` }; byRule[v.id].targets++; }
+fs.mkdirSync(path.resolve(ROOT, "../exports"), { recursive: true });
 fs.writeFileSync(path.resolve(ROOT, "../exports/a11y-report.json"), JSON.stringify({ checked: targets.length, date: new Date().toISOString(), byRule, results }, null, 2));
 console.log(`Checked ${targets.length} pages and screen states.`);
 console.log(`Violations: ${all.length} (serious or critical: ${bad.length})`);
