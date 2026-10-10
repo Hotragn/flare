@@ -10,7 +10,8 @@
       "!docs",
       "!apps/web/.svelte-kit",
       "!apps/web/build",
-      "!**/*.svelte"
+      "!**/*.svelte",
+      "!apps/web/static/check/capability"
     ]
   },
   "formatter": {

@@ -40,45 +40,45 @@
 <section id="s-env"><h2>Device and page <span class="st"></span></h2><pre></pre></section>
 
 <section id="s-gpu"><h2>WebGPU <span class="st"></span></h2>
-  <button data-run="gpuCompute">Run GPU speed test</button><pre></pre></section>
+  <button type="button" data-run="gpuCompute">Run GPU speed test</button><pre></pre></section>
 
 <section id="s-storage"><h2>Storage <span class="st"></span></h2>
-  <button data-run="storageWrite">Write 200 MB test file</button> <button data-run="storagePersist">Ask to keep storage</button><pre></pre></section>
+  <button type="button" data-run="storageWrite">Write 200 MB test file</button> <button type="button" data-run="storagePersist">Ask to keep storage</button><pre></pre></section>
 
 <section id="s-compass"><h2>Compass and motion <span class="st"></span></h2>
-  <button class="primary" data-run="compass">Allow compass and motion</button><pre></pre></section>
+  <button type="button" class="primary" data-run="compass">Allow compass and motion</button><pre></pre></section>
 
 <section id="s-geo"><h2>Location accuracy <span class="st"></span></h2>
-  <button class="primary" data-run="geo">Start 20 s location test</button><pre></pre></section>
+  <button type="button" class="primary" data-run="geo">Start 20 s location test</button><pre></pre></section>
 
 <section id="s-camera"><h2>Camera <span class="st"></span></h2>
   <input id="file" type="file" accept="image/*" capture="environment">
-  <button data-run="cameraStream">Test live camera</button>
+  <button type="button" data-run="cameraStream">Test live camera</button>
   <video id="video" playsinline muted></video><pre></pre></section>
 
 <section id="s-speech"><h2>Spoken description (offline voices) <span class="st"></span></h2>
-  <button class="primary" data-run="speak">Speak test sentence</button><pre></pre></section>
+  <button type="button" class="primary" data-run="speak">Speak test sentence</button><pre></pre></section>
 
 <section id="s-share"><h2>Web Share <span class="st"></span></h2>
-  <button data-run="shareText">Share a link</button> <button data-run="shareFile">Share an image</button><pre></pre></section>
+  <button type="button" data-run="shareText">Share a link</button> <button type="button" data-run="shareFile">Share an image</button><pre></pre></section>
 
 <section id="s-sw"><h2>Offline (service worker) <span class="st"></span></h2>
-  <button data-run="swCheck">Check offline cache</button><pre></pre></section>
+  <button type="button" data-run="swCheck">Check offline cache</button><pre></pre></section>
 
 <section id="s-a2hs"><h2>Add to Home Screen <span class="st"></span></h2><pre></pre></section>
 
 <section id="s-haptic"><h2>Switch haptic (iOS 18+) <span class="st"></span></h2>
   <label class="sw"><input id="switch" type="checkbox" switch> Toggle me and feel for a tap</label>
-  <button data-run="hapticYes">I felt it</button> <button data-run="hapticNo">Nothing</button><pre></pre></section>
+  <button type="button" data-run="hapticYes">I felt it</button> <button type="button" data-run="hapticNo">Nothing</button><pre></pre></section>
 
 <section id="s-audio"><h2>Audio playback <span class="st"></span></h2>
-  <button class="primary" data-run="audio">Play test tone</button> <button data-run="audioHeard">I heard it</button> <button data-run="audioSilent">Silent</button><pre></pre></section>
+  <button type="button" class="primary" data-run="audio">Play test tone</button> <button type="button" data-run="audioHeard">I heard it</button> <button type="button" data-run="audioSilent">Silent</button><pre></pre></section>
 
 <section id="s-wake"><h2>Keep screen on <span class="st"></span></h2>
-  <button data-run="wake">Test wake lock</button><pre></pre></section>
+  <button type="button" data-run="wake">Test wake lock</button><pre></pre></section>
 
 
-<div class="bar"><button class="primary" id="copy">Copy results</button><button id="send">Send to laptop</button></div>
+<div class="bar"><button type="button" class="primary" id="copy">Copy results</button><button type="button" id="send">Send to laptop</button></div>
 
 <script type="module">
 const R = {}; // section id -> {status, lines[]}

@@ -41,7 +41,9 @@ const ollama = http.createServer((req, res) => {
     setTimeout(
       () =>
         res.end(
-          JSON.stringify({ message: { content: '{"invite":"Bench by the pond","alt":"A bench beside a calm pond."}' } }),
+          JSON.stringify({
+            message: { content: '{"invite":"Bench by the pond","alt":"A bench beside a calm pond."}' },
+          }),
         ),
       300,
     );
@@ -49,7 +51,7 @@ const ollama = http.createServer((req, res) => {
 });
 
 type Fault = { latencyMs?: number; jitterMs?: number; loss?: number };
-class Proxy {
+class FaultProxy {
   fault: Fault = {};
   private conns = new Set<{ a: net.Socket; b: net.Socket; dead: boolean }>();
   accepted = 0;
@@ -105,7 +107,10 @@ class Proxy {
     });
   }
 
-  listen = () => new Promise<number>((r) => this.server.listen(0, "127.0.0.1", () => r((this.server.address() as net.AddressInfo).port)));
+  listen = () =>
+    new Promise<number>((r) =>
+      this.server.listen(0, "127.0.0.1", () => r((this.server.address() as net.AddressInfo).port)),
+    );
   /** Abrupt reset of every open connection (like a NAT rebinding or Wi-Fi to cellular switch). */
   reset() {
     for (const c of this.conns) {
@@ -122,7 +127,11 @@ class Proxy {
 }
 
 function start(name: string, file: string, env: Record<string, string>, lines: string[]): ChildProcess {
-  const p = spawn(process.execPath, [file], { cwd: ROOT, env: { ...process.env, ...env }, stdio: ["ignore", "pipe", "pipe"] });
+  const p = spawn(process.execPath, [file], {
+    cwd: ROOT,
+    env: { ...process.env, ...env },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
   const take = (b: Buffer) => {
     for (const l of b.toString().split("\n")) if (l.trim()) lines.push(`${Date.now()} ${name} ${l}`);
   };
@@ -132,21 +141,36 @@ function start(name: string, file: string, env: Record<string, string>, lines: s
 }
 
 type Sample = { t: number; ms: number; tier: string };
-async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
+async function scenario(label: string, setup: (p: FaultProxy, t: number) => void) {
   const port = 8900 + Math.floor(rand() * 90);
   const lines: string[] = [];
-  const server = start("server", "apps/server/src/main.ts", { PORT: String(port), DATABASE_URL: "", LOG_LEVEL: "info" }, lines);
+  const server = start(
+    "server",
+    "apps/server/src/main.ts",
+    { PORT: String(port), DATABASE_URL: "", LOG_LEVEL: "info" },
+    lines,
+  );
   const base = `http://127.0.0.1:${port}`;
   for (let i = 0; i < 60; i++) {
-    if (await fetch(`${base}/api/v1/health`).then((r) => r.ok, () => false)) break;
+    if (
+      await fetch(`${base}/api/v1/health`).then(
+        (r) => r.ok,
+        () => false,
+      )
+    )
+      break;
     await sleep(250);
   }
-  const proxy = new Proxy(port);
+  const proxy = new FaultProxy(port);
   const pport = await proxy.listen();
   const hub = start(
     "hub",
     "apps/hub/src/main.ts",
-    { FLARE_SERVER_URL: `ws://127.0.0.1:${pport}`, OLLAMA_URL: `http://127.0.0.1:${(ollama.address() as net.AddressInfo).port}`, OLLAMA_MODEL: "fake-model" },
+    {
+      FLARE_SERVER_URL: `ws://127.0.0.1:${pport}`,
+      OLLAMA_URL: `http://127.0.0.1:${(ollama.address() as net.AddressInfo).port}`,
+      OLLAMA_MODEL: "fake-model",
+    },
     lines,
   );
   for (let i = 0; i < 60; i++) {
@@ -158,7 +182,10 @@ async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
   const samples: Sample[] = [];
   const health: { t: number; hub: string }[] = [];
   const healthTimer = setInterval(async () => {
-    const h = await fetch(`${base}/api/v1/health`).then((r) => r.json() as Promise<{ hub: string }>, () => ({ hub: "down" }));
+    const h = await fetch(`${base}/api/v1/health`).then(
+      (r) => r.json() as Promise<{ hub: string }>,
+      () => ({ hub: "down" }),
+    );
     health.push({ t: Date.now() - t0, hub: h.hub });
   }, 500);
   const events: { t: number; what: string }[] = [];
@@ -169,7 +196,11 @@ async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
     inflight.push(
       (async () => {
         const t = Date.now();
-        const r = await fetch(`${base}/api/v1/drafts`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: JPEG });
+        const r = await fetch(`${base}/api/v1/drafts`, {
+          method: "POST",
+          headers: { "content-type": "image/jpeg" },
+          body: JPEG,
+        });
         const j = (await r.json()) as { tier: string };
         samples.push({ t: t - t0, ms: Date.now() - t, tier: j.tier });
       })(),
@@ -185,7 +216,13 @@ async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
   await sleep(300);
   const ms = samples.map((s) => s.ms).sort((a, b) => a - b);
   const q = (p: number) => ms[Math.min(ms.length - 1, Math.floor(p * ms.length))] ?? 0;
-  const hubConnects = lines.filter((l) => l.includes(" hub ") && l.includes('"event":"connected"')).map((l) => Number(l.split(" ")[0]) - t0);
+  const hubConnects = lines
+    .filter((l) => l.includes(" hub ") && l.includes('"event":"connected"'))
+    .map((l) => Number(l.split(" ")[0]) - t0);
+  // Silent-drop case: how long health still said "connected", and how long until the hub was back.
+  const breakAt = proxy.brokeAt === null ? null : proxy.brokeAt - t0;
+  const backAt =
+    breakAt === null ? Number.POSITIVE_INFINITY : (hubConnects.find((c) => c > breakAt) ?? Number.POSITIVE_INFINITY);
   const result = {
     label,
     drafts: samples.length,
@@ -195,18 +232,14 @@ async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
     max: ms.at(-1) ?? 0,
     hubConnectsDuringRun: hubConnects.filter((t) => t >= 0).map((t) => Math.round(t / 100) / 10),
     proxyConnections: proxy.accepted,
-    // Silent-drop case: how long health still said "connected", and how long until the hub was back.
     healthLiedSeconds:
-      proxy.brokeAt === null
-        ? 0
-        : health.filter((h) => h.t >= (proxy.brokeAt ?? 0) - t0 && h.hub === "connected" && h.t < (hubConnects.find((c) => c > (proxy.brokeAt ?? 0) - t0) ?? 1e9)).length / 2,
+      breakAt === null ? 0 : health.filter((h) => h.t >= breakAt && h.t < backAt && h.hub === "connected").length / 2,
     recoveredAfterSeconds:
-      proxy.brokeAt === null
+      breakAt === null
         ? null
-        : (() => {
-            const c = hubConnects.find((x) => x > (proxy.brokeAt ?? 0) - t0);
-            return c === undefined ? "never in run" : Math.round((c - ((proxy.brokeAt ?? 0) - t0)) / 100) / 10;
-          })(),
+        : backAt === Number.POSITIVE_INFINITY
+          ? "never in run"
+          : Math.round((backAt - breakAt) / 100) / 10,
     samples,
     health,
     events,
@@ -216,7 +249,7 @@ async function scenario(label: string, setup: (p: Proxy, t: number) => void) {
 
 await new Promise<void>((r) => ollama.listen(0, "127.0.0.1", () => r()));
 const results: Awaited<ReturnType<typeof scenario>>["result"][] = [];
-const run = async (label: string, setup: (p: Proxy, t: number) => void) => {
+const run = async (label: string, setup: (p: FaultProxy, t: number) => void) => {
   if (ONLY && !label.includes(ONLY)) return;
   const { result } = await scenario(label, setup);
   results.push(result);

@@ -49,9 +49,8 @@ const check = (name: string, pass: boolean, detail: string) => {
 };
 
 const browser = await chromium.launch({ channel: "chrome", headless: true });
-// Fairlane test point, then a target 30 m north.
+// Fairlane test point; the phone later walks 30 m south of it.
 const A = { latitude: 42.3169092, longitude: -83.2229394 };
-const B = { latitude: 42.3169092 + 30 / 111_320, longitude: -83.2229394 };
 
 for (const answer of ["granted", "denied"]) {
   const ctx = await browser.newContext({
