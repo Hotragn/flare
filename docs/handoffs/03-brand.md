@@ -51,6 +51,12 @@ From: Brand designer. Date: Sat 2026-10-10. Next role: Product (UX and UI) desig
 - Founder decision needed later: public repo name and any store listing name (02-name-check.md).
 - `lab/` is not ours to edit.
 
+## Update after founder review (Oct 10)
+
+- Share images redone: three directions explored, "Golden hour" chosen and applied to both the DEV cover and the OG image (brand book section 6).
+- App icon checked at 60 and 120 px beside real App Store icons; flame enlarged, background lightened, dot enlarged.
+- Repo and package name confirmed by the founder: `flare-outside`. Rename decision before any store listing stays with the founder.
+
 ## Change requests
 
 None against earlier phases.

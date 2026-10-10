@@ -20,5 +20,11 @@ Full brief is in the founder's message (Oct 10). Deliverables go in design/ and 
 
 Stack research done: svelte 5.57.2, @sveltejs/kit 3.0.1, vite 8.3.4, bits-ui 2.19.5 (accessible headless primitives), playwright-core 1.64.0 using the installed Google Chrome for screenshots (no browser download). Alternative considered: react 19.3.0 + react-aria-components 1.22.1. Leaning Svelte + Bits UI because SRS-PERF-2 caps link-page JS at 150 KB gzipped. Architect confirms in a decision record.
 
-## Exact next step
+## Exact next step (superseded below)
 Write brand/tools/covers.mjs with the three directions, render them, review the PNGs, pick one.
+
+## Update: brand share-image fix DONE (committed)
+Golden-hour direction shipped to DEV cover and OG; icon fixed after the home-screen check.
+
+## Exact next step now
+Start the product designer role: write docs/design/01-brief-and-ux-scan.md, then scaffold design/prototype (SvelteKit + Bits UI + brand tokens).

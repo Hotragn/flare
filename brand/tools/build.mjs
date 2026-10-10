@@ -83,14 +83,16 @@ for (const [name, body] of Object.entries(icons)) {
 }
 
 // ---------- App icon ----------
+// Lighter dusk sky (so it holds on dark wallpapers), a big maple flame, and a
+// larger gold dot (r 7.5) that stays crisp at 60 px. Checked by icon-check.mjs.
 // Dusk evening sky, maple flame, gold "you are here" dot. No grain: it adds
 // about 250 KB per icon and can't be seen at icon sizes.
 function appIcon(size, { maskable = false } = {}) {
-  const scale = maskable ? 0.52 : 0.64; // maskable keeps the flame inside the 80% safe circle
+  const scale = maskable ? 0.56 : 0.80; // maskable keeps the flame inside the 80% safe circle
   const m = size * scale; const x = (size - m) / 2; const y = (size - m) / 2 + size * 0.01;
-  const body = `<defs>${grainDefs("g", 0.06)}<radialGradient id="glow" cx="50%" cy="62%" r="55%"><stop offset="0" stop-color="${C["dusk-700"]}"/><stop offset="1" stop-color="${C["dusk-900"]}"/></radialGradient></defs>
+  const body = `<defs>${grainDefs("g", 0.06)}<radialGradient id="glow" cx="50%" cy="62%" r="55%"><stop offset="0" stop-color="#3F6189"/><stop offset="1" stop-color="${C["dusk-700"]}"/></radialGradient></defs>
 <rect width="${size}" height="${size}" fill="url(#glow)"/>
-<g transform="translate(${x} ${y}) scale(${m / 100})">${flamePath(C["maple-500"])}${glowDot(C["gold-400"])}</g>`;
+<g transform="translate(${x} ${y}) scale(${m / 100})">${flamePath(C["maple-500"])}${glowDot(C["gold-400"], 7.5)}</g>`;
   return svgDoc(body, { w: size, h: size });
 }
 write("icon/app-icon.svg", appIcon(1024));

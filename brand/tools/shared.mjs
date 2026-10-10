@@ -14,7 +14,7 @@ export const HOLE = { cx: 50, cy: 67, r: 12 };
 export const DOME = "M17 86 C17 68 32 60 50 60 C68 60 83 68 83 86 C83 92 74 95 50 95 C26 95 17 92 17 86 Z";
 
 export const flamePath = (fill) => `<path fill-rule="evenodd" fill="${fill}" d="${FLAME} ${ring(HOLE.cx, HOLE.cy, HOLE.r)}"/>`;
-export const glowDot = (fill) => `<circle cx="${HOLE.cx}" cy="${HOLE.cy}" r="6" fill="${fill}"/>`;
+export const glowDot = (fill, r = 6) => `<circle cx="${HOLE.cx}" cy="${HOLE.cy}" r="${r}" fill="${fill}"/>`;
 
 export const state = {
   kindling: (fg) => `<g transform="translate(50 96) scale(0.55) translate(-50 -96)">${flamePath(fg)}</g>`,

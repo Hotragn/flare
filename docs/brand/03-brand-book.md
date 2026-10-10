@@ -134,6 +134,14 @@ Rules: draw new icons on the same grid and stroke; one idea per icon; real objec
 - **Paper grain:** `brand/texture/paper-grain.svg` (SVG filter) or `paper-grain-256.png` (tile), 4 to 8% opacity, on large backgrounds only (website, share images, post art), never on text or the mark. **Not on app icons or splash screens:** noise doesn't compress, and with grain each splash was 3.4 to 4.0 MB; flat, all 12 total 428 KB. In the app, use the tiled PNG (CSS background) only where it costs nothing, and drop it under Reduce Transparency.
 - **No glass blur, no neon, no purple gradients, no 3D.**
 
+### Share images: the golden-hour scene
+
+The DEV cover and OG image are an illustrated Michigan fall afternoon (brand/tools/covers.mjs, direction A): a banded dusk-to-gold sky, the sun on the horizon, pine hills, birch trees with maple and aspen leaves, a path to a bench. The four states live in the scene: three friends at the bench by a **Lit** fire, a **Kindling** flame on the path (a friend on the way), an **Ember** on the far hill and **Gone** smoke drifting above it. Paper grain at 22%, visible on purpose. The tagline sits only on the dark bands of sky, so birch on dusk stays above 7:1. Three directions were drawn (golden hour, cut paper, bold type); A won because it is the only one that shows people outside, which is the product.
+
+### App icon at home-screen size
+
+Checked at 60 and 120 px next to 8 real App Store icons (including "Flare - For Groups", which is orange, so our background must not be). The first version was too dark and too small on dark wallpapers. Fixed: flame 80% of the tile (was 64%), dusk radial #3F6189 to dusk-700 (lighter), gold dot radius 7.5 (was 6). The dot stays a clear gold point at 60 px.
+
 ## 7. Photography
 
 Most photos in Flare are the users' own invite photos; the brand never filters or crops them. For our site, post and social:
@@ -167,8 +175,10 @@ Easing: `cubic-bezier(0.2, 0.8, 0.2, 1)` out; durations 160, 260, 480 ms (tokens
 | Apple touch | `apple-touch-icon.png` (180), plus 152, 167, 120 in the set | iOS adds no rounding gloss; our square art is full-bleed |
 | Favicon | `brand/export/favicon/favicon.svg`, `favicon.ico` (16, 32, 48), `favicon-{16,32,48}.png` | |
 | Splash (apple-touch-startup-image) | `brand/export/splash/{iphone-13, iphone-17-pro, iphone-16-17-pro-max}-{portrait,landscape}-{light,dark}.png` (12 files) | 1170 × 2532, 1206 × 2622, 1320 × 2868. `<link>` tags with media queries: `head-tags.html` |
-| Social share | `brand/export/social/og-image-1200x630.png` | Open Graph and X |
-| DEV cover | `brand/export/social/dev-cover-1000x420.png` | DEV's cover ratio |
+| Social share | `brand/export/social/og-image-1200x630.png` | Open Graph and X. Direction A, "Golden hour" |
+| DEV cover | `brand/export/social/dev-cover-1000x420.png` (+ `.svg` source) | DEV's cover ratio. Direction A |
+| Cover directions | `brand/export/social/directions/{A-golden-hour,B-cut-paper,C-bold-type}-*.png` | Explored; A chosen |
+| Icon check | `brand/export/icon-check-home-screen.png` | Our icon at 60 and 120 px beside 8 App Store icons, light and dark wallpaper |
 | Texture | `brand/texture/paper-grain.svg`, `paper-grain-256.png` | |
 | Tokens | `brand/tokens/tokens.css`, `tokens.json` | Light, dark, sun mode, reduced motion |
 | Fonts | `brand/fonts/*.woff2` and OFL licenses | |
