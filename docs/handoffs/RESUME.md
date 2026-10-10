@@ -56,5 +56,8 @@ History rewritten before any push to drop design/exports; full exports are git-i
 - Copy owns: docs/content/, docs/handoffs/06-copy.md, src/lib/copy/*.json + loader, string changes in src/lib/screens/*.svelte, src/routes/site/+page.svelte, src/lib/sample.ts text.
 - After both finish: merge both worktree branches into main, run npm run check, build, export, a11y, focus-audit, copy-lint; write combined summary to the founder.
 
+## Status after the 3:50 PM reset
+First motion and copy subagents stopped on the usage limit before changing any files (their worktrees were auto-removed, nothing to merge). Both restarted at the same prompts in fresh worktrees, with instructions to commit early.
+
 ## Exact next step now
-If the subagents were interrupted: check `git worktree list` and the branches they left; merge what's committed and re-run the missing role from its prompt.
+Wait for both subagents. Then: `git worktree list`, merge each branch into main (copy and motion own separate files; expect small conflicts only in scripts/*.mjs PORT lines and docs/BUGLOG.md), wire copy-deck strings into motion-owned components (FlameMeter, Compass) per handoff 06, then run in design/prototype: npm run check, npm run build, npm run export, npm run a11y, node scripts/focus-audit.mjs, node scripts/copy-lint.mjs; refresh docs/design/screens curated JPEGs; commit; send the founder one combined summary.
