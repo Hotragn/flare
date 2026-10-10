@@ -15,7 +15,9 @@ const apps = asked.length ? asked : ALL;
 const vars: Record<string, string | undefined> = { ...process.env };
 if (fs.existsSync(file)) Object.assign(vars, parseEnv(fs.readFileSync(file, "utf8")));
 function parseEnv(text: string): Record<string, string> {
-  const util = process as unknown as { getBuiltinModule?: (m: string) => { parseEnv?: (s: string) => Record<string, string> } };
+  const util = process as unknown as {
+    getBuiltinModule?: (m: string) => { parseEnv?: (s: string) => Record<string, string> };
+  };
   const parse = util.getBuiltinModule?.("node:util")?.parseEnv;
   if (!parse) throw new Error("Node 24.21+ needed for util.parseEnv");
   return parse(text);

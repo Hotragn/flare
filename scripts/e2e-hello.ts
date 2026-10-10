@@ -16,8 +16,18 @@ const PHOTO = path.join(ROOT, "scripts/fixtures/pond-illustration.jpg");
 const kids: ChildProcess[] = [];
 
 function run(name: string, args: string[], extra: Record<string, string>) {
-  const p = spawn(process.execPath, args, { cwd: ROOT, env: { ...process.env, ...extra }, stdio: ["ignore", "pipe", "pipe"] });
-  const tag = (b: Buffer) => b.toString().trimEnd().split("\n").map((l) => `  [${name}] ${l}`).join("\n");
+  const p = spawn(process.execPath, args, {
+    cwd: ROOT,
+    env: { ...process.env, ...extra },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const tag = (b: Buffer) =>
+    b
+      .toString()
+      .trimEnd()
+      .split("\n")
+      .map((l) => `  [${name}] ${l}`)
+      .join("\n");
   p.stdout?.on("data", (b: Buffer) => process.env.E2E_VERBOSE && console.log(tag(b)));
   p.stderr?.on("data", (b: Buffer) => console.error(tag(b)));
   kids.push(p);
@@ -38,7 +48,8 @@ function stopAll() {
 process.on("exit", stopAll);
 
 async function main() {
-  if (!fs.existsSync(path.join(ROOT, "apps/web/build/hello/index.html"))) throw new Error("web build missing: run npm run build");
+  if (!fs.existsSync(path.join(ROOT, "apps/web/build/hello/index.html")))
+    throw new Error("web build missing: run npm run build");
   const t0 = performance.now();
   run("server", ["apps/server/src/main.ts"], { PORT: String(PORT), DATABASE_URL: "", LOG_LEVEL: "warn" });
   await until("server health", 15_000, async () => ((await fetch(`${BASE}/api/v1/health`)).ok ? true : null));

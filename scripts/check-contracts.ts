@@ -23,7 +23,9 @@ const fail = (msg: string) => {
 // 1. OpenAPI
 try {
   const bin = path.join(ROOT, "node_modules/.bin/redocly");
-  execFileSync(bin, ["lint", path.join(DIR, "openapi.yaml"), "--config", path.join(DIR, "redocly.yaml")], { stdio: "pipe" });
+  execFileSync(bin, ["lint", path.join(DIR, "openapi.yaml"), "--config", path.join(DIR, "redocly.yaml")], {
+    stdio: "pipe",
+  });
   console.log("ok   openapi.yaml passes redocly lint");
 } catch (e) {
   const out = e as { stdout?: Buffer; stderr?: Buffer };
@@ -35,8 +37,12 @@ const parser = new Parser();
 const asyncText = fs.readFileSync(path.join(DIR, "asyncapi.yaml"), "utf8");
 const { diagnostics, document } = await parser.parse(asyncText);
 const errors = diagnostics.filter((d) => d.severity === 0);
-if (!document || errors.length) fail(`asyncapi.yaml\n${errors.map((d) => `  ${d.path.join(".")}: ${d.message}`).join("\n")}`);
-else console.log(`ok   asyncapi.yaml parses (${document.channels().length} channels, ${document.operations().length} operations)`);
+if (!document || errors.length)
+  fail(`asyncapi.yaml\n${errors.map((d) => `  ${d.path.join(".")}: ${d.message}`).join("\n")}`);
+else
+  console.log(
+    `ok   asyncapi.yaml parses (${document.channels().length} channels, ${document.operations().length} operations)`,
+  );
 
 // 3 and 4.
 const openapi = YAML.parse(fs.readFileSync(path.join(DIR, "openapi.yaml"), "utf8"));

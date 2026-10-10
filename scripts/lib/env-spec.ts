@@ -24,8 +24,20 @@ const num = (v: string) => (Number.isFinite(Number(v)) ? null : "not a number");
 
 export const SPEC: Rule[] = [
   { key: "PORT", apps: ["server"], required: false, why: "HTTP port, default 8787", shape: num },
-  { key: "PUBLIC_BASE_URL", apps: ["server", "bot"], required: true, why: "Links in invites", shape: url(["http", "https"]) },
-  { key: "DATABASE_URL", apps: ["server"], required: false, why: "Postgres (ADR-0004); without it the server runs without storage", shape: url(["postgres", "postgresql"]) },
+  {
+    key: "PUBLIC_BASE_URL",
+    apps: ["server", "bot"],
+    required: true,
+    why: "Links in invites",
+    shape: url(["http", "https"]),
+  },
+  {
+    key: "DATABASE_URL",
+    apps: ["server"],
+    required: false,
+    why: "Postgres (ADR-0004); without it the server runs without storage",
+    shape: url(["postgres", "postgresql"]),
+  },
   {
     key: "HUB_SECRET",
     apps: ["server", "hub"],
@@ -33,8 +45,20 @@ export const SPEC: Rule[] = [
     why: "Hub relay auth (ADR-0006)",
     shape: (v) => (v.length >= 32 ? null : "shorter than 32 characters"),
   },
-  { key: "FLARE_SERVER_URL", apps: ["hub"], required: false, why: "Relay socket, default ws://localhost:8787", shape: url(["ws", "wss"]) },
-  { key: "OLLAMA_URL", apps: ["hub"], required: false, why: "Ollama, default http://127.0.0.1:11434", shape: url(["http", "https"]) },
+  {
+    key: "FLARE_SERVER_URL",
+    apps: ["hub"],
+    required: false,
+    why: "Relay socket, default ws://localhost:8787",
+    shape: url(["ws", "wss"]),
+  },
+  {
+    key: "OLLAMA_URL",
+    apps: ["hub"],
+    required: false,
+    why: "Ollama, default http://127.0.0.1:11434",
+    shape: url(["http", "https"]),
+  },
   { key: "OLLAMA_MODEL", apps: ["hub"], required: false, why: "Default gemma4:e4b-it-q4_K_M" },
   {
     key: "TELEGRAM_BOT_TOKEN",
@@ -76,18 +100,24 @@ export function check(vars: Record<string, string | undefined>, apps: App[], spe
         continue;
       }
       const reason = r.shape?.(v) ?? null;
-      out.push(reason ? { key: r.key, app, required: r.required, status: "invalid", reason } : { key: r.key, app, required: r.required, status: "set" });
+      out.push(
+        reason
+          ? { key: r.key, app, required: r.required, status: "invalid", reason }
+          : { key: r.key, app, required: r.required, status: "set" },
+      );
     }
   }
   return out;
 }
 
-export const failed = (lines: Line[]) => lines.some((l) => l.status === "invalid" || (l.required && l.status === "missing"));
+export const failed = (lines: Line[]) =>
+  lines.some((l) => l.status === "invalid" || (l.required && l.status === "missing"));
 
 export function format(lines: Line[]): string {
   const rows = lines.map((l) => {
     const mark = l.status === "set" ? "ok  " : l.status === "default" ? "--  " : "FAIL";
-    const note = l.status === "default" ? "not set, default used" : l.status === "invalid" ? `invalid: ${l.reason}` : l.status;
+    const note =
+      l.status === "default" ? "not set, default used" : l.status === "invalid" ? `invalid: ${l.reason}` : l.status;
     return `${mark} ${l.app.padEnd(9)} ${l.key.padEnd(26)} ${note}`;
   });
   return rows.join("\n");

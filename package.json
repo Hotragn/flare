@@ -26,7 +26,10 @@
     "start": "node apps/server/src/main.ts",
     "hub": "node apps/hub/src/main.ts",
     "e2e:hello": "node scripts/e2e-hello.ts",
-    "ci": "npm run lint && npm run typecheck && npm run test && npm run contracts && npm run build"
+    "ci": "npm run secret-scan && npm run lint && npm run typecheck && npm test && npm run contracts && npm run build && npm run budget",
+    "secret-scan": "node scripts/secret-scan.ts",
+    "budget": "node scripts/budget.ts",
+    "hooks": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",

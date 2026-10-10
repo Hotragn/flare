@@ -16,7 +16,12 @@ describe("plain-text Flare", () => {
     expect(long).toContain("...");
   });
   it("keeps an ASCII spot in GSM-7 even when cut", () => {
-    const cut = encodePlain({ code: "K7Q2M", spot: "Henry Ford Academy and Windmill Park ".repeat(6), need: 2, ends: "3:40PM" });
+    const cut = encodePlain({
+      code: "K7Q2M",
+      spot: "Henry Ford Academy and Windmill Park ".repeat(6),
+      need: 2,
+      ends: "3:40PM",
+    });
     expect(byteLength(cut)).toBeLessThanOrEqual(MAX_BYTES);
     expect(cut).toMatch(GSM7);
     expect(cut).toContain(".... Need 2 more."); // the "..." cut mark, then the period after the spot
