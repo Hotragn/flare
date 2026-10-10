@@ -81,3 +81,22 @@ Exact next step: write docs/engineering/04-dependencies-and-process.md (mermaid 
 ## Engineering lead: DONE (Sat 2026-10-10, 20:40 ET)
 Handoff: docs/handoffs/08-engineering-lead.md. docs/engineering/ 01 to 05 plus notes/ and spike evidence. 52 tests, CI green.
 Next: the nine specialists start in parallel per docs/engineering/01-work-breakdown.md; integration 01:00, 05:00, 08:00; device checklist 08:30 (docs/engineering/05-device-checklist.md); RC tag 09:30. Founder approvals still pending: Render deploy, Telegram webhook, repo public.
+
+## Build phase: nine specialists in parallel (started Sat 2026-10-10 ~21:00 ET)
+Approved by the manager: plan, CR-E1, CR-E2, MP1. Each specialist runs as a subagent in its own git worktree, branch `wp/<area>`, pushed to origin (private Hotragn/flare). Briefs: docs/engineering/briefs/00-common.md + one per area; URL map: briefs/url-map.md.
+
+| Area | Branch | Brief | Progress file (in its branch) | Handoff |
+| --- | --- | --- | --- | --- |
+| Core engine | wp/engine | briefs/6b-core-engine.md | docs/engineering/notes/engine-progress.md | 06b-core-engine.md |
+| Backend | wp/backend | briefs/6c-backend.md | notes/backend-progress.md | 06c-backend.md |
+| Integrations | wp/integrations | briefs/6d-integrations.md | notes/integrations-progress.md | 06d-integrations.md |
+| ML | wp/ml | briefs/6e-ml.md | notes/ml-progress.md | 06e-ml.md |
+| On-device AI | wp/on-device-ai | briefs/6f-on-device-ai.md | notes/on-device-ai-progress.md | 06f-on-device-ai.md |
+| Maps | wp/maps | briefs/6g-maps.md | notes/maps-progress.md | 06g-maps.md |
+| Frontend app | wp/frontend | briefs/7a-frontend-app.md | notes/frontend-progress.md | 07a-frontend-app.md |
+| PWA and offline | wp/pwa | briefs/7b-pwa-offline.md | notes/pwa-progress.md | 07b-pwa-offline.md |
+| Website | wp/website | briefs/7c-website.md | notes/website-progress.md | 07c-website.md |
+
+How to restart one after a usage stop: if its subagent is still listed, SendMessage it "continue from your progress file". Otherwise start a new Agent with isolation "worktree" and the prompt: "You are the <area> specialist for Flare. Run `git fetch origin && git checkout -B wp/<area> origin/wp/<area>` (if the branch exists on origin, else stay on your new branch and rename it), then read docs/engineering/briefs/00-common.md, docs/engineering/briefs/<brief>, and docs/engineering/notes/<area>-progress.md, and continue to done." Work lost is at most the last uncommitted 30 to 45 minutes.
+
+Integration (lead, in the main checkout): at 01:00, 05:00, 08:00 ET merge pushed `wp/*` branches into main in this order: engine, backend, integrations, ml, on-device-ai, maps, pwa, frontend, website; resolve conflicts, swap fakes for real modules, merge docs/engineering/bugs/*.md into docs/BUGLOG.md (renumber BUG-033+), run `npm run ci` and `npm run e2e:hello`, push. RC tag `rc-1` at 09:30 after the device checklist (docs/engineering/05-device-checklist.md, 08:30).
