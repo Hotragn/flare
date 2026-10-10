@@ -70,7 +70,7 @@ flowchart LR
 | --- | --- | --- | --- |
 | Photo → six words + scene | Resize to 768 px only | Gemma 4 E4B, 3.0 s, 39/40 quality | Typed words with chips from the map pack (nearest named feature, amenity words); scene from map facts: "A bench near Ford Woods Park pond." |
 | Conditions | Rules parser, 40/40 core, 15/20 hard | Not used (founder decision: no free text off the phone) | Rephrase hint |
-| Plan ladder | Places from the map pack, sunset (NOAA) | Labels and minutes, ≤ 8 s | Step minutes = total × 1, 0.5, 0.25, 0.125, rounded to 5 (60 → 60, 30, 15, 10); labels from the copy deck |
+| Plan ladder | Places from the map pack, sunset (NOAA), weather from api.weather.gov at 0.1° (ADR-0007) | Labels and minutes from ask + `{rain_likely, temp_f}`, ≤ 8 s | Step minutes = total × 1, 0.5, 0.25, 0.125, rounded to 5 (60 → 60, 30, 15, 10); labels from the copy deck |
 | Needs, nature line, access line | Deterministic rules | Never | Never needed |
 | Rest loop request (P1) | Rules parser | Never | Pickers |
 | Fix the map tags (P1) | Photo resize | Gemma with the tag allow-list | Manual tag picker |

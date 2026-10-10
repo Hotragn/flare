@@ -17,7 +17,7 @@ typescript 6.0.3 (7.0.2 exists, but SvelteKit 3.0.1 pins `typescript ^6`), hono 
 ## Consequences
 - No `tsc` build, no source maps to ship; stack traces point at the real files.
 - Parameter properties, enums and namespaces are not allowed (not erasable). BUG-020 records the one we hit.
-- Proof: `npx -y node@24.21.0 node_modules/vitest/vitest.mjs run` passes 38 tests; the same on Node 26.8.1.
+- Proof: `npx -y node@24.21.0 node_modules/vitest/vitest.mjs run` passes 44 tests; the same on Node 26.8.1.
 
 ## Options weighed
 | Option | Why not |

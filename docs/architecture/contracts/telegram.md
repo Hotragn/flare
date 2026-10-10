@@ -48,7 +48,7 @@ No photo arrives: the post goes out as `sendMessage` with the same text and keyb
 | `y:{id}` again | Nothing | `bot.cb.already` |
 | `c:{id}` | Makes (or reuses) the member, creates a bind token (10 min) | Answers with `url = https://t.me/FairlaneFlareBot?start=b_{token}`: Telegram opens the private chat. Bonus: an ephemeral group message to that user with the same link (delivery not guaranteed, Bot API 10.2) |
 | `/start b_{token}` in private | Replies with one URL button `[Add a condition]` → `{link}?via=tg&bind={token}` | The link page opens, the phone joins, calls `telegram-bind`, and the condition flow runs on the phone, read back as usual |
-| Any other private text | Drops it unread: not parsed, not stored, not logged | Replies `bot.dm.link` "I don't read messages. Add conditions on the Flare page." with the same `[Add a condition]` button when one gathering is open, else `bot.dm.nothingOpen` |
+| Any other private text | Drops it unread: not parsed, not stored, not logged | Replies `bot.dm.link` with the same `[Add a condition]` button (`invite.condition`) when one gathering is open, else `bot.dm.nothingOpen` |
 | `/help` | | `bot.help` |
 
 Free text is never parsed on the server (founder decision, ADR-0013). That keeps BR-C-9 true for Telegram too: conditions are made only by the phone's rules parser.
@@ -56,7 +56,7 @@ Free text is never parsed on the server (founder decision, ADR-0013). That keeps
 ## 5. Updates to the post
 
 - Count changes: `editMessageCaption` (or `editMessageText`) with the new "Need N more." and the same keyboard, at most once per 3 s per message (coalesced), well under 20 messages a minute per group. "message is not modified" (400) is ignored.
-- Lit: edit the post to "It's lit. {host} is at {place}.", remove the I'm in and condition buttons, then send one new notifying message `bot.post.lit` to the chat so phones buzz. DM each Telegram member of the chosen set who started the bot: `bot.dm.lit`.
+- Lit: edit the post to "It's lit. {host} is at {place}.", remove the I'm in and condition buttons, then send one new notifying message `lit.notice` to the chat so phones buzz. DM each Telegram member of the chosen set who started the bot: `lit.notice` with a [Find them] button (`lit.find`).
 - Ember: edit to `bot.post.ember` with the bench name from `telegram.ember_places` (only Telegram groups send it), and send one notifying message.
 - Plan smaller: edit to "Smaller plan: {step}."
 

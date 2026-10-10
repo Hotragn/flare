@@ -66,3 +66,10 @@ First motion and copy subagents stopped on the usage limit before changing any f
 
 ## Exact next step now
 Founder decisions pending (JS weight +10.5 KB for the shader, sound default on/off, copy decisions table in handoff 06). Next role per founder: architect.
+
+
+## Architect: DONE (Sat 2026-10-10, evening)
+Handoff: docs/handoffs/07-architect.md. Repo scaffold builds, 44 tests pass (Node 24.21.0 and 26.8.1), `npm run ci` green locally and on GitHub Actions (private repo Hotragn/flare), `npm run e2e:hello` passes against real Ollama (3.8 s round trip). docs/architecture/ has 12 docs, 20 ADRs, contracts (OpenAPI, AsyncAPI, telegram.md, plain-text.md). BUG-020 to BUG-029 logged; BUG-029 open (one unexplained CSP report).
+
+## Next role: Engineering lead
+Build order is in handoff 07, "What to build". Waiting on the founder: Render deploy (web, Postgres, cron), Telegram webhook, making the repo public.

@@ -108,7 +108,7 @@ Notation: `t0` = Flare send time (server). `D` = Plan answer deadline. `S` = Pla
 | BR-D-2 | Every per-gathering record also carries a storage-level expiry at t0 + 5 h (Flare) or S + 24 h (Plan), so deletion happens even if the delete job fails. |
 | BR-D-3 | The bot deletes every message it posted for the gathering at Gone. |
 | BR-D-4 | Survivors after Gone: group counters (docs/product/07-kpis.md), the encrypted Hot spots blob, opt-in encrypted Sparks, member ids, push subscriptions, and the Telegram map. |
-| BR-D-5 | Push subscriptions and Telegram maps are deleted after 30 days without a gathering in the group. Sparks and the Hot spots blob are deleted after 180 days without a gathering, or at once when any member taps "Forget this group". **[Analyst decision]** |
+| BR-D-5 | Push subscriptions and Telegram maps are deleted after 30 days without a gathering in the group. Sparks and the Hot spots blob are deleted after 180 days without a gathering. "Forget this group" deletes the Sparks that member wrote, and everything when the last member taps it (amended by ADR-0015, matching SRS-ID-6). **[Analyst decision, amended]** |
 | BR-D-6 | Logs never contain request bodies, photos, names, locations, conditions, or link fragments. Logs are kept 7 days. |
 | BR-D-7 | The deletion audit counts remaining per-gathering records in every store listed in the data dictionary, by gathering id and in total. Passing = 0. |
 
@@ -145,9 +145,9 @@ Notation: `t0` = Flare send time (server). `D` = Plan answer deadline. `S` = Pla
 | ID | Rule |
 | --- | --- |
 | BR-CH-1 | The bot posts only in allow-listed chat ids. At release the list has one entry: "Flare test". |
-| BR-CH-2 | The plain-text form is ≤ 200 bytes UTF-8. If the spot name would exceed it, the name is truncated with "…". |
+| BR-CH-2 | The plain-text form is ≤ 200 bytes UTF-8. If the spot name would exceed it, the name is truncated with "..." (three ASCII full stops, so the text stays GSM-7; amended by ADR-0012). |
 | BR-CH-3 | Short codes use 5 characters from `23456789ABCDEFGHJKMNPQRSTUVWXYZ` (no 0, 1, I, L, O). Codes are unique among live gatherings. |
-| BR-CH-4 | Link previews show a blurred photo and the invite line only; never coordinates or the spot name below street level. **[Analyst decision]** |
+| BR-CH-4 | Link previews show the brand card, "A Flare from a friend" and the count only; never the photo, the invite line, coordinates or the spot name (amended by ADR-0017: preview caches outlive our deletion). **[Analyst decision, amended]** |
 
 ## 14. AI
 

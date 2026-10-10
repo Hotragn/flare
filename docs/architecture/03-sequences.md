@@ -20,7 +20,7 @@ sequenceDiagram
     R->>O: /api/chat think:false
     O-->>R: {invite, alt} ~3.0 s
     R-->>S: result
-    S->>S: enforce(); zero-fill buffer
+    S->>S: enforce(), zero-fill buffer
     S-->>A: {invite, alt, tier: hub}
   and place
     A->>A: Nearest named feature ≤ 150 m, Ember candidates ≤ 400 m (map pack)
@@ -79,7 +79,7 @@ sequenceDiagram
   participant T as Telegram
   participant W as Friend phones
   S->>DB: Transaction: solver set ≥ quorum → state lit, lit_at, chosen_set, version + 1
-  S->>DB: Cancel ember job; add gone job at Done or t0 + 4 h
+  S->>DB: Cancel ember job, add gone job at Done or t0 + 4 h
   S--)W: SSE gathering {state: lit} (open pages)
   loop each member in the chosen set with a subscription
     S->>P: Web Push {g, event: lit, notice_ct} TTL 600, urgency high
@@ -178,13 +178,13 @@ sequenceDiagram
   T->>S: callback_query c:{id}
   S->>S: bind token (10 min, hash stored)
   S->>T: answerCallbackQuery url=t.me/FairlaneFlareBot?start=b_{token}
-  T->>U: Private chat opens; user taps Start
+  T->>U: Private chat opens, user taps Start
   T->>S: /start b_{token}
   S->>T: sendMessage [Add a condition] → link?via=tg&bind={token}#k=...
   U->>W: Open link
   W->>S: POST /groups/{g}/members (phone's own member)
   W->>S: POST /gatherings/{id}/telegram-bind {token}
-  S->>S: Move the Telegram yes onto this member; delete the tap-made member
+  S->>S: Move the Telegram yes onto this member, delete the tap-made member
   Note over W: Condition flow as in S2
 ```
 
@@ -201,7 +201,7 @@ sequenceDiagram
   H->>S: POST /gatherings/{id}/done
   S->>DB: state gone, ended thanks_for_coming, jobs: delete at +60 s
   S--)W: SSE gone {ended}
-  W->>W: Delete saved Lit data; show Spark prompt once if it holds a spark ticket
+  W->>W: Delete saved Lit data, show Spark prompt once if it holds a spark ticket
   opt Telegram group
     S->>T: edit to "Thanks for coming."
     S->>T: deleteMessages [ids]
@@ -221,7 +221,7 @@ sequenceDiagram
   participant S as Server
   Hb->>O: Warm-up chat (7 to 14 s cold)
   Hb->>S: WSS /hub, Authorization: Bearer HUB_SECRET
-  S->>S: timingSafeEqual; wrong → 401
+  S->>S: timingSafeEqual, wrong → 401
   Hb->>S: hello {protocol flare-hub.v1, model, ready: true}
   loop every 20 s
     S->>Hb: ping

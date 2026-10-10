@@ -14,6 +14,9 @@ Status: Accepted. Date: 2026-10-10. From lab reports 01, 02, 07, 09.
 | Rest loop request (P1) | Phone | Rules parser, same approach as conditions | < 1 ms | Manual pickers | Read back |
 | Fix the map tags (P1) | Hub | Same model with the tag allow-list | 8 s | Manual tag picker | Allow-list only (BR-AI-4) |
 
+## Weather for Plan ladders (FR-AI-9)
+FR-AI-9 drafts the ladder from the ask, weather, sunset and nearby places. Weather is the one input we can't compute on the phone. The host's phone, and only when it creates a Plan, asks the US National Weather Service directly (`https://api.weather.gov/points/{lat},{lon}`, then the hourly forecast) with coordinates rounded to 1 decimal place (about 11 km). The answer is reduced on the phone to `{rain_likely, temp_f}` and sent to the hub with the ask. Our server never sees the coordinates; NWS sees an 11 km cell and the phone's IP, and the privacy page says so. CSP `connect-src` allows exactly this host. If NWS fails (it often answers 500 under load), the ladder is drafted without weather.
+
 The tier that ran is shown ("Made on our laptop", "Made from a template") and counted in `global_counters` as `tier_ran.{job}.{tier}` (BR-AI-3).
 
 ## Why no phone tier for photos or conditions

@@ -179,3 +179,93 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** Two things. The new screen loads through `{#await}`, so the first new snapshot was empty (real bug). And at 390 px the phone sits below the side panel, so Playwright scrolled the page during the transition, while view-transition pseudo-elements stay in viewport coordinates (test artifact).
 - **Fix:** The step update now waits for the next screen module and one task before the new snapshot is taken. Prototype transition frames are taken at 1280 x 960 (`VW=1280 VH=960`).
 - **Proof:** Frames at 0, 100, 200 and 700 ms show a clean crossfade from H5 to I6 and the catch playing after it.
+
+## BUG-020: tsc rejects a constructor parameter property under type stripping
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (server scaffold)
+- **Symptom:** `tsc --noEmit` failed on `constructor(private readonly timeoutMs: number)` in HubRelay with "This syntax is not allowed when 'erasableSyntaxOnly' is enabled."
+- **Cause:** Node runs our `.ts` files by stripping types (ADR-0001). Parameter properties generate code, so they can't be stripped.
+- **Fix:** An explicit `private readonly timeoutMs` field assigned in the constructor. Coding standards now list enums, namespaces and parameter properties as banned.
+- **Proof:** `tsc --noEmit` exits 0; 44 tests pass on Node 24.21.0 and 26.8.1.
+
+## BUG-021: Prototype Plan ladder breaks BR-P-4
+
+- **Date:** 2026-10-10
+- **Area:** Product design sample data
+- **Symptom:** The sample Plan's steps ran 60, 30, 15, 20 minutes. BR-P-4 says durations are strictly decreasing.
+- **Cause:** Step 4 ("20 min on the bench") was written as a place idea, not checked against the rule.
+- **Fix:** Step 4 is "10 min on the bench", 10 minutes, in design/prototype/src/lib/sample.ts, the copy deck samples and docs/content/06-channels.md. The template ladder rule (ADR-0007) gives 60, 30, 15, 10 for a 60-minute ask, and the contract requires at least 40 minutes so 4 steps of 5 or more always fit.
+- **Proof:** copy-lint 0 problems; svelte-check 0 errors.
+
+## BUG-022: Hub job timeout was 20 s; BR-AI-1 says 6 s
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (server scaffold)
+- **Symptom:** A slow or cold hub could hold the host's draft for 20 s before the template appeared.
+- **Cause:** The scaffold default `HUB_JOB_TIMEOUT_MS` was 20000.
+- **Fix:** Default 6000 (BR-AI-1). The hub re-warms the model every 20 minutes so Ollama's 30-minute keep_alive never unloads it, since a 7 to 14 s cold load can't fit in 6 s.
+- **Proof:** e2e-hello passes at 3.5 to 3.6 s hub time with the 6 s budget (docs/architecture/evidence/e2e-hello.txt).
+
+## BUG-023: OSM ids for Ember candidates would leak exact positions
+
+- **Date:** 2026-10-10
+- **Area:** Requirements (OQ-1 proposal), architecture
+- **Symptom:** OQ-1 kept "candidate OSM ids" on the server to stay coordinate-free, but an OSM node id resolves to exact coordinates with one public API call.
+- **Cause:** An id looks opaque but is a public key into OSM.
+- **Fix:** The server gets per-gathering labels `c1` to `c12` (distance order), `spot` and `step:1` to `step:4`; places live only in the sealed blob (ADR-0009). Contract `Label` pattern enforces it.
+- **Proof:** openapi.yaml `Label` is `^(spot|c([1-9]|1[0-2])|step:[1-4])$`; schema test forbids place columns.
+
+## BUG-024: CSP allowed inline scripts
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (server scaffold)
+- **Symptom:** `script-src 'self' 'unsafe-inline'`, which SRS-SEC-6 forbids.
+- **Cause:** SvelteKit's static build has one inline bootstrap script; `unsafe-inline` was the quick way to allow it.
+- **Fix:** The server hashes each HTML file's inline scripts and sends `script-src 'self' 'sha256-…'`. API responses get the base policy. `connect-src` adds only api.weather.gov (ADR-0007).
+- **Proof:** apps/server/test/static.test.ts (hash present, no unsafe-inline); e2e-hello fails on any CSP violation and passes.
+
+## BUG-025: Static server answered missing files with 200 and allowed a sibling-prefix path
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (server scaffold)
+- **Symptom:** A missing file (favicon.ico) returned the 404 page with status 200, which hid the missing icon. The containment check `file.startsWith(root)` also accepted `/build-other/...`.
+- **Cause:** Status not set on fallback; prefix check without a path separator.
+- **Fix:** 404 status on fallback; check `root + path.sep`. Added favicon.svg, favicon.ico and apple-touch-icon.png from brand/export to apps/web/static.
+- **Proof:** static.test.ts (404, sibling path refused); e2e-hello reports no console errors.
+
+## BUG-026: Requirement texts out of step with accepted decisions
+
+- **Date:** 2026-10-10
+- **Area:** Requirements
+- **Symptom:** BR-CH-2 still said "…", BR-CH-4 a blurred photo and invite line in previews, BR-D-5 "any member" deletes Sparks (against SRS-ID-6), the dictionary "128-bit base32" ids.
+- **Cause:** Decisions made after the analyst phase (handoff 06 questions, OQ-1).
+- **Fix:** Amended BR-CH-2 (ADR-0012), BR-CH-4 (ADR-0017), BR-D-5 (ADR-0015) and the dictionary type note (ADR-0018), each pointing to its ADR.
+- **Proof:** `python3 docs/requirements/tools/trace.py`: traceability check passed.
+
+## BUG-027: Hub "no temp files" test failed when run with the static test
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (tests)
+- **Symptom:** "runs a job end to end against a fake Ollama and writes no files" failed in 2 of 3 full runs, never alone.
+- **Cause:** The new static-serving test created its fixture folder in `os.tmpdir()`, the folder the hub test watches.
+- **Fix:** The static test's fixture lives in `node_modules/.cache/` instead, with a comment saying why.
+- **Proof:** 4 consecutive full runs: 44/44.
+
+## BUG-028: Five sequence diagrams didn't render
+
+- **Date:** 2026-10-10
+- **Area:** Architecture docs
+- **Symptom:** `npm run diagrams` (new: renders every Mermaid block in docs/ with Mermaid 12.1.0 in Chrome) failed 5 of 36.
+- **Cause:** A `;` inside a sequence-diagram message ends the statement in Mermaid.
+- **Fix:** Commas instead of semicolons inside diagram blocks.
+- **Proof:** `npm run diagrams`: 36 rendered, 0 failed. The check runs in CI.
+
+## BUG-029: One unexplained CSP report in e2e-hello
+
+- **Date:** 2026-10-10
+- **Area:** Architecture (e2e)
+- **Symptom:** One run, right after a rebuild, reported "CSP blocked script-src". The next 10 runs passed.
+- **Cause:** Not found. The report then carried only the directive.
+- **Fix:** The e2e now prints the blocked URI, source file, line and sample, so a repeat names its cause. Status: open, watching.
+- **Proof:** 10 of 10 later runs pass with no violations.

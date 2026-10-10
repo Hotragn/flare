@@ -150,7 +150,7 @@ flowchart TB
 
 ## Data dictionary
 
-Types: `id128` = 128 random bits, base32 text; `ts` = UTC timestamp to the millisecond; `ct` = ciphertext (AES-256-GCM, nonce prepended) under the group key; `enum(...)`.
+Types: `id128` = 128 random bits, base32 text (physical model: UUID v4, 122 random bits, ADR-0018; the architect's physical dictionary is docs/architecture/06-erd-and-data-dictionary.md); `ts` = UTC timestamp to the millisecond; `ct` = ciphertext (AES-256-GCM, nonce prepended) under the group key; `enum(...)`.
 
 ### DS1 Gatherings (deleted at Gone, expiry backup)
 

@@ -26,25 +26,29 @@
     "start": "node apps/server/src/main.ts",
     "hub": "node apps/hub/src/main.ts",
     "e2e:hello": "node scripts/e2e-hello.ts",
-    "ci": "npm run secret-scan && npm run lint && npm run typecheck && npm test && npm run contracts && npm run build && npm run budget",
+    "ci": "npm run secret-scan && npm run lint && npm run typecheck && npm test && npm run contracts && npm run build && npm run budget && npm run diagrams",
     "secret-scan": "node scripts/secret-scan.ts",
     "budget": "node scripts/budget.ts",
-    "hooks": "git config core.hooksPath .githooks"
+    "hooks": "git config core.hooksPath .githooks",
+    "diagrams": "node scripts/check-diagrams.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
     "@biomejs/biome": "2.5.15",
     "@redocly/cli": "2.62.1",
     "@types/node": "24.19.2",
+    "mermaid": "12.1.0",
     "playwright-core": "1.64.0",
     "typescript": "6.0.3",
     "vitest": "5.0.3",
     "yaml": "2.9.1"
   },
   "allowScripts": {
-    "@scarf/scarf": false
+    "@scarf/scarf": false,
+    "fsevents": false
   },
   "overrides": {
-    "@sveltejs/kit": "3.0.1"
+    "@sveltejs/kit": "3.0.1",
+    "katex": "0.19.0"
   }
 }

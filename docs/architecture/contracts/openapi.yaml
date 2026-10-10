@@ -1481,6 +1481,14 @@ components:
       properties:
         ask: { type: string, minLength: 1, maxLength: 80 }
         total_minutes: { type: integer, minimum: 40, maximum: 600, description: "Step 1 length the host picked; 40 is the smallest that keeps 4 strictly decreasing steps of 5 min or more" }
+        weather:
+          type: object
+          additionalProperties: false
+          description: Reduced on the phone from api.weather.gov; no location (ADR-0007).
+          required: [rain_likely, temp_f]
+          properties:
+            rain_likely: { type: boolean }
+            temp_f: { type: integer, minimum: -40, maximum: 130 }
 
     LadderResponse:
       type: object

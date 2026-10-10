@@ -11,11 +11,11 @@
       "sms": "200 bytes UTF-8 or fewer, worst case (BR-CH-2)"
     },
     "variants": {
-      "privacy.coords": "A",
+      "privacy.coords": "B",
       "og.link": "safe"
     },
     "variantNotes": {
-      "privacy.coords": "A = server holds spot coordinates until Gone (analyst decision 10, current requirements). B = OQ-1 adopted: coordinates only inside the sealed invite. Switch to B only after the architect's decision record adopts OQ-1.",
+      "privacy.coords": "A = server holds spot coordinates until Gone (analyst decision 10, current requirements). B = OQ-1 adopted: coordinates only inside the sealed invite. B is in force: ADR-0009 adopted OQ-1.",
       "og.link": "safe = preview uses only what the server can read (count, not the invite). full = BR-CH-4 as written (invite line in the preview); needs the server to hold the six words in plain text, which the architect must approve."
     },
     "sample": {
@@ -2585,31 +2585,11 @@
       "kind": "bot",
       "where": "private chat"
     },
-    "bot.dm.condAsk": {
-      "text": "Type your condition in your own words.",
+    "bot.dm.link": {
+      "text": "I don't read messages. Add conditions on the Flare page.",
       "kind": "bot",
-      "where": "private chat"
-    },
-    "bot.dm.condExample": {
-      "text": "Like 'after 2' or 'only with Amor'.",
-      "kind": "bot",
-      "where": "private chat"
-    },
-    "bot.dm.condPrivacy": {
-      "text": "Telegram and our server see this text. We keep only the rule.",
-      "kind": "bot",
-      "where": "private chat, first condition only"
-    },
-    "bot.dm.yesBtn": {
-      "text": "Yes",
-      "kind": "button",
-      "where": "private chat read-back",
-      "fixed": "FR-COND-2"
-    },
-    "bot.dm.saved": {
-      "text": "Saved. You're in with that condition.",
-      "kind": "bot",
-      "where": "private chat"
+      "where": "private chat, any text, and after /start b_{token}; sent with the Add a condition button (invite.condition)",
+      "fixed": "ADR-0013"
     },
     "bot.dm.nothingOpen": {
       "text": "No Flare is open. They show up in your group.",
@@ -3064,7 +3044,7 @@
       "where": "site W4"
     },
     "site.privacy.l.telegram": {
-      "text": "Telegram sees what's posted in Telegram: the photo, the six words, the spot and the count. Conditions you send the bot pass through Telegram and our server. We keep only the rule.",
+      "text": "Telegram sees what Flare posts there: the photo, the six words, the spot, the host's first name and the count. The post carries the Flare's link, so Telegram could open it too. Our server keeps that post until the Flare ends. The bot never reads your messages.",
       "kind": "prose",
       "where": "site W4",
       "fixed": "FR-PRIV-7"
@@ -3102,9 +3082,15 @@
       "fixed": "OQ-1"
     },
     "site.privacy.l.hub": {
-      "text": "To write the six words, your photo goes to our laptop over an encrypted link. If the laptop can't be reached, you type them and nothing is sent.",
+      "text": "To write the six words, your photo goes to our laptop over an encrypted link. It isn't stored. If the laptop can't be reached, you type them and nothing is sent.",
       "kind": "prose",
       "where": "site W4"
+    },
+    "site.privacy.l.weather": {
+      "text": "When you make a Plan, your phone asks the US weather service for the forecast near you, to about 11 km.",
+      "kind": "prose",
+      "where": "site W4",
+      "fixed": "ADR-0007"
     },
     "site.privacy.l.push": {
       "text": "Alerts travel through Apple's push service, sealed so Apple can't read them.",

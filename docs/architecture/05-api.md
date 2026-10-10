@@ -7,7 +7,7 @@ Version 1.0, Sat 2026-10-10. Owner: Architect. The contracts are the source of t
 | [contracts/openapi.yaml](contracts/openapi.yaml) (OpenAPI 3.1.1) | Every HTTP endpoint: 37 operations across 28 paths, the Telegram webhook, SSE endpoint, schemas, errors | Redocly 2.62.1 `recommended-strict`; route drift check |
 | [contracts/asyncapi.yaml](contracts/asyncapi.yaml) (AsyncAPI 3.0.0) | Hub relay WebSocket, gathering SSE events, Web Push payload | @asyncapi/parser 3.6.3; hub zod schemas vs contract |
 | [contracts/telegram.md](contracts/telegram.md) | Bot setup, updates handled, callback data, posts, edits, cleanup, limits | Engineering tests against a fake Bot API |
-| [contracts/plain-text.md](contracts/plain-text.md) | SMS and satellite forms, reply parsing | 9 unit tests |
+| [contracts/plain-text.md](contracts/plain-text.md) | SMS and satellite forms, reply parsing | 8 unit tests |
 
 `npm run contracts` runs all checks; CI runs it on every push. A server route missing from openapi.yaml fails the build (`scripts/lib/contracts.ts`, tested both ways in `scripts/test/contracts.test.ts`).
 

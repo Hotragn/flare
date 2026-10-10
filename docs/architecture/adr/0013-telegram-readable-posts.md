@@ -14,6 +14,6 @@ A Telegram post needs readable text (the six words, the place, the host's first 
 6. **Pushes for link groups stay sealed** (ADR-0014); this exception covers the Telegram channel only.
 
 ## Consequences
-- Copy changes in this phase: `bot.dm.condAsk`, `bot.dm.condExample`, `bot.dm.condPrivacy`, `bot.dm.yesBtn` and `bot.dm.saved` (the bot-side condition dialogue) are replaced by `bot.dm.link` and `bot.post.condition`; the privacy text no longer says conditions pass through Telegram, and gains the Telegram link limit.
+- Copy changes in this phase: `bot.dm.condAsk`, `bot.dm.condExample`, `bot.dm.condPrivacy`, `bot.dm.yesBtn` and `bot.dm.saved` (the bot-side condition dialogue) are replaced by one string, `bot.dm.link`, sent with the existing `invite.condition` button; the privacy text no longer says conditions pass through Telegram, and gains the Telegram link limit.
 - A Telegram member made by a tap has no sealed name; others see "A Telegram friend" until that person opens their personal link and picks a name.
 - `with(...)` conditions naming a Telegram-only member are not possible until they bind a phone.

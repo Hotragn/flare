@@ -72,11 +72,7 @@ Telegram shows a button-tap reply only to the person who tapped, so this is wher
 | After a yes | "You're in for Fuego's Flare." / "I'll message you when it's lit. Nobody sees who said yes." | Take it back · Add a condition | `bot.dm.yes`, `bot.dm.yes2`, `in.takeBack`, `invite.condition` |
 | Take it back (before Lit) | "Taken back. Nobody was told." | none | `in.takenBack` |
 | After Lit, the button reads Can't make it | "Got it. Nobody was told." State stays Lit (SRS-RES-6). | none | `lit.cant`, `lit.cantDone` |
-| Add a condition | "Type your condition in your own words." / "Like 'after 2' or 'only with Amor'." / first time only: "Telegram and our server see this text. We keep only the rule." | none | `bot.dm.condAsk`, `bot.dm.condExample`, `bot.dm.condPrivacy` |
-| Condition read back | "Got it: only with Amor, back by 5 PM. Right?" | Yes · Fix it | `readback.line`, `bot.dm.yesBtn`, `readback.fix` |
-| Yes to the read-back | "Saved. You're in with that condition." | none | `bot.dm.saved` |
-| Couldn't parse | "I didn't catch that. Try 'after 2' or 'only with Amor'." | none | `cond.didntCatch` |
-| Names someone outside the group | "Kai isn't in this group." | none | `cond.notInGroup` |
+| Add a condition (from the group button or any typed message) | "I don't read messages. Add conditions on the Flare page." | Add a condition (opens the personal link) | `bot.dm.link`, `invite.condition` |
 | Lit (to each person in the chosen set) | "It's lit. Fuego is at Ford Woods Park, by the pond." | Find them (opens the Lit page) | `lit.notice`, `lit.find` |
 | Plan changed after a fade, own condition no longer holds (OQ-2, pending) | "Plan changed to Short walk. Still coming?" | none, no action needed | `fade.stillComing` |
 | Any other text, nothing open | "No Flare is open. They show up in your group." | none | `bot.dm.nothingOpen` |

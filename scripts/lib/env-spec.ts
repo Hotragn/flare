@@ -61,6 +61,27 @@ export const SPEC: Rule[] = [
   },
   { key: "OLLAMA_MODEL", apps: ["hub"], required: false, why: "Default gemma4:e4b-it-q4_K_M" },
   {
+    key: "VAPID_PUBLIC_KEY",
+    apps: ["server"],
+    required: false,
+    why: "Web Push (ADR-0014); without it Lit notices go by bot or the open page",
+    shape: (v) => (/^[A-Za-z0-9_-]{87}$/.test(v) ? null : "not a P-256 public key in base64url"),
+  },
+  {
+    key: "VAPID_PRIVATE_KEY",
+    apps: ["server"],
+    required: false,
+    why: "Web Push signing key",
+    shape: (v) => (/^[A-Za-z0-9_-]{43}$/.test(v) ? null : "not a P-256 private key in base64url"),
+  },
+  {
+    key: "VAPID_SUBJECT",
+    apps: ["server"],
+    required: false,
+    why: "Contact for push services",
+    shape: url(["mailto", "https"]),
+  },
+  {
     key: "TELEGRAM_BOT_TOKEN",
     apps: ["bot"],
     required: true,

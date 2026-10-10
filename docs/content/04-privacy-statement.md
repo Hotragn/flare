@@ -2,7 +2,7 @@
 
 Generated from `design/prototype/src/lib/copy/deck.json` by `scripts/copy-lint.mjs`; the website shows the same words (section W4). Version 1.0, 2026-10-10.
 
-**Which variant applies:** variant **A** is in force. A = server holds spot coordinates until Gone (analyst decision 10, current requirements). B = OQ-1 adopted: coordinates only inside the sealed invite. Switch to B only after the architect's decision record adopts OQ-1. Lines marked "Variant A" or "Variant B" below are the only difference.
+**Which variant applies:** variant **B** is in force. A = server holds spot coordinates until Gone (analyst decision 10, current requirements). B = OQ-1 adopted: coordinates only inside the sealed invite. B is in force: ADR-0009 adopted OQ-1. Lines marked "Variant A" or "Variant B" below are the only difference.
 
 ## The privacy promise
 
@@ -28,13 +28,13 @@ Generated from `design/prototype/src/lib/copy/deck.json` by `scripts/copy-lint.m
 
 ## Limits we're honest about
 
-- Telegram sees what's posted in Telegram: the photo, the six words, the spot and the count. Conditions you send the bot pass through Telegram and our server. We keep only the rule.
+- Telegram sees what Flare posts there: the photo, the six words, the spot, the host's first name and the count. The post carries the Flare's link, so Telegram could open it too. Our server keeps that post until the Flare ends. The bot never reads your messages.
 - In a small group, people can sometimes guess who said yes, or who made a plan smaller. With 2 or 3 people, the count alone can give it away.
 - Text and satellite messages are outside our control. Your carrier and Apple carry them, and we can't delete them.
 - Anyone with the group link can read that group's invites, Sparks and Hot spots. Share it only with the group.
 - **Variant A:** Our server holds the spot's map position until the Flare ends, to pick a nearby bench and point the compass.
 - **Variant B:** Our server never holds the spot's map position. Your phone picks nearby benches and seals them into the invite.
-- To write the six words, your photo goes to our laptop over an encrypted link. If the laptop can't be reached, you type them and nothing is sent.
+- To write the six words, your photo goes to our laptop over an encrypted link. It isn't stored. If the laptop can't be reached, you type them and nothing is sent.
 - Alerts travel through Apple's push service, sealed so Apple can't read them.
 
 ## Deletion audit, after our Sunday field test

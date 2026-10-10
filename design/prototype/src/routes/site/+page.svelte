@@ -17,7 +17,7 @@
   const rows = ["photo", "yes", coords === "B" ? "coordsB" : "coordsA", "phone", "sparks", "alerts", "counts", "logs"];
   const cell = (row: string, col: "what" | "where" | "when") => t(`site.privacy.row.${row}.${col}` as CopyKey);
   const promises: CopyKey[] = ["site.privacy.p1", "site.privacy.p2", "site.privacy.p3", "site.privacy.p4", "site.privacy.p5"];
-  const limits: CopyKey[] = ["site.privacy.l.telegram", "site.privacy.l.guess", "site.privacy.l.sms", "site.privacy.l.link", coords === "B" ? "site.privacy.l.coordsB" : "site.privacy.l.coordsA", "site.privacy.l.hub", "site.privacy.l.push"];
+  const limits: CopyKey[] = ["site.privacy.l.telegram", "site.privacy.l.guess", "site.privacy.l.sms", "site.privacy.l.link", coords === "B" ? "site.privacy.l.coordsB" : "site.privacy.l.coordsA", "site.privacy.l.hub", "site.privacy.l.weather", "site.privacy.l.push"];
   const access: [string, CopyKey][] = [["bench", "site.access.a1"], ["steps", "site.access.a2"], ["compass", "site.access.a3"], ["info", "site.access.a4"], ["card", "site.access.a5"]];
   const tested: CopyKey[] = ["site.access.t1", "site.access.t2", "site.access.t3"];
   const gaps: CopyKey[] = ["site.access.g1", "site.access.g2", "site.access.g3", "site.access.g4", "site.access.g5"];

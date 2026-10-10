@@ -31,3 +31,5 @@ jobs:
       - run: npm run build
       - name: Link page JavaScript budget (SRS-PERF-2)
         run: npm run budget
+      - name: Every Mermaid diagram in docs renders (uses the runner's Google Chrome)
+        run: npm run diagrams
