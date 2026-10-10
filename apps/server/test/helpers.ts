@@ -41,5 +41,7 @@ export const fakeJpeg = (n = 2048) => {
   const b = Buffer.alloc(n, 0x11);
   b[0] = 0xff;
   b[1] = 0xd8;
+  b[2] = 0xff;
+  b[3] = 0xe0;
   return b;
 };

@@ -209,7 +209,7 @@ components:
           id: { type: string, format: uuid }
           kind: { const: ladder-draft }
           ask: { type: string, maxLength: 80 }
-          total_minutes: { type: integer, minimum: 20, maximum: 600 }
+          total_minutes: { type: integer, minimum: 40, maximum: 600 }
 
     result:
       name: result

@@ -66,7 +66,8 @@ create table photos (
 create table responses (
   id uuid primary key,
   gathering_id uuid not null references gatherings(id) on delete cascade,
-  member_id uuid references members(id) on delete cascade,
+  -- Anonymous text yeses (BR-ID-6) are only counted in gatherings.text_yes; every row here has a member.
+  member_id uuid not null references members(id) on delete cascade,
   status text not null check (status in ('yes', 'taken_back', 'cant_make_it')),
   ember_only boolean not null default false,
   rules jsonb not null default '[]',
@@ -82,7 +83,7 @@ create table responses (
 create table jobs (
   id uuid primary key,
   gathering_id uuid not null references gatherings(id) on delete cascade,
-  kind text not null check (kind in ('ember', 'gone', 'plan_deadline', 'delete')),
+  kind text not null check (kind in ('ember', 'ember_pick', 'gone', 'plan_deadline', 'delete')),
   due_at timestamptz not null,
   expires_at timestamptz not null
 );
@@ -123,6 +124,14 @@ create table sparks (
 );
 create index sparks_group_place on sparks(group_id, place_key_hash);
 
+-- Issued when an "I'm here" is accepted (BR-K-1). Belongs to the group, not the gathering,
+-- because the gathering is deleted within 5 minutes of Gone. No member id.
+create table spark_tickets (
+  token_hash bytea primary key,
+  group_id uuid not null references groups(id) on delete cascade,
+  expires_at timestamptz not null
+);
+
 create table hotspots (
   group_id uuid primary key references groups(id) on delete cascade,
   blob_ct bytea not null,
@@ -159,6 +168,7 @@ create table telegram_binds (
   expires_at timestamptz not null
 );
 
+-- Key is "{memberId or 'anon'}:{Idempotency-Key}", so two phones can't collide. 24 h.
 create table idempotency (
   key text primary key,
   response jsonb not null,

@@ -529,7 +529,7 @@ paths:
           description: Counted, or ignored at the cap
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Gathering" }
+              schema: { $ref: "#/components/schemas/ArrivalResult" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
@@ -626,14 +626,17 @@ paths:
         "204": { description: Deleted }
         "403": { $ref: "#/components/responses/Forbidden" }
 
-  /api/v1/gatherings/{gatheringId}/sparks:
+  /api/v1/groups/{groupId}/sparks:
     parameters:
-      - $ref: "#/components/parameters/GatheringId"
+      - $ref: "#/components/parameters/GroupId"
     post:
       tags: [places]
       operationId: addSpark
       summary: Leave a Spark after Done (BR-K-1 to BR-K-4)
-      description: Only members with an accepted arrival, once per gathering. Text is 1 to 140 characters before sealing.
+      description: |
+        Needs the one-time `spark_ticket` the server gave this phone when its "I'm here" was
+        accepted. The ticket outlives the gathering (24 h) because the gathering is deleted
+        within 5 minutes of Gone. One Spark per ticket. Text is 1 to 140 characters before sealing.
       security: [{ member: [] }]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -648,12 +651,9 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Spark" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
-
-  /api/v1/groups/{groupId}/sparks:
-    parameters:
-      - $ref: "#/components/parameters/GroupId"
     get:
       tags: [places]
       operationId: listSparks
@@ -1400,12 +1400,27 @@ components:
           description: Required when `for` is member (host only).
         recorded_at: { type: string, format: date-time }
 
+    ArrivalResult:
+      type: object
+      required: [gathering, counted]
+      properties:
+        gathering: { $ref: "#/components/schemas/Gathering" }
+        counted: { type: boolean, description: "false when ignored at the cap (BR-H-4) or a duplicate (BR-H-3)" }
+        spark_ticket:
+          description: "Only when `for` is self and the arrival counted. Kept on the phone until used or 24 h after Gone."
+          oneOf:
+            - $ref: "#/components/schemas/Token"
+            - type: "null"
+
     NewSpark:
       type: object
       additionalProperties: false
-      required: [id, place, text_ct, delete_token]
+      required: [id, ticket, place, text_ct, delete_token]
       properties:
         id: { $ref: "#/components/schemas/Id" }
+        ticket:
+          allOf: [{ $ref: "#/components/schemas/Token" }]
+          description: From ArrivalResult.spark_ticket; single use.
         place: { $ref: "#/components/schemas/PlaceHash" }
         text_ct:
           allOf: [{ $ref: "#/components/schemas/Ct" }]
@@ -1465,7 +1480,7 @@ components:
       required: [ask, total_minutes]
       properties:
         ask: { type: string, minLength: 1, maxLength: 80 }
-        total_minutes: { type: integer, minimum: 20, maximum: 600, description: "Step 1 length the host picked" }
+        total_minutes: { type: integer, minimum: 40, maximum: 600, description: "Step 1 length the host picked; 40 is the smallest that keeps 4 strictly decreasing steps of 5 min or more" }
 
     LadderResponse:
       type: object

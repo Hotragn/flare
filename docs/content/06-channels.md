@@ -44,12 +44,12 @@ Answer by 10:40 AM. Four sizes, biggest first.     planInvite.meta
 1. Ford Woods loop, 60 min                    bot.plan.step (×4)
 2. Park loop, 30 min
 3. Short walk, 15 min
-4. 20 min on the bench, 20 min
+4. 10 min on the bench, 10 min
 Need 1 more for step 1: Ford Woods loop.      planInvite.needAt (edited live)
 [ I'm in ]  [ Short one only ]  [ Add a condition ]
 ```
 
-At the deadline the last line becomes one of: "It's on: Ford Woods loop at 11:00 AM." (`planLit.on`), "Smaller plan: 20 min on the bench at 11:00 AM." (`planLit.ember`), "Not this time." (`gone.title`). After a fade: new message "Smaller plan: Short walk." (`planLit.smaller`), never who or how many.
+At the deadline the last line becomes one of: "It's on: Ford Woods loop at 11:00 AM." (`planLit.on`), "Smaller plan: 10 min on the bench at 11:00 AM." (`planLit.ember`), "Not this time." (`gone.title`). After a fade: new message "Smaller plan: Short walk." (`planLit.smaller`), never who or how many.
 
 ### 1.3 Button taps (private replies)
 
@@ -103,7 +103,7 @@ Title, then body. Bodies are fixed strings where the SRS sets them. Payloads sho
 | Lit | The chosen set | Fuego's Flare | It's lit. Fuego is at Ford Woods Park, by the pond. | `push.flareTitle`, `push.lit` (SRS-LIT-1) |
 | Ember starts | Everyone in the group | Fuego's Flare | Smaller plan: 15 min at the bench by the lot. | `push.ember` (SRS-EMB-2) |
 | Plan lights at the deadline | The chosen set | Fuego's Plan | It's on: Ford Woods loop at 11:00 AM. | `push.planTitle`, `push.planOn` |
-| Plan lights at step 4 (Ember save) | The chosen set | Fuego's Plan | Smaller plan: 20 min on the bench at 11:00 AM. | `push.planEmber` |
+| Plan lights at step 4 (Ember save) | The chosen set | Fuego's Plan | Smaller plan: 10 min on the bench at 11:00 AM. | `push.planEmber` |
 | Plan result: nothing fits | Everyone who said yes | Fuego's Plan | Not this time. | `push.gone` |
 | Fade | The chosen set | Fuego's Plan | Smaller plan: Short walk. | `push.planSmaller` (BR-P-7) |
 | Fade breaks my own condition (OQ-2, pending) | That person only | Fuego's Plan | Plan changed to Short walk. Still coming? | `push.stillComing` |

@@ -39,7 +39,7 @@ export const plan = {
     { name: "Ford Woods loop", place: "Ford Woods Park", minutes: 60, access: "Benches every 300 m" },
     { name: "Park loop", place: "Ford Woods Park", minutes: 30, access: "Benches every 150 m" },
     { name: "Short walk", place: "Pond path", minutes: 15, access: "Flat, no steps mapped" },
-    { name: "20 min on the bench", place: "Bench by the pond", minutes: 20, access: "Restroom 180 m" },
+    { name: "10 min on the bench", place: "Bench by the pond", minutes: 10, access: "Restroom 180 m" },
   ] satisfies Step[],
 };
 

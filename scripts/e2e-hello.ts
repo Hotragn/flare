@@ -63,7 +63,17 @@ async function main() {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3 });
+    const problems: string[] = [];
+    page.on("console", (m) => m.type() === "error" && problems.push(m.text()));
+    page.on("pageerror", (e) => problems.push(e.message));
     await page.goto(`${BASE}/hello/`);
+    await page.evaluate(() =>
+      document.addEventListener("securitypolicyviolation", (e) =>
+        console.error(
+          `CSP blocked ${e.violatedDirective} ${e.blockedURI} ${e.sourceFile}:${e.lineNumber} ${(e.sample ?? "").slice(0, 60)}`,
+        ),
+      ),
+    );
     const t1 = performance.now();
     await page.getByTestId("photo").setInputFiles(PHOTO);
     await page.getByTestId("invite").waitFor({ timeout: 45_000 });
@@ -75,6 +85,8 @@ async function main() {
     const words = invite.trim().split(/\s+/).length;
     const ok = meta.startsWith("tier hub") && words >= 1 && words <= 6;
     if (!ok) throw new Error(`expected a hub draft of 1 to 6 words, got "${meta}" / ${words} words`);
+    if (problems.length) throw new Error(`page errors: ${problems.join(" | ")}`);
+    console.log("no console errors, no CSP violations");
     console.log("PASS phone page -> server -> hub relay -> Ollama -> back");
   } finally {
     await browser.close();

@@ -1744,7 +1744,7 @@
       "where": "P5 push bot (step 4 save)",
       "fixed": "PRD 11.1 Ember",
       "sample": {
-        "step": "20 min on the bench",
+        "step": "10 min on the bench",
         "time": "11:00 AM"
       }
     },
@@ -1800,7 +1800,7 @@
       "kind": "message",
       "where": "P6 notice (place changed, SRS-PLAN-8)",
       "sample": {
-        "step": "20 min on the bench",
+        "step": "10 min on the bench",
         "min": 20
       }
     },
@@ -2475,7 +2475,7 @@
       "where": "push body at the deadline (step 4 save)",
       "fixed": "PRD 11.1",
       "sample": {
-        "step": "20 min on the bench",
+        "step": "10 min on the bench",
         "time": "11:00 AM"
       }
     },
