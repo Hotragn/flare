@@ -45,7 +45,8 @@ Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, 
 - All 33 screens done and registered (H1-H6, I0-I12, P1-P7, O0, O1, O2, O4, O5, O6, O8). Full export: 189 hi-fi PNGs + 33 wireframes, 0 page errors, svelte-check 0/0.
 - Founder feedback folded in: FlameMeter (live flame + count) on I1, H2, I9, P4; Spark history line on the invite; compass uses the pin-flame pointer, tightening distance rings, facing glow; stronger UI grain (static/brand/paper-grain-ui-256.png).
 
+## Product design: DONE
+Handoff: docs/handoffs/04-product-design.md. All checks pass (svelte-check 0/0, axe 0 violations on 193 targets, focus audit 0 small targets, copy lint 0 problems, JS 51 KB gz).
+
 ## Exact next step now
-1. Routes: / (index), /screens (catalog grid of all screens/states/themes), /components (every component, every state), /proto (clickable prototype: send a Flare, say yes with a condition, it lights, find your friend, shrinks to Ember, answer a Plan, leave a Spark; friends simulated and labelled), /site (website: hero, 3 steps, Ember, privacy + audit, accessibility statement, run it yourself; mobile + desktop exports).
-2. scripts/a11y.mjs with axe-core over every screen state and the site; fix issues.
-3. Docs: docs/design/03-wireframes.md, 04-hifi-screens.md, 05-design-system.md (tokens + components + states), 06-website.md, 07-accessibility.md (contrast, focus order, labels, targets per screen); fill RTM design column; handoff 04 (motion and copy).
+Wait for the founder's review of handoff 04 and the next role (motion and sound, then copy).

@@ -39,6 +39,6 @@
   .thumb { width: 116px; flex: none; }
   .words { margin: 0; }
   .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 12px 6px 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 2px solid var(--line); font-weight: 700; }
-  .edit { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; }
+  .edit { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; }
   .err { display: flex; gap: 8px; align-items: center; margin: 0; padding: 12px 14px; border-radius: var(--r-md); border: 2px solid var(--c-ember-700); font-weight: 700; }
 </style>
