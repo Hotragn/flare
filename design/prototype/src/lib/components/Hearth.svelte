@@ -32,7 +32,8 @@
     --horizon-near: color-mix(in srgb, var(--c-pine-700) 28%, transparent);
     position: relative; width: 100%; height: calc(var(--size) * 1.15); display: grid; place-items: end center;
   }
-  .hills { position: absolute; left: -20px; right: -20px; bottom: 0; width: calc(100% + 40px); height: 46%; }
+  .hills { position: absolute; left: -20px; right: -20px; bottom: 0; width: calc(100% + 40px); height: 46%;
+    -webkit-mask-image: radial-gradient(120% 90% at 50% 100%, #000 45%, transparent 78%); mask-image: radial-gradient(120% 90% at 50% 100%, #000 45%, transparent 78%); }
   .ground { position: absolute; bottom: 6%; width: calc(var(--size) * 0.62); height: calc(var(--size) * 0.09); border-radius: 50%; background: color-mix(in srgb, var(--c-ink-900) 18%, transparent); }
   .ground.lit { background: radial-gradient(closest-side, color-mix(in srgb, var(--c-gold-400) 55%, transparent), transparent); width: calc(var(--size) * 0.9); height: calc(var(--size) * 0.16); }
   .flame { position: relative; margin-bottom: 4%; }

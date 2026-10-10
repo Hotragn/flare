@@ -3,7 +3,7 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
-  import NeedCount from "../components/NeedCount.svelte";
+  import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import { flare } from "../sample";
   import type { Theme } from "../components/parts";
@@ -12,12 +12,13 @@
 
 <Screen {theme} {wire} title="Fuego's Flare">
   <div class="center">
-    <Hearth state={view === "lit" ? "lit" : "ember"} size={180} celebrate={view === "lit"} />
+    <Hearth state={view === "lit" ? "lit" : "ember"} size={150} celebrate={view === "lit"} />
     <h1 class="t-title">{view === "lit" ? "It's lit, smaller." : "Smaller plan: 15 min at the bench."}</h1>
     <p class="t-muted">{flare.emberBench[0].toUpperCase() + flare.emberBench.slice(1)}, {flare.emberDistance}.</p>
-    {#if view !== "lit"}<NeedCount have={1} quorum={2} />{/if}
+    
   </div>
-  <InfoLines bench={0} restroom={140} nature="" />
+  {#if view !== "lit"}<FlameMeter state="ember" have={1} quorum={2} note="One more friend and it's on." />{/if}
+  <InfoLines bench={null} restroom={140} nature="You'll be sitting on the bench." />
   {#snippet actions()}
     {#if view === "lit"}
       <Button icon="compass">Find them</Button>

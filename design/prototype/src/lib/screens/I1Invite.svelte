@@ -3,11 +3,11 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import PhotoPrint from "../components/PhotoPrint.svelte";
-  import NeedCount from "../components/NeedCount.svelte";
+  import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
-  import { flare } from "../sample";
+  import { flare, sparks } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "kindling", theme = "light", wire = false, onyes, oncondition }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; oncondition?: () => void } = $props();
 </script>
@@ -31,11 +31,17 @@
       <p class="t-muted">This Flare is over. Nothing about it was kept.</p>
     </div>
   {:else}
-    <PhotoPrint scene={flare.scene} height={300} tilt={1.2} />
+    <PhotoPrint scene={flare.scene} height={200} tilt={1.2} />
     <p class="t-invite words">{flare.words}</p>
-    <p class="where"><Icon name="hotspots" size={22} /><span><b>Fuego</b> is at {flare.spot}. {flare.walk}.</span></p>
-    <NeedCount have={view === "lit" ? 2 : 1} quorum={2} lit={view === "lit"} />
-    <InfoLines nature={flare.sunset} />
+    <div class="where">
+      <Icon name="hotspots" size={22} />
+      <div>
+        <p><b>Fuego</b> is at {flare.spot}. {flare.walk}.</p>
+        <p class="spark t-small"><Icon name="spark" size={18} /><span>Met here {sparks[0].times + 1} times · "{sparks[0].line}"</span></p>
+      </div>
+    </div>
+    <FlameMeter state={view === "lit" ? "lit" : "kindling"} have={view === "lit" ? 2 : 1} quorum={2} />
+    <InfoLines nature={flare.sunset} compact />
   {/if}
   {#snippet actions()}
     {#if view === "kindling" || view === "lit"}
@@ -49,7 +55,9 @@
 
 <style>
   .words { margin: 0; }
-  .where { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
+  .where { display: flex; gap: 8px; align-items: flex-start; }
+  .where p { margin: 0; }
+  .spark { display: flex; gap: 6px; align-items: center; color: var(--accent-text); font-weight: 700; margin-top: 4px !important; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
   .skeleton { background: color-mix(in srgb, var(--text) 9%, transparent); border-radius: var(--r-md); animation: pulse 1.4s var(--ease-in-out) infinite; }

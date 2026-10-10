@@ -28,6 +28,20 @@ export const screens: Entry[] = [
   { id: "I10", name: "Not this time", states: ["gone"], themes: LD, load: () => import("./I10Gone.svelte") },
   { id: "I11", name: "Spark", states: ["empty", "typing", "saved"], themes: LD, load: () => import("./I11Spark.svelte") },
   { id: "I12", name: "Go outside", states: ["end"], themes: LD, load: () => import("./I12Outside.svelte") },
+  { id: "P1", name: "Plan: ask", states: ["empty", "typing", "deadline-error", "offline"], themes: LD, load: () => import("./P1PlanAsk.svelte") },
+  { id: "P2", name: "Plan: ladder", states: ["drafting", "drafted", "editing", "after-sunset"], themes: LD, load: () => import("./P2Ladder.svelte") },
+  { id: "P3", name: "Plan sent", states: ["success"], themes: LD, load: () => import("./P3PlanSent.svelte") },
+  { id: "P4", name: "Plan invite", states: ["open", "need"], themes: LD, load: () => import("./P4PlanInvite.svelte") },
+  { id: "P5", name: "Plan lit", states: ["step-1", "step-2", "smaller"], themes: SUN, load: () => import("./P5PlanLit.svelte") },
+  { id: "P6", name: "I'm fading", states: ["confirm", "notice"], themes: SUN, load: () => import("./P6Fading.svelte") },
+  { id: "P7", name: "Plan: not this time", states: ["gone"], themes: LD, load: () => import("./P7PlanGone.svelte") },
+  { id: "O0", name: "Menu", states: ["open"], themes: LD, load: () => import("./O0Menu.svelte") },
+  { id: "O1", name: "Hot spots", states: ["list", "empty"], themes: LD, load: () => import("./O1HotSpots.svelte") },
+  { id: "O2", name: "My needs", states: ["set", "empty"], themes: LD, load: () => import("./O2Needs.svelte") },
+  { id: "O4", name: "Phone check", states: ["running", "report"], themes: LD, load: () => import("./O4Check.svelte") },
+  { id: "O5", name: "Bench to Bench", states: ["request", "readback", "loop", "none"], themes: LD, load: () => import("./O5BenchToBench.svelte") },
+  { id: "O6", name: "Fix the map", states: ["drafting", "review", "ready"], themes: LD, load: () => import("./O6FixMap.svelte") },
+  { id: "O8", name: "AI on this phone", states: ["unavailable", "available", "downloading", "ready", "failed"], themes: LD, load: () => import("./O8PhoneAI.svelte") },
 ];
 
 export const byId = (id: string) => screens.find((s) => s.id === id);

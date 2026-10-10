@@ -43,9 +43,11 @@ button { cursor: pointer; }
 .grain { position: relative; isolation: isolate; }
 .grain::after {
   content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
-  background-image: url("/brand/paper-grain-256.png"); background-size: 256px; opacity: 0.6; mix-blend-mode: multiply;
+  background-image: url("/brand/paper-grain-ui-256.png"); background-size: 256px; opacity: 0.9; mix-blend-mode: multiply;
 }
-[data-theme="dark"]:not([data-sun]) .grain::after, [data-theme="dark"]:not([data-sun]).grain::after { mix-blend-mode: screen; opacity: 0.25; }
+[data-theme="dark"]:not([data-sun]) .grain::after, [data-theme="dark"]:not([data-sun]).grain::after { mix-blend-mode: screen; opacity: 0.35; }
+/* Sun mode keeps grain light so text contrast stays within the brand table. */
+[data-sun].grain::after, [data-sun] .grain::after { opacity: 0.55; }
 @media (prefers-reduced-transparency: reduce) { .grain::after { display: none; } }
 
 /* Wireframe mode: same layout, no color or imagery (design/exports/wireframes) */

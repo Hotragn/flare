@@ -7,7 +7,7 @@
   let { view = "pointing", theme = "sun", wire = false, onhere }: { view?: string; theme?: Theme; wire?: boolean; onhere?: () => void } = $props();
   const status = $derived((view === "offline" ? "pointing" : view) as "pointing" | "facing" | "no-orientation" | "no-gps");
   const meters = $derived(view === "facing" ? 60 : 400);
-  const bearing = $derived(view === "facing" ? 4 : -22);
+  const bearing = $derived(view === "facing" ? 4 : -35);
 </script>
 
 <Screen {theme} {wire} title="Find them" offline={view === "offline" ? "Offline. Pointing to the spot saved at 2:14 PM." : ""}>

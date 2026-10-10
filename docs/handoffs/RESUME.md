@@ -41,7 +41,11 @@ Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, 
 - Invitee screens I0 to I12 written and registered; `npm run check` 0 errors; export run: 91 screens + 16 wireframes, 0 page errors.
 - Contact sheet of invitee screens rendered to the scratchpad but NOT yet reviewed visually.
 
+## Progress update (latest)
+- All 33 screens done and registered (H1-H6, I0-I12, P1-P7, O0, O1, O2, O4, O5, O6, O8). Full export: 189 hi-fi PNGs + 33 wireframes, 0 page errors, svelte-check 0/0.
+- Founder feedback folded in: FlameMeter (live flame + count) on I1, H2, I9, P4; Spark history line on the invite; compass uses the pin-flame pointer, tightening distance rings, facing glow; stronger UI grain (static/brand/paper-grain-ui-256.png).
+
 ## Exact next step now
-1. Review invitee screens (cd design/prototype && npm run build && node scripts/export.mjs --only=I1,I6,I7 && node scripts/contact.mjs <out.png> 7 ../exports/screens/I*-light.png) and fix layout issues.
-2. Write plan screens P1 to P7 and other screens O0 to O8 (see docs/design/02-flows-and-ia.md for states), register them in src/lib/screens/registry.ts.
-3. Then: /screens catalog page, /components catalog, /proto clickable prototype, /site website, scripts/a11y.mjs (axe-core), docs/design/03-wireframes.md, 04-hifi-screens.md, 05-design-system.md, 06-website.md, 07-accessibility.md, handoff 04 (motion and copy), RTM design column, commit.
+1. Routes: / (index), /screens (catalog grid of all screens/states/themes), /components (every component, every state), /proto (clickable prototype: send a Flare, say yes with a condition, it lights, find your friend, shrinks to Ember, answer a Plan, leave a Spark; friends simulated and labelled), /site (website: hero, 3 steps, Ember, privacy + audit, accessibility statement, run it yourself; mobile + desktop exports).
+2. scripts/a11y.mjs with axe-core over every screen state and the site; fix issues.
+3. Docs: docs/design/03-wireframes.md, 04-hifi-screens.md, 05-design-system.md (tokens + components + states), 06-website.md, 07-accessibility.md (contrast, focus order, labels, targets per screen); fill RTM design column; handoff 04 (motion and copy).

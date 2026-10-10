@@ -9,6 +9,7 @@
   import TypeWords from "../components/TypeWords.svelte";
   import TextField from "../components/TextField.svelte";
   import Icon from "../components/Icon.svelte";
+  import FlameMeter from "../components/FlameMeter.svelte";
   import { flare } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "drafted", theme = "light", wire = false, onuse }: { view?: string; theme?: Theme; wire?: boolean; onuse?: () => void } = $props();
@@ -16,13 +17,14 @@
 </script>
 
 <Screen {theme} {wire} offline={view === "offline" ? "Offline. Write six words, it sends later." : ""}>
-  <PhotoPrint state={view === "developing" ? "developing" : "developed"} scene={flare.scene} height={330} />
+  <PhotoPrint state={view === "developing" ? "developing" : "developed"} scene={flare.scene} height={290} />
   <p class="spot"><Icon name="hotspots" size={20} /><span>{flare.spot}</span></p>
   {#if view === "developing"}
     <p class="t-invite pending" role="status">Writing six words…</p>
   {:else if view === "drafted"}
     <TypeWords text={flare.words} />
     <p class="tier t-small t-muted">Made on our laptop · edit anything</p>
+    <FlameMeter have={1} quorum={2} note="This is your flame. It grows as friends say yes." />
   {:else}
     <p class="t-muted t-small notice"><Icon name="info" size={20} />{view === "offline" ? "No signal, so no draft." : "Couldn't reach the laptop. Write your own?"}</p>
     <TextField label="Six words" bind:value={own} placeholder="Outside at the pond. Come?" max={48} />
