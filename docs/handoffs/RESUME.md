@@ -48,5 +48,13 @@ Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, 
 ## Product design: DONE
 Handoff: docs/handoffs/04-product-design.md. All checks pass (svelte-check 0/0, axe 0 violations on 193 targets, focus audit 0 small targets, copy lint 0 problems, JS 51 KB gz).
 
+## Exports cleanup: DONE (commit 5d90fc6)
+History rewritten before any push to drop design/exports; full exports are git-ignored and regenerate with `cd design/prototype && npm run build && npm run export`. Curated 27 screens in docs/design/screens (JPEG).
+
+## In progress: 4c Motion & sound + 4d UX writer, run in parallel as subagents in separate git worktrees
+- Motion owns: design/motion/, docs/design/motion.md, docs/handoffs/05-motion.md, prototype components Flame/FlameMeter/Hearth/Compass/PhotoPrint/TypeWords/Button, src/routes/+layout.svelte (View Transitions), src/lib/motion/*, static/sounds/*, motion tokens in design/system/build-tokens.mjs, test pages /lab/fps and /lab/haptics.
+- Copy owns: docs/content/, docs/handoffs/06-copy.md, src/lib/copy/*.json + loader, string changes in src/lib/screens/*.svelte, src/routes/site/+page.svelte, src/lib/sample.ts text.
+- After both finish: merge both worktree branches into main, run npm run check, build, export, a11y, focus-audit, copy-lint; write combined summary to the founder.
+
 ## Exact next step now
-Wait for the founder's review of handoff 04 and the next role (motion and sound, then copy).
+If the subagents were interrupted: check `git worktree list` and the branches they left; merge what's committed and re-run the missing role from its prompt.
