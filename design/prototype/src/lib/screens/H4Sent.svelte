@@ -2,14 +2,14 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import Flame from "../components/Flame.svelte";
+  import Hearth from "../components/Hearth.svelte";
   import type { Theme } from "../components/parts";
   let { view = "success", theme = "light", wire = false, ondone }: { view?: string; theme?: Theme; wire?: boolean; ondone?: () => void } = $props();
 </script>
 
 <Screen {theme} {wire} close={false}>
   <div class="center">
-    <Flame state="kindling" progress={0.15} size={150} />
+    <Hearth state="kindling" progress={0.15} size={170} />
     <h1 class="t-display">Sent.</h1>
     <p class="t-sun">Phone in your pocket. We'll buzz you when it's lit.</p>
     <p class="t-muted">Goes small at 30 min if nobody's free.</p>

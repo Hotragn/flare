@@ -36,5 +36,12 @@ Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, 
 - Screens done: H1 to H6 (src/lib/screens), registry.ts, /screens/[id] route, /screens/manifest.json, scripts/export.mjs (44 PNGs + 6 wireframes, 0 page errors), scripts/contact.mjs, scripts/shot.mjs.
 - Gotchas: screen prop is `view`, not `state` (clashes with $state rune); imports use #lib/...ts with extension (BUG-008).
 
+## Progress update (latest)
+- Hearth (flame + ground + sparks + horizon) and Scenery (golden-hour scene) components done; used on H4, H5, H6, I4, I6, I8, I9, I10, I12.
+- Invitee screens I0 to I12 written and registered; `npm run check` 0 errors; export run: 91 screens + 16 wireframes, 0 page errors.
+- Contact sheet of invitee screens rendered to the scratchpad but NOT yet reviewed visually.
+
 ## Exact next step now
-Add a Hearth component (flame + ground shadow + rising sparks on Lit + pine horizon) and use it on H4, H5, H6; then write invitee screens I0 to I12, plan screens P1 to P7, other screens O0 to O8, add them to registry.ts, export, review.
+1. Review invitee screens (cd design/prototype && npm run build && node scripts/export.mjs --only=I1,I6,I7 && node scripts/contact.mjs <out.png> 7 ../exports/screens/I*-light.png) and fix layout issues.
+2. Write plan screens P1 to P7 and other screens O0 to O8 (see docs/design/02-flows-and-ia.md for states), register them in src/lib/screens/registry.ts.
+3. Then: /screens catalog page, /components catalog, /proto clickable prototype, /site website, scripts/a11y.mjs (axe-core), docs/design/03-wireframes.md, 04-hifi-screens.md, 05-design-system.md, 06-website.md, 07-accessibility.md, handoff 04 (motion and copy), RTM design column, commit.

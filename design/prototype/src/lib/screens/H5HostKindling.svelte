@@ -2,7 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import Flame from "../components/Flame.svelte";
+  import Hearth from "../components/Hearth.svelte";
   import NeedCount from "../components/NeedCount.svelte";
   import { flare } from "../sample";
   import type { Theme } from "../components/parts";
@@ -14,7 +14,7 @@
 
 <Screen {theme} {wire} title="Your Flare" offline={view === "offline" ? "Offline. Saved at 2:14 PM." : ""}>
   <div class="center">
-    <Flame state="kindling" {progress} size={190} />
+    <Hearth state="kindling" {progress} size={230} />
     <NeedCount {have} {quorum} />
     <p class="t-muted">{view === "zero" ? "Sent 2 min ago. Friends answer in private." : "Goes small in 18 min if it doesn't catch."}</p>
   </div>

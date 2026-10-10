@@ -2,7 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import Flame from "../components/Flame.svelte";
+  import Hearth from "../components/Hearth.svelte";
   import Sheet from "../components/Sheet.svelte";
   import Icon from "../components/Icon.svelte";
   import { people } from "../sample";
@@ -13,7 +13,7 @@
 
 <Screen {theme} {wire} title="It's lit">
   <div class="center">
-    <Flame state="lit" size={190} />
+    <Hearth state="lit" size={210} celebrate />
     <h1 class="t-display">It's lit.</h1>
     <p class="t-sun">3 are coming. Wait at the bench by the pond.</p>
   </div>
