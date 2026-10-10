@@ -58,6 +58,12 @@ Also updated: docs/product/01-brd.md evidence rows (small fix to an earlier phas
 - The phone may be on any of four iPhones and any iOS version; design must degrade gracefully when a capability is missing (SRS-COMP-2).
 - lab/ belongs to the spike session. Don't edit or commit it.
 
+## Open questions for the architect (from the founder, Oct 10)
+
+**OQ-1. Keep exact coordinates off the server (decision 10).** Founder preference: the server should not hold spot coordinates. Proposed design: at send time the host's phone picks the Ember bench candidates near the spot (BR-E-1 search done on the phone from the OSM pack or cache) and puts their coordinates in the sealed (group-key encrypted) blob. Members' phones already run needs checks locally (BR-E-3) and decrypt the blob for the compass. The server then holds only candidate ids and the chosen id. Affects BR-E-1, BR-E-3, DS1 `spot` and `ember_spot`, DS11, SRS-EMB-1, SRS-CMP-1. If the architect finds a real reason the server needs coordinates, document it in the architecture decision record and state it on the privacy page (SRS-WEB-2).
+
+**OQ-2. Fades and conditions that no longer hold (decision 6).** BR-P-6 keeps everyone in the set after a fade. Spell out the case of a member whose own conditions no longer hold at the smaller step, for example someone who said "only the long one". Founder preference: keep them in, and send them a private note: "Plan changed to {step}. Still coming?" with no action needed. Note: "only the long one" is a minimum-step condition, which BR-C-1 doesn't have today (it parses as unparsed). The architect decides whether to add `min_step(n)`; if added, the fixture conditions-60.json gets new cases and the analyst columns in the SRS get a new row.
+
 ## Change requests
 
 None against earlier phases. Small fix applied: BRD evidence rows now use the verified figures.
