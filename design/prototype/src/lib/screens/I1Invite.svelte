@@ -7,7 +7,7 @@
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
-  import { t, dot } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/index.ts";
   import { flare, sparks, people } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "kindling", theme = "light", wire = false, onyes, oncondition }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; oncondition?: () => void } = $props();
@@ -37,7 +37,7 @@
     <div class="where">
       <Icon name="hotspots" size={22} />
       <div>
-        <p>{dot(t("invite.where", { host, spot: flare.spot }), flare.walk)}</p>
+        <p>{t("invite.whereWalk", { host, spot: flare.spot, walk: flare.walk })}</p>
         <p class="spark t-small"><Icon name="spark" size={18} /><span>{t("invite.metHere", { n: sparks[0].times + 1 })} {t("invite.sparkQuote", { line: sparks[0].line })}</span></p>
       </div>
     </div>

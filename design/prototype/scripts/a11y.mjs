@@ -12,9 +12,10 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AXE = require.resolve("axe-core/axe.min.js");
-const base = "http://127.0.0.1:5318";
+const PORT = process.env.PORT ?? 5318;
+const base = `http://127.0.0.1:${PORT}`;
 async function up() { try { return (await fetch(base + "/screens/manifest.json")).ok; } catch { return false; } }
-const server = spawn("npx", ["vite", "preview", "--port", "5318", "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
+const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
 for (let i = 0; i < 60 && !(await up()); i++) await new Promise((r) => setTimeout(r, 250));
 const manifest = await (await fetch(base + "/screens/manifest.json")).json();
 

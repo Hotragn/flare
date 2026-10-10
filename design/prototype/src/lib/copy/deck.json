@@ -153,7 +153,7 @@
     "share.plan.title": { "text": "{host}'s Plan", "kind": "share", "where": "share sheet" },
     "share.plan.text": { "text": "{ask}\nAnswer by {deadline}.", "kind": "share", "where": "share sheet" },
     "share.card.title": { "text": "Bench to Bench card", "kind": "share", "where": "share sheet (PDF)" },
-    "share.card.text": { "text": "{min} min loop from {place}. Check the path. Map data can be wrong.", "kind": "share", "where": "share sheet (PDF)", "sample": { "min": 39 } },
+    "share.card.text": { "text": "{min} min loop from {place}.", "kind": "share", "where": "share sheet (PDF)", "sample": { "min": 39 } },
     "share.note.title": { "text": "OpenStreetMap note", "kind": "share", "where": "share sheet (O6)" },
 
     "sent.title": { "text": "Sent.", "kind": "title", "where": "H4" },
@@ -213,6 +213,7 @@
     "invite.missingKey": { "text": "This link is missing its key.", "kind": "title", "where": "I1 I0", "fixed": "SRS-RES-2" },
     "invite.missingKeyHelp": { "text": "Ask {host} to send it again. The key is after the #.", "kind": "message", "where": "I1" },
     "invite.where": { "text": "{host} is at {spot}.", "kind": "message", "where": "I1" },
+    "invite.whereWalk": { "text": "{host} is at {spot}. {walk}.", "kind": "message", "where": "I1" },
     "invite.walk": { "text": "{min} min walk", "kind": "hint", "where": "I1 I6" },
     "invite.metHere": { "text": "Your group met here {n} times.", "one": "Your group met here once.", "kind": "message", "where": "I1 P4", "fixed": "BR-K-5" },
     "invite.sparkQuote": { "text": "“{line}”", "kind": "message", "where": "I1 P4" },
@@ -307,7 +308,7 @@
     "compass.stop": { "text": "Stop talking", "kind": "button", "where": "I7" },
     "compass.start": { "text": "Start talking", "kind": "button", "where": "I7" },
     "compass.spoken": { "text": "{name}, {meters} meters, {direction}.", "kind": "message", "where": "Compass (speech)", "fixed": "SRS-CMP-1", "owner": "motion:Compass", "sample": { "name": "Fuego" } },
-    "compass.spokenKm": { "text": "{name}, {km} kilometers, {direction}.", "kind": "message", "where": "Compass (speech, 1000 m or more)", "owner": "motion:Compass", "sample": { "name": "Fuego", "km": "1.2" } },
+    "compass.spokenKm": { "text": "{name}, {km} kilometers, {direction}.", "kind": "message", "where": "Compass (speech, 1000 m or more)", "owner": "motion:Compass", "sample": { "name": "Fuego", "km": "1.2" }, "gradeNote": "Spoken, not read. Kilometers is one 4-syllable word in a 4-word line; km sounds wrong in speech." },
     "compass.spokenNoDir": { "text": "{name}, {meters} meters.", "kind": "message", "where": "Compass (no orientation)", "owner": "motion:Compass", "sample": { "name": "Fuego" } },
     "compass.ahead": { "text": "{name} is straight ahead.", "kind": "message", "where": "Compass (facing)", "owner": "motion:Compass", "sample": { "name": "Fuego" } },
     "compass.dir.ahead": { "text": "straight ahead", "kind": "fragment", "where": "Compass", "owner": "motion:Compass" },
@@ -393,7 +394,7 @@
     "fade.yes": { "text": "Make it smaller", "kind": "button", "where": "P6 sheet" },
     "fade.no": { "text": "Keep going", "kind": "button", "where": "P6 sheet" },
     "fade.sameSpot": { "text": "{step}, {min} min. Same spot.", "kind": "message", "where": "P6 notice", "sample": { "min": 15 } },
-    "fade.newSpot": { "text": "{step}, {min} min at {place}.", "kind": "message", "where": "P6 notice (place changed, SRS-PLAN-8)", "sample": { "step": "20 min on the bench", "min": 20 } },
+    "fade.newSpot": { "text": "Moved to {place}. {min} min.", "kind": "message", "where": "P6 notice (place changed, SRS-PLAN-8)", "sample": { "step": "20 min on the bench", "min": 20 } },
     "fade.ok": { "text": "Got it", "kind": "button", "where": "P6 notice" },
     "fade.stillComing": { "text": "Plan changed to {step}. Still coming?", "kind": "message", "where": "push or bot DM, private (OQ-2)", "status": "pending-architect (OQ-2)" },
 
@@ -414,7 +415,7 @@
     "menu.aiSub": { "text": "Where your six words are made", "kind": "hint", "where": "O0" },
     "menu.forget": { "text": "Forget this group", "kind": "title", "where": "O0", "fixed": "SRS-ID-6" },
     "menu.forgetSub": { "text": "Delete your name and settings here", "kind": "hint", "where": "O0" },
-    "menu.foot": { "text": "Open source · Privacy · Accessibility", "kind": "hint", "where": "O0" },
+    "menu.foot": { "text": "Open source · Privacy · Accessibility", "kind": "hint", "where": "O0", "gradeNote": "Three link names, not a sentence. Accessibility is the word people search for." },
     "forget.title": { "text": "Forget this group?", "kind": "title", "where": "O0 sheet" },
     "forget.body": { "text": "Deletes your name, alerts and settings for this group.", "kind": "message", "where": "O0 sheet" },
     "forget.last": { "text": "You're the last one, so its Sparks go too.", "kind": "message", "where": "O0 sheet (last member)" },
@@ -552,7 +553,7 @@
     "bot.dm.condPrivacy": { "text": "Telegram and our server see this text. We keep only the rule.", "kind": "bot", "where": "private chat, first condition only" },
     "bot.dm.yesBtn": { "text": "Yes", "kind": "button", "where": "private chat read-back", "fixed": "FR-COND-2" },
     "bot.dm.saved": { "text": "Saved. You're in with that condition.", "kind": "bot", "where": "private chat" },
-    "bot.dm.nothingOpen": { "text": "Nothing open right now. Flares show up in your group.", "kind": "bot", "where": "private chat, any other text" },
+    "bot.dm.nothingOpen": { "text": "No Flare is open. They show up in your group.", "kind": "bot", "where": "private chat, any other text" },
     "bot.refuse.dm": { "text": "Flare is test-group only for now. I left that group.", "kind": "bot", "where": "private chat to whoever added the bot to another group" },
     "bot.refuse.log": { "text": "refused chat: not allow-listed", "kind": "log", "where": "server log (no chat content)", "fixed": "SRS-CH-1" },
     "bot.plan.step": { "text": "{k}. {step}, {min} min", "kind": "bot", "where": "Plan post, one line per step", "sample": { "step": "Ford Woods loop", "min": 60 } },
@@ -610,8 +611,7 @@
     "site.privacy.p4": { "text": "Within 5 minutes of the end, the Flare, its photo and every yes are deleted. Only group counters remain, like how many came.", "kind": "prose", "where": "site W4", "fixed": "BR-D-1, BR-D-4" },
     "site.privacy.p5": { "text": "No accounts, no ads, no trackers, and no fonts or scripts from other sites.", "kind": "prose", "where": "site W4", "fixed": "SRS-PRIV-7" },
     "site.privacy.keepTitle": { "text": "What we keep, and for how long", "kind": "title", "where": "site W4" },
-    "site.privacy.colWhat": { "text": "What", "kind": "label", "where": "site W4 table" },
-    "site.privacy.colWhere": { "text": "Where, and who can read it", "kind": "label", "where": "site W4 table" },
+        "site.privacy.colWhere": { "text": "Where, and who can read it", "kind": "label", "where": "site W4 list" },
     "site.privacy.colWhen": { "text": "Deleted", "kind": "label", "where": "site W4 table" },
     "site.privacy.row.photo.what": { "text": "Photo, six words, spot name, your first name", "kind": "prose", "where": "site W4 table" },
     "site.privacy.row.photo.where": { "text": "Our server, sealed with the group key. Only people with the link can read it.", "kind": "prose", "where": "site W4 table" },
@@ -659,7 +659,7 @@
     "site.access.a3": { "text": "The talking compass says “Fuego, 400 meters, slightly left.” No map to read.", "kind": "prose", "where": "site W5" },
     "site.access.a4": { "text": "The invite photo has a spoken description of 20 words or fewer for screen readers.", "kind": "prose", "where": "site W5", "fixed": "SRS-ACC-5" },
     "site.access.a5": { "text": "Bench to Bench prints a walking card in 18 pt type at 7:1 contrast, with a seat every 200 m.", "kind": "prose", "where": "site W5", "fixed": "SRS-REST-5" },
-    "site.access.target": { "text": "Our target is WCAG 2.2 AA on every screen, body text at 7:1 contrast or more, and touch targets of 44 pt.", "kind": "prose", "where": "site W5" },
+    "site.access.target": { "text": "Our target is WCAG 2.2 AA on every screen, body text at 7:1 contrast or more, and touch targets of 44 pt.", "kind": "prose", "where": "site W5", "gradeNote": "WCAG 2.2 AA, 7:1 and 44 pt are the standard's own terms; people checking the claim look for them." },
     "site.access.testedTitle": { "text": "What we tested", "kind": "title", "where": "site W5" },
     "site.access.t1": { "text": "axe-core 4.14.0 on 193 screens and pages: 0 violations.", "kind": "prose", "where": "site W5" },
     "site.access.t2": { "text": "Keyboard focus on 92 screen states: 0 touch targets under 44 px.", "kind": "prose", "where": "site W5" },
@@ -670,7 +670,10 @@
     "site.access.g3": { "text": "iPhone browsers can't vibrate, so the compass plays a short tone when you face your friend.", "kind": "prose", "where": "site W5", "fixed": "SRS-CMP-3" },
     "site.access.g4": { "text": "Photo descriptions are written by an AI model and can miss things.", "kind": "prose", "where": "site W5" },
     "site.access.g5": { "text": "The compass finds your friend. It isn't for navigation or emergencies.", "kind": "prose", "where": "site W5", "fixed": "SRS-CMP-5" },
-    "site.access.why": { "text": "Why benches: they raise the chance that an older adult with a mobility impairment goes for a walk from 60% to 75% (Netspar). 12.2% of US adults have a mobility disability and 5.5% a vision disability (CDC, 2022).", "kind": "prose", "where": "site W5" },
+    "site.access.why": { "text": "Why benches: they raise the chance that an older adult with a mobility impairment goes for a walk from 60% to 75% (Netspar). 12.2% of US adults have a mobility disability and 5.5% a vision disability (CDC, 2022).", "kind": "prose", "where": "site W5", "gradeNote": "Cites two sources with their exact figures. Mobility disability and vision disability are the CDC's own category names, so readers can find the data." },
+    "site.access.sources": { "text": "Sources:", "kind": "label", "where": "site W5" },
+    "site.access.srcNetspar": { "text": "Netspar", "kind": "label", "where": "site W5 (link)" },
+    "site.access.srcCdc": { "text": "CDC DHDS", "kind": "label", "where": "site W5 (link)" },
     "site.access.feedback": { "text": "Found a barrier? Tell us in the comments on our DEV post, and we'll fix it or list it here.", "kind": "prose", "where": "site W5" },
 
     "site.run.title": { "text": "Run it yourself", "kind": "title", "where": "site W6" },
@@ -678,6 +681,6 @@
     "site.run.note": { "text": "The repository link goes live when the repo is public. Setup steps are in the README.", "kind": "prose", "where": "site W6" },
 
     "site.foot.made": { "text": "Made for the DEV Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass.", "kind": "prose", "where": "site W7" },
-    "site.foot.osm": { "text": "Map data © OpenStreetMap contributors.", "kind": "prose", "where": "site W7", "fixed": "ODbL attribution" }
+    "site.foot.osm": { "text": "Map data © OpenStreetMap contributors.", "kind": "prose", "where": "site W7", "fixed": "ODbL attribution", "gradeNote": "Attribution wording the OpenStreetMap license asks for; it isn't ours to reword." }
   }
 }

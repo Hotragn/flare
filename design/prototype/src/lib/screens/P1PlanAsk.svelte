@@ -17,8 +17,8 @@
 <Screen {theme} {wire} heading={t("plan.title")} title={t("plan.title")} offline={view === "offline" ? t("plan.offline") : ""}>
   <TextField label={t("plan.askLabel")} bind:value={ask} placeholder={t("plan.askPlaceholder")} mic max={60} />
   <div class="times">
-    <div class="time"><span class="lbl">{t("plan.starts")}</span><button class="pick"><Icon name="plan" size={20} />Sun 11:00 AM</button></div>
-    <div class="time"><span class="lbl">{t("plan.answersBy")}</span><button class="pick" class:bad={view === "deadline-error"}><Icon name="plan" size={20} />{view === "deadline-error" ? "Sun 10:55 AM" : "Sun 10:40 AM"}</button></div>
+    <div class="time"><span class="lbl">{t("plan.starts")}</span><button class="pick"><Icon name="plan" size={20} />{plan.startLabel}</button></div>
+    <div class="time"><span class="lbl">{t("plan.answersBy")}</span><button class="pick" class:bad={view === "deadline-error"}><Icon name="plan" size={20} />{view === "deadline-error" ? plan.deadlineBadLabel : plan.deadlineLabel}</button></div>
   </div>
   {#if view === "deadline-error"}<p class="err" role="alert"><Icon name="warning" />{t("plan.err.tooClose")}</p>{/if}
   <Choice label={t("send.quorumLabel")} bind:value={quorum} options={["2", "3", "4", "5", "6"].map((v) => ({ value: v, label: v }))} />

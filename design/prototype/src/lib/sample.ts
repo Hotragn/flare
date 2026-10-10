@@ -32,6 +32,9 @@ export const plan = {
   ask: "Fairlane walk at 11?",
   start: "11:00 AM",
   deadline: "10:40 AM",
+  startLabel: "Sun 11:00 AM",
+  deadlineLabel: "Sun 10:40 AM",
+  deadlineBadLabel: "Sun 10:55 AM",
   steps: [
     { name: "Ford Woods loop", place: "Ford Woods Park", minutes: 60, access: "Benches every 300 m" },
     { name: "Park loop", place: "Ford Woods Park", minutes: 30, access: "Benches every 150 m" },
@@ -57,7 +60,7 @@ export const loop = {
   minutes: 39,
 };
 
-// Phone tier download (O8): size is a placeholder until the lab picks the model.
+// Phone tier download (O8): sample size from product design; the real size comes from the model file the lab picks.
 export const phoneModel = { mb: 290, pct: 38 };
 
 export const sparks = [
