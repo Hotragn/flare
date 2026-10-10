@@ -47,7 +47,7 @@ Rules: buttons ≤ 3 words, messages ≤ 12 words, no exclamation marks, no AI w
 | Moment | Say | Don't say |
 | --- | --- | --- |
 | Send | "Send it" | "Launch your Flare now!" |
-| Waiting | "Need 2 more." | "Only 2 more friends to unlock the fun!" |
+| Waiting | "Need 2 more." | "Hurry, only 2 more friends needed!" |
 | Lit | "It's lit. Fuego is at the pond." | "Congratulations, your event is confirmed." |
 | Ember | "Smaller plan: 15 min at the bench." | "Your Flare failed. Try again?" |
 | Gone, unlit | "Not this time." | "Nobody could make it." |
