@@ -1,8 +1,8 @@
 // Flare's four sounds, played with Web Audio for low latency.
 // Rules (docs/design/motion.md, section 5):
-// - Nothing plays before the first user gesture. installAudioUnlock() waits for the
+// - Nothing plays before the first user gesture. installAudioStart() waits for the
 //   first tap or key, then creates and resumes the AudioContext inside that gesture
-//   and plays one silent sample (the iOS unlock).
+//   and plays one silent sample (how iOS lets a page start audio).
 // - The audio session is "ambient", so the iPhone silent switch mutes Flare
 //   (WebKit default; set explicitly where navigator.audioSession exists).
 // - The in-app mute is remembered on this phone (localStorage "flare.sound" = "off").
@@ -30,7 +30,7 @@ function read() {
   try { return typeof localStorage !== "undefined" && localStorage.getItem(KEY) === "off"; } catch { return false; }
 }
 export const isMuted = () => muted;
-export const isUnlocked = () => !!ctx && ctx.state === "running";
+export const isAudioRunning = () => !!ctx && ctx.state === "running";
 export function setMuted(m: boolean) {
   muted = m;
   try { localStorage.setItem(KEY, m ? "off" : "on"); } catch { /* private mode: keep in memory */ }
@@ -57,7 +57,7 @@ async function load(n: SoundName) {
 }
 
 /** Must run inside a user gesture handler (tap or key). Safe to call many times. */
-export function unlock() {
+export function startAudio() {
   if (typeof window === "undefined") return;
   try {
     const nav = navigator as Navigator & { audioSession?: { type: string } };
@@ -71,7 +71,7 @@ export function unlock() {
       master.connect(ctx.destination);
     }
     if (ctx.state !== "running") ctx.resume();
-    // The iOS unlock: start one silent sample inside the gesture.
+    // iOS: start one silent sample inside the gesture.
     const b = ctx.createBuffer(1, 1, ctx.sampleRate);
     const s = ctx.createBufferSource();
     s.buffer = b;
@@ -79,16 +79,16 @@ export function unlock() {
     s.start(0);
     (Object.keys(FILES) as SoundName[]).forEach(load);
   } catch (e) {
-    log.push(`unlock failed: ${(e as Error).message}`);
+    log.push(`audio start failed: ${(e as Error).message}`);
   }
 }
 
 let installed = false;
-/** Arms unlock() for the first real gesture on the page. Call once from the root layout. */
-export function installAudioUnlock() {
+/** Arms startAudio() for the first real gesture on the page. Call once from the root layout. */
+export function installAudioStart() {
   if (installed || typeof window === "undefined") return;
   installed = true;
-  const go = () => { unlock(); if (isUnlocked()) { window.removeEventListener("pointerdown", go, true); window.removeEventListener("keydown", go, true); } };
+  const go = () => { startAudio(); if (isAudioRunning()) { window.removeEventListener("pointerdown", go, true); window.removeEventListener("keydown", go, true); } };
   window.addEventListener("pointerdown", go, true);
   window.addEventListener("keydown", go, true);
 }

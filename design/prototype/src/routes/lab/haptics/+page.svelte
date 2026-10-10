@@ -6,7 +6,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { haptic, hapticTap, support, hlog } from "#lib/motion/haptics.ts";
-  import { playWhenReady, unlock, audioInfo, isMuted, setMuted, type SoundName } from "#lib/motion/sound.ts";
+  import { playWhenReady, startAudio, audioInfo, isMuted, setMuted, type SoundName } from "#lib/motion/sound.ts";
 
   type Row = { test: string; result: string };
   // Adds the iOS 17.4+ "switch" attribute (not in the TypeScript DOM types yet).
@@ -37,7 +37,7 @@
     used = { ...used, vibrate: ok ? "vibrate called" : "not available" };
   }
   function sound(n: SoundName) {
-    unlock();
+    startAudio();
     playWhenReady(n, 1500).then((ok) => { record(`sound ${n}`, ok ? "played (did you hear it?)" : "did not play (muted or locked; tap again)"); refresh(); });
   }
 

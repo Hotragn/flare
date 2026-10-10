@@ -1,7 +1,8 @@
 // Motion core: tokens for JS, easing curves, and the reduced-motion check.
 // Durations and curves come from design/system/tokens.json (copied in by
 // scripts/sync-assets.mjs), so CSS and JS motion share one source.
-import tokens from "#lib/generated/tokens.json";
+import { motion } from "#lib/generated/tokens.json";
+const tokens = { motion }; // named import, so only the motion part ships
 
 const ms = (v: string) => parseFloat(v);
 export const DUR = Object.fromEntries(Object.entries(tokens.motion.dur).map(([k, v]) => [k, ms(v)])) as Record<

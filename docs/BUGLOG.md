@@ -79,3 +79,58 @@ Format: ID, date, area, symptom, cause, fix, proof.
   4. `tsconfig_extends_missing`: tsconfig must `"extends": "$app/tsconfig"` (written to node_modules/$app/tsconfig.json by `svelte-kit sync`).
   5. Subpath import targets can't leave the package, so files from design/system and brand/ are copied in by `scripts/sync-assets.mjs` (runs before dev, build and check).
 - **Proof:** `npm run check`: 0 errors, 0 warnings across 649 files; `npm run build` wrote the static site.
+
+## BUG-009: The `lab/` ignore rule hid the prototype's /lab test pages
+
+- **Date:** 2026-10-10
+- **Area:** Repo (motion test pages)
+- **Symptom:** `git status` did not list `design/prototype/src/routes/lab/` (the /lab/fps, /lab/haptics and /lab/motion pages), so they would never be committed.
+- **Cause:** `.gitignore` had `lab/`, which matches a folder named `lab` at any depth, not only the spike folder at the repo root.
+- **Fix:** Anchor it: `/lab/`.
+- **Proof:** `git check-ignore -v lab/reports/06-flame.md` still prints `.gitignore:7:/lab/`; the route files now show as new files and are committed.
+
+## BUG-010: A prop named `state` breaks `$state` in the same component
+
+- **Date:** 2026-10-10
+- **Area:** Prototype (Svelte 5.57.2)
+- **Symptom:** Adding `let x = $state(...)` to Flame.svelte and FlameMeter.svelte gave `store_rune_conflict` warnings and "Cannot use 'state' as a store" errors in `npm run check`.
+- **Cause:** The components take a prop called `state`, so `$state` reads as a store subscription to that prop (same root cause as the screens' `view` prop, BUG-008 notes).
+- **Fix:** Keep the public prop name and rename it locally: `let { state: st = "lit" } = $props()`.
+- **Proof:** `npm run check`: 0 errors, 0 warnings.
+
+## BUG-011: Mask texture channels came out wrong from canvas readback
+
+- **Date:** 2026-10-10
+- **Area:** Motion (WebGL flame)
+- **Symptom:** Drawing the flame, dome and Gone mark into the red, green and blue channels of one transparent 2D canvas gave full-strength color at soft edges, so shapes overlapped wrongly in the shader.
+- **Cause:** `getImageData` returns un-premultiplied color. On a transparent canvas, coverage lives in alpha and the color channels read 255 at any coverage.
+- **Fix:** Fill the canvas opaque black first, then draw the shapes with `globalCompositeOperation = "lighter"`. Each channel then holds the coverage of its shape. The wide glow is blurred on a 128 px copy and scaled up.
+- **Proof:** Shapes render correctly in /lab/fps in all four states; one-time mask build fell from 36.5 ms to 17.3 ms at 1x CPU (Chrome, M4).
+
+## BUG-012: `afconvert -h` exits with code 2
+
+- **Date:** 2026-10-10
+- **Area:** Motion (sound generator)
+- **Symptom:** design/motion/make-sounds.mjs reported "n/a" for every M4A size although `/usr/bin/afconvert` exists.
+- **Cause:** The script treated any non-zero exit from `afconvert -h` as "not installed"; `afconvert -h` prints help and exits 2.
+- **Fix:** Treat only `ENOENT` (command not found) as missing.
+- **Proof:** The script now writes lit.m4a (8,199 bytes) and ember.m4a (6,138 bytes) and prints all four M4A sizes.
+
+## BUG-013: a11y script crashes in a fresh worktree; svelte-check warns on Screen.svelte
+
+- **Date:** 2026-10-10
+- **Area:** Prototype tooling
+- **Symptoms and fixes:**
+  1. `node scripts/a11y.mjs` threw `ENOENT ... design/exports/a11y-report.json`: design/exports/ is git-ignored, so a new checkout lacks it. Fix: `mkdir -p design/exports` before the run (the script is otherwise unchanged).
+  2. `npm run check` printed 1 warning, `a11y_no_noninteractive_tabindex`, on the scrollable `<main tabindex="0">` in Screen.svelte. The tabindex is deliberate (axe rule scrollable-region-focusable). Fix: a `svelte-ignore` comment on that line.
+  3. Scripts were fixed to port 5318, which a parallel session uses. Fix: `PORT=5321` support in export.mjs, a11y.mjs and focus-audit.mjs (default stays 5318).
+- **Proof:** `npm run check` 0 errors, 0 warnings; `PORT=5321 node scripts/a11y.mjs` 193 targets, 0 violations; `PORT=5321 node scripts/focus-audit.mjs` 0 targets under 44 px.
+
+## BUG-014: View-transition test frames looked shifted on the prototype page
+
+- **Date:** 2026-10-10
+- **Area:** Motion (test tooling)
+- **Symptom:** In design/motion/sequence.mjs frames of /proto at 390 px wide, both snapshots of the phone appeared about 400 px lower than the phone during the step transition.
+- **Cause:** Two things. The new screen loads through `{#await}`, so the first new snapshot was empty (real bug). And at 390 px the phone sits below the side panel, so Playwright scrolled the page during the transition, while view-transition pseudo-elements stay in viewport coordinates (test artifact).
+- **Fix:** The step update now waits for the next screen module and one task before the new snapshot is taken. Prototype transition frames are taken at 1280 x 960 (`VW=1280 VH=960`).
+- **Proof:** Frames at 0, 100, 200 and 700 ms show a clean crossfade from H5 to I6 and the catch playing after it.

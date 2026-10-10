@@ -175,6 +175,7 @@ export class FlameGL {
   private io: IntersectionObserver | null = null;
   private baseline = Infinity;
   private dprCap: number;
+  private stateAt = 0;
   stats: FrameStats;
   state: FlameState;
 
@@ -265,6 +266,7 @@ export class FlameGL {
     }
     const from = this.state;
     this.state = next;
+    this.stateAt = performance.now();
     const { base, slow, quick, drift } = DUR;
     if (next === "kindling") {
       // Yes lands: one step bigger, spring overshoot, small glow lift.
@@ -337,6 +339,8 @@ export class FlameGL {
     this.prevT = now;
     s.frames++;
     if (s.dts.length > 600) { s.dts.splice(0, 300); s.drawMs.splice(0, 300); }
+    // Gone is still: after the drift and 1.5 s of slow smoke, keep the last frame and stop drawing.
+    if (this.state === "gone" && !Object.keys(this.tw).length && now - this.stateAt > DUR.drift + 1500) { this.running = false; return; }
     if (s.frames % 120 === 0) this.checkSlow();
     this.raf = requestAnimationFrame(this.frame);
   };

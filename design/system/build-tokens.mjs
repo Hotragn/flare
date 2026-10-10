@@ -57,7 +57,6 @@ const tokens = {
     spring: {
       sheet: { stiffness: 420, damping: 36, mass: 1 },
       needle: { stiffness: 180, damping: 22, mass: 1 },
-      step: { stiffness: 300, damping: 18, mass: 1 },
     },
     keepInReduce: ["fade"],
   },
