@@ -42,6 +42,7 @@
     <div class="offline" role="status"><Icon name="offline" size={20} /><span>{offline}</span></div>
   {/if}
   <!-- tabindex lets keyboard users scroll long content (WCAG 2.1.1, axe scrollable-region-focusable) -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <main class="content" tabindex="0">
     {#if heading}<h1 class="visually-hidden">{heading}</h1>{/if}
     {@render children()}

@@ -6,8 +6,9 @@
 <script lang="ts">
   import Flame from "./Flame.svelte";
   import type { FlameState } from "../brand";
-  let { state = "lit", progress = 0, size = 220, celebrate = false, horizon = true }: { state?: FlameState; progress?: number; size?: number; celebrate?: boolean; horizon?: boolean } = $props();
-  const sparks = Array.from({ length: 9 }, (_, i) => ({ x: 30 + ((i * 37) % 40), d: 0.15 * i, s: 4 + (i % 3) * 2 }));
+  let { state = "lit", progress = 0, size = 220, celebrate = false, horizon = true, intro = undefined }: { state?: FlameState; progress?: number; size?: number; celebrate?: boolean; horizon?: boolean; intro?: boolean } = $props();
+  // Sparks start when the gold dot lights (160 ms into the catch), then one every 90 ms.
+  const sparks = Array.from({ length: 9 }, (_, i) => ({ x: 30 + ((i * 37) % 40), d: 0.16 + 0.09 * i, s: 4 + (i % 3) * 2 }));
 </script>
 
 <div class="hearth" style:--size="{size}px">
@@ -18,7 +19,7 @@
     </svg>
   {/if}
   <div class="ground" class:lit={state === "lit"} aria-hidden="true"></div>
-  <div class="flame"><Flame {state} {progress} {size} /></div>
+  <div class="flame"><Flame {state} {progress} {size} intro={intro ?? (celebrate && state === "lit" ? true : undefined)} /></div>
   {#if celebrate && state === "lit"}
     <div class="sparks" aria-hidden="true">
       {#each sparks as sp}<span style:left="{sp.x}%" style:animation-delay="{sp.d}s" style:width="{sp.s}px" style:height="{sp.s}px"></span>{/each}
@@ -34,11 +35,12 @@
   }
   .hills { position: absolute; left: -20px; right: -20px; bottom: 0; width: calc(100% + 40px); height: 46%;
     -webkit-mask-image: radial-gradient(120% 90% at 50% 100%, #000 45%, transparent 78%); mask-image: radial-gradient(120% 90% at 50% 100%, #000 45%, transparent 78%); }
-  .ground { position: absolute; bottom: 6%; width: calc(var(--size) * 0.62); height: calc(var(--size) * 0.09); border-radius: 50%; background: color-mix(in srgb, var(--c-ink-900) 18%, transparent); }
+  .ground { transition: width var(--dur-slow) var(--ease-spring), height var(--dur-slow) var(--ease-spring), background var(--dur-slow); position: absolute; bottom: 6%; width: calc(var(--size) * 0.62); height: calc(var(--size) * 0.09); border-radius: 50%; background: color-mix(in srgb, var(--c-ink-900) 18%, transparent); }
   .ground.lit { background: radial-gradient(closest-side, color-mix(in srgb, var(--c-gold-400) 55%, transparent), transparent); width: calc(var(--size) * 0.9); height: calc(var(--size) * 0.16); }
   .flame { position: relative; margin-bottom: 4%; }
   .sparks { position: absolute; inset: 0 25%; pointer-events: none; }
   .sparks span { position: absolute; bottom: 40%; border-radius: 50%; background: var(--c-gold-400); opacity: 0; animation: rise 1.6s var(--ease-out) forwards; }
   @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(calc(var(--size) * -0.9)) scale(0.4); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .sparks { display: none; } }
+  :global([data-reduce-motion]) .sparks { display: none; }
 </style>
