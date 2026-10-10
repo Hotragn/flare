@@ -5,7 +5,12 @@
 | Term | Meaning |
 | --- | --- |
 | Flare | One invite to meet now at one spot, started from a photo |
-| Plan | Later: an invite for a future window with a ladder of smaller options |
+| Plan | A planned ask with an answer deadline, a 4-step ladder and the same private yes |
+| Ladder | The 4 steps of a Plan, biggest first |
+| I'm fading | A private tap that moves a Lit Plan down one step |
+| Hot spots | The group's list of places it met, with counts and latest Spark, encrypted |
+| Bench to Bench | A walking loop that keeps rests within a person's limit, with a large-print card |
+| Fix the map | Draft OSM tags from a photo, reviewed by a person, exported only |
 | Group | Friends sharing a link or a Telegram chat; no accounts |
 | Group key | Encryption key in the link fragment; never reaches the server |
 | Host | The person who sent the Flare |
@@ -48,14 +53,14 @@
 
 | # | Decision | Reason |
 | --- | --- | --- |
-| D1 | Flare mode only this weekend; Plan mode Later | Founder marked it later; Sunday tests "now" Flares; engine stays ladder-ready |
+| D1 | ~~Flare mode only~~ **Superseded by CR-1:** Plan mode is P0 | Founder clarified "Plan (later)" means planning for a later time |
 | D2 | Kindling 30 min, Ember 30 min, Lit until Done or t0 + 4 h | Matches the brief's 60-minute window with Ember at 30 |
 | D3 | Ember quorum is 2 (host plus 1) at the nearest suitable bench within 400 m | Brief: "one friend is enough"; benches are what people with limited mobility need (Netspar: 60% to 75%) |
 | D4 | Conditions: four types only (`with`, `after`, `back_by`, `max_walk`) | Covers the brief's examples; small enough to parse reliably and test |
-| D5 | Rules-tier conditions parser is P0; AI parser P1 | The yes must work on every phone Sunday |
+| D5 | Rules and hub condition parsers are P0; phone parser P1 (CR-1) | Hub tier is P0, so its parser is too |
 | D6 | Phone-tier AI is P1, shipped in the RC only if it runs reliably by 10 AM | R1 and R2; honesty over a demo that crashes |
-| D7 | Rest loop, Fix the map, Hot spots are Later | Screen time and publishing approvals; no field value on one day |
-| D8 | Sparks are P1, one line, once, never reminded | Low screen time; brief values them |
+| D7 | **Superseded by CR-1:** Hot spots P0; rest loop P1; Fix the map P1 as draft and export only | The card removes screen time on the walk; test day creates history; publishing still needs a yes |
+| D8 | Sparks are P0 (CR-1), one line, once, never reminded | Low screen time; test day gives real history |
 | D9 | No "No" button, ever; no per-yes timestamps shown | Protects the private no |
 | D10 | Screen seconds excludes compass time and is sent only as a bucket | Compass is for being outside; buckets avoid personal timing data |
 | D11 | The access line says "No steps mapped", never "step-free" | OSM can be incomplete; don't promise what we can't know |
@@ -64,3 +69,11 @@
 | D14 | Axios (ATUS) and CDC figures are cited only after re-verification | Both returned 403 to our fetch |
 | D15 | Prize categories listed only where used genuinely, one line each; target Overall | Weekend data: one win per entry; Render and Gemma crowded |
 | D16 | License AGPL-3.0 recommended (architect confirms) | Keeps the deletion promise checkable on modified servers |
+| D17 | Plans light only at the deadline (or early if every invitee said yes unconditionally) | Late yeses can still raise the step |
+| D18 | Fading: one step per fade, once per person, until halfway through the step | Lets a tired person shrink the plan without explaining; caps abuse |
+| D19 | "Met here N times" shows from N = 1 | So the test day's second meetup already shows history |
+| D20 | Phone tier stays P1 and targets whichever lab candidate passes (MediaPipe E2B or a vision model under 600 MB) | Lab reports E2B ONNX blocked by iPhone Safari memory |
+
+## Change log
+
+- **CR-1 (Oct 10, founder):** Plan mode P0; Sparks and Hot spots P0; rest loop P1; Fix the map P1 (draft and review only); hub-tier condition parsing P0; phone tier P1 targeting the lab's passing candidate.

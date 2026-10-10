@@ -50,3 +50,18 @@ From: Product manager. Date: Sat 2026-10-10. Next role: Analyst.
 ## Change requests
 
 None against earlier phases. The research doc was corrected in this phase (813 entries, cleaned text extraction); details in BUGLOG.
+
+## Change request CR-1 (approved by the founder, Oct 10)
+
+I misread "Plan (later)" in the brief as "build later". It means planning for a later time. Changes, version 1.1:
+
+| Change | Docs updated |
+| --- | --- |
+| Plan mode is P0: deadline, 4-step ladder, `max_step` conditions, solver at the deadline, "I'm fading" (FR-PLAN-1 to 15, E15). Used for real Sunday morning: "Fairlane walk at 11?" with a deadline before 11 (M7b). | PRD section 11, backlog E15, scope, release plan, KPIs |
+| Sparks and Hot spots are P0; "met here N times" shows from N = 1 (FR-HOT-1 to 4, E10) | PRD section 12, backlog E10, scope |
+| Bench to Bench rest loop with a large-print card is P1 (FR-REST-1 to 6, E16) | PRD section 13, backlog E16 |
+| Fix the map is P1, draft and review only, exported as OSM Note text or a file; publishing waits for the founder (FR-MAP-1 to 5, E17) | PRD section 14, backlog E17 |
+| Hub-tier condition parsing is P0 (E5-S2) | Backlog E5 |
+| Phone tier stays P1 and targets whichever lab candidate passes (MediaPipe E2B, or a vision model under 600 MB); the lab reports E2B ONNX looks blocked by iPhone Safari memory | Risks R1, decision D20 |
+
+New risks R18 to R22; decisions D17 to D20; KPI counters for Plans, fades, Sparks, rest loops and map drafts.

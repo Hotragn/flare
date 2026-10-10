@@ -18,6 +18,12 @@ Per group (opaque id, random, not derived from any personal data):
 | `screen_invitee_bucket[b]` | One per yes: invitee's screen-seconds bucket |
 | `tier_ran[job][tier]` | Each AI job run, by tier (phone, hub, rules) |
 | `lit_minutes_sum` | At Gone, minutes from Lit to Done (or timeout) |
+| `plans_created` | A Plan is created |
+| `plans_lit_step[n]` | A Plan lights at step n (1 to 4) |
+| `plan_fades` | A fade moves a Lit Plan down a step |
+| `sparks_left` | A Spark is saved |
+| `rest_loops_made`, `rest_loops_none` | A loop is built, or no loop fits |
+| `map_drafts`, `map_tags_kept`, `map_tags_changed`, `map_tags_removed` | Fix the map review outcomes |
 
 Buckets for screen seconds: 0 to 5, 6 to 10, 11 to 20, 21 to 40, 41 to 90, over 90.
 
@@ -50,6 +56,13 @@ Buckets for screen seconds: 0 to 5, 6 to 10, 11 to 20, 21 to 40, 41 to 90, over 
 - **Targets:** host decision 15 s or less; invitee decision 10 s or less (median).
 - **Why compass time is excluded:** it's used to find people outside and is designed to work with the screen down. It is reported separately as its own bucket.
 
+## KPI 4b. Plan outcomes (supporting)
+
+- **Plan light rate:** sum of `plans_lit_step[1..4]` ÷ `plans_created`.
+- **Mean lit step:** Σ n × `plans_lit_step[n]` ÷ lit Plans (1 is best).
+- **Fades per lit Plan:** `plan_fades` ÷ lit Plans.
+- Plans count toward Headcount and Ember save rate (step 4 rescue counts as an Ember save).
+
 ## KPI 5. Time together (supporting)
 
 - **Definition:** minutes from Lit to Done for Lit Flares.
@@ -67,3 +80,7 @@ Who said yes, who didn't answer, who arrived, where anyone was, how long a speci
 ## Field test reporting
 
 `E13-S2` exports a table for Sunday 11 AM to 3 PM ET: Flares created, lit, embers, embers lit, headcount per Lit Flare, screen-second bucket counts for hosts and invitees, tier counts per job, lit minutes. This table goes into the post as-is.
+
+## KPI 7. Map draft accuracy (supporting)
+
+- **Tag keep rate:** `map_tags_kept` ÷ (kept + changed + removed). Reported with n.

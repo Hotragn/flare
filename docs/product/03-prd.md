@@ -1,6 +1,6 @@
 # Flare: Product requirements (PRD)
 
-Owner: Product. Version 1.0, Sat 2026-10-10. Requirement IDs (FR-, NFR-) are referenced by the backlog (05-backlog.md) and must not be renumbered.
+Owner: Product. Version 1.1, Sat 2026-10-10 (change request: Plan mode, Sparks, Hot spots, rest loop, Fix the map). Requirement IDs (FR-, NFR-) are referenced by the backlog (05-backlog.md) and must not be renumbered.
 
 ## 1. Problem
 
@@ -46,6 +46,8 @@ Every feature passes this test before it ships:
 | Kindling, Lit, Ember, Gone | The four states (section 8). |
 | Spark | One line in a person's own words, left after a Flare by someone who showed up. Opt-in. |
 | Tier | Where an AI job ran: phone, hub (our laptop) or rules. |
+| Plan | A planned ask with a deadline, a 4-step ladder and the same private yes (section 11). |
+| Ladder | The 4 steps of a Plan, biggest first. |
 
 ## 8. State machine (Flare mode)
 
@@ -91,7 +93,7 @@ Rules:
 
 ### 9.3 Conditions
 
-- **FR-COND-1** Supported condition types: `with(person)` ("only if Amor comes"), `after(time)`, `back_by(time)`, `max_walk(minutes)`.
+- **FR-COND-1** Supported condition types: `with(person)` ("only if Amor comes"), `after(time)`, `back_by(time)`, `max_walk(minutes)`, and for Plans `max_step(n)` (FR-PLAN-6).
 - **FR-COND-2** The phone parses free text into rules (FR-AI-2) and reads them back in one sentence: "Got it: only with Amor, back by 5 PM. Right?" with "Yes" and "Fix it".
 - **FR-COND-3** Only the structured rule is sent. The free text never leaves the phone.
 - **FR-COND-4** The solver picks the largest group whose rules can all be met. Ties go to more people, then the earlier start. A yes whose rules can't be met still counts toward nothing and is never shown as a no.
@@ -128,7 +130,7 @@ Rules:
 ### 9.8 After (Sparks)
 
 - **FR-SPK-1** After Done, each person who tapped "I'm here" may write one line (140 characters or fewer) in their own words. No AI writing, no AI editing.
-- **FR-SPK-2** Sparks are opt-in, encrypted with the group key, tied to the place name (not the pin), and shown on later Flares at the same place: "Your group met here 2 times." plus one Spark.
+- **FR-SPK-2** Sparks are opt-in, encrypted with the group key, tied to the place name (not the pin), and shown on later Flares and Plans at the same place (FR-HOT-3).
 - **FR-SPK-3** The Spark prompt appears once and can be dismissed. It never reminds.
 
 ### 9.9 Channels
@@ -154,6 +156,9 @@ Rules:
 | FR-AI-1 | Photo to invite + spoken scene | Photo | Invite (6 words or fewer), scene (20 words or fewer) | Phone (Gemma 4 E2B in browser) → hub (Gemma 4 E4B via Ollama) → rules ("Outside at {spot}. Come?") |
 | FR-AI-2 | Conditions to rules | Free text | JSON rules (FR-COND-1) | Phone → hub → regex rules for common phrases |
 | FR-AI-3 | Needs check summary | Needs profile + OSM features | Pass or fail per need | Rules only (deterministic, no model) |
+| FR-AI-9 | Plan ladder draft | Ask text, weather, sunset, nearby OSM places | 4 steps (name, place id, minutes) | Phone → hub → template ladder |
+| FR-AI-10 | Rest-loop request to constraints | Free text | Duration, rest gap, preferences | Phone → hub → form |
+| FR-AI-11 | Map photo to OSM tags | Photo | Tags from the allow-list | Phone → hub → manual form |
 
 - **FR-AI-4** Every output is validated against a schema and length limit. Invalid output falls to the next tier.
 - **FR-AI-5** Never describe faces, identities, age, race, or bodies. The prompt forbids it and a filter removes person words beyond "a person" or "people".
@@ -191,6 +196,70 @@ Rules:
 - **NFR-7 Brand and feel:** full brand, motion and sound, premium on every phone. Motion respects Reduce Motion; sound respects the silent switch.
 - **NFR-8 Copy:** buttons 3 words or fewer; messages 12 words or fewer; warm, a bit playful, always clear.
 
-## 11. Plan mode
+## 11. Plan mode (P0)
 
-Plan mode ("Sunday afternoon outside?", a 4-step ladder, "I'm fading") is **Later**. The engine is designed so a Plan is a Flare with a deadline and a ladder of spots; the state machine and solver must not assume a single spot forever. See 06-scope.md.
+A Plan is a planned ask for a later time with a deadline to answer, a ladder of four options from big to small, private conditions, and a solver that picks the biggest group at the highest step. It uses the same engine, channels, privacy and access rules as a Flare. Version 1.1 change: Plan mode moved from Later to P0 (founder change request, Oct 10).
+
+### 11.1 States (Plan)
+
+All times are absolute (the host picks them). D = answer deadline. S = start time. D must be at least 10 minutes after creation and at least 10 minutes before S.
+
+| State | Enters when | What everyone sees | Leaves when |
+| --- | --- | --- | --- |
+| **Kindling** | Host sends | Ask line, ladder, start time, deadline, "Need N more" | D reached (to Lit, Ember or Gone) |
+| **Lit** | At D, the solver finds a group of at least quorum at some step | "It's on: {step} at {time}." The chosen step only | Host taps Done, or S + step duration + 60 min (to Gone) |
+| **Ember** | At D, no group reaches quorum at any step, but at least 2 people (host included) fit step 4 | "Smaller plan: {step 4} at {time}." | Immediately Lit at step 4 with those people |
+| **Gone** | Done, timeout, cancel, or nothing fits at D | Lit: "Thanks for coming." Otherwise: "Not this time." | Terminal. Deletion (FR-PRIV-5) |
+
+- **FR-PLAN-1** A Plan is lit only at D, not before, so late yeses can still raise the step. Exception: if every invited person has said yes before D with no conditions, it lights early at the top fitting step.
+- **FR-PLAN-2** Default quorum 3 (host included). Host may pick 2 to 6.
+- **FR-PLAN-3** The ladder has exactly 4 steps, step 1 the biggest. Each step has a name, a place (OSM feature or "home"), a duration in minutes, and an access summary. Example: 1 "Ford Woods loop, 60 min"; 2 "Park loop, 30 min"; 3 "Short walk, 15 min"; 4 "20 min on the porch".
+- **FR-PLAN-4** The ladder is drafted from weather, sunset and nearby places (FR-AI-9) and the host can edit any step in place. A deterministic template fills any step the AI can't.
+- **FR-PLAN-5** Step durations must end before sunset unless the host turns that check off; the app says "Ends after sunset" next to any step that doesn't.
+
+### 11.2 Answering a Plan
+
+- **FR-PLAN-6** Same private "I'm in" as a Flare, plus conditions. Conditions add a fifth type: `max_step(n)` ("just the short one" means step 3 or smaller, "porch only" means step 4).
+- **FR-PLAN-7** The read-back names the step: "Got it: step 3 or smaller, back by 5 PM. Right?"
+- **FR-PLAN-8** "Need N more" shows the count needed at the highest step that could still light.
+
+### 11.3 Solver (Plan)
+
+- **FR-PLAN-9** At D, for each step from 1 to 4, find the largest set of yeses whose conditions all hold at that step. Pick the step and set by: most people first, then the higher step (smaller number), then the earlier start. The set must be at least quorum, except under Ember (FR-PLAN-11).
+- **FR-PLAN-10** Needs check per step: each phone checks its own needs profile against each step's place and reports pass or fail per step id. A failed step behaves like `max_step` for that person. No reason is sent.
+- **FR-PLAN-11** If no step reaches quorum but at least 2 people fit step 4, the Plan lights at step 4 (counted as an Ember save).
+
+### 11.4 I'm fading
+
+- **FR-PLAN-12** Any person in the solved group of a Lit Plan can privately tap "I'm fading" until S + 50% of the step duration.
+- **FR-PLAN-13** Each fade moves the Plan down one step (never below 4) and re-runs the solver at the new step with the same people. Each person can fade once per Plan.
+- **FR-PLAN-14** Everyone sees "Smaller plan: {step}." Nobody sees who faded or how many fades there were.
+- **FR-PLAN-15** If the new step changes the place, the compass target and saved offline data update for everyone.
+
+### 11.5 Sunday use
+
+The founder sends a real Plan ("Fairlane walk at 11?") after the release-candidate deploy, with a deadline before 11 AM. Plan mode must therefore be in the 10 AM release candidate.
+
+## 12. Hot spots (P0)
+
+- **FR-HOT-1** A group's Hot spots list shows place names where the group lit a Flare or Plan, with the number of times and the most recent Spark. Ordered by count, then most recent.
+- **FR-HOT-2** Stored as one blob per group, encrypted on the phone with the group key. The server cannot read place names. Updated by the host's phone at Gone.
+- **FR-HOT-3** "Your group met here N times." shows on a new Flare or Plan at a place when N is 1 or more, with one Spark if any. (Version 1.1: threshold lowered from 2 to 1 so the test day shows real history.)
+- **FR-HOT-4** Opening the list is optional and never prompted. It adds 0 s unless opened.
+
+## 13. Bench to Bench rest loop (P1)
+
+- **FR-REST-1** Input in plain words, typed or spoken: "Knee's bad, 40 minutes, want trees". The phone parses it to: duration (minutes), max distance between rests (metres, defaults from the needs profile), preferences (trees, water, quiet), avoid steps (from needs). Read back for confirmation.
+- **FR-REST-2** The loop starts and ends at the chosen spot, follows OSM paths a person can walk (`highway=footway|path|pedestrian|living_street|residential`, excluding `highway=steps` when avoid steps is on), and passes a bench (or picnic table) at least every max-rest-distance metres.
+- **FR-REST-3** Total walking time at 3 km/h (slow pace) is within ±20% of the requested duration, not counting rest stops.
+- **FR-REST-4** If no loop meets the rest limit, say so: "No loop keeps benches that close. Try 300 m?" Never return a loop that breaks the limit.
+- **FR-REST-5** Output: a large-print card (A4 or Letter, 18 pt minimum body text, high contrast) with a simple sketch, numbered turns in words, each bench with distance from the last, restrooms and water. Printable from the share sheet as PDF.
+- **FR-REST-6** The card is the walking interface; no screen use is needed on the walk. The app also offers the same turns as spoken audio.
+
+## 14. Fix the map (P1)
+
+- **FR-MAP-1** On a walk or after, a person photographs a bench, restroom, drinking fountain, or steps that OSM is missing or has wrong.
+- **FR-MAP-2** The AI drafts OSM tags from the photo (for example `amenity=bench`, `backrest=yes`, `material=wood`) using only keys from a fixed allow-list. Location comes from the phone.
+- **FR-MAP-3** A person reviews every tag: keep, change or remove. Nothing is saved without a review.
+- **FR-MAP-4** Output is an export only: OSM Note text (location plus description) or an `.osm` change file. **Nothing is sent to OpenStreetMap from the app.** Publishing waits for the founder's yes.
+- **FR-MAP-5** The photo is not included in the export and is deleted after drafting.

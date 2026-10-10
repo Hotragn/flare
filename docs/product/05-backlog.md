@@ -94,13 +94,13 @@ Priority: **P0** must work in the Sunday 10 AM release candidate. **P1** must sh
 - AC1: Bot posts "It's lit. {Host} is at {spot}." and privately messages each yes.
 - AC2: At Gone, the bot deletes every message it posted for that Flare (Telegram allows bots to delete their own messages within 48 h).
 
-## E5. Conditions: P0 (rules tier), P1 (AI tiers)
+## E5. Conditions: P0 (rules and hub tiers), P1 (phone tier)
 
 **E5-S1 Rules-tier parser.** (FR-COND-1, FR-COND-5) P0.
 - AC1: Parses at least these: "only if {name} comes", "with {name}", "after {time}", "back by {time}", "not before {time}", "max {n} min walk", "short one".
 - AC2: Test set of 40 phrases; at least 36 parse correctly; failures get the "I didn't catch that" message.
 
-**E5-S2 AI parser on phone and hub.** (FR-AI-2) P1.
+**E5-S2 AI parser on hub (P0) and phone (P1).** (FR-AI-2) Version 1.1: hub tier moved to P0.
 - AC1: Same 40-phrase set plus 20 harder phrases; reports accuracy per tier in a table.
 - AC2: Output validated against the rule schema; invalid output falls to the rules tier.
 
@@ -168,11 +168,17 @@ Priority: **P0** must work in the Sunday 10 AM release candidate. **P1** must sh
 **E9-S4 Plain-text relay.** (FR-CH-4) P1.
 - AC1: Host enters "IN K7Q2" received by SMS; it counts as a yes once.
 
-## E10. Sparks: P1
+## E10. Sparks and Hot spots: P0 (version 1.1, was P1)
 
 **E10-S1 Leave a Spark.** (FR-SPK-1, FR-SPK-3) Adds 10 s, optional, once.
-**E10-S2 Show history at a place.** (FR-SPK-2)
-- AC1: "Your group met here N times." appears only when N is 2 or more.
+**E10-S2 Show history at a place.** (FR-SPK-2, FR-HOT-3)
+- AC1: "Your group met here N times." appears on a new Flare or Plan when N is 1 or more, with one Spark if any.
+- AC2: Place matching uses the OSM feature id of the spot, falling back to the exact place name.
+
+**E10-S3 Hot spots list.** (FR-HOT-1, FR-HOT-2, FR-HOT-4)
+- AC1: Lists places by count then recency, each with its latest Spark.
+- AC2: Network inspection shows the history blob is ciphertext; the server stores no place names.
+- AC3: After the Sunday test the list shows every place the group lit, with correct counts.
 
 ## E11. Brand, motion, sound: P0
 
@@ -196,6 +202,54 @@ Priority: **P0** must work in the Sunday 10 AM release candidate. **P1** must sh
 **E14-S2 Demo video** (no faces or voices without consent).
 **E14-S3 Agent session** saved with DevRelay and embedded (made public, scrubbed of keys).
 
+## E15. Plan mode: P0 (version 1.1)
+
+**E15-S1 Create a Plan.** (FR-PLAN-2 to FR-PLAN-5, FR-AI-9)
+- AC1: Host types or says an ask ("Fairlane walk at 11?"); sets start time and deadline; gets a 4-step ladder draft within 8 s (hub) or instantly (template).
+- AC2: Every step has name, place, minutes and access summary; any step is editable in place.
+- AC3: Deadline is rejected unless at least 10 min after now and 10 min before start.
+- AC4: Steps that end after sunset show "Ends after sunset".
+
+**E15-S2 Answer a Plan.** (FR-PLAN-6 to FR-PLAN-8)
+- AC1: Same private "I'm in" and conditions as a Flare; `max_step` parses "just the short one", "porch only", "step 2 or less".
+- AC2: "Need N more" reflects the highest step that can still light.
+
+**E15-S3 Solve at the deadline.** (FR-PLAN-1, FR-PLAN-9 to FR-PLAN-11)
+- AC1: At D the Plan becomes Lit at the step chosen by the rule (most people, then higher step, then earlier start), Ember-lit at step 4, or Gone.
+- AC2: Unit tests: all yes at step 1; one `max_step(3)` pulls a group of 4 to step 3 only if that keeps more people; a needs-fail on step 1 for one person; nobody fits; early light when all invited said yes.
+
+**E15-S4 I'm fading.** (FR-PLAN-12 to FR-PLAN-15)
+- AC1: A fade moves the Plan down exactly one step, at most once per person, never below step 4, only until S + 50% of the step duration.
+- AC2: Everyone sees "Smaller plan: {step}." with no count or name.
+- AC3: Compass target and saved offline data update within 10 s on phones with signal.
+
+**E15-S5 Real Plan on Sunday morning.**
+- AC1: After the RC deploy, the founder sends "Fairlane walk at 11?" with a deadline before 11 AM, and it reaches Lit or Gone correctly.
+
+## E16. Bench to Bench rest loop: P1 (version 1.1)
+
+**E16-S1 Request to constraints.** (FR-REST-1, FR-AI-10)
+- AC1: "Knee's bad, 40 minutes, want trees" becomes duration 40, rest gap from needs (or 200 m), preference trees, avoid steps per needs; read back for confirmation.
+
+**E16-S2 Loop builder.** (FR-REST-2 to FR-REST-4)
+- AC1: Loop starts and ends at the spot, uses only allowed paths, and no gap between consecutive rests exceeds the limit (checked by a test on the Fairlane pack).
+- AC2: Walking time at 3 km/h within ±20% of the request.
+- AC3: When no loop fits, the message offers a looser limit and no loop is shown.
+
+**E16-S3 Large-print card.** (FR-REST-5, FR-REST-6)
+- AC1: PDF with 18 pt or larger body text, contrast ratio 7:1 or better, numbered turns, bench distances, restrooms and water.
+- AC2: One tester walks a generated loop on Sunday using only the card; result recorded.
+
+## E17. Fix the map (draft and review): P1 (version 1.1)
+
+**E17-S1 Draft tags from a photo.** (FR-MAP-1, FR-MAP-2, FR-AI-11)
+- AC1: Tags use only the allow-list (`amenity`, `backrest`, `material`, `seats`, `wheelchair`, `fee`, `access`, `opening_hours`, `drinking_water`, `step_count`, `handrail`, `covered`, `lit`).
+**E17-S2 Review every tag.** (FR-MAP-3)
+- AC1: Each tag shows keep, change, remove; export is disabled until all are reviewed.
+**E17-S3 Export only.** (FR-MAP-4, FR-MAP-5)
+- AC1: Exports OSM Note text or an `.osm` file; no request goes to any openstreetmap.org host (checked by network log).
+- AC2: The photo is deleted after drafting and is not in the export.
+
 ## Later (P2)
 
-Plan mode and the ladder; "I'm fading"; rest-loop routing; Fix the map (OSM contributions, which also need founder approval to publish); Hot spots list; Android-specific testing; more languages; group admin tools.
+Publishing map fixes to OSM (needs the founder's yes); Android-specific testing; more languages; group admin tools.
