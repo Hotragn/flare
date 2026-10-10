@@ -1,0 +1,82 @@
+{
+ "query": "https://api.github.com/search/repositories?q=flare+in:name&sort=stars",
+ "checked": "2026-10-10",
+ "total_count": 12718,
+ "top": [
+  {
+   "repo": "FlareSolverr/FlareSolverr",
+   "stars": 15843,
+   "description": "Proxy server to bypass Cloudflare protection"
+  },
+  {
+   "repo": "mandiant/flare-vm",
+   "stars": 9119,
+   "description": "A collection of software installations scripts for Windows systems that allows you to easily setup and maintain a reverse engineering environment on a VM."
+  },
+  {
+   "repo": "MarSeventh/CloudFlare-ImgBed",
+   "stars": 6672,
+   "description": "\ud83c\udfd6\ufe0f A serverless, open-source file hosting solution built on Cloudflare. Supports image hosting, secure file storage, and personal cloud drive capabilities."
+  },
+  {
+   "repo": "mandiant/flare-floss",
+   "stars": 4179,
+   "description": "FLARE Obfuscated String Solver - Automatically extract obfuscated strings from malware."
+  },
+  {
+   "repo": "lyc8503/UptimeFlare",
+   "stars": 3857,
+   "description": "\u2714 Free and serverless uptime monitoring / status page on Cloudflare Workers, with Geo-specific checks"
+  },
+  {
+   "repo": "2d-inc/Flare-Flutter",
+   "stars": 2533,
+   "description": "Load and get full control of your Rive files in a Flutter project using this library."
+  },
+  {
+   "repo": "ChrispyBacon-dev/DockFlare",
+   "stars": 2475,
+   "description": "DockFlare: Automate Cloudflare Tunnels with Docker Labels"
+  },
+  {
+   "repo": "mandiant/flare-ida",
+   "stars": 2450,
+   "description": "IDA Pro utilities from FLARE team"
+  },
+  {
+   "repo": "mandiant/flare-fakenet-ng",
+   "stars": 2206,
+   "description": "FakeNet-NG - Next Generation Dynamic Network Analysis Tool"
+  },
+  {
+   "repo": "soulteary/docker-flare",
+   "stars": 2146,
+   "description": "Flare \u2728 Lightweight, high performance and fast self-hosted navigation pages, resource utilization rate is <1% CPU, MEM <30 M, Docker Image < 10M"
+  },
+  {
+   "repo": "flareact/flareact",
+   "stars": 1824,
+   "description": "Edge-rendered React framework built for Cloudflare Workers"
+  },
+  {
+   "repo": "justlovemaki/CloudFlare-AI-Insight-Daily",
+   "stars": 1801,
+   "description": "AI\u8d44\u8baf\u65e5\u62a5 \u662f\u4e00\u4e2a\u57fa\u4e8e Cloudflare Workers \u9a71\u52a8\u7684\u5185\u5bb9\u805a\u5408\u4e0e\u751f\u6210\u5e73\u53f0\u3002\u5b83\u6bcf\u65e5\u4e3a\u60a8\u7cbe\u9009 AI \u9886\u57df\u7684\u6700\u65b0\u52a8\u6001\uff0c\u5305\u62ec\u884c\u4e1a\u65b0\u95fb\u3001\u70ed\u95e8\u5f00\u6e90\u9879\u76ee\u3001\u524d\u6cbf\u5b66\u672f\u8bba\u6587\u3001\u79d1\u6280\u5927V\u793e\u4ea4\u5a92\u4f53\u8a00\u8bba\uff0c\u5e76\u901a\u8fc7 Google Gemini \u6a21\u578b\u8fdb\u884c\u667a\u80fd\u5904\u7406\u4e0e\u6458\u8981\u751f\u6210\uff0c\u6700\u7ec8\u81ea\u52a8\u53d1\u5e03\u5230 GitHub Pages \u751f\u6210 AI \u65e5\u62a5\u3002"
+  },
+  {
+   "repo": "DimensionDev/Flare",
+   "stars": 1588,
+   "description": "Browse Mastodon, Bluesky, X, Misskey, Nostr, Pixiv, Fanbox and RSS all in one app. One timeline, all your accounts, cross-post everywhere."
+  },
+  {
+   "repo": "ByteAtATime/flare",
+   "stars": 1520,
+   "description": "Raycast-compatible launcher for Linux"
+  },
+  {
+   "repo": "mandiant/flare-learning-hub",
+   "stars": 1490,
+   "description": "Free educational content on reverse engineering and malware analysis from the FLARE team"
+  }
+ ]
+}

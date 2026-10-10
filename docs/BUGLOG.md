@@ -49,3 +49,12 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Symptom:** curl to bls.gov and cdc.gov returns 403 even with a browser User-Agent.
 - **Fix:** Read BLS release pages in the built-in browser. For CDC disability numbers, use the open data API: `https://data.cdc.gov/resource/s2qv-b27b.json` (DHDS), filter `locationabbr`, `stratification1='Overall'`, `indicatorid='STATTYPE'`.
 - **Proof:** DHDS returned US 2022 mobility 12.2%, vision 5.5%; BLS 2025 release text read in the browser.
+
+## BUG-006: Outlined text showed a broken "g"
+
+- **Date:** 2026-10-10
+- **Area:** Brand assets
+- **Symptom:** In the OG image, "Kindling" rendered as "Kindlin" plus a stray mark. The glyph's own data was fine (50 commands, normal bounding box).
+- **Cause:** opentype.js 2.0.0 `toPathData()` output, concatenated across glyphs, was placed wrongly by resvg on glyphs with several contours.
+- **Fix:** Serialize `path.commands` ourselves as absolute M, L, C, Q, Z (`absPath` in brand/tools/build.mjs). Also: opentype.js 2.0.0 can't read WOFF2 without a decompressor; read the `.woff` files.
+- **Proof:** Re-rendered OG image and DEV cover show "Kindling" correctly.

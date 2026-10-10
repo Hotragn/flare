@@ -1,0 +1,87 @@
+{
+ "query": "https://registry.npmjs.org/-/v1/search?text=flare&size=20",
+ "checked": "2026-10-10",
+ "total": 813,
+ "top": [
+  {
+   "name": "@flarenetwork/flarejs",
+   "description": "Flare Platform JS Library"
+  },
+  {
+   "name": "flare",
+   "description": "Applicative-style UIs"
+  },
+  {
+   "name": "create-flare-framework",
+   "description": "Start a new Flare app: npm create flare-framework@latest my-app"
+  },
+  {
+   "name": "@flarehr/apollo-benefits",
+   "description": "Flare Benefits"
+  },
+  {
+   "name": "@flarenetwork/flare-periphery-contracts",
+   "description": "Smart contracts for all Flare chains"
+  },
+  {
+   "name": "@flaredev/cli",
+   "description": "The flare command-line tool: create, generate, migrate, and deploy Flare apps"
+  },
+  {
+   "name": "@flareapp/flare-webpack-plugin-sourcemap",
+   "description": "The Flare Webpack plugin helps you send sourcemaps of your compiled JavaScript code to Flare. This way, reports sent using the `@flareapp/flare-client` will be formatted correctly."
+  },
+  {
+   "name": "@flarenetwork/js-flare-common",
+   "description": "JS Flare common"
+  },
+  {
+   "name": "@flareapp/flare-client",
+   "description": "Read the JavaScript error tracking section in [the Flare documentation](https://flareapp.io/docs/javascript-error-tracking/installation) for more information."
+  },
+  {
+   "name": "@flarenetwork/flare-periphery-contract-artifacts",
+   "description": "Smart contract artifacts for all Flare chains"
+  },
+  {
+   "name": "@flarehr/promoted-benefits-ui",
+   "description": "Flare Promoted Benefits"
+  },
+  {
+   "name": "@flarenetwork/prettier-config-flare",
+   "description": "General prettier config for all flare ts projects"
+  },
+  {
+   "name": "@flarehr/bank-details-app",
+   "description": "Flare Bank Details App"
+  },
+  {
+   "name": "@flarehr/salpac-cars-calculator",
+   "description": "Flare Cars Calculator"
+  },
+  {
+   "name": "@flareapp/flare-vue",
+   "description": "Read the JavaScript error tracking section in [the Flare documentation](https://flareapp.io/docs/javascript-error-tracking/installation) for more information."
+  },
+  {
+   "name": "@flareapp/vite-plugin-sourcemap-uploader",
+   "description": "The Flare Vite plugin helps you send sourcemaps of your compiled JavaScript code to Flare. This way, reports sent using the `@flareapp/flare-client` will be formatted correctly."
+  },
+  {
+   "name": "@flareapp/core",
+   "description": "Environment-agnostic core for the Flare JS SDK"
+  },
+  {
+   "name": "@flaredev/core",
+   "description": "Flare runtime: resource descriptors, field grammar, and Cloudflare-native helpers"
+  },
+  {
+   "name": "@flarenetwork/eslint-config-flare",
+   "description": "General eslint config for all flare ts projects"
+  },
+  {
+   "name": "@flarehr/superhero-salpac-profile-admin",
+   "description": "Flare Superhero Profile Admin"
+  }
+ ]
+}

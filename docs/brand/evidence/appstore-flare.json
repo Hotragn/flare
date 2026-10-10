@@ -1,0 +1,366 @@
+{
+ "query": "https://itunes.apple.com/search?term=flare&entity=software&country=us&limit=50",
+ "checked": "2026-10-10",
+ "results": [
+  {
+   "name": "Flare - For Groups",
+   "seller": "Flare App, Inc.",
+   "genre": "Social Networking",
+   "ratings": 6674,
+   "updated": "2026-09-22",
+   "url": "https://apps.apple.com/us/app/flare-for-groups/id1086013687"
+  },
+  {
+   "name": "Flare Account",
+   "seller": "Netspend Corporation",
+   "genre": "Finance",
+   "ratings": 4737,
+   "updated": "2024-08-26",
+   "url": "https://apps.apple.com/us/app/flare-account/id1243790889"
+  },
+  {
+   "name": "Flare: UGC & Brand Deals",
+   "seller": "Digital Trend AS",
+   "genre": "Business",
+   "ratings": 79,
+   "updated": "2026-10-09",
+   "url": "https://apps.apple.com/us/app/flare-ugc-brand-deals/id6780145028"
+  },
+  {
+   "name": "Flare-Powerful Decode",
+   "seller": "DA TRADE LTD, TOO",
+   "genre": "Utilities",
+   "ratings": 3,
+   "updated": "2026-10-09",
+   "url": "https://apps.apple.com/us/app/flare-powerful-decode/id6760171644"
+  },
+  {
+   "name": "Flare Fitness App",
+   "seller": "Codefish SAL",
+   "genre": "Health & Fitness",
+   "ratings": 7,
+   "updated": "2026-09-16",
+   "url": "https://apps.apple.com/us/app/flare-fitness-app/id6456409531"
+  },
+  {
+   "name": "Flare - Social Network Client",
+   "seller": "SUJITEKU LIMITED LIABILITY CO.",
+   "genre": "Social Networking",
+   "ratings": 9,
+   "updated": "2026-10-02",
+   "url": "https://apps.apple.com/us/app/flare-social-network-client/id6476077738"
+  },
+  {
+   "name": "Flare Transaction Verifier",
+   "seller": "Flare Networks Limited",
+   "genre": "Utilities",
+   "ratings": 0,
+   "updated": "2025-08-08",
+   "url": "https://apps.apple.com/us/app/flare-transaction-verifier/id6499205297"
+  },
+  {
+   "name": "FlareFlow",
+   "seller": "FlareFlow Pte. Ltd.",
+   "genre": "Entertainment",
+   "ratings": 11065,
+   "updated": "2026-09-29",
+   "url": "https://apps.apple.com/us/app/flareflow/id6744237126"
+  },
+  {
+   "name": "Flare: Arthritis Support",
+   "seller": "SoinsAI LLC",
+   "genre": "Health & Fitness",
+   "ratings": 4,
+   "updated": "2026-10-06",
+   "url": "https://apps.apple.com/us/app/flare-arthritis-support/id6761336610"
+  },
+  {
+   "name": "Flare 2.0",
+   "seller": "Flare Jewelry, Inc.",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2024-11-27",
+   "url": "https://apps.apple.com/us/app/flare-2-0/id6474688450"
+  },
+  {
+   "name": "Flare - Chronic Pain Tracker",
+   "seller": "Fig Studio LLC",
+   "genre": "Medical",
+   "ratings": 20,
+   "updated": "2026-09-29",
+   "url": "https://apps.apple.com/us/app/flare-chronic-pain-tracker/id6761330069"
+  },
+  {
+   "name": "Color Block: Jam Puzzle 3D",
+   "seller": "Flare Star LLC",
+   "genre": "Games",
+   "ratings": 4291,
+   "updated": "2026-09-18",
+   "url": "https://apps.apple.com/us/app/color-block-jam-puzzle-3d/id6742537005"
+  },
+  {
+   "name": "LD - Photo & Video Finishing",
+   "seller": "Lens Distortions, LLC",
+   "genre": "Photo & Video",
+   "ratings": 5133,
+   "updated": "2026-08-12",
+   "url": "https://apps.apple.com/us/app/ld-photo-video-finishing/id938026822"
+  },
+  {
+   "name": "Grow with Anna",
+   "seller": "Grow with Anna GmbH",
+   "genre": "Health & Fitness",
+   "ratings": 1970,
+   "updated": "2026-08-17",
+   "url": "https://apps.apple.com/us/app/grow-with-anna/id1623403112"
+  },
+  {
+   "name": "Flare AI",
+   "seller": "Flare For Agencies LLC",
+   "genre": "Business",
+   "ratings": 0,
+   "updated": "2025-06-18",
+   "url": "https://apps.apple.com/us/app/flare-ai/id6737522409"
+  },
+  {
+   "name": "LensFlare Optical Effects",
+   "seller": "James Grote",
+   "genre": "Photo & Video",
+   "ratings": 669,
+   "updated": "2025-08-06",
+   "url": "https://apps.apple.com/us/app/lensflare-optical-effects/id349424050"
+  },
+  {
+   "name": "Flarely - Symptom Tracker",
+   "seller": "Mouemen Derbass",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2026-07-09",
+   "url": "https://apps.apple.com/us/app/flarely-symptom-tracker/id6761229209"
+  },
+  {
+   "name": "Ticket Flare",
+   "seller": "Ticket Flare Group LTD.",
+   "genre": "Entertainment",
+   "ratings": 0,
+   "updated": "2026-08-31",
+   "url": "https://apps.apple.com/us/app/ticket-flare/id6776391936"
+  },
+  {
+   "name": "Carbon - B&W Filters & Effects",
+   "seller": "Livintis W.L.L.",
+   "genre": "Photo & Video",
+   "ratings": 12549,
+   "updated": "2025-03-06",
+   "url": "https://apps.apple.com/us/app/carbon-b-w-filters-effects/id1152477906"
+  },
+  {
+   "name": "FlarePath - IBS & Gut Health",
+   "seller": "umar riaz",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2026-04-07",
+   "url": "https://apps.apple.com/us/app/flarepath-ibs-gut-health/id6761443211"
+  },
+  {
+   "name": "Solflare: Solana Crypto Wallet",
+   "seller": "SOLRISE RESEARCH LTD",
+   "genre": "Finance",
+   "ratings": 9879,
+   "updated": "2026-10-09",
+   "url": "https://apps.apple.com/us/app/solflare-solana-crypto-wallet/id1580902717"
+  },
+  {
+   "name": "Chat Smith: AI Chatbot & Agent",
+   "seller": "CHAT SMITH OPCO PTE. LTD",
+   "genre": "Productivity",
+   "ratings": 166569,
+   "updated": "2026-10-07",
+   "url": "https://apps.apple.com/us/app/chat-smith-ai-chatbot-agent/id1559479889"
+  },
+  {
+   "name": "Airtasker",
+   "seller": "Airtasker Limited",
+   "genre": "Lifestyle",
+   "ratings": 3011,
+   "updated": "2026-09-28",
+   "url": "https://apps.apple.com/us/app/airtasker/id512137061"
+  },
+  {
+   "name": "AsiaFlare: Date in Asia",
+   "seller": "Ruvik Group - FZCO",
+   "genre": "Social Networking",
+   "ratings": 78,
+   "updated": "2026-09-18",
+   "url": "https://apps.apple.com/us/app/asiaflare-date-in-asia/id6745868325"
+  },
+  {
+   "name": "Lupus & Flare Log - Calyne",
+   "seller": "VAST FLOW, TOO",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2026-09-18",
+   "url": "https://apps.apple.com/us/app/lupus-flare-log-calyne/id6780149311"
+  },
+  {
+   "name": "Kano Flare-Flow Glide",
+   "seller": "Running River Network Technology Limited",
+   "genre": "Utilities",
+   "ratings": 4,
+   "updated": "2026-03-23",
+   "url": "https://apps.apple.com/us/app/kano-flare-flow-glide/id6760174731"
+  },
+  {
+   "name": "Gout Buddy - Stop Gout Attacks",
+   "seller": "Feast Labs LLC",
+   "genre": "Health & Fitness",
+   "ratings": 441,
+   "updated": "2025-01-10",
+   "url": "https://apps.apple.com/us/app/gout-buddy-stop-gout-attacks/id6739938161"
+  },
+  {
+   "name": "Turbo VPN Private Browser",
+   "seller": "INNOVATIVE CONNECTING PTE.LIMITED",
+   "genre": "Productivity",
+   "ratings": 206974,
+   "updated": "2026-08-13",
+   "url": "https://apps.apple.com/us/app/turbo-vpn-private-browser/id1365309175"
+  },
+  {
+   "name": "FlareKit for Cloudflare",
+   "seller": "Beijing Shaojiduo Technology Co., Ltd",
+   "genre": "Developer Tools",
+   "ratings": 7,
+   "updated": "2026-07-10",
+   "url": "https://apps.apple.com/us/app/flarekit-for-cloudflare/id6757950534"
+  },
+  {
+   "name": "Collage Maker - LiveCollage",
+   "seller": "VIDEO EDITOR PTE. LTD.",
+   "genre": "Photo & Video",
+   "ratings": 178016,
+   "updated": "2026-09-29",
+   "url": "https://apps.apple.com/us/app/collage-maker-livecollage/id530957474"
+  },
+  {
+   "name": "FlareCast",
+   "seller": "Diana Goldstein",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2026-08-27",
+   "url": "https://apps.apple.com/us/app/flarecast/id6770295822"
+  },
+  {
+   "name": "Symptom Tracker: Flare Log",
+   "seller": "MD Shahariar Nazim Joy",
+   "genre": "Health & Fitness",
+   "ratings": 0,
+   "updated": "2026-07-16",
+   "url": "https://apps.apple.com/us/app/symptom-tracker-flare-log/id6789937552"
+  },
+  {
+   "name": "Flared - Find Friends",
+   "seller": "Flared Inc.",
+   "genre": "Social Networking",
+   "ratings": 1,
+   "updated": "2024-09-03",
+   "url": "https://apps.apple.com/us/app/flared-find-friends/id6642666654"
+  },
+  {
+   "name": "Fix Photo.s + Double Exposure",
+   "seller": "Dynasty Apps LLC",
+   "genre": "Photo & Video",
+   "ratings": 368,
+   "updated": "2018-12-28",
+   "url": "https://apps.apple.com/us/app/fix-photo-s-double-exposure/id1082259292"
+  },
+  {
+   "name": "Photoshop Express Photo Editor",
+   "seller": "Adobe Inc.",
+   "genre": "Photo & Video",
+   "ratings": 741274,
+   "updated": "2026-10-01",
+   "url": "https://apps.apple.com/us/app/photoshop-express-photo-editor/id331975235"
+  },
+  {
+   "name": "Bearable - Symptom Tracker",
+   "seller": "Bearable Ltd",
+   "genre": "Health & Fitness",
+   "ratings": 6456,
+   "updated": "2026-10-07",
+   "url": "https://apps.apple.com/us/app/bearable-symptom-tracker/id1482581097"
+  },
+  {
+   "name": "Scoop Messenger",
+   "seller": "Scoop, Inc.",
+   "genre": "News",
+   "ratings": 186,
+   "updated": "2026-10-07",
+   "url": "https://apps.apple.com/us/app/scoop-messenger/id1542987889"
+  },
+  {
+   "name": "Layout - Photo Collage Maker",
+   "seller": "Fitness Labs SRL",
+   "genre": "Graphics & Design",
+   "ratings": 47097,
+   "updated": "2026-09-25",
+   "url": "https://apps.apple.com/us/app/layout-photo-collage-maker/id1472157401"
+  },
+  {
+   "name": "Photo Collage Maker PicJointer",
+   "seller": "Mosaic S.r.l.",
+   "genre": "Photo & Video",
+   "ratings": 135696,
+   "updated": "2026-06-19",
+   "url": "https://apps.apple.com/us/app/photo-collage-maker-picjointer/id509987785"
+  },
+  {
+   "name": "Valabasas: Denim & Streetwear",
+   "seller": "Village Mart, LLC",
+   "genre": "Shopping",
+   "ratings": 9101,
+   "updated": "2026-10-06",
+   "url": "https://apps.apple.com/us/app/valabasas-denim-streetwear/id1541306095"
+  },
+  {
+   "name": "AirFlare",
+   "seller": "Vector Flight LLC",
+   "genre": "Health & Fitness",
+   "ratings": 14,
+   "updated": "2026-09-29",
+   "url": "https://apps.apple.com/us/app/airflare/id1193142072"
+  },
+  {
+   "name": "Zombastic: Time to Survive",
+   "seller": "Playmotional Limited",
+   "genre": "Games",
+   "ratings": 1789,
+   "updated": "2026-10-01",
+   "url": "https://apps.apple.com/us/app/zombastic-time-to-survive/id6475173073"
+  },
+  {
+   "name": "Butterfly Challenge",
+   "seller": "implicitli, LLC",
+   "genre": "Health & Fitness",
+   "ratings": 51,
+   "updated": "2024-04-21",
+   "url": "https://apps.apple.com/us/app/butterfly-challenge/id1429201714"
+  },
+  {
+   "name": "Spinnr - Meet New Friends",
+   "seller": "Go To Consulting LLC.",
+   "genre": "Lifestyle",
+   "ratings": 68,
+   "updated": "2024-10-22",
+   "url": "https://apps.apple.com/us/app/spinnr-meet-new-friends/id1637873205"
+  },
+  {
+   "name": "Flare - Photos with Friends",
+   "seller": "Siremo K.K.",
+   "genre": "Social Networking",
+   "ratings": 0,
+   "updated": "2026-10-10",
+   "url": "https://apps.apple.com/us/app/flare-photos-with-friends/id6790041642"
+  }
+ ]
+}

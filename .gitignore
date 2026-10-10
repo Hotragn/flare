@@ -5,3 +5,6 @@
 
 # Lab session workspace (spikes). The engineering lead imports what we keep.
 lab/
+
+# Dependencies
+node_modules/

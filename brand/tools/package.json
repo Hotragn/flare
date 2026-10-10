@@ -1,0 +1,17 @@
+{
+  "name": "flare-brand-tools",
+  "private": true,
+  "type": "module",
+  "description": "Builds Flare's logo outlines and exports brand assets.",
+  "scripts": {
+    "build": "node build.mjs",
+    "contrast": "node contrast.mjs"
+  },
+  "dependencies": {
+    "@fontsource/atkinson-hyperlegible-next": "5.3.0",
+    "@fontsource/fraunces": "5.3.0",
+    "@resvg/resvg-js": "2.6.2",
+    "opentype.js": "2.0.0",
+    "png-to-ico": "3.0.2"
+  }
+}
