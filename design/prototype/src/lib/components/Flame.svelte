@@ -10,6 +10,7 @@
   Ember and Gone play theirs by default; Kindling and Lit only when asked.
 -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import { onMount, untrack } from "svelte";
   import { FLAME, HOLE, DOME, ring, type FlameState } from "#lib/brand.ts";
   import { reducedMotion, onReducedMotionChange } from "#lib/motion/core.ts";
@@ -44,7 +45,7 @@
   );
   const flameD = `${FLAME} ${ring(HOLE.cx, HOLE.cy, HOLE.r)}`;
   const emberD = `${DOME} ${ring(50, 81, 8)}`;
-  const names: Record<FlameState, string> = { kindling: "Kindling", lit: "Lit", ember: "Ember", gone: "Gone" };
+  const names: Record<FlameState, string> = { kindling: t("flame.kindling"), lit: t("flame.lit"), ember: t("flame.ember"), gone: t("flame.gone") };
   const name = $derived(label || names[st]);
 
   // Entry motion for the CSS flame. On mount: intro, or Ember and Gone by default.

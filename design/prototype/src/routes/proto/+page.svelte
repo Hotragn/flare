@@ -23,7 +23,7 @@
     ] },
     { name: "Say yes, with a condition", steps: [
       { id: "I1", view: "kindling", theme: "light", note: "Amor opens the link. One private button. Tap 'Add a condition' or 'I'm in'." },
-      { id: "I2", view: "typing", theme: "light", note: "In her own words. The text never leaves her phone." },
+      { id: "I2", view: "typing", theme: "light", note: "In Amor's own words. The text never leaves Amor's phone." },
       { id: "I3", view: "flare", theme: "light", note: "Read back in one sentence. Only the rule is sent." },
       { id: "I4", view: "success", theme: "light", note: "You're in. The flame grows a notch. Pocket it." },
     ] },

@@ -45,8 +45,7 @@ All pairs are checked by `brand/tools/contrast.mjs` (22 pairs pass WCAG 2.2; tab
 | Space | `--s-0` 0 · `--s-1` 4 · `--s-2` 8 · `--s-3` 12 · `--s-4` 16 · `--s-5` 20 · `--s-6` 24 · `--s-7` 32 · `--s-8` 40 · `--s-9` 48 · `--s-10` 64 (px) |
 | Radius | `--r-sm` 8 · `--r-md` 14 · `--r-lg` 22 · `--r-xl` 32 · `--r-photo` 18 · `--r-pill` 999 |
 | Elevation | `--e-1` hairline + 2 px; `--e-2` 6/14 px warm ink shadow; `--e-3` 18/32 px. No blur glass, no colored glow (brand). |
-| Duration | `--dur-instant` 90 · `--dur-quick` 160 · `--dur-base` 260 · `--dur-slow` 480 · `--dur-develop` 2400 · `--dur-drift` 900 (ms) |
-| Easing | `--ease-out` cubic-bezier(0.2, 0.8, 0.2, 1) · `--ease-in-out` (0.6, 0, 0.3, 1) · `--ease-spring` (0.34, 1.56, 0.64, 1) |
+| Motion | Durations, easings and springs are specified in [motion.md section 1](motion.md) (the motion role extended the original 6 duration tokens) and generated into tokens.css |
 | Layout | `--l-max-width` 480 px · `--l-gutter` 20 px · `--l-primary-height` 56 px · `--l-touch` 44 px · thumb zone 40% |
 | Texture | `.grain` adds paper grain (`static/brand/paper-grain-ui-256.png`, 16% alpha tile) at 0.9 opacity, 0.55 in sun mode, 0.35 screen-blended in dark; hidden with `prefers-reduced-transparency` |
 

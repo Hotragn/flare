@@ -9,6 +9,7 @@
   release at > 25°, so a shaky hand doesn't flicker it.
 -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import { onMount, untrack } from "svelte";
   import { FLAME, HOLE, ring as ringPath } from "../brand";
   import { feedback } from "#lib/motion/feedback.ts";
@@ -53,12 +54,14 @@
   onMount(() => { mounted = true; });
 
   const facing = $derived(locked);
-  const dir = $derived(Math.abs(bearing) < 15 ? "straight ahead" : Math.abs(bearing) < 45 ? (bearing < 0 ? "slightly left" : "slightly right") : bearing < 0 ? "to your left" : "to your right");
-  const spoken = $derived(status === "no-gps" ? "Can't find you yet." : status === "no-orientation" ? `${name}, ${meters} meters.` : `${name}, ${meters} meters, ${dir}.`);
+  const a = $derived(Math.abs(bearing));
+  const dir = $derived(t(a < 15 ? "compass.dir.ahead" : a < 45 ? (bearing < 0 ? "compass.dir.slightLeft" : "compass.dir.slightRight") : a > 135 ? "compass.dir.behind" : bearing < 0 ? "compass.dir.left" : "compass.dir.right"));
+  const km = $derived(meters >= 1000 ? (Math.round(meters / 100) / 10).toString() : "");
+  const spoken = $derived(status === "no-gps" ? t("compass.noGps") : status === "no-orientation" ? t("compass.spokenNoDir", { name, meters }) : km ? t("compass.spokenKm", { name, km, direction: dir }) : t("compass.spoken", { name, meters, direction: dir }));
   // Closeness 0 (far, 800 m+) to 1 (here). Rings tighten toward the flame.
   const close = $derived(Math.max(0, Math.min(1, 1 - Math.log2(Math.max(meters, 25) / 25) / 5)));
   const flameD = `${FLAME} ${ringPath(HOLE.cx, HOLE.cy, HOLE.r)}`;
-  const line = $derived(facing && status !== "no-orientation" ? `${name} is straight ahead.` : spoken);
+  const line = $derived(facing && status !== "no-orientation" ? t("compass.ahead", { name }) : spoken);
 
   // Speech cadence (SRS-CMP-2): again when the bearing moves 30° or more, the distance halves, or 60 s pass.
   let said: Spoken | null = null;
@@ -102,9 +105,9 @@
       {/if}
     </svg>
   </div>
-  <p class="dist t-display">{status === "no-gps" ? "Finding you…" : `${meters} m`}</p>
+  <p class="dist t-display">{status === "no-gps" ? t("compass.finding") : km ? t("compass.distanceKm", { km }) : t("compass.distance", { meters })}</p>
   <p class="t-sun spoken" aria-live="polite">{line}</p>
-  {#if status === "no-orientation"}<p class="t-muted">Hold your phone flat to get a direction.</p>{/if}
+  {#if status === "no-orientation"}<p class="t-muted">{t("compass.holdFlat")}</p>{/if}
 </div>
 
 <style>

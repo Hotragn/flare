@@ -59,8 +59,10 @@ History rewritten before any push to drop design/exports; full exports are git-i
 ## Status after the 3:50 PM reset
 First motion and copy subagents stopped on the usage limit before changing any files (their worktrees were auto-removed, nothing to merge). Both restarted at the same prompts in fresh worktrees, with instructions to commit early.
 
-## Copy (4d): DONE and merged (e60a92c). Handoff 06. BUG-013 fixed (scripts create design/exports).
-## Motion (4c): running in worktree .claude/worktrees/agent-a56d126a707147353 (branch worktree-agent-a56d126a707147353).
+## Motion (4c) and copy (4d): DONE and merged
+- Copy: e60a92c (handoff 06). Motion: merge 5251239 (handoff 05). Worktrees removed.
+- After merge: copy keys wired into motion-owned components (FlameMeter, Compass incl. km and "behind you", Flame names, PhotoPrint, Screen, TextField, Ladder); NeedCount got the count tick; Hearth hills fade on all edges; curated screens refreshed.
+- Re-verify on merged main: check 0/0 (713 files), build ok, copy-lint 0 problems (576 strings, 41/41 fixed), export 189 + 33, axe 0 violations (193), focus audit 0 small targets.
 
 ## Exact next step now
-When motion reports: merge its branch (expect conflicts only in scripts PORT lines, BUGLOG ids, maybe FlameMeter/Compass text), wire copy keys into motion-owned components per docs/handoffs/06-copy.md, renumber BUGLOG duplicates, then the full re-verify in design/prototype and the combined summary.
+Founder decisions pending (JS weight +10.5 KB for the shader, sound default on/off, copy decisions table in handoff 06). Next role per founder: architect.

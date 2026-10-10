@@ -3,6 +3,7 @@
   theme: light | dark | sun. Use sun for any screen used outside (brand sun mode).
 -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import type { Snippet } from "svelte";
   import Icon from "./Icon.svelte";
   import { themeAttrs, type Theme } from "./parts";
@@ -31,11 +32,11 @@
 <div class="screen" class:grain class:dusk={tone === "dusk"} {...themeAttrs(theme)} data-wire={wire || undefined}>
   <header class="bar">
     {#if menu}
-      <button class="icon-btn" aria-label="Menu" onclick={onmenu}><Icon name="menu" /></button>
+      <button class="icon-btn" aria-label={t("app.menu")} onclick={onmenu}><Icon name="menu" /></button>
     {:else}<span class="spacer"></span>{/if}
     {#if title}<span class="bar-title t-small">{title}</span>{/if}
     {#if close}
-      <button class="icon-btn" aria-label="Close" onclick={onclose}><Icon name="close" /></button>
+      <button class="icon-btn" aria-label={t("app.close")} onclick={onclose}><Icon name="close" /></button>
     {:else}<span class="spacer"></span>{/if}
   </header>
   {#if offline}

@@ -1,5 +1,6 @@
 <!-- Text field with a visible label, hint or error, optional mic (dictation), and counter. -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import Icon from "./Icon.svelte";
   let {
     label, value = $bindable(""), placeholder = "", hint = "", error = "", mic = false, listening = false,
@@ -16,7 +17,7 @@
       <input {id} bind:value {placeholder} maxlength={max || undefined} aria-invalid={!!error} aria-describedby="{id}-msg" autocomplete="off" />
     {/if}
     {#if mic}
-      <button class="mic" type="button" aria-label={listening ? "Stop dictation" : "Dictate"} aria-pressed={listening}><Icon name="mic" /></button>
+      <button class="mic" type="button" aria-label={listening ? t("cond.stopDictate") : t("cond.dictate")} aria-pressed={listening}><Icon name="mic" /></button>
     {/if}
   </div>
   <div class="msg t-small" id="{id}-msg" aria-live="polite">

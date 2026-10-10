@@ -9,6 +9,7 @@
   middle, and the edges clear last, like a chemical print. No flash.
 -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import SampleScene from "./SampleScene.svelte";
   let {
     state = "developed",
@@ -21,7 +22,7 @@
 
 <figure class="print {state}" style:--tilt="{tilt}deg" style:height="{height}px">
   <div class="paper grain">
-    <div class="image photo-art" role="img" aria-label={scene || "Invite photo"}>
+    <div class="image photo-art" role="img" aria-label={scene || t("invite.photoFallback")}>
       {#if src}
         <img {src} alt="" />
       {:else}

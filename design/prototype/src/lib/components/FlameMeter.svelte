@@ -4,6 +4,7 @@
   Count only, never names (SRS-RES-4).
 -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import { untrack } from "svelte";
   import Flame from "./Flame.svelte";
   import { kindlingProgress } from "#lib/motion/core.ts";
@@ -17,7 +18,7 @@
   let ticked = $state(false);
   let lastHave = untrack(() => have);
   $effect(() => { if (have !== lastHave) ticked = true; lastHave = have; });
-  const line = $derived(st === "lit" ? "It's lit." : need === 0 ? "Catching…" : `Need ${need} more.`);
+  const line = $derived(st === "lit" ? t("need.lit") : need === 0 ? t("need.catching") : t("need.more", { n: need }));
 </script>
 
 <div class="meter {st}" role="status" aria-live="polite">
@@ -31,7 +32,7 @@
     <p class="dots" aria-hidden="true">
       {#each Array(Math.max(quorum, have)) as _, i}<span class:in={i < have} class:pop={ticked && i === have - 1}></span>{/each}
     </p>
-    <p class="t-small t-muted">{note || `${have} in, ${quorum} to go ahead. Nobody sees who.`}</p>
+    <p class="t-small t-muted">{note || t("need.detail", { n: have, q: quorum })}</p>
   </div>
 </div>
 

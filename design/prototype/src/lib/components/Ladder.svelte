@@ -1,21 +1,22 @@
 <!-- Plan ladder: 4 steps, biggest first. current marks the lit step; editable shows edit buttons. -->
 <script lang="ts">
+  import { t } from "#lib/copy/index.ts";
   import Icon from "./Icon.svelte";
   import type { Step } from "./parts";
   let { steps, current = 0, editable = false, editing = -1 }: { steps: Step[]; current?: number; editable?: boolean; editing?: number } = $props();
 </script>
 
-<ol class="ladder" aria-label="Plan steps, biggest first">
+<ol class="ladder" aria-label={t("ladder.aria")}>
   {#each steps as s, i}
     <li class="step" class:current={current === i + 1} class:past={current > 0 && i + 1 < current} class:editing={editing === i}>
       <span class="num" aria-hidden="true">{i + 1}</span>
       <div class="body">
         <span class="name">{s.name}</span>
-        <span class="t-small t-muted">{s.place} · {s.minutes} min · {s.access}</span>
-        {#if s.afterSunset}<span class="t-small warn"><Icon name="sunset" size={18} />Ends after sunset</span>{/if}
+        <span class="t-small t-muted">{t("ladder.stepMeta", { place: s.place, min: s.minutes, access: s.access })}</span>
+        {#if s.afterSunset}<span class="t-small warn"><Icon name="sunset" size={18} />{t("ladder.afterSunset")}</span>{/if}
       </div>
-      {#if editable}<button class="edit" aria-label="Edit step {i + 1}"><Icon name="edit" /></button>{/if}
-      {#if current === i + 1}<span class="visually-hidden">(this is the plan)</span>{/if}
+      {#if editable}<button class="edit" aria-label={t("ladder.editAria", { k: i + 1 })}><Icon name="edit" /></button>{/if}
+      {#if current === i + 1}<span class="visually-hidden">{t("ladder.current")}</span>{/if}
     </li>
   {/each}
 </ol>
