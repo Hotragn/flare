@@ -69,6 +69,7 @@
     "app.tier.hub": { "text": "Made on our laptop", "kind": "hint", "where": "H2 P2", "fixed": "SRS-AI-4" },
     "app.tier.rules": { "text": "Made from a template", "kind": "hint", "where": "H2 P2", "fixed": "SRS-AI-4" },
     "app.dot": { "text": " · ", "kind": "separator", "where": "all" },
+    "app.pause": { "text": ". ", "kind": "separator", "where": "O0 (hidden, so screen readers pause between a row's title and subtitle)" },
 
     "err.network": { "text": "Didn't send. Check your signal and try again.", "kind": "error", "where": "H3 and every write" },
     "err.server": { "text": "Our server had a problem. Try again in 1 minute.", "kind": "error", "where": "every write (HTTP 5xx)" },

@@ -305,6 +305,86 @@ const checks = [
 ];
 fs.writeFileSync(path.join(REPO, "docs/content/03-checks.md"), checks.join("\n"));
 
+// ---------- statements (same words as the website, from the same keys) ----------
+const T = (k) => S[k].text;
+const active = deck.meta.variants["privacy.coords"];
+const rowIds = ["photo", "yes", "coordsA", "coordsB", "phone", "sparks", "alerts", "counts", "logs"];
+const privacy = [
+  "# Flare: Privacy statement",
+  "",
+  `Generated from \`design/prototype/src/lib/copy/deck.json\` by \`scripts/copy-lint.mjs\`; the website shows the same words (section W4). Version ${deck.meta.version}, ${deck.meta.date}.`,
+  "",
+  `**Which variant applies:** variant **${active}** is in force. ${deck.meta.variantNotes["privacy.coords"]} Lines marked "Variant A" or "Variant B" below are the only difference.`,
+  "",
+  `## ${T("site.privacy.title")}`,
+  "",
+  ...["p1", "p2", "p3", "p4", "p5"].map((k) => `- ${T("site.privacy." + k)}`),
+  "",
+  `## ${T("site.privacy.keepTitle")}`,
+  "",
+  `| What | ${T("site.privacy.colWhere")} | ${T("site.privacy.colWhen")} |`,
+  "| --- | --- | --- |",
+  ...rowIds.map((r) => `| ${r === "coordsA" ? "Variant A: " : r === "coordsB" ? "Variant B: " : ""}${T(`site.privacy.row.${r}.what`)} | ${T(`site.privacy.row.${r}.where`)} | ${T(`site.privacy.row.${r}.when`)} |`),
+  "",
+  `## ${T("site.privacy.limitsTitle")}`,
+  "",
+  ...["telegram", "guess", "sms", "link", "coordsA", "coordsB", "hub", "push"].map((k) => `- ${k === "coordsA" ? "**Variant A:** " : k === "coordsB" ? "**Variant B:** " : ""}${T("site.privacy.l." + k)}`),
+  "",
+  `## ${T("site.privacy.auditTitle")}`,
+  "",
+  `${T("site.privacy.audit1")} ${T("site.privacy.audit2")}`,
+  "",
+  "## Where each claim comes from",
+  "",
+  "| Claim | Requirement or decision |",
+  "| --- | --- |",
+  "| Photo encrypted on the phone, key only in the link fragment | FR-PRIV-1, SRS-ID-2, SRS-SEC-3 (AES-256-GCM) |",
+  "| Condition words and needs stay on the phone | FR-PRIV-2, SRS-PRIV-1, BR-C-9 |",
+  "| No No button | FR-RES-4, SRS-RES-5 |",
+  "| Deleted within 5 minutes of the end; storage expiry as a backstop | BR-D-1, BR-D-2, SRS-PRIV-2 |",
+  "| What survives, and for how long | BR-D-4, BR-D-5, docs/product/07-kpis.md |",
+  "| Logs: 7 days, no bodies, photos, names, places, conditions or keys | BR-D-6 |",
+  "| No analytics, ads, trackers or third-party fonts | SRS-PRIV-7, SRS-SEC-6 |",
+  "| Telegram, small groups, SMS and satellite limits | FR-PRIV-7, R6, R19 |",
+  "| Anyone with the link can read the group's history | R22 |",
+  "| Spot position on the server until the end (Variant A) | Analyst decision 10; OQ-1 would remove it (Variant B) |",
+  "| Photo goes to our laptop for the six words | FR-AI-1, SRS-IF-5 (hub tier) |",
+  "",
+];
+fs.writeFileSync(path.join(REPO, "docs/content/04-privacy-statement.md"), privacy.join("\n"));
+
+const accessStmt = [
+  "# Flare: Accessibility statement",
+  "",
+  `Generated from \`design/prototype/src/lib/copy/deck.json\` by \`scripts/copy-lint.mjs\`; the website shows the same words (section W5). Version ${deck.meta.version}, ${deck.meta.date}.`,
+  "",
+  `## ${T("site.access.title")}`,
+  "",
+  ...["a1", "a2", "a3", "a4", "a5"].map((k) => `- ${T("site.access." + k)}`),
+  "",
+  T("site.access.target"),
+  "",
+  `## ${T("site.access.testedTitle")}`,
+  "",
+  ...["t1", "t2", "t3"].map((k) => `- ${T("site.access." + k)}`),
+  "",
+  "Proof: design/exports/a11y-report.json (axe-core), docs/design/07-annex-focus-order.md (focus order and target sizes), docs/brand/contrast-table.md (color pairs).",
+  "",
+  `## ${T("site.access.gapsTitle")}`,
+  "",
+  ...["g1", "g2", "g3", "g4", "g5"].map((k) => `- ${T("site.access." + k)}`),
+  "",
+  "## Why it matters",
+  "",
+  `${T("site.access.why")} Sources: [Netspar](https://www.netspar.nl/en/knowledge-hub/do-modern-cities-encourage-or-discourage-walking-of-health-impaired-seniors/), [CDC DHDS](https://data.cdc.gov/resource/s2qv-b27b.json) (verified in docs/requirements/evidence/README.md).`,
+  "",
+  "## Feedback",
+  "",
+  T("site.access.feedback"),
+  "",
+];
+fs.writeFileSync(path.join(REPO, "docs/content/05-accessibility-statement.md"), accessStmt.join("\n"));
+
 console.log(`Strings: ${rows.length}. Fixed: ${fixedRows.filter((r) => r[2]).length}/${fixedRows.length}. Used in code: ${used.size}. Grade avg ${avg(graded).toFixed(1)} (UI ${avg(ui).toFixed(1)}, prose ${avg(prose).toFixed(1)}), over 8: ${over8.length}. SMS max ${Math.max(...smsRows.map((r) => r.flare))} bytes. Problems: ${problems.length}`);
 problems.forEach((p) => console.log(" -", p));
 process.exit(problems.length ? 1 : 0);

@@ -79,3 +79,48 @@ Format: ID, date, area, symptom, cause, fix, proof.
   4. `tsconfig_extends_missing`: tsconfig must `"extends": "$app/tsconfig"` (written to node_modules/$app/tsconfig.json by `svelte-kit sync`).
   5. Subpath import targets can't leave the package, so files from design/system and brand/ are copied in by `scripts/sync-assets.mjs` (runs before dev, build and check).
 - **Proof:** `npm run check`: 0 errors, 0 warnings across 649 files; `npm run build` wrote the static site.
+
+## BUG-009: Screens drifted from fixed requirement strings
+
+- **Date:** 2026-10-10
+- **Area:** Copy (prototype screens)
+- **Symptom:** While moving copy into the deck, 5 screens didn't match the requirements: I7 offline said "Offline. Pointing to the spot saved at 2:14 PM." (SRS-OFF-2 fixes "Offline. Saved at {time}."); P5 after a fade said "Smaller plan: Short walk at 11:00 AM." (BR-P-7 fixes "Smaller plan: {step name}."); O5 split SRS-REST-4 into "No loop keeps benches that close." plus "Try 300 m between seats?"; I9 showed an invented nature line "You'll be sitting on the bench." (SRS-NAT-1 allows only sunset, a named OSM feature or the season); I1, I10 and P7 said "Nothing about it was kept", which is untrue because group counters are kept.
+- **Cause:** Strings were typed into each component, and the old copy lint only counted words.
+- **Fix:** One source: design/prototype/src/lib/copy/deck.json, read through `t()`. `scripts/copy-lint.mjs` now checks 41 fixed strings word for word and fails on any hardcoded text in screens.
+- **Proof:** `node scripts/copy-lint.mjs`: "Fixed: 41/41 … Problems: 0".
+
+## BUG-010: svelte-check warns on the scrollable content region
+
+- **Date:** 2026-10-10
+- **Area:** Prototype (Screen.svelte)
+- **Symptom:** `npm run check` after `npm ci` reported 1 warning, "noninteractive element cannot have nonnegative tabIndex value", on `<main class="content" tabindex="0">`, so the 0-warning gate failed before any copy change.
+- **Cause:** The tabindex is deliberate (axe `scrollable-region-focusable`, WCAG 2.1.1), but Svelte's a11y rule doesn't know that.
+- **Fix:** `<!-- svelte-ignore a11y_no_noninteractive_tabindex -->` on that one element, next to the comment that explains why.
+- **Proof:** `npm run check`: 699 files, 0 errors, 0 warnings. axe still 0 violations on 193 targets.
+
+## BUG-011: Menu rows had run-together accessible names
+
+- **Date:** 2026-10-10
+- **Area:** Prototype (O0 Menu)
+- **Symptom:** The focus audit read the rows as "Plan for laterA walk on Sunday, with a deadline": title and subtitle joined with no space, so VoiceOver reads one long word.
+- **Cause:** The two spans sit in a flex column with no text between them.
+- **Fix:** A visually hidden ". " between title and subtitle.
+- **Proof:** docs/design/07-annex-focus-order.md now lists "Plan for later. A walk later, with a time to answer by".
+
+## BUG-012: Copy lint misread Svelte expressions as hardcoded text
+
+- **Date:** 2026-10-10
+- **Area:** Copy tooling (scripts/copy-lint.mjs)
+- **Symptom:** The first run flagged 38 "hardcoded text" lines that were all `{t("…", { n })}` calls or `{#if i < 2}` blocks.
+- **Cause:** Stripping `{…}` with a flat regex fails on nested braces (`t("key", { n: 2 })`), and the `<` inside `{#if i < 2}` looked like a tag.
+- **Fix:** Remove Svelte expressions with a small brace-and-quote-aware scanner before looking for text between tags.
+- **Proof:** 0 false hits; a literal "Sun 11:00 AM" in P1 was still caught and moved to sample.ts.
+
+## BUG-013: a11y script crashes when design/exports is missing
+
+- **Date:** 2026-10-10
+- **Area:** Prototype tooling (scripts/a11y.mjs)
+- **Symptom:** `node scripts/a11y.mjs` ran every check, then died with ENOENT writing design/exports/a11y-report.json.
+- **Cause:** design/exports is git-ignored since commit 5d90fc6, so a fresh worktree doesn't have it, and the script doesn't create it.
+- **Fix:** `mkdir -p design/exports` before the run (or run `npm run export` first). The script is left as is for its owner; a one-line `fs.mkdirSync(dir, { recursive: true })` would remove the step.
+- **Proof:** Rerun: "Checked 193 pages and screen states. Violations: 0 (serious or critical: 0)".

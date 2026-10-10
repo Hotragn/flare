@@ -24,7 +24,7 @@
     <Sheet inline title={t("menu.title")}>
       <ul class="menu">
         {#each items as [icon, label, sub]}
-          <li><button class="row"><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></button></li>
+          <li><button class="row"><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="visually-hidden">{t("app.pause")}</span><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></button></li>
         {/each}
       </ul>
       <p class="t-small t-muted foot">{t("menu.foot")}</p>
