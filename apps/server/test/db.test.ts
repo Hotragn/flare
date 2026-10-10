@@ -7,7 +7,7 @@ beforeAll(async () => {
 });
 afterAll(async () => db.close());
 
-const PER_GATHERING = ["photos", "responses", "jobs", "bot_messages", "live_locations"];
+const PER_GATHERING = ["photos", "responses", "jobs", "bot_messages", "live_locations", "telegram_binds"];
 
 describe("schema", () => {
   it("migrates once and is idempotent", async () => {
@@ -17,7 +17,7 @@ describe("schema", () => {
   it("has no column that could hold a readable place or coordinate (ADR-0009)", async () => {
     const cols = (
       await db.query<{ column_name: string }>(
-        "select column_name from information_schema.columns where table_schema = 'public' and table_name not in ('schema_migrations', 'counters')",
+        "select column_name from information_schema.columns where table_schema = 'public' and table_name not in ('schema_migrations', 'counters', 'global_counters')",
       )
     ).rows.map((r) => r.column_name);
     for (const bad of ["lat", "lon", "latitude", "longitude", "spot", "place_name", "name"])
@@ -33,10 +33,11 @@ describe("schema", () => {
       g,
     ]);
     await db.query(
-      "insert into gatherings (id, group_id, kind, state, short_code, host_member_id, quorum, tz, sealed, expires_at) values ($1, $2, 'flare', 'kindling', 'K7Q2M', $3, 2, 'America/Detroit', '\\x03', now() + interval '5 hours')",
+      "insert into gatherings (id, group_id, kind, state, short_code, host_member_id, quorum, tz, sealed, notice_ct, expires_at) values ($1, $2, 'flare', 'kindling', 'K7Q2M', $3, 2, 'America/Detroit', '\\x03', '\\x06', now() + interval '5 hours')",
       [gat, g, m],
     );
-    await db.query("insert into photos values ($1, '\\x04', null, now() + interval '5 hours')", [gat]);
+    await db.query("insert into photos values ($1, '\\x04', now() + interval '5 hours')", [gat]);
+    await db.query("insert into telegram_binds values ('\\x09', $1, $2, now() + interval '10 minutes')", [gat, m]);
     await db.query(
       "insert into responses (id, gathering_id, member_id, status, expires_at) values (gen_random_uuid(), $1, $2, 'yes', now() + interval '5 hours')",
       [gat, m],
@@ -55,12 +56,29 @@ describe("schema", () => {
       expect(n, t).toBe(0);
     }
   });
+  it("every per-gathering table has an expiry column (BR-D-2)", async () => {
+    for (const t of [...PER_GATHERING, "gatherings"]) {
+      const r = await db.query<{ n: number }>(
+        "select count(*)::int as n from information_schema.columns where table_name = $1 and column_name = 'expires_at'",
+        [t],
+      );
+      expect(r.rows[0]?.n, t).toBe(1);
+    }
+  });
+  it("Sparks keep no author and no time finer than the day", async () => {
+    const r = await db.query<{ column_name: string; data_type: string }>(
+      "select column_name, data_type from information_schema.columns where table_name = 'sparks'",
+    );
+    const cols = Object.fromEntries(r.rows.map((c) => [c.column_name, c.data_type]));
+    expect(cols).not.toHaveProperty("member_id");
+    expect(cols.created_on).toBe("date");
+  });
   it("allows only one live gathering per short code", async () => {
     const g = "11111111-1111-4111-8111-111111111111";
     const m = "22222222-2222-4222-8222-222222222222";
     const ins = (id: string) =>
       db.query(
-        "insert into gatherings (id, group_id, kind, state, short_code, host_member_id, quorum, tz, sealed, expires_at) values ($1, $2, 'flare', 'kindling', 'ABCDE', $3, 2, 'UTC', '\\x00', now())",
+        "insert into gatherings (id, group_id, kind, state, short_code, host_member_id, quorum, tz, sealed, notice_ct, expires_at) values ($1, $2, 'flare', 'kindling', 'ABCDE', $3, 2, 'UTC', '\\x00', '\\x00', now())",
         [id, g, m],
       );
     await ins("44444444-4444-4444-8444-444444444444");

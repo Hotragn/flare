@@ -27,8 +27,14 @@ const ollama = {
 };
 const serverUrl = process.env.FLARE_SERVER_URL ?? "ws://localhost:8787";
 
-// Warm the model so the first friend doesn't wait for the 7 to 14 s cold load (report 02).
-const t = performance.now();
-await chat(ollama, null).catch(() => "");
-console.info(`hub: model warm in ${Math.round(performance.now() - t)} ms`);
+// Warm the model so the first friend doesn't wait for the 7 to 14 s cold load (report 02),
+// and again every 20 min so Ollama's 30 min keep_alive never unloads it mid-test. The server
+// gives the hub 6 s per photo (BR-AI-1), so a cold load would always fall to the template.
+const warm = async () => {
+  const t = performance.now();
+  await chat(ollama, null).catch(() => "");
+  console.info(`hub: model warm in ${Math.round(performance.now() - t)} ms`);
+};
+await warm();
+setInterval(warm, 20 * 60_000).unref();
 startHub({ serverUrl, secret: need("HUB_SECRET"), ollama, onLog: (e) => console.info(`hub: ${JSON.stringify(e)}`) });

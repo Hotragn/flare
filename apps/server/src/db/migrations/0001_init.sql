@@ -14,8 +14,9 @@ create table groups (
 create table members (
   id uuid primary key,
   group_id uuid not null references groups(id) on delete cascade,
-  name_ct bytea not null,
-  write_token_hash bytea not null,
+  name_ct bytea, -- null for a member the bot made from a Telegram tap
+  write_token_hash bytea, -- null until a Telegram member binds a phone
+  via text not null default 'link' check (via in ('link', 'telegram')),
   telegram_user_id bigint,
   joined_at timestamptz not null default now(),
   unique (group_id, telegram_user_id)
@@ -31,11 +32,18 @@ create table gatherings (
   host_member_id uuid not null references members(id) on delete cascade,
   quorum smallint not null check (quorum between 2 and 6),
   tz text not null,
+  version integer not null default 1,
+  state_since timestamptz not null default now(),
+  ended text check (ended in ('not_this_time', 'thanks_for_coming')),
   sealed bytea not null,
+  notice_ct bytea not null,
+  -- Readable post text, Telegram groups only (ADR-0013). Deleted with the row at Gone.
   telegram_plain jsonb,
+  text_yes smallint not null default 0 check (text_yes between 0 and 3),
+  -- Opaque labels c1..c12 in distance order; the places are only in `sealed` (ADR-0009).
   ember_candidates text[] not null default '{}',
   ember_choice text,
-  ladder_steps smallint check (ladder_steps is null or ladder_steps = 4),
+  plan_steps jsonb, -- [{step, minutes, place label}] for Plans
   current_step smallint check (current_step is null or current_step between 1 and 4),
   chosen_set uuid[] not null default '{}',
   created_at timestamptz not null default now(),
@@ -52,7 +60,6 @@ create index gatherings_expiry on gatherings(expires_at);
 create table photos (
   gathering_id uuid primary key references gatherings(id) on delete cascade,
   ct bytea not null,
-  blur_preview bytea,
   expires_at timestamptz not null
 );
 
@@ -65,6 +72,7 @@ create table responses (
   rules jsonb not null default '[]',
   spot_checks jsonb not null default '{}',
   faded boolean not null default false,
+  still_coming boolean not null default false, -- OQ-2, ADR-0016
   arrived_at timestamptz,
   created_at timestamptz not null default now(),
   expires_at timestamptz not null,
@@ -110,7 +118,8 @@ create table sparks (
   group_id uuid not null references groups(id) on delete cascade,
   place_key_hash bytea not null,
   text_ct bytea not null,
-  created_at timestamptz not null default now()
+  delete_token_hash bytea not null, -- lets the writer delete it; no author id kept
+  created_on date not null default current_date
 );
 create index sparks_group_place on sparks(group_id, place_key_hash);
 
@@ -126,6 +135,28 @@ create table counters (
   bucket text not null default '',
   value bigint not null default 0,
   primary key (group_id, name, bucket)
+);
+
+-- Global totals such as tier_ran.photo.hub (BR-AI-3); no group, no time.
+create table global_counters (
+  name text not null,
+  bucket text not null default '',
+  value bigint not null default 0,
+  primary key (name, bucket)
+);
+
+-- One-time tokens: t.me startgroup links and personal bind links (ADR-0013). Hashes only.
+create table telegram_links (
+  token_hash bytea primary key,
+  group_id uuid not null references groups(id) on delete cascade,
+  expires_at timestamptz not null
+);
+
+create table telegram_binds (
+  token_hash bytea primary key,
+  gathering_id uuid not null references gatherings(id) on delete cascade,
+  member_id uuid not null references members(id) on delete cascade,
+  expires_at timestamptz not null
 );
 
 create table idempotency (

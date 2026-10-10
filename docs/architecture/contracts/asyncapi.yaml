@@ -1,0 +1,313 @@
+asyncapi: 3.0.0
+info:
+  title: Flare live channels
+  version: 1.0.0
+  description: |
+    The two live channels. `npm run contracts` parses this file with @asyncapi/parser.
+
+    1. **Hub relay** (`/hub`, WebSocket). The Mac hub dials out to the server and holds the
+       socket open; the server sends AI jobs down it. Nothing on the Mac listens on a port
+       (ADR-0006). Code: packages/shared/src/hub-protocol.ts, apps/server/src/hub/relay.ts,
+       apps/hub/src/client.ts.
+    2. **Gathering events** (`/api/v1/gatherings/{gatheringId}/events`, Server-Sent Events).
+       Phones get the shared view on every change (ADR-0014).
+
+    Telegram updates arrive by HTTPS webhook and are in openapi.yaml and telegram.md.
+    Web Push payloads are below as the `push` channel, sent through the browser's push service.
+  license:
+    name: AGPL-3.0-or-later
+defaultContentType: application/json
+servers:
+  local:
+    host: localhost:8787
+    protocol: ws
+    description: Local development; the hub uses FLARE_SERVER_URL.
+  deployed:
+    host: flare-outside.onrender.com
+    protocol: wss
+    description: TLS from day one. The founder approves every deploy.
+
+channels:
+  hub:
+    address: /hub
+    title: Hub relay
+    description: |
+      One socket at a time; a new hub replaces the old one (close code 4000). Text frames are
+      JSON control messages. A photo job is a `job` text frame followed by exactly one binary
+      frame holding the JPEG. Max frame 2 MB. The server pings every 20 s; the hub reconnects
+      with backoff from 1 s up to 30 s. A job with no result in 6 s (photo) or 8 s (ladder)
+      falls back to the rules tier on the server (BR-AI-1).
+    servers:
+      - $ref: "#/servers/local"
+      - $ref: "#/servers/deployed"
+    bindings:
+      ws:
+        method: GET
+        headers:
+          type: object
+          required: [Authorization]
+          properties:
+            Authorization:
+              type: string
+              description: "Bearer {HUB_SECRET}; compared in constant time. Wrong or missing: HTTP 401, no upgrade."
+    messages:
+      hello: { $ref: "#/components/messages/hello" }
+      photoJob: { $ref: "#/components/messages/photoJob" }
+      photoBytes: { $ref: "#/components/messages/photoBytes" }
+      ladderJob: { $ref: "#/components/messages/ladderJob" }
+      result: { $ref: "#/components/messages/result" }
+      ping: { $ref: "#/components/messages/ping" }
+      pong: { $ref: "#/components/messages/pong" }
+
+  gatheringEvents:
+    address: /api/v1/gatherings/{gatheringId}/events
+    title: Gathering events (SSE)
+    description: |
+      `text/event-stream`. On connect: one `gathering` event with the full view. On every change:
+      another `gathering` event (id = view version). Every 15 s: a `: keepalive` comment. At Gone:
+      a final `gone` event, then the server closes. Reconnect with `Last-Event-ID`; if that
+      version is current the server sends nothing until the next change. Phones also poll
+      `GET /gatherings/{id}` every 30 s while the page is visible, so a dropped stream costs at
+      most 30 s. SRS-SOL-3's 5 s holds while the stream is up.
+    parameters:
+      gatheringId:
+        description: Gathering UUID
+    messages:
+      gathering: { $ref: "#/components/messages/gatheringView" }
+      gone: { $ref: "#/components/messages/gone" }
+
+  push:
+    address: web-push
+    title: Web Push payload
+    description: |
+      Encrypted to the subscription with RFC 8291 and sent with VAPID (RFC 8292). TTL 600 s,
+      urgency high for `lit`. The service worker reads the group key from IndexedDB, opens
+      `notice_ct`, and writes the notice from the copy deck ("It's lit. {host} is at {spot}.").
+      If it can't (no key on this phone, decrypt fails), it shows the fallback
+      ("It's lit. Open Flare to see where."). iOS requires a visible notice for every push.
+    messages:
+      notice: { $ref: "#/components/messages/pushNotice" }
+
+operations:
+  hubSaysHello:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: send
+    channel: { $ref: "#/channels/hub" }
+    summary: Hub announces its model and whether it is warm
+    messages:
+      - $ref: "#/channels/hub/messages/hello"
+  serverSendsPhotoJob:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    summary: Server sends a photo job header, then the JPEG as one binary frame
+    messages:
+      - $ref: "#/channels/hub/messages/photoJob"
+      - $ref: "#/channels/hub/messages/photoBytes"
+  serverSendsLadderJob:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    summary: Server sends a Plan ladder job (text only)
+    messages:
+      - $ref: "#/channels/hub/messages/ladderJob"
+  hubSendsResult:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: send
+    channel: { $ref: "#/channels/hub" }
+    summary: Hub answers a job
+    messages:
+      - $ref: "#/channels/hub/messages/result"
+  serverPings:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    messages:
+      - $ref: "#/channels/hub/messages/ping"
+  hubPongs:
+    security:
+      - $ref: "#/components/securitySchemes/hubSecret"
+    action: send
+    channel: { $ref: "#/channels/hub" }
+    messages:
+      - $ref: "#/channels/hub/messages/pong"
+  phoneReceivesGathering:
+    action: receive
+    channel: { $ref: "#/channels/gatheringEvents" }
+    messages:
+      - $ref: "#/channels/gatheringEvents/messages/gathering"
+      - $ref: "#/channels/gatheringEvents/messages/gone"
+  phoneReceivesPush:
+    action: receive
+    channel: { $ref: "#/channels/push" }
+    messages:
+      - $ref: "#/channels/push/messages/notice"
+
+components:
+  securitySchemes:
+    hubSecret:
+      type: http
+      scheme: bearer
+      description: HUB_SECRET, 32+ random bytes, base64url. Held only in the server and hub environments.
+
+  messages:
+    hello:
+      name: hello
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, protocol, model, ready]
+        properties:
+          type: { const: hello }
+          protocol: { const: flare-hub.v1 }
+          model: { type: string, examples: ["gemma4:e4b-it-q4_K_M"] }
+          ready: { type: boolean, description: "true when the model is pulled and answered a warm-up" }
+
+    photoJob:
+      name: job
+      title: Photo job header
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, kind, bytes, mime]
+        properties:
+          type: { const: job }
+          id: { type: string, format: uuid }
+          kind: { const: photo-draft }
+          bytes: { type: integer, minimum: 1, maximum: 2000000 }
+          mime: { const: image/jpeg }
+
+    photoBytes:
+      name: photo
+      title: Photo bytes (binary frame)
+      contentType: image/jpeg
+      description: |
+        Exactly `bytes` long, starts with FF D8 FF. Held in memory only. The server zero-fills its
+        buffer when the job ends; the hub zero-fills its copy after the Ollama call and never
+        imports node:fs (ADR-0011, proven by apps/hub/test/hub.test.ts).
+      payload:
+        type: string
+        format: binary
+
+    ladderJob:
+      name: job
+      title: Ladder job
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, kind, ask, total_minutes]
+        properties:
+          type: { const: job }
+          id: { type: string, format: uuid }
+          kind: { const: ladder-draft }
+          ask: { type: string, maxLength: 80 }
+          total_minutes: { type: integer, minimum: 20, maximum: 600 }
+
+    result:
+      name: result
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, ok, ms, model]
+        properties:
+          type: { const: result }
+          id: { type: string, format: uuid }
+          ok: { type: boolean }
+          draft:
+            description: photo-draft only. The server runs enforce() again before use.
+            type: object
+            required: [invite, alt]
+            properties:
+              invite: { type: string }
+              alt: { type: string }
+          ladder:
+            description: ladder-draft only.
+            type: array
+            minItems: 4
+            maxItems: 4
+            items:
+              type: object
+              required: [step, label, minutes]
+              properties:
+                step: { type: integer, minimum: 1, maximum: 4 }
+                label: { type: string }
+                minutes: { type: integer }
+          error:
+            type: string
+            enum: [model_unavailable, unusable_answer, timeout, bad_image]
+          ms: { type: integer, minimum: 0 }
+          model: { type: string }
+
+    ping:
+      name: ping
+      contentType: application/json
+      payload:
+        type: object
+        required: [type, t]
+        properties:
+          type: { const: ping }
+          t: { type: number }
+
+    pong:
+      name: pong
+      contentType: application/json
+      payload:
+        type: object
+        required: [type, t]
+        properties:
+          type: { const: pong }
+          t: { type: number }
+
+    gatheringView:
+      name: gathering
+      title: Full gathering view
+      summary: Same shape as GET /api/v1/gatherings/{id} (openapi.yaml, schema Gathering).
+      contentType: application/json
+      payload:
+        type: object
+        required: [id, state, need, version, server_time]
+        properties:
+          id: { type: string, format: uuid }
+          state: { type: string, enum: [kindling, lit, ember, gone] }
+          need: { type: integer, minimum: 0 }
+          version: { type: integer, minimum: 1 }
+          server_time: { type: string, format: date-time }
+        additionalProperties: true
+
+    gone:
+      name: gone
+      contentType: application/json
+      payload:
+        type: object
+        required: [id, ended]
+        properties:
+          id: { type: string, format: uuid }
+          ended: { type: string, enum: [not_this_time, thanks_for_coming] }
+
+    pushNotice:
+      name: notice
+      contentType: application/json
+      payload:
+        type: object
+        additionalProperties: false
+        required: [v, g, kind, event]
+        properties:
+          v: { const: 1 }
+          g: { type: string, format: uuid, description: "Gathering id; the SW finds the group key by it" }
+          kind: { type: string, enum: [flare, plan] }
+          event:
+            type: string
+            enum: [lit, ember, plan_on, plan_ember, plan_smaller, still_coming, gone]
+          label: { type: string, description: "Ember or step label, for bench or step names" }
+          step: { type: integer, minimum: 1, maximum: 4 }
+          at: { type: string, format: date-time, description: "Plan start, shown as {time} in the group time zone" }
+          notice_ct: { type: string, description: "Copied from the gathering; at most 2800 characters" }

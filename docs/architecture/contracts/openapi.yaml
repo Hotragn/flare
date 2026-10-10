@@ -1,0 +1,1557 @@
+openapi: 3.1.1
+info:
+  title: Flare HTTP API
+  version: 1.0.0
+  summary: The contract between the Flare phone app, the server and the Telegram webhook.
+  description: |
+    Every endpoint the server exposes. Engineers build to this file; `npm run contracts`
+    lints it and checks that every route the server registers is listed here.
+
+    Rules that apply to every operation:
+
+    - No accounts. A phone proves it is a member with `Authorization: Bearer {memberId}.{writeToken}`.
+      The write token is 128 random bits made on the phone; the server stores only its SHA-256
+      (SRS-SEC-4).
+    - Every write (POST, PUT, PATCH, DELETE) needs an `Idempotency-Key` header. A repeat with the
+      same key returns the first response and changes nothing (SRS-IF-1, SRS-REL-2).
+    - Fields ending in `_ct` are AES-256-GCM ciphertext made on a phone with the group key
+      (12-byte nonce prepended, base64url). The server cannot read them (ADR-0009).
+    - The server never receives coordinates, readable place names, display names, free-text
+      conditions or needs profiles from a link group. Places are opaque per-gathering labels
+      (`spot`, `c1` to `c12`, `step:1` to `step:4`). Telegram groups are the one disclosed
+      exception (ADR-0013).
+    - No response shows who said yes, who is in the set, or when anyone answered. Only counts
+      (BR-Q-5). A member may read their own answer through `/me`.
+    - Writes are rate limited to 30 per minute per member and 300 per minute per gathering
+      (SRS-SEC-5). Over the limit: 429 with `Retry-After`.
+    - Times are UTC ISO 8601 with milliseconds. Every gathering view carries `server_time`
+      so phones show server time, not their own clock (BR-TIME-1 to 3).
+  license:
+    name: AGPL-3.0-or-later
+    identifier: AGPL-3.0-or-later
+servers:
+  - url: http://localhost:8787
+    description: Local development
+  - url: "{base}"
+    description: Deployed server (the founder approves every deploy)
+    variables:
+      base:
+        default: https://flare-outside.onrender.com
+tags:
+  - name: system
+    description: "Health, public config and the deletion audit"
+  - name: groups
+    description: "Groups and members; names are sealed"
+  - name: gatherings
+    description: "Flares and Plans: create, read, live updates, end"
+  - name: answers
+    description: "Yes, rules, checks, take-back, fades"
+  - name: arrival
+    description: "I'm here, host +1 and the host's sealed live location"
+  - name: places
+    description: "Sparks and Hot spots, sealed"
+  - name: push
+    description: "Web Push subscriptions"
+  - name: ai
+    description: "Drafts from the hub, with the rules tier as fallback"
+  - name: telegram
+    description: "Bot webhook and the links that tie a chat to a group"
+security: []
+paths:
+  /api/v1/health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      summary: Liveness and dependency status
+      responses:
+        "200":
+          description: Server is up
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Health" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/config:
+    get:
+      tags: [system]
+      operationId: getConfig
+      summary: Public settings the app needs at start
+      responses:
+        "200":
+          description: Config
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Config" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/audit:
+    get:
+      tags: [system]
+      operationId: getDeletionAudit
+      summary: Deletion audit (BR-D-7), counts only
+      description: |
+        Counts rows past their expiry in every per-gathering store, plus totals for the
+        stores that survive Gone. Passing means `expired_rows` is 0 everywhere. The website's
+        privacy page shows this output (SRS-WEB-2). Cached for 60 s.
+      responses:
+        "200":
+          description: Audit
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Audit" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/groups:
+    post:
+      tags: [groups]
+      operationId: createGroup
+      summary: Create a group and its first member (SRS-ID-1, SRS-ID-3)
+      description: The phone makes the group id, the 256-bit group key (never sent), the member id and the write token.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateGroup" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Group" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/groups/{groupId}:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    get:
+      tags: [groups]
+      operationId: getGroup
+      summary: Group with members (names sealed) and live gatherings
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Group
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Group" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/groups/{groupId}/members:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    post:
+      tags: [groups]
+      operationId: joinGroup
+      summary: Join from a link (SRS-ID-3); 12 members at most (SRS-ID-5)
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NewMember" }
+      responses:
+        "201":
+          description: Joined
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/groups/{groupId}/members/{memberId}:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+      - $ref: "#/components/parameters/MemberId"
+    patch:
+      tags: [groups]
+      operationId: renameMember
+      summary: Change your own sealed display name
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name_ct]
+              properties:
+                name_ct: { $ref: "#/components/schemas/NameCt" }
+      responses:
+        "200":
+          description: Renamed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [groups]
+      operationId: forgetGroup
+      summary: Forget this group (SRS-ID-6, ADR-0015)
+      description: |
+        Deletes your member row, push subscription, Telegram map entry, your answers in live
+        gatherings, and the Sparks you wrote (by their delete tokens). If you were the last
+        member, the group, its Hot spots blob, all Sparks and counters go too.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                spark_delete_tokens:
+                  type: array
+                  maxItems: 500
+                  items: { $ref: "#/components/schemas/Token" }
+      responses:
+        "200":
+          description: Forgotten
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ForgetResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/v1/groups/{groupId}/gatherings:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    post:
+      tags: [gatherings]
+      operationId: createGathering
+      summary: Send a Flare or a Plan (SRS-CRE-7, SRS-PLAN-1)
+      description: |
+        The host's phone makes the gathering id and seals everything readable into `sealed`
+        and `notice_ct`. The host counts as one yes (BR-Q-1). Upload the photo next with
+        `PUT /gatherings/{id}/photo`; the link works before the photo lands.
+        Telegram groups add `telegram` with readable post text (ADR-0013).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateGathering" }
+      responses:
+        "201":
+          description: Sent
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/gatherings/{gatheringId}:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    get:
+      tags: [gatherings]
+      operationId: getGathering
+      summary: The shared view everyone with the link sees
+      description: Anyone holding the 122-bit gathering id may read it. It holds counts and sealed data only.
+      responses:
+        "200":
+          description: Gathering
+          headers:
+            ETag:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "410": { $ref: "#/components/responses/Gone" }
+
+  /api/v1/gatherings/{gatheringId}/events:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    get:
+      tags: [gatherings]
+      operationId: streamGatheringEvents
+      summary: Live updates as Server-Sent Events (asyncapi.yaml, channel gatheringEvents)
+      description: |
+        Sends a `gathering` event with the full view on connect and on every change, a comment
+        line every 15 s, and a final `gone` event before it closes. Reconnect with
+        `Last-Event-ID` (the view `version`) to skip what you have.
+      parameters:
+        - name: Last-Event-ID
+          in: header
+          required: false
+          schema: { type: string, pattern: "^[0-9]{1,10}$" }
+      responses:
+        "200":
+          description: Event stream
+          content:
+            text/event-stream:
+              schema: { type: string }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "410": { $ref: "#/components/responses/Gone" }
+
+  /api/v1/gatherings/{gatheringId}/photo:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    put:
+      tags: [gatherings]
+      operationId: putPhoto
+      summary: Host uploads the sealed photo (SRS-CRE-6), at most 1.5 MB
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: { type: string, contentMediaType: application/octet-stream }
+      responses:
+        "204": { description: Stored }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+    get:
+      tags: [gatherings]
+      operationId: getPhoto
+      summary: The sealed photo; the phone opens it with the key in the link
+      responses:
+        "200":
+          description: Ciphertext
+          headers:
+            Cache-Control:
+              schema: { type: string, const: "private, max-age=3600, immutable" }
+          content:
+            application/octet-stream:
+              schema: { type: string, contentMediaType: application/octet-stream }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "410": { $ref: "#/components/responses/Gone" }
+
+  /api/v1/gatherings/{gatheringId}/telegram-photo:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    put:
+      tags: [telegram]
+      operationId: putTelegramPhoto
+      summary: Host's phone hands the readable 768 px photo to the bot post (Telegram groups only)
+      description: |
+        Forwarded to Telegram `sendPhoto` from memory and zero-filled; never stored on the server
+        (ADR-0013). Accepted once, within 10 min of creation. Without it the post goes out as text.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, contentMediaType: image/jpeg, maxLength: 1500000 }
+      responses:
+        "204": { description: Posted }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMedia" }
+
+  /api/v1/gatherings/{gatheringId}/me:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    get:
+      tags: [answers]
+      operationId: getMyAnswer
+      summary: Your own answer and what you can do next
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Your view
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "410": { $ref: "#/components/responses/Gone" }
+    put:
+      tags: [answers]
+      operationId: putMyAnswer
+      summary: Say yes (with 0 to 4 rules) or, after Lit, "Can't make it"
+      description: |
+        `yes` before Lit adds or replaces your yes and its rules (SRS-RES-3, SRS-COND-6).
+        `cant_make_it` is accepted only after Lit and does not change the state (SRS-RES-6).
+        Rules come from the phone's parser after the read-back was confirmed (BR-C-10).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Answer" }
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
+        "429": { $ref: "#/components/responses/TooMany" }
+    delete:
+      tags: [answers]
+      operationId: takeBack
+      summary: Take it back, before Lit only (SRS-RES-6)
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Taken back
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
+
+  /api/v1/gatherings/{gatheringId}/me/checks:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    put:
+      tags: [answers]
+      operationId: putMyChecks
+      summary: Your phone's pass or fail per place label (BR-E-3, SRS-PLAN-6)
+      description: |
+        The phone checks its needs profile and walking limit against each place in the sealed
+        blob and sends only pass or fail per label. The profile never leaves the phone (SRS-ACC-1).
+        Missing labels count as pass after 60 s of Ember (BR-E-4).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Checks" }
+      responses:
+        "204": { description: Saved }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "410": { $ref: "#/components/responses/Gone" }
+
+  /api/v1/gatherings/{gatheringId}/text-yes:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [answers]
+      operationId: addTextYes
+      summary: Host enters a relayed "IN code" reply (SRS-CH-6, BR-ID-6)
+      description: Counts as an anonymous yes with no rules. At most 3 per gathering.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [code]
+              properties:
+                code: { $ref: "#/components/schemas/ShortCode" }
+      responses:
+        "200":
+          description: Counted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
+
+  /api/v1/gatherings/{gatheringId}/fade:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [answers]
+      operationId: fade
+      summary: I'm fading (Plans, BR-P-5 to BR-P-7)
+      description: Once per member per Plan, from Lit until start + 50% of the current step. Nobody sees who.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Plan shrank one step, or stayed at step 4
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/gatherings/{gatheringId}/arrivals:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [arrival]
+      operationId: addArrival
+      summary: I'm here, or the host's +1 (BR-H-1 to BR-H-5)
+      description: |
+        Accepted only while Lit. `recorded_at` is the phone's time of the tap, used only to
+        accept outbox items whose tap fell inside the Lit window (SRS-OFF-3); the server
+        clock decides everything else.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Arrival" }
+      responses:
+        "200":
+          description: Counted, or ignored at the cap
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/gatherings/{gatheringId}/done:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [gatherings]
+      operationId: markDone
+      summary: Host ends a Lit gathering (BR-F-5, BR-P-8)
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Gone, deletion scheduled within 5 min
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/gatherings/{gatheringId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [gatherings]
+      operationId: cancelGathering
+      summary: Host cancels, in Kindling or Ember only (BR-F-6)
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Gone with "Not this time."
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gathering" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/gatherings/{gatheringId}/live-location:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    put:
+      tags: [arrival]
+      operationId: putLiveLocation
+      summary: Host's opt-in live location, sealed (SRS-CMP-6)
+      description: Overwritten in place, no history, only while Lit, deleted at Gone. The server sees ciphertext only.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [location_ct]
+              properties:
+                location_ct: { $ref: "#/components/schemas/SmallCt" }
+      responses:
+        "204": { description: Stored }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+    get:
+      tags: [arrival]
+      operationId: getLiveLocation
+      summary: Members of the chosen set read the host's sealed location
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Latest sealed location
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [location_ct, at]
+                properties:
+                  location_ct: { $ref: "#/components/schemas/SmallCt" }
+                  at: { type: string, format: date-time }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [arrival]
+      operationId: stopLiveLocation
+      summary: Host stops sharing
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "204": { description: Deleted }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/v1/gatherings/{gatheringId}/sparks:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [places]
+      operationId: addSpark
+      summary: Leave a Spark after Done (BR-K-1 to BR-K-4)
+      description: Only members with an accepted arrival, once per gathering. Text is 1 to 140 characters before sealing.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NewSpark" }
+      responses:
+        "201":
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Spark" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/v1/groups/{groupId}/sparks:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    get:
+      tags: [places]
+      operationId: listSparks
+      summary: Sparks at one place, newest first (BR-K-5)
+      security: [{ member: [] }]
+      parameters:
+        - name: place
+          in: query
+          required: true
+          description: HMAC-SHA-256 of the place key under a key derived from the group key (base64url).
+          schema: { $ref: "#/components/schemas/PlaceHash" }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 20, default: 1 }
+      responses:
+        "200":
+          description: Sparks
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sparks]
+                properties:
+                  sparks:
+                    type: array
+                    items: { $ref: "#/components/schemas/Spark" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/v1/groups/{groupId}/hotspots:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    get:
+      tags: [places]
+      operationId: getHotspots
+      summary: The group's sealed Hot spots blob (BR-K-6)
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Blob
+          headers:
+            ETag:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Hotspots" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [places]
+      operationId: putHotspots
+      summary: Replace the blob; send If-Match with the version you merged into
+      description: On 412 fetch, merge by max count per place on the phone (BR-K-6) and retry.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - name: If-Match
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [blob_ct]
+              properties:
+                blob_ct: { $ref: "#/components/schemas/BlobCt" }
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Hotspots" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+
+  /api/v1/groups/{groupId}/push-subscriptions:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    put:
+      tags: [push]
+      operationId: putPushSubscription
+      summary: Save this phone's Web Push subscription (SRS-IF-3)
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PushSubscription" }
+      responses:
+        "204": { description: Saved }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    delete:
+      tags: [push]
+      operationId: deletePushSubscription
+      summary: Stop notices on this phone
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/v1/drafts:
+    post:
+      tags: [ai]
+      operationId: draftFromPhoto
+      summary: Six words and a scene from a photo, on our laptop (ADR-0006, ADR-0011)
+      description: |
+        The phone sends a 768 px JPEG (quality 0.7). The server relays it to the hub in memory,
+        zero-fills the buffer after the job, and stores nothing. If the hub is absent, slow
+        (6 s) or its answer fails `enforce()`, the response is the template (`tier: rules`)
+        and the phone shows the typed fallback (BR-AI-1). Increments `tier_ran.photo.{tier}`.
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, contentMediaType: image/jpeg, maxLength: 1500000 }
+      responses:
+        "200":
+          description: Draft
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DraftResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMedia" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/drafts/ladder:
+    post:
+      tags: [ai]
+      operationId: draftLadder
+      summary: Four step labels and minutes from a Plan's ask line (SRS-PLAN-2)
+      description: |
+        Hub tier with an 8 s budget, else the template ladder. The ask line is at most 80
+        characters and carries no place; the phone attaches places from its map pack.
+        Kept in memory only.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LadderRequest" }
+      responses:
+        "200":
+          description: Ladder
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LadderResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
+  /api/v1/groups/{groupId}/telegram-link:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    post:
+      tags: [telegram]
+      operationId: createTelegramLink
+      summary: A one-time t.me link that adds the bot to the group's chat (ADR-0013)
+      description: |
+        Returns `https://t.me/{bot}?startgroup={token}`. When the bot sees `/start {token}` in an
+        allow-listed chat it links that chat to this group and sets `channel` to `telegram`.
+        Token valid 15 min, single use, stored as a hash.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "201":
+          description: Link
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expires_at]
+                properties:
+                  url: { type: string, format: uri }
+                  expires_at: { type: string, format: date-time }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+
+  /api/v1/gatherings/{gatheringId}/telegram-bind:
+    parameters:
+      - $ref: "#/components/parameters/GatheringId"
+    post:
+      tags: [telegram]
+      operationId: bindTelegram
+      summary: Join a Telegram yes to this phone's member (personal link from the bot)
+      description: |
+        A Telegram user who tapped "I'm in" in the chat and then opens their personal link
+        (`?bind={token}`) sends the token here. The server moves that yes onto the phone's member
+        so it counts once, and records the Telegram user on the member (BR-ID-5).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [token]
+              properties:
+                token: { $ref: "#/components/schemas/Token" }
+      responses:
+        "200":
+          description: Bound
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "410": { $ref: "#/components/responses/Gone" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
+
+  /api/v1/telegram/webhook:
+    post:
+      tags: [telegram]
+      operationId: telegramWebhook
+      summary: Telegram Bot API updates (contracts/telegram.md)
+      description: |
+        Telegram sends updates here with the secret header set at setWebhook. Handled update
+        types: `message` (/start, /help, any other text), `callback_query` (I'm in), and
+        `my_chat_member` (added to or removed from a chat). Other chats than the allow-list are
+        left and logged without content (SRS-CH-1). Free text is never parsed or stored (ADR-0013).
+        Always answers 200 quickly; work that calls Telegram back runs after the response.
+      security: [{ telegramSecret: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: A Telegram Update object (https://core.telegram.org/bots/api#update)
+              required: [update_id]
+              properties:
+                update_id: { type: integer }
+      responses:
+        "200": { description: Accepted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+components:
+  securitySchemes:
+    member:
+      type: http
+      scheme: bearer
+      bearerFormat: "{memberId}.{writeToken}"
+      description: Member id (UUID) and the phone's 128-bit write token (base64url), joined by a dot.
+    telegramSecret:
+      type: apiKey
+      in: header
+      name: X-Telegram-Bot-Api-Secret-Token
+
+  parameters:
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/Id" }
+    GatheringId:
+      name: gatheringId
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/Id" }
+    MemberId:
+      name: memberId
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/Id" }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Random per action, made on the phone and kept in the outbox until accepted (24 h).
+      schema: { type: string, pattern: "^[A-Za-z0-9_-]{16,64}$" }
+
+  responses:
+    BadRequest:
+      description: The body or a parameter does not match this contract
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unauthorized:
+      description: Missing or wrong member token or secret
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Forbidden:
+      description: You are a member but this action is not yours (host-only, not in the set)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: No such group or gathering
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Conflict:
+      description: Not allowed in the current state (see `code`)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Gone:
+      description: The gathering ended; its data is deleted or about to be
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    PreconditionFailed:
+      description: The version moved on; fetch, merge, retry
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    TooLarge:
+      description: Body over its limit
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    UnsupportedMedia:
+      description: Wrong content type or not a JPEG
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unprocessable:
+      description: Well formed but breaks a business rule (see `code`)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    TooMany:
+      description: Rate limit (SRS-SEC-5)
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unavailable:
+      description: A dependency is not configured (for example no bot token)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    Id:
+      type: string
+      format: uuid
+      description: UUID v4 made on the phone with crypto.randomUUID (122 random bits).
+    Token:
+      type: string
+      pattern: "^[A-Za-z0-9_-]{22}$"
+      description: 128 random bits, base64url without padding.
+    ShortCode:
+      type: string
+      pattern: "^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{5}$"
+      description: BR-CH-3. Unique among live gatherings.
+    Label:
+      type: string
+      pattern: "^(spot|c([1-9]|1[0-2])|step:[1-4])$"
+      description: |
+        Opaque place label inside one gathering. `spot` is the host's spot, `c1` to `c12` the Ember
+        candidates in distance order, `step:k` a Plan step's place. The real places live only in
+        the sealed blob (ADR-0009); OSM ids are never sent because they resolve to coordinates.
+    Ct:
+      type: string
+      contentEncoding: base64url
+      pattern: "^[A-Za-z0-9_-]+$"
+      description: AES-256-GCM ciphertext, 12-byte nonce first, base64url.
+    NameCt:
+      allOf: [{ $ref: "#/components/schemas/Ct" }]
+      maxLength: 200
+    SmallCt:
+      allOf: [{ $ref: "#/components/schemas/Ct" }]
+      maxLength: 1400
+    SealedCt:
+      allOf: [{ $ref: "#/components/schemas/Ct" }]
+      maxLength: 22000
+      description: The sealed gathering blob (SealedGathering below, encrypted). At most 16 KB of plaintext.
+    NoticeCt:
+      allOf: [{ $ref: "#/components/schemas/Ct" }]
+      maxLength: 2800
+      description: Small enough that a push payload with it stays under the 4 KB Web Push limit.
+    BlobCt:
+      allOf: [{ $ref: "#/components/schemas/Ct" }]
+      maxLength: 90000
+    PlaceHash:
+      type: string
+      pattern: "^[A-Za-z0-9_-]{43}$"
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum:
+            - bad_request
+            - unauthorized
+            - forbidden
+            - not_found
+            - gone
+            - group_full
+            - wrong_state
+            - already_lit
+            - not_host
+            - not_in_set
+            - fade_used
+            - fade_window_closed
+            - text_yes_cap
+            - code_mismatch
+            - not_arrived
+            - spark_exists
+            - plan_times
+            - quorum_range
+            - unknown_member
+            - bind_expired
+            - version_conflict
+            - too_large
+            - not_jpeg
+            - rate_limited
+            - not_configured
+        message:
+          type: string
+          description: Plain words for logs and developers; the phone shows its own copy deck string.
+
+    Health:
+      type: object
+      required: [ok, version, hub, db]
+      properties:
+        ok: { type: boolean }
+        version: { type: string }
+        hub: { type: string, enum: [connected, absent] }
+        db: { type: string, enum: [ok, down, not_configured] }
+
+    Config:
+      type: object
+      required: [version, vapid_public_key, telegram_bot_username, limits]
+      properties:
+        version: { type: string }
+        vapid_public_key:
+          type: [string, "null"]
+          description: null when push is not configured; the app then relies on the bot or the open page.
+        telegram_bot_username: { type: [string, "null"] }
+        limits:
+          type: object
+          required: [max_members, max_photo_bytes, flare_quorum, plan_quorum]
+          properties:
+            max_members: { type: integer, const: 12 }
+            max_photo_bytes: { type: integer, const: 1500000 }
+            flare_quorum: { type: array, items: { type: integer }, const: [2, 3, 4] }
+            plan_quorum: { type: array, items: { type: integer }, const: [2, 3, 4, 5, 6] }
+
+    Audit:
+      type: object
+      required: [at, pass, stores]
+      properties:
+        at: { type: string, format: date-time }
+        pass: { type: boolean, description: "true when every per-gathering store has 0 expired rows" }
+        stores:
+          type: array
+          items:
+            type: object
+            required: [store, table, per_gathering, total_rows, expired_rows]
+            properties:
+              store: { type: string, description: "Logical store id, DS1 to DS11" }
+              table: { type: string }
+              per_gathering: { type: boolean }
+              total_rows: { type: integer }
+              expired_rows: { type: integer }
+
+    CreateGroup:
+      type: object
+      additionalProperties: false
+      required: [id, member]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        member: { $ref: "#/components/schemas/NewMember" }
+
+    NewMember:
+      type: object
+      additionalProperties: false
+      required: [id, name_ct, write_token]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        name_ct: { $ref: "#/components/schemas/NameCt" }
+        write_token:
+          allOf: [{ $ref: "#/components/schemas/Token" }]
+          description: Sent once; the server keeps only SHA-256 of it.
+
+    Member:
+      type: object
+      required: [id, name_ct, joined_at, via]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        name_ct:
+          description: null for a member the bot made from a Telegram tap; the app shows "A Telegram friend".
+          oneOf:
+            - $ref: "#/components/schemas/NameCt"
+            - type: "null"
+        joined_at: { type: string, format: date-time }
+        via: { type: string, enum: [link, telegram] }
+
+    Group:
+      type: object
+      required: [id, channel, members, live]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        channel: { type: string, enum: [link, telegram] }
+        members:
+          type: array
+          maxItems: 12
+          items: { $ref: "#/components/schemas/Member" }
+        live:
+          type: array
+          description: Gatherings that are not Gone.
+          items:
+            type: object
+            required: [id, kind, state]
+            properties:
+              id: { $ref: "#/components/schemas/Id" }
+              kind: { type: string, enum: [flare, plan] }
+              state: { $ref: "#/components/schemas/State" }
+
+    State:
+      type: string
+      enum: [kindling, lit, ember, gone]
+
+    PlanStep:
+      type: object
+      additionalProperties: false
+      required: [step, minutes, place]
+      properties:
+        step: { type: integer, minimum: 1, maximum: 4 }
+        minutes: { type: integer, minimum: 5, maximum: 600 }
+        place: { $ref: "#/components/schemas/Label" }
+
+    CreateGathering:
+      type: object
+      additionalProperties: false
+      required: [id, kind, quorum, tz, sealed, notice_ct]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        kind: { type: string, enum: [flare, plan] }
+        quorum:
+          type: integer
+          minimum: 2
+          maximum: 6
+          description: Flare 2 to 4 (default 2); Plan 2 to 6 (default 3). Checked against kind (422 quorum_range).
+        tz:
+          type: string
+          description: IANA time zone of the host's phone (BR-TIME-2)
+          maxLength: 64
+        sealed: { $ref: "#/components/schemas/SealedCt" }
+        notice_ct:
+          allOf: [{ $ref: "#/components/schemas/NoticeCt" }]
+          description: Sealed NoticeText; copied into push payloads so the service worker can show names (ADR-0014).
+        ember_candidates:
+          type: array
+          description: Flares only. Labels c1..cN in distance order from the spot, N at most 12, all within 400 m (BR-E-1, picked on the phone).
+          maxItems: 12
+          items: { $ref: "#/components/schemas/Label" }
+        plan:
+          type: object
+          additionalProperties: false
+          required: [start_at, deadline_at, steps]
+          properties:
+            start_at: { type: string, format: date-time }
+            deadline_at: { type: string, format: date-time }
+            steps:
+              type: array
+              minItems: 4
+              maxItems: 4
+              description: Steps 1 to 4, minutes strictly decreasing (BR-P-4).
+              items: { $ref: "#/components/schemas/PlanStep" }
+        telegram:
+          description: Only for groups with channel telegram (ADR-0013). Readable, kept until Gone.
+          type: object
+          additionalProperties: false
+          required: [host, invite, place, link]
+          properties:
+            host: { type: string, maxLength: 40 }
+            invite: { type: string, maxLength: 80 }
+            place: { type: string, maxLength: 120 }
+            link:
+              type: string
+              format: uri
+              maxLength: 300
+              description: The gathering link with its key fragment, posted on the bot's buttons.
+            ember_places:
+              type: object
+              description: Ember label to bench name, for the bot's "Smaller plan" edit.
+              propertyNames: { $ref: "#/components/schemas/Label" }
+              additionalProperties: { type: string, maxLength: 120 }
+            step_names:
+              type: object
+              description: Plan step label to step name.
+              propertyNames: { $ref: "#/components/schemas/Label" }
+              additionalProperties: { type: string, maxLength: 40 }
+
+    Gathering:
+      type: object
+      required: [id, group_id, kind, state, quorum, need, short_code, version, created_at, state_since, server_time, sealed, notice_ct, has_photo]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        group_id: { $ref: "#/components/schemas/Id" }
+        kind: { type: string, enum: [flare, plan] }
+        state: { $ref: "#/components/schemas/State" }
+        quorum: { type: integer, description: "2 in Ember (BR-E-5)" }
+        need: { type: integer, minimum: 0, description: "Need N more (BR-Q-4)" }
+        short_code: { $ref: "#/components/schemas/ShortCode" }
+        version: { type: integer, minimum: 1, description: "Goes up by 1 on every change; SSE event id" }
+        created_at: { type: string, format: date-time }
+        state_since: { type: string, format: date-time }
+        next_change_at:
+          type: [string, "null"]
+          format: date-time
+          description: When the server clock will move the state next (Ember, Gone, Plan deadline)
+        server_time: { type: string, format: date-time }
+        sealed: { $ref: "#/components/schemas/SealedCt" }
+        notice_ct: { $ref: "#/components/schemas/NoticeCt" }
+        has_photo: { type: boolean }
+        headcount: { type: [integer, "null"], description: "From Lit on (BR-H-1)" }
+        ember_choice:
+          description: The chosen Ember label once Ember starts (BR-E-1 to BR-E-4); `spot` when none qualified.
+          oneOf:
+            - $ref: "#/components/schemas/Label"
+            - type: "null"
+        plan:
+          type: [object, "null"]
+          required: [start_at, deadline_at, current_step, steps]
+          properties:
+            start_at: { type: string, format: date-time }
+            deadline_at: { type: string, format: date-time }
+            current_step: { type: [integer, "null"], minimum: 1, maximum: 4 }
+            steps:
+              type: array
+              items: { $ref: "#/components/schemas/PlanStep" }
+        ended:
+          type: [string, "null"]
+          enum: [not_this_time, thanks_for_coming, null]
+          description: Set at Gone. Identical for every member (SRS-ST-3).
+
+    Me:
+      type: object
+      required: [member_id, answer, rules, ember_only, in_set, arrived, can_take_back, can_fade, still_coming, is_host]
+      properties:
+        member_id: { $ref: "#/components/schemas/Id" }
+        is_host: { type: boolean }
+        answer: { type: string, enum: [none, yes, cant_make_it] }
+        rules:
+          type: array
+          maxItems: 4
+          items: { $ref: "#/components/schemas/Rule" }
+        ember_only: { type: boolean }
+        in_set:
+          type: [boolean, "null"]
+          description: Whether you are in the chosen set. null before Lit. Only ever about you.
+        arrived: { type: boolean }
+        can_take_back: { type: boolean }
+        can_fade: { type: boolean }
+        still_coming:
+          type: boolean
+          description: |
+            true after a fade made one of your own rules fail at the new step (OQ-2, ADR-0016).
+            You stay in; the phone shows "Plan changed to {step}. Still coming?" once.
+
+    Rule:
+      description: BR-C-1 plus min_step (ADR-0016). Times are absolute UTC, worked out on the phone in the group time zone.
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required: [type, member_id]
+          properties:
+            type: { const: with }
+            member_id: { $ref: "#/components/schemas/Id" }
+        - type: object
+          additionalProperties: false
+          required: [type, at]
+          properties:
+            type: { const: after }
+            at: { type: string, format: date-time }
+        - type: object
+          additionalProperties: false
+          required: [type, at]
+          properties:
+            type: { const: back_by }
+            at: { type: string, format: date-time }
+        - type: object
+          additionalProperties: false
+          required: [type, minutes]
+          properties:
+            type: { const: max_walk }
+            minutes: { type: integer, minimum: 1, maximum: 120 }
+        - type: object
+          additionalProperties: false
+          required: [type, step]
+          properties:
+            type: { const: max_step }
+            step: { type: integer, minimum: 1, maximum: 4 }
+        - type: object
+          additionalProperties: false
+          required: [type, step]
+          properties:
+            type: { const: min_step }
+            step: { type: integer, minimum: 1, maximum: 4 }
+
+    Answer:
+      type: object
+      additionalProperties: false
+      required: [answer]
+      properties:
+        answer: { type: string, enum: [yes, cant_make_it] }
+        rules:
+          type: array
+          maxItems: 4
+          default: []
+          items: { $ref: "#/components/schemas/Rule" }
+        ember_only:
+          type: boolean
+          default: false
+          description: '"Count me in for a closer one" (BR-A-3). Carries no reason.'
+        checks: { $ref: "#/components/schemas/Checks" }
+
+    Checks:
+      type: object
+      additionalProperties: false
+      required: [results]
+      properties:
+        results:
+          type: object
+          description: Label to pass (true) or fail (false).
+          propertyNames: { $ref: "#/components/schemas/Label" }
+          additionalProperties: { type: boolean }
+          maxProperties: 17
+
+    Arrival:
+      type: object
+      additionalProperties: false
+      required: [for, recorded_at]
+      properties:
+        for: { type: string, enum: [self, member, someone_else] }
+        member_id:
+          allOf: [{ $ref: "#/components/schemas/Id" }]
+          description: Required when `for` is member (host only).
+        recorded_at: { type: string, format: date-time }
+
+    NewSpark:
+      type: object
+      additionalProperties: false
+      required: [id, place, text_ct, delete_token]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        place: { $ref: "#/components/schemas/PlaceHash" }
+        text_ct:
+          allOf: [{ $ref: "#/components/schemas/Ct" }]
+          maxLength: 800
+        delete_token:
+          allOf: [{ $ref: "#/components/schemas/Token" }]
+          description: Kept on the phone; lets "Forget this group" remove your Sparks without the server knowing who wrote them.
+
+    Spark:
+      type: object
+      required: [id, text_ct, created_on]
+      properties:
+        id: { $ref: "#/components/schemas/Id" }
+        text_ct: { $ref: "#/components/schemas/Ct" }
+        created_on: { type: string, format: date, description: "Day only (DS10 rule: nothing finer than the day)" }
+
+    Hotspots:
+      type: object
+      required: [blob_ct, version]
+      properties:
+        blob_ct: { $ref: "#/components/schemas/BlobCt" }
+        version: { type: integer, minimum: 1 }
+
+    PushSubscription:
+      type: object
+      additionalProperties: false
+      required: [endpoint, keys]
+      properties:
+        endpoint: { type: string, format: uri, maxLength: 1000 }
+        keys:
+          type: object
+          additionalProperties: false
+          required: [p256dh, auth]
+          properties:
+            p256dh: { type: string, maxLength: 200 }
+            auth: { type: string, maxLength: 50 }
+
+    ForgetResult:
+      type: object
+      required: [last_member, sparks_deleted]
+      properties:
+        last_member: { type: boolean, description: "true when the group and everything in it was deleted" }
+        sparks_deleted: { type: integer }
+
+    DraftResponse:
+      type: object
+      required: [invite, alt, tier, ms]
+      properties:
+        invite: { type: string, description: "At most 6 words, no emoji, no person words (enforce())" }
+        alt: { type: string, description: "At most 20 words; the photo's accessible name (SRS-ACC-5). Empty on the rules tier." }
+        tier: { type: string, enum: [hub, rules] }
+        ms: { type: integer, minimum: 0 }
+
+    LadderRequest:
+      type: object
+      additionalProperties: false
+      required: [ask, total_minutes]
+      properties:
+        ask: { type: string, minLength: 1, maxLength: 80 }
+        total_minutes: { type: integer, minimum: 20, maximum: 600, description: "Step 1 length the host picked" }
+
+    LadderResponse:
+      type: object
+      required: [steps, tier, ms]
+      properties:
+        steps:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            type: object
+            required: [step, label, minutes]
+            properties:
+              step: { type: integer, minimum: 1, maximum: 4 }
+              label: { type: string, maxLength: 40, description: "At most 4 words" }
+              minutes: { type: integer, minimum: 5 }
+        tier: { type: string, enum: [hub, rules] }
+        ms: { type: integer, minimum: 0 }
+
+    SealedGathering:
+      description: |
+        Plaintext inside `sealed`, never sent unsealed. Listed here so phone engineers share one shape.
+        Encrypted with the group key, AAD = gathering id. The photo uses the same key with
+        AAD = gathering id + ":photo"; each seal gets a fresh random 96-bit nonce (SRS-SEC-3).
+      type: object
+      required: [v, host_name, invite, scene, host_line, spot]
+      properties:
+        v: { const: 1 }
+        host_name: { type: string, maxLength: 40 }
+        invite: { type: string, maxLength: 80 }
+        scene: { type: string, maxLength: 200 }
+        host_line: { type: string, maxLength: 120 }
+        spot: { $ref: "#/components/schemas/SealedPlace" }
+        candidates:
+          type: object
+          description: Ember candidates c1..c12
+          additionalProperties: { $ref: "#/components/schemas/SealedPlace" }
+        steps:
+          type: object
+          description: Plan steps step:1..step:4
+          additionalProperties:
+            type: object
+            required: [name, place]
+            properties:
+              name: { type: string, maxLength: 40 }
+              place: { $ref: "#/components/schemas/SealedPlace" }
+        nature_line: { type: string, maxLength: 120 }
+        access:
+          type: object
+          description: Counts and nearest distances within 200 m for the access line (SRS-ACC-2, BR-A-4).
+          required: [benches, restrooms, water, steps_mapped]
+          properties:
+            benches: { $ref: "#/components/schemas/Amenity" }
+            restrooms: { $ref: "#/components/schemas/Amenity" }
+            water: { $ref: "#/components/schemas/Amenity" }
+            steps_mapped: { type: boolean }
+
+    Amenity:
+      type: object
+      required: [count, nearest_m]
+      properties:
+        count: { type: integer, minimum: 0 }
+        nearest_m: { type: [integer, "null"], minimum: 0 }
+
+    SealedPlace:
+      type: object
+      required: [name, lat, lon, key]
+      properties:
+        name: { type: string, maxLength: 120 }
+        lat: { type: number }
+        lon: { type: number }
+        key: { type: string, description: "Place key: OSM element id, else the name (BR-K-4)" }
+
+    NoticeText:
+      description: Plaintext inside `notice_ct`; the service worker decrypts it to write the notice.
+      type: object
+      required: [v, host, spot]
+      properties:
+        v: { const: 1 }
+        host: { type: string, maxLength: 40 }
+        spot: { type: string, maxLength: 120 }
+        benches:
+          type: object
+          description: 'Ember label to bench name, for "Smaller plan: 15 min at {bench}."'
+          additionalProperties: { type: string, maxLength: 120 }
+        steps:
+          type: object
+          description: 'Plan step label to step name, for "Smaller plan: {step}."'
+          additionalProperties: { type: string, maxLength: 40 }

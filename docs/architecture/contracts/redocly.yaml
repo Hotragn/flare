@@ -1,0 +1,10 @@
+extends:
+  - recommended-strict
+rules:
+  info-contact: off
+  operation-4xx-response: error
+  no-server-example.com: off # localhost is the documented dev server
+  security-defined: error
+  # SealedGathering, SealedPlace, Amenity and NoticeText document plaintext that only phones
+  # see; no operation carries them unsealed, so they are deliberately unreferenced.
+  no-unused-components: off
