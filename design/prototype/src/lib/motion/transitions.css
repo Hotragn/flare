@@ -1,0 +1,22 @@
+/* View Transitions styles (docs/design/motion.md 3.10). Only active while
+   html[data-vt] is set by src/lib/motion/transitions.ts. */
+html[data-vt="page"]::view-transition-old(root),
+html[data-vt="step"]::view-transition-old(vt-phone) {
+  animation: vt-out var(--dur-quick) var(--ease-in) both;
+}
+html[data-vt="page"]::view-transition-new(root),
+html[data-vt="step"]::view-transition-new(vt-phone) {
+  animation: vt-in var(--dur-page) var(--ease-out) both;
+}
+html[data-vt="fade"]::view-transition-old(root),
+html[data-vt="fade"]::view-transition-old(vt-phone) { animation: vt-fade-out 160ms linear both; }
+html[data-vt="fade"]::view-transition-new(root),
+html[data-vt="fade"]::view-transition-new(vt-phone) { animation: vt-fade-in 160ms linear both; }
+/* In a step transition only the phone changes; the rest of the page stays still. */
+html[data-vt="step"]::view-transition-old(root),
+html[data-vt="step"]::view-transition-new(root) { animation: none; }
+
+@keyframes vt-out { to { opacity: 0; transform: translateY(8px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }

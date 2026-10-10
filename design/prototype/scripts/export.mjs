@@ -9,12 +9,12 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.resolve(ROOT, "../exports");
-const PORT = process.env.PORT ?? 5318;
+const PORT = String(process.env.PORT ?? 5318);
 const base = `http://127.0.0.1:${PORT}`;
 const only = (process.argv.find((a) => a.startsWith("--only=")) ?? "").slice(7).split(",").filter(Boolean);
 
 async function up() { try { const r = await fetch(base + "/screens/manifest.json"); return r.ok; } catch { return false; } }
-const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
+const server = spawn("npx", ["vite", "preview", "--port", PORT, "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
 for (let i = 0; i < 60 && !(await up()); i++) await new Promise((r) => setTimeout(r, 250));
 const manifest = await (await fetch(base + "/screens/manifest.json")).json();
 

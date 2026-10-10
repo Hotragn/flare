@@ -89,11 +89,23 @@
   --dur-quick: 160ms;
   --dur-base: 260ms;
   --dur-slow: 480ms;
-  --dur-develop: 2400ms;
   --dur-drift: 900ms;
+  --dur-develop: 2400ms;
+  --dur-fade: 160ms;
+  --dur-page: 240ms;
+  --dur-word: 220ms;
+  --dur-breathe: 1800ms;
+  --dur-flicker: 2600ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-settle: cubic-bezier(0.3, 1.25, 0.5, 1);
+  --ease-linear: linear;
+  --spring-sheet: linear(0, 0.02, 0.07, 0.139, 0.219, 0.303, 0.388, 0.468, 0.544, 0.613, 0.675, 0.73, 0.778, 0.819, 0.854, 0.884, 0.909, 0.929, 0.946, 0.96, 0.971, 0.979, 0.986, 0.991, 1);
+  --spring-sheet-dur: 248ms;
+  --spring-needle: linear(0, 0.038, 0.128, 0.243, 0.367, 0.487, 0.596, 0.691, 0.771, 0.836, 0.888, 0.927, 0.956, 0.977, 0.992, 1.001, 1.007, 1.01, 1.011, 1.011, 1.01, 1.009, 1.008, 1.006, 1);
+  --spring-needle-dur: 532ms;
   --l-max-width: 480px;
   --l-gutter: 20px;
   --l-primary-height: 56px;
@@ -186,9 +198,9 @@
 }
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --dur-instant: 0ms; --dur-quick: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-develop: 0ms; --dur-drift: 0ms;
+    --dur-instant: 0ms; --dur-quick: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-drift: 0ms; --dur-develop: 0ms; --dur-page: 0ms; --dur-word: 0ms; --dur-breathe: 0ms; --dur-flicker: 0ms; --spring-sheet-dur: 0ms; --spring-needle-dur: 0ms;
   }
 }
 [data-reduce-motion] {
-  --dur-instant: 0ms; --dur-quick: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-develop: 0ms; --dur-drift: 0ms;
+  --dur-instant: 0ms; --dur-quick: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-drift: 0ms; --dur-develop: 0ms; --dur-page: 0ms; --dur-word: 0ms; --dur-breathe: 0ms; --dur-flicker: 0ms; --spring-sheet-dur: 0ms; --spring-needle-dur: 0ms;
 }

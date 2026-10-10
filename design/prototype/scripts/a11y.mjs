@@ -12,10 +12,10 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AXE = require.resolve("axe-core/axe.min.js");
-const PORT = process.env.PORT ?? 5318;
+const PORT = String(process.env.PORT ?? 5318);
 const base = `http://127.0.0.1:${PORT}`;
 async function up() { try { return (await fetch(base + "/screens/manifest.json")).ok; } catch { return false; } }
-const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
+const server = spawn("npx", ["vite", "preview", "--port", PORT, "--host", "127.0.0.1", "--strictPort"], { cwd: ROOT, stdio: "ignore" });
 for (let i = 0; i < 60 && !(await up()); i++) await new Promise((r) => setTimeout(r, 250));
 const manifest = await (await fetch(base + "/screens/manifest.json")).json();
 
@@ -46,7 +46,6 @@ const all = results.flatMap((r) => r.violations.map((v) => ({ ...v, target: r.ta
 const bad = all.filter((v) => v.impact === "serious" || v.impact === "critical");
 const byRule = {};
 for (const v of all) { byRule[v.id] ??= { impact: v.impact, help: v.help, targets: 0, sample: `${v.target}: ${v.sample}` }; byRule[v.id].targets++; }
-fs.mkdirSync(path.resolve(ROOT, "../exports"), { recursive: true });
 fs.writeFileSync(path.resolve(ROOT, "../exports/a11y-report.json"), JSON.stringify({ checked: targets.length, date: new Date().toISOString(), byRule, results }, null, 2));
 console.log(`Checked ${targets.length} pages and screen states.`);
 console.log(`Violations: ${all.length} (serious or critical: ${bad.length})`);

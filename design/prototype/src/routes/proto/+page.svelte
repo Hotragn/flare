@@ -6,6 +6,11 @@
 <script lang="ts">
   import { byId } from "#lib/screens/registry.ts";
   import type { Theme } from "#lib/components/parts.ts";
+  import { tick } from "svelte";
+  import { stepTransition } from "#lib/motion/transitions.ts";
+  import { feedback, type Moment } from "#lib/motion/feedback.ts";
+  import { hapticTap } from "#lib/motion/haptics.ts";
+  import { isMuted, setMuted } from "#lib/motion/sound.ts";
 
   type Step = { id: string; view: string; theme: Theme; note: string; auto?: number };
   const moments: { name: string; steps: Step[] }[] = [
@@ -55,18 +60,47 @@
   const step = $derived(moments[m].steps[s]);
   const entry = $derived(byId(step.id));
 
+  // Motion and sound hooks (docs/design/motion.md 3): each step change runs in a view
+  // transition; arriving on a moment plays its sound and haptic.
+  const cue: Record<string, Moment> = { "I4 success": "yes", "I6 lit": "lit", "I7 facing": "facing", "I9 waiting": "ember", "I9 lit": "lit", "P5 step-1": "lit" };
+  let sound = $state(true);
+  // Wait until the next screen module has loaded and rendered, so the new snapshot is complete.
+  function go(update: () => void) {
+    stepTransition(async () => { update(); await tick(); await entry?.load(); await new Promise((r) => setTimeout(r, 0)); await tick(); });
+  }
   function next() {
-    if (s < moments[m].steps.length - 1) s += 1;
-    else if (m < moments.length - 1) { m += 1; s = 0; }
+    go(() => {
+      if (s < moments[m].steps.length - 1) s += 1;
+      else if (m < moments.length - 1) { m += 1; s = 0; }
+    });
   }
   function prev() {
-    if (s > 0) s -= 1;
-    else if (m > 0) { m -= 1; s = moments[m].steps.length - 1; }
+    go(() => {
+      if (s > 0) s -= 1;
+      else if (m > 0) { m -= 1; s = moments[m].steps.length - 1; }
+    });
   }
   function onPhoneClick(e: MouseEvent) {
     const t = e.target as HTMLElement;
     if (t.closest(".btn.primary, .shutter, .btn.text, .btn.secondary")) next();
   }
+  $effect(() => { sound = !isMuted(); });
+  $effect(() => {
+    const k = `${step.id} ${step.view}`;
+    if (cue[k]) feedback(cue[k], { hapticAttached: true });
+  });
+  // The yes button ticks on the user's own tap (iOS switch overlay, or vibrate on Android).
+  let phone: HTMLDivElement | undefined = $state();
+  $effect(() => {
+    const id = step.id;
+    let undo: { destroy: () => void } | undefined;
+    let alive = true;
+    tick().then(() => setTimeout(() => {
+      const b = phone?.querySelector<HTMLElement>(".btn.primary");
+      if (alive && b && id === "I1") undo = hapticTap(b, "tap");
+    }, 50));
+    return () => { alive = false; undo?.destroy(); };
+  });
   $effect(() => {
     const ms = step.auto;
     if (!ms) return;
@@ -83,7 +117,7 @@
     <h1 class="t-title">Key moments</h1>
     <ol class="moments">
       {#each moments as mo, i}
-        <li><button class:active={i === m} onclick={() => { m = i; s = 0; }}>{i + 1}. {mo.name}</button></li>
+        <li><button class:active={i === m} onclick={() => go(() => { m = i; s = 0; })}>{i + 1}. {mo.name}</button></li>
       {/each}
     </ol>
     <p class="note" aria-live="polite">{step.note}</p>
@@ -92,10 +126,11 @@
       <span>{s + 1} / {moments[m].steps.length}</span>
       <button onclick={next}>Next</button>
     </div>
+    <button class="sound" aria-pressed={sound} onclick={() => { sound = !sound; setMuted(!sound); }}>Sound {sound ? "on" : "off"}</button>
     <p class="small">Friends are simulated. Tap the main button on the phone to move on. {step.id} · {step.view} · {step.theme}</p>
   </aside>
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-  <div class="phone" onclick={onPhoneClick}>
+  <div class="phone" onclick={onPhoneClick} bind:this={phone}>
     {#key `${m}-${s}`}
       {#await entry!.load() then mod}
         <mod.default view={step.view} theme={step.theme} />
@@ -115,7 +150,8 @@
   .note { margin: 0; min-height: 4.5em; font-size: 1.05rem; }
   .nav { display: flex; align-items: center; gap: 12px; }
   .nav button { min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); border: 2px solid var(--c-ink-900); background: transparent; font-weight: 700; }
+  .sound { align-self: flex-start; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); border: 2px solid var(--c-ink-900); background: transparent; font-weight: 700; }
   .small { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
-  .phone { width: 390px; height: 844px; border-radius: 48px; overflow: hidden; position: relative; box-shadow: 0 0 0 10px var(--c-ink-900), var(--e-3); transform: translateZ(0); }
+  .phone { width: 390px; height: 844px; border-radius: 48px; overflow: hidden; position: relative; box-shadow: 0 0 0 10px var(--c-ink-900), var(--e-3); transform: translateZ(0); view-transition-name: vt-phone; }
   @media (max-width: 860px) { .phone { width: 100%; max-width: 390px; border-radius: 0; box-shadow: none; } .wrap { padding: 0; gap: 12px; } .side { padding: 16px; } }
 </style>
