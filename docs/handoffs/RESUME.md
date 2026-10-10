@@ -77,3 +77,7 @@ Build order is in handoff 07, "What to build". Waiting on the founder: Render de
 ## Engineering lead: IN PROGRESS (Sat 2026-10-10, 20:00 ET)
 Done and committed: spikes E1 (relay faults, heartbeat fix BUG-030/031), E2 (deletion timing, migration 0002), E3 (compass flow 21/21); device-check kit (`npm run device-check`, pages in apps/web/static/check/); ICD types (packages/shared/src/icd/, sealed.ts); BUG-029 fixed (zod jitless). Docs written: docs/engineering/01-work-breakdown.md, 02-interface-control.md, 03-spikes.md.
 Exact next step: write docs/engineering/04-dependencies-and-process.md (mermaid dependency graph, branching and review, definition of done), 05-device-checklist.md (15-minute ordered list: capability, fps, haptics, Telegram via `cd lab && node spikes/03-telegram/tg.mjs morning --minutes 15 --taps 10` BEFORE any setWebhook, compass), docs/engineering/README.md, then docs/handoffs/08-engineering-lead.md (CR-E1 hub condition parser not built, CR-E2 phone tier not shipped, CR-A1 approved), run `npm run ci`, commit, push, message the manager.
+
+## Engineering lead: DONE (Sat 2026-10-10, 20:40 ET)
+Handoff: docs/handoffs/08-engineering-lead.md. docs/engineering/ 01 to 05 plus notes/ and spike evidence. 52 tests, CI green.
+Next: the nine specialists start in parallel per docs/engineering/01-work-breakdown.md; integration 01:00, 05:00, 08:00; device checklist 08:30 (docs/engineering/05-device-checklist.md); RC tag 09:30. Founder approvals still pending: Render deploy, Telegram webhook, repo public.

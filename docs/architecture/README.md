@@ -23,6 +23,6 @@ Version 1.0, Sat 2026-10-10. Owner: Architect. Start with the system architectur
 ## Checks
 
 ```bash
-npm run ci          # secret scan, lint, types, 44 tests, contracts, build, JS budget, 36 diagrams
+npm run ci          # secret scan, lint, types, tests, contracts, build, JS budget, diagrams
 npm run e2e:hello   # needs Ollama with gemma4:e4b-it-q4_K_M and Google Chrome
 ```
