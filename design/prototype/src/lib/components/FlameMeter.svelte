@@ -6,10 +6,12 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import Flame from "./Flame.svelte";
+  import { kindlingProgress } from "#lib/motion/core.ts";
   import type { FlameState } from "../brand";
   let { have = 1, quorum = 2, state: st = "kindling", size = 132, note = "" }: { have?: number; quorum?: number; state?: FlameState; size?: number; note?: string } = $props();
   const need = $derived(Math.max(0, quorum - have));
-  const progress = $derived(quorum > 1 ? (have - 1) / (quorum - 1) : 1);
+  // Same step table as the big flame (motion.md 3.1); the meter starts at 72.5% so it reads at 124 px.
+  const progress = $derived(kindlingProgress(have, quorum));
   // Count tick: after mount, each change of the count rises in on the spring (260 ms)
   // and the newest filled dot pops. Nothing moves on first paint.
   let ticked = $state(false);

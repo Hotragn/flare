@@ -62,6 +62,15 @@ export function reducedMotion(el?: Element | null): boolean {
   return document.documentElement.hasAttribute("data-reduce-motion");
 }
 
+/**
+ * Kindling size step per yes (docs/design/motion.md 3.1). The host's own yes is 55%,
+ * the last yes before quorum is 90%, Lit is 100%. Returns Flame `progress` (0..1).
+ */
+export function kindlingProgress(have: number, quorum: number) {
+  if (quorum <= 2) return 0;
+  return Math.min(1, Math.max(0, (have - 1) / (quorum - 2)));
+}
+
 /** Calls fn whenever the OS reduced-motion setting changes. Returns an unsubscribe. */
 export function onReducedMotionChange(fn: () => void) {
   if (typeof window === "undefined" || !window.matchMedia) return () => {};

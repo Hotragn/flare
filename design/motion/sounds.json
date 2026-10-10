@@ -1,0 +1,43 @@
+{
+  "sampleRate": 24000,
+  "bits": 16,
+  "channels": 1,
+  "sounds": [
+    {
+      "name": "yes",
+      "ms": 70,
+      "peak": "-6.0",
+      "rms": "-24.6",
+      "rms50": "-23.1",
+      "wavBytes": 3404,
+      "m4aBytes": 4725
+    },
+    {
+      "name": "lit",
+      "ms": 520,
+      "peak": "-3.0",
+      "rms": "-16.6",
+      "rms50": "-9.1",
+      "wavBytes": 25004,
+      "m4aBytes": 8199
+    },
+    {
+      "name": "ember",
+      "ms": 700,
+      "peak": "-9.0",
+      "rms": "-21.6",
+      "rms50": "-14.6",
+      "wavBytes": 33644,
+      "m4aBytes": 6138
+    },
+    {
+      "name": "facing",
+      "ms": 140,
+      "peak": "-10.0",
+      "rms": "-23.0",
+      "rms50": "-18.8",
+      "wavBytes": 6764,
+      "m4aBytes": 4693
+    }
+  ]
+}

@@ -262,8 +262,9 @@ export class FlameGL {
       for (const k of ["sy", "emb", "dome", "gone", "drift"] as Key[]) this.tween(k, tgt[k], base, EASE.out);
     } else if (next === "ember") {
       // Settle: the flame sinks into the dome; the dome lands with a soft settle.
-      this.tween("emb", 1, slow, EASE.out);
-      this.tween("sy", tgt.sy, slow, EASE.inOut);
+      // The flame sinks first (ease-out), and fades as it reaches the dome (ease-in).
+      this.tween("emb", 1, slow, EASE.in);
+      this.tween("sy", tgt.sy, slow, EASE.out);
       this.tween("dome", 1, slow, EASE.settle, 0, from === "ember" ? 1 : 1.6);
       this.tween("heat", tgt.heat, slow, EASE.out);
       this.tween("lit", 0, quick, EASE.out);

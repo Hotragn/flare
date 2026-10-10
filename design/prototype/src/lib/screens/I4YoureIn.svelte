@@ -10,7 +10,7 @@
 
 <Screen {theme} {wire} close={false} offline={view === "queued" ? "Saved. It sends when you're back online." : ""}>
   <div class="center">
-    <Hearth state="kindling" progress={0.6} size={200} />
+    <Hearth state="kindling" progress={0.6} size={200} intro />
     <h1 class="t-display">You're in.</h1>
     <p class="t-sun">We'll buzz you when it's lit.</p>
     <NeedCount have={2} quorum={3} />
