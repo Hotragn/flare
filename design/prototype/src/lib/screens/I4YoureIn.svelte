@@ -9,7 +9,7 @@
   let { view = "success", theme = "light", wire = false, ondone }: { view?: string; theme?: Theme; wire?: boolean; ondone?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} close={false} offline={view === "queued" ? t("app.offlineQueued") : ""}>
+<Screen {theme} {wire} sound close={false} offline={view === "queued" ? t("app.offlineQueued") : ""}>
   <div class="center">
     <Hearth state="kindling" progress={0.6} size={200} intro />
     <h1 class="t-display">{t("in.title")}</h1>

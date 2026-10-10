@@ -12,7 +12,7 @@
   const here = $derived(view === "lit" ? 1 : 3);
 </script>
 
-<Screen {theme} {wire} title={t("host.lit.title")}>
+<Screen {theme} {wire} sound title={t("host.lit.title")}>
   <div class="center">
     <Hearth state="lit" size={210} celebrate />
     <h1 class="t-display">{t("host.lit.headline")}</h1>

@@ -12,7 +12,7 @@
   const name = $derived(plan.steps[step - 1].name);
 </script>
 
-<Screen {theme} {wire} title={plan.ask}>
+<Screen {theme} {wire} sound title={plan.ask}>
   <Hearth state="lit" size={130} celebrate={view === "step-1"} horizon={false} />
   <h1 class="t-title center">{view === "smaller" ? t("planLit.smaller", { step: name }) : t("planLit.on", { step: name, time: plan.start })}</h1>
   <Ladder steps={plan.steps} current={step} />

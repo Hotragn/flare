@@ -10,7 +10,7 @@
   let { view = "lit", theme = "sun", wire = false, onfind, onhere }: { view?: string; theme?: Theme; wire?: boolean; onfind?: () => void; onhere?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title={t("lit.title", { host: people.host })} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
+<Screen {theme} {wire} sound title={t("lit.title", { host: people.host })} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Hearth state="lit" size={190} celebrate={view === "lit"} />
     {#if view === "smaller"}

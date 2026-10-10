@@ -11,7 +11,7 @@
   let { view = "waiting", theme = "sun", wire = false, onyes }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title={t("lit.title", { host: people.host })}>
+<Screen {theme} {wire} sound title={t("lit.title", { host: people.host })}>
   <div class="center">
     <Hearth state={view === "lit" ? "lit" : "ember"} size={150} celebrate={view === "lit"} />
     <h1 class="t-title">{view === "lit" ? t("lit.notice", { host: people.host, spot: flare.emberBench }) : t("ember.headline", { bench: flare.emberBench })}</h1>

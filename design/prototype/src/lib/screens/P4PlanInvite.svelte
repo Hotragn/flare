@@ -10,7 +10,7 @@
   let { view = "open", theme = "light", wire = false, onyes, onshort }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; onshort?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title={t("invite.title", { host: people.host })}>
+<Screen {theme} {wire} sound title={t("invite.title", { host: people.host })}>
   <h1 class="t-invite">{plan.ask}</h1>
   <p class="t-muted">{t("planInvite.meta", { deadline: plan.deadline })}</p>
   <FlameMeter have={view === "need" ? 2 : 1} quorum={3} note={view === "need" ? t("planInvite.needAt", { n: 1, k: 1, step: plan.steps[0].name }) : t("planInvite.private")} />

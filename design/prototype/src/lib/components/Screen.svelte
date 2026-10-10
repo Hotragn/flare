@@ -6,12 +6,14 @@
   import { t } from "#lib/copy/index.ts";
   import type { Snippet } from "svelte";
   import Icon from "./Icon.svelte";
+  import SoundToggle from "./SoundToggle.svelte";
   import { themeAttrs, type Theme } from "./parts";
 
   let {
     theme = "light",
     title = "",
     heading = "",
+    sound = false,
     close = true,
     menu = false,
     offline = "",
@@ -24,7 +26,7 @@
     overlay,
     wire = false,
   }: {
-    theme?: Theme; title?: string; heading?: string; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
+    theme?: Theme; title?: string; heading?: string; sound?: boolean; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
     tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; overlay?: Snippet; wire?: boolean;
   } = $props();
 </script>
@@ -35,9 +37,10 @@
       <button class="icon-btn" aria-label={t("app.menu")} onclick={onmenu}><Icon name="menu" /></button>
     {:else}<span class="spacer"></span>{/if}
     {#if title}<span class="bar-title t-small">{title}</span>{/if}
+    <span class="right">{#if sound}<SoundToggle />{/if}
     {#if close}
       <button class="icon-btn" aria-label={t("app.close")} onclick={onclose}><Icon name="close" /></button>
-    {:else}<span class="spacer"></span>{/if}
+    {:else}<span class="spacer"></span>{/if}</span>
   </header>
   {#if offline}
     <div class="offline" role="status"><Icon name="offline" size={20} /><span>{offline}</span></div>
@@ -63,6 +66,7 @@
   .bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 0; min-height: 56px; }
   .bar-title { color: var(--text-muted); font-weight: 700; }
   .spacer { width: 44px; }
+  .right { display: inline-flex; gap: 6px; align-items: center; }
   .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; border: 0; background: color-mix(in srgb, var(--text) 7%, transparent); color: var(--text); }
   .icon-btn:active { transform: scale(0.94); }
   .offline { margin: 4px 20px 0; padding: 10px 14px; border-radius: var(--r-md); display: flex; gap: 8px; align-items: center; background: var(--surface); border: 2px solid var(--line); font-weight: 700; font-size: calc(var(--t-small-size) * var(--text-scale)); }

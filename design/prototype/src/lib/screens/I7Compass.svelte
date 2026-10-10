@@ -12,7 +12,7 @@
   const bearing = $derived(view === "facing" ? 4 : -35);
 </script>
 
-<Screen {theme} {wire} heading={t("compass.heading")} title={t("compass.heading")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
+<Screen {theme} {wire} sound heading={t("compass.heading")} title={t("compass.heading")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Compass {status} {meters} {bearing} />
   </div>

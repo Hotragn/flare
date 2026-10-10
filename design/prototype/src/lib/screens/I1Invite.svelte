@@ -14,7 +14,7 @@
   const host = people.host;
 </script>
 
-<Screen {theme} {wire} title={t("invite.title", { host })} heading={view === "loading" ? t("invite.loading", { host }) : ""}>
+<Screen {theme} {wire} sound title={t("invite.title", { host })} heading={view === "loading" ? t("invite.loading", { host }) : ""}>
   {#if view === "loading"}
     <div class="skeleton print-sk" aria-hidden="true"></div>
     <div class="skeleton line" aria-hidden="true"></div>

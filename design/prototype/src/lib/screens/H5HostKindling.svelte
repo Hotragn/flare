@@ -13,7 +13,7 @@
   const progress = $derived((have - 1) / (quorum - 1));
 </script>
 
-<Screen {theme} {wire} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
+<Screen {theme} {wire} sound heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Hearth state="kindling" {progress} size={230} />
     <NeedCount {have} {quorum} />
