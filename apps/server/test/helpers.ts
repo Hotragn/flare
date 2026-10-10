@@ -8,8 +8,8 @@ import { bearer, HubRelay, secretMatches } from "../src/hub/relay.ts";
 
 export const SECRET = "test-secret-0123456789abcdef0123456789";
 
-export async function startServer(db: Db | null = null, timeoutMs = 3000) {
-  const relay = new HubRelay(timeoutMs);
+export async function startServer(db: Db | null = null, timeoutMs = 3000, pingMs = 5000) {
+  const relay = new HubRelay(timeoutMs, { pingMs });
   const app = createApp({ relay, db, version: "test" });
   const server = serve({ fetch: app.fetch, port: 0 });
   await new Promise((r) => server.once("listening", r));

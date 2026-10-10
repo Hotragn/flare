@@ -10,13 +10,28 @@ export type HubOptions = {
   secret: string;
   ollama: OllamaConfig;
   onLog?: (e: Record<string, unknown>) => void;
+  /** Drop the socket if the server sends nothing (not even a ping) for this long. Default 15 s (3 missed pings). */
+  silenceMs?: number;
 };
+
+const FIRST_RETRY_MS = 250;
 
 export function startHub(opts: HubOptions): { stop: () => void } {
   const say = opts.onLog ?? (() => {});
   let ws: WebSocket | null = null;
   let stopped = false;
-  let delay = 1000;
+  let delay = FIRST_RETRY_MS;
+  let lastHeard = Date.now();
+  const silenceMs = opts.silenceMs ?? 15_000;
+  // A Wi-Fi drop can leave a half-open socket that never closes (spike E1). The server pings
+  // every 5 s, so 15 s of silence means the link is dead: terminate and reconnect.
+  const watchdog = setInterval(() => {
+    if (ws && ws.readyState === WebSocket.OPEN && Date.now() - lastHeard > silenceMs) {
+      say({ event: "silent", ms: Date.now() - lastHeard });
+      ws.terminate();
+    }
+  }, 1000);
+  watchdog.unref();
   let waitingFor: { id: string; bytes: number } | null = null;
 
   const connect = () => {
@@ -25,12 +40,14 @@ export function startHub(opts: HubOptions): { stop: () => void } {
       headers: { authorization: `Bearer ${opts.secret}` },
     });
     ws.on("open", async () => {
-      delay = 1000;
+      delay = FIRST_RETRY_MS;
+      lastHeard = Date.now();
       const ready = await isModelReady(opts.ollama);
       ws?.send(JSON.stringify({ type: "hello", protocol: HUB_PROTOCOL, model: opts.ollama.model, ready }));
       say({ event: "connected", ready });
     });
     ws.on("message", async (data, isBinary) => {
+      lastHeard = Date.now();
       if (!isBinary) {
         let raw: unknown;
         try {
@@ -103,6 +120,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
   return {
     stop: () => {
       stopped = true;
+      clearInterval(watchdog);
       ws?.close();
     },
   };

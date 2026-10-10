@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flare compass check</title>
+<link rel="stylesheet" href="check.css">
+<link rel="icon" href="/check/capability/icon-180.png">
+</head>
+<body>
+<main>
+  <h1>Compass check</h1>
+  <p class="small">Step 5 of the device check. Uses the iOS permission flow Flare will ship (SRS-CMP-1 to 7).</p>
+
+  <section class="card">
+    <h2>1. Start</h2>
+    <p>One tap asks for Motion &amp; Orientation, then location.</p>
+    <button id="start" type="button">Start compass</button>
+    <p id="perm" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+    <h2>2. Mark a target</h2>
+    <p>Stand still, tap Mark, then walk about 30 m away.</p>
+    <button id="mark" type="button" disabled>Mark this spot</button>
+    <p id="target" class="small"></p>
+  </section>
+
+  <section class="card">
+    <h2>3. Point back</h2>
+    <div class="dial" aria-hidden="true"><div id="arrow" class="arrow">▲</div></div>
+    <p id="spoken" class="big" role="status" aria-live="polite">Waiting for a target.</p>
+    <p id="facing" class="small"></p>
+    <label class="row"><input id="speak" type="checkbox" checked> Speak</label>
+  </section>
+
+  <section class="card">
+    <h2>4. Results</h2>
+    <pre id="out">Nothing yet.</pre>
+    <button id="copy" type="button">Copy results</button>
+    <button id="send" type="button">Send to laptop</button>
+  </section>
+</main>
+<script src="compass.js" type="module"></script>
+</body>
+</html>

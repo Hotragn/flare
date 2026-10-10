@@ -30,7 +30,8 @@
     "secret-scan": "node scripts/secret-scan.ts",
     "budget": "node scripts/budget.ts",
     "hooks": "git config core.hooksPath .githooks",
-    "diagrams": "node scripts/check-diagrams.ts"
+    "diagrams": "node scripts/check-diagrams.ts",
+    "device-check": "node scripts/device-check.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1b1f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Flare check">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Flare phone check</title>
+<!-- Imported from lab/spikes/04-iphone-check (lab report 04) for the device checklist and SRS-CAP-1.
+     Changes on import: the optional on-phone vision card is removed, location results keep
+     accuracy only (no rounded coordinates), results post to /api/device-check. -->
+<style>
+  :root { --bg: #fff; --fg: #111; --muted: #666; --card: #f3f3f5; --ok: #0a7a33; --bad: #b3261e; --warn: #8a5a00; --line: #ddd; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #111114; --fg: #eee; --muted: #9a9aa0; --card: #1d1d22; --ok: #5bd88a; --bad: #ff8a80; --warn: #f0c060; --line: #333; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; padding-bottom: 96px; font: 16px/1.4 -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.lead { color: var(--muted); margin: 0 0 16px; }
+  section { background: var(--card); border-radius: 12px; padding: 12px; margin: 0 0 12px; }
+  h2 { font-size: 17px; margin: 0 0 8px; display: flex; justify-content: space-between; gap: 8px; }
+  .st { font-size: 13px; font-weight: 600; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); } .muted { color: var(--muted); }
+  pre { margin: 6px 0 0; font: 12px/1.35 ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-word; }
+  button { font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); margin: 4px 6px 4px 0; min-height: 44px; }
+  button.primary { background: #ff6a2b; color: #fff; border-color: #ff6a2b; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); display: flex; gap: 8px; }
+  .bar button { flex: 1; margin: 0; }
+  label.sw { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+  input[type=file] { max-width: 100%; }
+  video { width: 100%; max-height: 200px; background: #000; border-radius: 8px; display: none; }
+</style>
+</head>
+<body>
+<h1>Flare phone check</h1>
+<p class="lead">Tap each button once. Results stay on screen. Use “Copy results” at the bottom and paste them in the Flare test chat.</p>
+
+<section id="s-env"><h2>Device and page <span class="st"></span></h2><pre></pre></section>
+
+<section id="s-gpu"><h2>WebGPU <span class="st"></span></h2>
+  <button data-run="gpuCompute">Run GPU speed test</button><pre></pre></section>
+
+<section id="s-storage"><h2>Storage <span class="st"></span></h2>
+  <button data-run="storageWrite">Write 200 MB test file</button> <button data-run="storagePersist">Ask to keep storage</button><pre></pre></section>
+
+<section id="s-compass"><h2>Compass and motion <span class="st"></span></h2>
+  <button class="primary" data-run="compass">Allow compass and motion</button><pre></pre></section>
+
+<section id="s-geo"><h2>Location accuracy <span class="st"></span></h2>
+  <button class="primary" data-run="geo">Start 20 s location test</button><pre></pre></section>
+
+<section id="s-camera"><h2>Camera <span class="st"></span></h2>
+  <input id="file" type="file" accept="image/*" capture="environment">
+  <button data-run="cameraStream">Test live camera</button>
+  <video id="video" playsinline muted></video><pre></pre></section>
+
+<section id="s-speech"><h2>Spoken description (offline voices) <span class="st"></span></h2>
+  <button class="primary" data-run="speak">Speak test sentence</button><pre></pre></section>
+
+<section id="s-share"><h2>Web Share <span class="st"></span></h2>
+  <button data-run="shareText">Share a link</button> <button data-run="shareFile">Share an image</button><pre></pre></section>
+
+<section id="s-sw"><h2>Offline (service worker) <span class="st"></span></h2>
+  <button data-run="swCheck">Check offline cache</button><pre></pre></section>
+
+<section id="s-a2hs"><h2>Add to Home Screen <span class="st"></span></h2><pre></pre></section>
+
+<section id="s-haptic"><h2>Switch haptic (iOS 18+) <span class="st"></span></h2>
+  <label class="sw"><input id="switch" type="checkbox" switch> Toggle me and feel for a tap</label>
+  <button data-run="hapticYes">I felt it</button> <button data-run="hapticNo">Nothing</button><pre></pre></section>
+
+<section id="s-audio"><h2>Audio playback <span class="st"></span></h2>
+  <button class="primary" data-run="audio">Play test tone</button> <button data-run="audioHeard">I heard it</button> <button data-run="audioSilent">Silent</button><pre></pre></section>
+
+<section id="s-wake"><h2>Keep screen on <span class="st"></span></h2>
+  <button data-run="wake">Test wake lock</button><pre></pre></section>
+
+
+<div class="bar"><button class="primary" id="copy">Copy results</button><button id="send">Send to laptop</button></div>
+
+<script type="module">
+const R = {}; // section id -> {status, lines[]}
+const $ = (s) => document.querySelector(s);
+function set(id, status, data, cls) {
+  const sec = $(`#s-${id}`);
+  R[id] = { status, data };
+  sec.querySelector('.st').textContent = status;
+  sec.querySelector('.st').className = `st ${cls ?? (status.startsWith('OK') ? 'ok' : status.startsWith('NO') || status.startsWith('FAIL') ? 'bad' : 'warn')}`;
+  sec.querySelector('pre').textContent = typeof data === 'string' ? data : Object.entries(data).map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join('\n');
+}
+const add = (id, k, v) => { const d = (R[id]?.data && typeof R[id].data === 'object') ? R[id].data : {}; d[k] = v; set(id, R[id]?.status ?? 'RUNNING', d); };
+const err = (e) => `${e?.name ?? 'Error'}: ${e?.message ?? e}`;
+const round = (x, n = 1) => (x == null ? null : Math.round(x * 10 ** n) / 10 ** n);
+
+// ---------- automatic checks ----------
+async function env() {
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  set('env', 'OK', {
+    ua: navigator.userAgent, secure_context: isSecureContext, cross_origin_isolated: self.crossOriginIsolated,
+    screen: `${screen.width}x${screen.height} @${devicePixelRatio}x`, viewport: `${innerWidth}x${innerHeight}`,
+    cores: navigator.hardwareConcurrency, device_memory: navigator.deviceMemory ?? 'n/a (Safari hides it)',
+    standalone, online: navigator.onLine, language: navigator.language, time: new Date().toISOString(),
+  });
+  set('a2hs', standalone ? 'OK running from Home Screen' : 'NOT INSTALLED', {
+    standalone, manifest_linked: !!document.querySelector('link[rel=manifest]'),
+    how: standalone ? 'Installed. Re-run Storage and Offline here; home screen apps get their own storage.' : 'Safari: Share button > Add to Home Screen > Open as Web App on. Then open it and run this page again.',
+  }, standalone ? 'ok' : 'warn');
+}
+
+async function gpu() {
+  if (!navigator.gpu) return set('gpu', 'NO navigator.gpu', { note: isSecureContext ? 'WebGPU not available in this browser' : 'Needs HTTPS (not a secure context)' });
+  try {
+    const a = await navigator.gpu.requestAdapter();
+    if (!a) return set('gpu', 'NO adapter', {});
+    const L = a.limits;
+    const d = await a.requestDevice();
+    set('gpu', 'OK', {
+      adapter: a.info ? `${a.info.vendor} ${a.info.architecture} ${a.info.description}` : 'n/a',
+      shader_f16: a.features.has('shader-f16'), subgroups: a.features.has('subgroups'),
+      maxBufferSize_MB: round(L.maxBufferSize / 2 ** 20), maxStorageBufferBindingSize_MB: round(L.maxStorageBufferBindingSize / 2 ** 20),
+      maxComputeWorkgroupStorageSize: L.maxComputeWorkgroupStorageSize, maxComputeInvocationsPerWorkgroup: L.maxComputeInvocationsPerWorkgroup,
+      maxStorageBuffersPerShaderStage: L.maxStorageBuffersPerShaderStage, device: d ? 'created' : 'failed',
+      gemma_e2b_fits: L.maxBufferSize >= 1174405120 ? 'yes (needs one 1.12 GiB buffer)' : 'NO: needs one 1.12 GiB buffer',
+    });
+    d.destroy();
+  } catch (e) { set('gpu', 'FAIL', err(e)); }
+}
+
+async function storage() {
+  try {
+    const e = await navigator.storage?.estimate?.();
+    set('storage', 'OK', {
+      quota_GB: e ? round(e.quota / 1e9, 2) : 'n/a', usage_MB: e ? round(e.usage / 1e6) : 'n/a',
+      persisted: await navigator.storage?.persisted?.() ?? 'n/a', opfs: !!navigator.storage?.getDirectory, cache_api: 'caches' in self,
+    });
+  } catch (e) { set('storage', 'FAIL', err(e)); }
+}
+
+function speechVoices() {
+  const list = () => speechSynthesis.getVoices();
+  const show = () => {
+    const v = list(); const en = v.filter((x) => /^en/i.test(x.lang));
+    set('speech', v.length ? 'OK voices listed' : 'NO voices yet', {
+      voices_total: v.length, english: en.length, english_local: en.filter((x) => x.localService).length,
+      english_list: en.slice(0, 25).map((x) => `${x.name} (${x.lang})${x.localService ? '' : ' [network]'}${x.default ? ' [default]' : ''}`),
+    });
+  };
+  if (!('speechSynthesis' in self)) return set('speech', 'NO speechSynthesis', {});
+  show(); speechSynthesis.addEventListener('voiceschanged', show);
+}
+
+function share() {
+  const png = new File([new Uint8Array([137, 80, 78, 71])], 'x.png', { type: 'image/png' });
+  set('share', navigator.share ? 'OK available' : 'NO navigator.share', { share: !!navigator.share, can_share_files: navigator.canShare ? navigator.canShare({ files: [png] }) : false });
+}
+
+function sw() {
+  if (!('serviceWorker' in navigator)) return set('sw', 'NO serviceWorker', { note: isSecureContext ? '' : 'Needs HTTPS' });
+  navigator.serviceWorker.register('sw.js').then((reg) => {
+    set('sw', navigator.serviceWorker.controller ? 'OK controlling page' : 'REGISTERED, reload once', {
+      scope: reg.scope, controller: !!navigator.serviceWorker.controller,
+      offline_test: 'After it says controlling: turn on Airplane Mode, reload. If this page loads, offline works.',
+    });
+  }).catch((e) => set('sw', 'FAIL', err(e)));
+}
+
+function haptic() {
+  const sw = $('#switch');
+  set('haptic', sw.switch === true || 'switch' in sw ? 'SWITCH SUPPORTED, toggle it' : 'NO switch attribute', {
+    switch_attribute: 'switch' in sw, renders_as: getComputedStyle(sw).appearance, vibrate_api: 'vibrate' in navigator,
+  });
+}
+
+
+// ---------- tap-to-run checks ----------
+const T = {};
+T.gpuCompute = async () => {
+  try {
+    const a = await navigator.gpu.requestAdapter(); const d = await a.requestDevice();
+    const N = 1 << 22; // 4M floats
+    const code = `@group(0) @binding(0) var<storage, read_write> b: array<f32>;
+      @compute @workgroup_size(256) fn main(@builtin(global_invocation_id) g: vec3u) {
+        var x = b[g.x]; for (var i = 0u; i < 256u; i++) { x = fma(x, 1.0001, 0.5); } b[g.x] = x; }`;
+    const p = d.createComputePipeline({ layout: 'auto', compute: { module: d.createShaderModule({ code }), entryPoint: 'main' } });
+    const buf = d.createBuffer({ size: N * 4, usage: GPUBufferUsage.STORAGE });
+    const bg = d.createBindGroup({ layout: p.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: buf } }] });
+    const runs = [];
+    for (let r = 0; r < 4; r++) {
+      const t0 = performance.now(); const e = d.createCommandEncoder(); const c = e.beginComputePass();
+      c.setPipeline(p); c.setBindGroup(0, bg); c.dispatchWorkgroups(N / 256); c.end(); d.queue.submit([e.finish()]);
+      await d.queue.onSubmittedWorkDone(); runs.push(performance.now() - t0);
+    }
+    const best = Math.min(...runs.slice(1));
+    add('gpu', 'compute_best_ms', round(best)); add('gpu', 'gflops_approx', round((N * 256 * 2) / (best / 1000) / 1e9));
+    d.destroy();
+  } catch (e) { add('gpu', 'compute_error', err(e)); }
+};
+T.storageWrite = async () => {
+  try {
+    const root = await navigator.storage.getDirectory(); const fh = await root.getFileHandle('flare-check.bin', { create: true });
+    const w = await fh.createWritable(); const chunk = new Uint8Array(8 << 20).fill(7); const t0 = performance.now();
+    for (let i = 0; i < 25; i++) await w.write(chunk);
+    await w.close(); const ms = performance.now() - t0;
+    const t1 = performance.now(); const f = await fh.getFile(); let n = 0; const rd = f.stream().getReader(); for (;;) { const { done, value } = await rd.read(); if (done) break; n += value.length; }
+    add('storage', 'opfs_write_200MB_ms', Math.round(ms)); add('storage', 'opfs_read_200MB_ms', Math.round(performance.now() - t1));
+    const e = await navigator.storage.estimate(); add('storage', 'usage_after_MB', round(e.usage / 1e6));
+    await root.removeEntry('flare-check.bin'); add('storage', 'cleaned_up', true);
+  } catch (e) { add('storage', 'opfs_error', err(e)); }
+};
+T.storagePersist = async () => { try { add('storage', 'persist_granted', await navigator.storage.persist()); } catch (e) { add('storage', 'persist_error', err(e)); } };
+
+T.compass = async () => {
+  const out = {};
+  try {
+    if (typeof DeviceOrientationEvent?.requestPermission === 'function') out.orientation_permission = await DeviceOrientationEvent.requestPermission();
+    else out.orientation_permission = 'no requestPermission (not iOS or old iOS)';
+    if (typeof DeviceMotionEvent?.requestPermission === 'function') out.motion_permission = await DeviceMotionEvent.requestPermission();
+  } catch (e) { out.permission_error = err(e); }
+  set('compass', 'LISTENING 10 s, turn slowly', out);
+  let n = 0, nm = 0, first = null, last = null, acc = [], headings = [];
+  const onO = (e) => { n++; first ??= performance.now(); last = performance.now(); if (e.webkitCompassHeading != null) { headings.push(e.webkitCompassHeading); acc.push(e.webkitCompassAccuracy); } out.alpha = round(e.alpha); out.beta = round(e.beta); out.gamma = round(e.gamma); out.absolute = e.absolute; };
+  const onM = () => nm++;
+  addEventListener('deviceorientation', onO); addEventListener('devicemotion', onM);
+  await new Promise((r) => setTimeout(r, 10_000));
+  removeEventListener('deviceorientation', onO); removeEventListener('devicemotion', onM);
+  out.orientation_events = n; out.events_per_s = n > 1 ? round((n - 1) / ((last - first) / 1000)) : 0; out.motion_events = nm;
+  out.webkitCompassHeading = headings.length ? `last ${round(headings.at(-1))} deg, range ${round(Math.min(...headings))}-${round(Math.max(...headings))}` : 'none';
+  out.webkitCompassAccuracy_deg = acc.length ? `median ${round(acc.sort((a, b) => a - b)[acc.length >> 1])}, -1 means uncalibrated` : 'none';
+  set('compass', headings.length ? 'OK heading works' : n ? 'PARTIAL no compass heading' : 'NO events', out);
+};
+
+T.geo = () => {
+  if (!navigator.geolocation) return set('geo', 'NO geolocation', {});
+  const t0 = performance.now(); const fixes = [];
+  set('geo', 'WAITING for permission / fix', {});
+  const id = navigator.geolocation.watchPosition((p) => {
+    fixes.push({ t: round((performance.now() - t0) / 1000), acc: round(p.coords.accuracy), alt_acc: round(p.coords.altitudeAccuracy), heading: p.coords.heading, speed: p.coords.speed });
+    const best = Math.min(...fixes.map((f) => f.acc));
+    set('geo', `OK best ${best} m`, { first_fix_s: fixes[0].t, fixes: fixes.length, best_accuracy_m: best, last: fixes.at(-1),
+      position: 'not recorded (coordinates stay on the phone)' });
+  }, (e) => set('geo', 'FAIL', { code: e.code, message: e.message }), { enableHighAccuracy: true, maximumAge: 0, timeout: 20_000 });
+  setTimeout(() => { navigator.geolocation.clearWatch(id); add('geo', 'done_after_s', 20); }, 20_000);
+};
+
+$('#file').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0]; if (!f) return;
+  const t0 = performance.now();
+  try {
+    const bmp = await createImageBitmap(f);
+    set('camera', 'OK photo captured', { type: f.type, size_MB: round(f.size / 1e6, 2), pixels: `${bmp.width}x${bmp.height}`, decode_ms: Math.round(performance.now() - t0), note: 'HEIC from the iOS camera is converted to JPEG by Safari for file inputs' });
+  } catch (e) { set('camera', 'FAIL decode', { type: f.type, size: f.size, error: err(e) }); }
+});
+T.cameraStream = async () => {
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1920 } }, audio: false });
+    const v = $('#video'); v.srcObject = s; v.style.display = 'block'; await v.play();
+    const st = s.getVideoTracks()[0].getSettings(); add('camera', 'live_stream', `${st.width}x${st.height} ${st.frameRate ?? ''}fps facing ${st.facingMode ?? '?'}`);
+    setTimeout(() => { s.getTracks().forEach((t) => t.stop()); v.style.display = 'none'; }, 4000);
+  } catch (e) { add('camera', 'live_stream_error', err(e)); }
+};
+
+T.speak = () => {
+  const v = speechSynthesis.getVoices(); const en = v.filter((x) => /^en/i.test(x.lang) && x.localService);
+  const u = new SpeechSynthesisUtterance('A quiet park path lined with benches under tall trees. Your friend is forty meters ahead, slightly to the left.');
+  u.voice = en.find((x) => /premium|enhanced/i.test(x.name)) ?? en.find((x) => x.default) ?? en[0] ?? null; u.rate = 1;
+  const t0 = performance.now();
+  u.onstart = () => add('speech', 'start_latency_ms', Math.round(performance.now() - t0));
+  u.onend = () => add('speech', 'spoken_ms', Math.round(performance.now() - t0));
+  u.onerror = (e) => add('speech', 'error', e.error);
+  add('speech', 'voice_used', u.voice ? `${u.voice.name} (${u.voice.lang})` : 'default');
+  add('speech', 'offline_tip', 'Turn on Airplane Mode and tap again: local voices still speak.');
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+};
+
+T.shareText = async () => { try { await navigator.share({ title: 'Flare', text: 'Bench by the fountain, 15 min?', url: location.href }); add('share', 'text_share', 'completed'); } catch (e) { add('share', 'text_share', err(e)); } };
+T.shareFile = async () => {
+  try {
+    const c = document.createElement('canvas'); c.width = 400; c.height = 300; const g = c.getContext('2d'); g.fillStyle = '#ff6a2b'; g.fillRect(0, 0, 400, 300); g.fillStyle = '#fff'; g.font = '40px sans-serif'; g.fillText('Flare test', 90, 165);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/png')); const file = new File([blob], 'flare-test.png', { type: 'image/png' });
+    if (!navigator.canShare?.({ files: [file] })) return add('share', 'file_share', 'canShare false');
+    await navigator.share({ files: [file], text: 'Flare test image' }); add('share', 'file_share', 'completed');
+  } catch (e) { add('share', 'file_share', err(e)); }
+};
+
+T.swCheck = async () => {
+  const reg = await navigator.serviceWorker?.getRegistration();
+  const keys = await caches.keys().catch(() => []);
+  add('sw', 'controller_now', !!navigator.serviceWorker?.controller); add('sw', 'caches', keys);
+  if (reg?.active) { const ch = new MessageChannel(); ch.port1.onmessage = (e) => add('sw', 'cached_urls', e.data); reg.active.postMessage('list', [ch.port2]); }
+};
+
+T.hapticYes = () => add('haptic', 'tester_felt_haptic', 'YES');
+T.hapticNo = () => add('haptic', 'tester_felt_haptic', 'NO');
+$('#switch').addEventListener('change', (e) => add('haptic', 'toggled', e.target.checked));
+
+let actx;
+T.audio = async () => {
+  try {
+    if (navigator.audioSession) { navigator.audioSession.type = 'playback'; add('audio', 'audioSession', 'type=playback (plays even with the silent switch on)'); }
+    else add('audio', 'audioSession', 'not available');
+    actx ??= new AudioContext(); await actx.resume();
+    const o = actx.createOscillator(); const g = actx.createGain(); o.frequency.value = 660; g.gain.setValueAtTime(0.0001, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.3, actx.currentTime + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.6);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.65);
+    add('audio', 'webaudio_state', actx.state); add('audio', 'sample_rate', actx.sampleRate); add('audio', 'base_latency_ms', round(actx.baseLatency * 1000)); add('audio', 'output_latency_ms', round((actx.outputLatency ?? 0) * 1000));
+    add('audio', 'ask', 'Try once with the silent switch ON. Then tap I heard it or Silent.');
+  } catch (e) { add('audio', 'error', err(e)); }
+};
+T.audioHeard = () => add('audio', 'tester_heard', 'YES');
+T.audioSilent = () => add('audio', 'tester_heard', 'NO');
+
+T.wake = async () => {
+  if (!('wakeLock' in navigator)) return set('wake', 'NO wakeLock', {});
+  try { const l = await navigator.wakeLock.request('screen'); set('wake', 'OK', { active: !l.released, note: 'Released after 5 s' }); setTimeout(() => l.release(), 5000); }
+  catch (e) { set('wake', 'FAIL', err(e)); }
+};
+
+// The on-phone vision card was dropped on import: no on-device vision ships (ADR-0007, lab 09).
+
+document.querySelectorAll('[data-run]').forEach((b) => b.addEventListener('click', () => T[b.dataset.run]?.()));
+
+function report() {
+  return ['Flare phone check', ...Object.entries(R).map(([k, v]) => `\n## ${k}: ${v.status}\n${typeof v.data === 'string' ? v.data : Object.entries(v.data).map(([a, b]) => `${a}: ${typeof b === 'object' ? JSON.stringify(b) : b}`).join('\n')}`)].join('\n');
+}
+$('#copy').addEventListener('click', async () => {
+  const t = report();
+  try { await navigator.clipboard.writeText(t); $('#copy').textContent = 'Copied'; }
+  catch { const ta = document.createElement('textarea'); ta.value = t; document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); $('#copy').textContent = 'Copied (fallback)'; }
+  setTimeout(() => ($('#copy').textContent = 'Copy results'), 2000);
+});
+$('#send').addEventListener('click', async () => {
+  try { const r = await fetch('/api/device-check', { method: 'POST', body: JSON.stringify({ kind: 'phone-check', report: R, text: report() }) }); $('#send').textContent = r.ok ? 'Sent' : `HTTP ${r.status}`; }
+  catch (e) { $('#send').textContent = 'No laptop server'; }
+});
+
+env(); gpu(); storage(); speechVoices(); share(); sw(); haptic();
+['compass', 'geo', 'camera', 'audio', 'wake'].forEach((k) => R[k] ?? set(k, 'TAP TO TEST', '', 'muted'));
+</script>
+</body>
+</html>

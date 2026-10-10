@@ -28,10 +28,20 @@ export class HubRelay {
   private pending = new Map<string, Pending>();
   private pinger: NodeJS.Timeout | null = null;
 
+  private lastHeard = 0;
   private readonly timeoutMs: number;
+  private readonly pingMs: number;
+  private readonly deadAfterMs: number;
 
-  constructor(timeoutMs: number) {
+  /**
+   * @param timeoutMs per-job budget (BR-AI-1: 6 s for photos)
+   * @param opts.pingMs heartbeat interval; the hub must answer something within 2.5 pings or
+   *   the socket is dropped (spike E1: a silent half-open socket otherwise stays "connected")
+   */
+  constructor(timeoutMs: number, opts: { pingMs?: number } = {}) {
     this.timeoutMs = timeoutMs;
+    this.pingMs = opts.pingMs ?? 5_000;
+    this.deadAfterMs = Math.round(this.pingMs * 2.5);
   }
 
   get status(): "connected" | "absent" {
@@ -42,10 +52,13 @@ export class HubRelay {
     if (this.socket) {
       log.info({ event: "hub.replaced" }, "hub replaced");
       this.socket.close(4000, "replaced");
+      this.failPending();
     }
     this.socket = ws;
     this.ready = false;
+    this.lastHeard = Date.now();
     ws.on("message", (data, isBinary) => {
+      this.lastHeard = Date.now();
       if (isBinary) return; // the hub never sends binary
       let msg: unknown;
       try {
@@ -72,11 +85,24 @@ export class HubRelay {
       if (this.socket === ws) {
         this.socket = null;
         this.ready = false;
+        // Jobs sent on this socket can't come back: answer them now with the template
+        // instead of waiting out the 6 s budget (spike E1, reset case).
+        this.failPending();
         log.info({ event: "hub.closed" }, "hub disconnected");
       }
     });
+    ws.on("error", () => {}); // close follows
     if (this.pinger) clearInterval(this.pinger);
-    this.pinger = setInterval(() => this.socket?.send(JSON.stringify({ type: "ping", t: Date.now() })), 20_000);
+    this.pinger = setInterval(() => {
+      const sock = this.socket;
+      if (!sock) return;
+      if (Date.now() - this.lastHeard > this.deadAfterMs) {
+        log.warn({ event: "hub.silent", ms: Date.now() - this.lastHeard }, "hub silent, dropping socket");
+        sock.terminate(); // fires close: status absent, pending answered
+        return;
+      }
+      sock.send(JSON.stringify({ type: "ping", t: Date.now() }));
+    }, this.pingMs);
     this.pinger.unref();
   }
 
@@ -91,6 +117,7 @@ export class HubRelay {
         this.pending.delete(id);
         log.warn({ event: "hub.timeout", ms: this.timeoutMs }, "hub job timed out");
         resolve(null);
+        this.probe(ws);
       }, this.timeoutMs);
       this.pending.set(id, { resolve, timer });
       ws.send(JSON.stringify(header));
@@ -98,14 +125,32 @@ export class HubRelay {
     });
   }
 
-  close(): void {
-    if (this.pinger) clearInterval(this.pinger);
-    this.socket?.close(1001, "server shutdown");
+  /** After a timeout, ping now; if the hub says nothing within 3 s, drop the socket so
+   * health turns absent and later drafts go straight to the template (spike E1). */
+  private probe(ws: WebSocket): void {
+    if (this.socket !== ws) return;
+    const asked = Date.now();
+    ws.send(JSON.stringify({ type: "ping", t: asked }));
+    setTimeout(() => {
+      if (this.socket === ws && this.lastHeard < asked) {
+        log.warn({ event: "hub.silent", after: "timeout" }, "hub silent after a timeout, dropping socket");
+        ws.terminate();
+      }
+    }, 3000).unref();
+  }
+
+  private failPending(): void {
     for (const [, p] of this.pending) {
       clearTimeout(p.timer);
       p.resolve(null);
     }
     this.pending.clear();
+  }
+
+  close(): void {
+    if (this.pinger) clearInterval(this.pinger);
+    this.socket?.close(1001, "server shutdown");
+    this.failPending();
   }
 
   get protocol(): string {

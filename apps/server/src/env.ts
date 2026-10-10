@@ -16,4 +16,5 @@ export const env = {
   webBuildDir: str("WEB_BUILD_DIR", path.join(ROOT, "apps/web/build")),
   version: str("RENDER_GIT_COMMIT", "dev").slice(0, 12),
   hubJobTimeoutMs: Number(str("HUB_JOB_TIMEOUT_MS", "6000")), // BR-AI-1: hub tier 6 s
+  hubPingMs: Number(str("HUB_PING_MS", "5000")), // silent hub dropped after 2.5 pings (spike E1)
 };

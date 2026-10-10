@@ -7,7 +7,7 @@ import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { log } from "./log.ts";
 
-const relay = new HubRelay(env.hubJobTimeoutMs);
+const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
 let db: Db | null = null;
 if (env.databaseUrl) {
   db = await pgDb(env.databaseUrl);

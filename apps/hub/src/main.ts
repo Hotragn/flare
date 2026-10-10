@@ -37,4 +37,10 @@ const warm = async () => {
 };
 await warm();
 setInterval(warm, 20 * 60_000).unref();
-startHub({ serverUrl, secret: need("HUB_SECRET"), ollama, onLog: (e) => console.info(`hub: ${JSON.stringify(e)}`) });
+startHub({
+  serverUrl,
+  secret: need("HUB_SECRET"),
+  ollama,
+  silenceMs: Number(process.env.HUB_SILENCE_MS ?? 15_000),
+  onLog: (e) => console.info(`hub: ${JSON.stringify(e)}`),
+});

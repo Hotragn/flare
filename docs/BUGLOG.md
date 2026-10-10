@@ -261,11 +261,38 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Fix:** Commas instead of semicolons inside diagram blocks.
 - **Proof:** `npm run diagrams`: 36 rendered, 0 failed. The check runs in CI.
 
-## BUG-029: One unexplained CSP report in e2e-hello
+## BUG-029: CSP violation in e2e-hello from zod's eval probe
 
 - **Date:** 2026-10-10
 - **Area:** Architecture (e2e)
 - **Symptom:** One run, right after a rebuild, reported "CSP blocked script-src". The next 10 runs passed.
-- **Cause:** Not found. The report then carried only the directive.
-- **Fix:** The e2e now prints the blocked URI, source file, line and sample, so a repeat names its cause. Status: open, watching.
-- **Proof:** 10 of 10 later runs pass with no violations.
+- **Cause:** Found when it came back with the new details: "script-src eval" from the hello route's chunk. Zod 4 probes for eval with `new Function` the first time it parses an object schema; our CSP blocks it, zod catches the error and carries on, but Chrome still reports a violation. Zod's own source notes this (`node_modules/zod/v4/core/util.js`, the `jitless` comment). It was intermittent because the probe only runs on some parse paths.
+- **Fix:** `apps/web/src/lib/zod-csp.ts` sets `z.config({ jitless: true })`, imported first by the root layout. zod is now a direct dependency of apps/web.
+- **Proof:** 7 of 7 e2e runs after the fix: no CSP violations, no console errors.
+
+## BUG-030: A silently dropped hub link stayed "connected" forever
+
+- **Date:** 2026-10-10
+- **Area:** Engineering (hub relay, spike E1)
+- **Symptom:** In spike E1's half-open case, `/api/v1/health` kept saying `hub: connected` for 54.5 s (the rest of the run), every draft waited the full 6 s, and the hub never reconnected. On Sunday a Wi-Fi blip on the Mac would have quietly cost every photo its AI words.
+- **Cause:** The server sent pings but never checked for answers; the hub never checked that pings arrived. A half-open TCP connection only dies by TCP keepalive, about 2 hours on macOS.
+- **Fix:** Server: every 5 s it pings, drops the socket if nothing came back for 12.5 s, and probes right after any job timeout (drops after 3 s of silence). Hub: drops and redials after 15 s without hearing from the server. First redial after 250 ms, then backoff to 30 s.
+- **Proof:** Spike E1, true half-open: recovered in 16.1 s, health accurate after 8.5 s, 43/60 drafts from the hub (before: never, 10/60). Tests: apps/server/test/relay.test.ts (silent hub dropped, live hub kept), apps/hub/test/reconnect.test.ts (silent link redialled, quick redial).
+
+## BUG-031: Jobs in flight on a dropped hub socket waited out the 6 s budget
+
+- **Date:** 2026-10-10
+- **Area:** Engineering (hub relay, spike E1)
+- **Symptom:** With a connection reset every 10 s, drafts sent just before a reset took 6.0 s to fall back (p95 6,006 ms), and 10 of 60 drafts used the template.
+- **Cause:** Pending jobs were only answered by their own timer, not when their socket closed.
+- **Fix:** On socket close or replacement the relay answers every pending job at once (template). The hub's first redial is 250 ms instead of 1 s.
+- **Proof:** Spike E1 reset case: p95 315 ms, 55/60 from the hub, reconnect 0.3 s after each reset. Test: "answers jobs in flight at once when the hub socket closes" (under 1 s).
+
+## BUG-032: Spike proxy reordered bytes under jitter
+
+- **Date:** 2026-10-10
+- **Area:** Engineering (spike tooling)
+- **Symptom:** The relay looked like it lost 4 to 5 of 60 jobs with only latency and jitter.
+- **Cause:** The fault proxy gave each chunk its own timer; timers with different delays can fire out of order, which corrupted the TCP stream it was forwarding. A tool bug, not a relay bug.
+- **Fix:** One ordered queue and one timer per direction.
+- **Proof:** Latency case after the fix: 60/60 from the hub, p95 703 ms.

@@ -1,0 +1,22 @@
+PASS granted: requestPermission called inside the tap: calls [true]
+PASS granted: orientation result recorded: granted
+PASS granted: location asked after orientation: granted
+PASS granted: heading 0° says "straight ahead": Target, 30 meters, straight ahead.
+PASS granted: heading 90° says "to your left": Target, 30 meters, to your left.
+PASS granted: heading 270° says "to your right": Target, 30 meters, to your right.
+PASS granted: heading 180° says "behind you": Target, 30 meters, behind you.
+PASS granted: facing tone fired when pointing at it: facingTicks 1
+PASS granted: heading source is webkitCompassHeading: webkitCompassHeading
+PASS results carry no coordinates: no lat/lon in the copied report
+PASS granted: no page errors: none
+PASS denied: requestPermission called inside the tap: calls [true]
+PASS denied: orientation result recorded: denied
+PASS denied: location asked after orientation: granted
+PASS denied: distance only at 0°: Target, 30 meters. Hold your phone flat to get a direction.
+PASS denied: distance only at 90°: Target, 30 meters. Hold your phone flat to get a direction.
+PASS denied: distance only at 270°: Target, 30 meters. Hold your phone flat to get a direction.
+PASS denied: distance only at 180°: Target, 30 meters. Hold your phone flat to get a direction.
+PASS denied: no page errors: none
+PASS control: a call outside a tap is refused: NotAllowedError
+PASS location denied: tells the person what to do: Can't find you yet. Check Location Services for Safari.
+compass flow: 21/21 checks pass

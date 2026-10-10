@@ -24,3 +24,6 @@ design/exports/
 # App build output
 apps/web/.svelte-kit/
 apps/web/build/
+
+# Sunday device check results (scripts/device-check.ts)
+device-results/

@@ -1,7 +1,7 @@
-server and hub up in 3074 ms
+server and hub up in 3068 ms
 invite: Meet by the water's edge
 alt:    A wide expanse of blue water with a wooden bench situated on a grassy bank under a colorful sky.
-meta:   tier hub · 3604 ms · upload 13 KB
-round trip in the browser: 3823 ms
+meta:   tier hub · 3580 ms · upload 13 KB
+round trip in the browser: 3827 ms
 no console errors, no CSP violations
 PASS phone page -> server -> hub relay -> Ollama -> back

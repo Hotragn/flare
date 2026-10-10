@@ -1,0 +1,82 @@
+[
+ {
+  "label": "baseline",
+  "drafts": 60,
+  "hubTier": 60,
+  "p50": 312,
+  "p95": 317,
+  "max": 320,
+  "hubConnectsDuringRun": [],
+  "proxyConnections": 1,
+  "healthLiedSeconds": 0,
+  "recoveredAfterSeconds": null
+ },
+ {
+  "label": "latency 150 ms + 50 ms jitter each way",
+  "drafts": 60,
+  "hubTier": 60,
+  "p50": 671,
+  "p95": 703,
+  "max": 708,
+  "hubConnectsDuringRun": [],
+  "proxyConnections": 1,
+  "healthLiedSeconds": 0,
+  "recoveredAfterSeconds": null
+ },
+ {
+  "label": "loss 5% (stalls 0.2-1 s)",
+  "drafts": 60,
+  "hubTier": 60,
+  "p50": 417,
+  "p95": 1132,
+  "max": 1269,
+  "hubConnectsDuringRun": [],
+  "proxyConnections": 1,
+  "healthLiedSeconds": 0,
+  "recoveredAfterSeconds": null
+ },
+ {
+  "label": "loss 15% (stalls 0.2-1 s)",
+  "drafts": 60,
+  "hubTier": 60,
+  "p50": 418,
+  "p95": 1340,
+  "max": 1846,
+  "hubConnectsDuringRun": [],
+  "proxyConnections": 1,
+  "healthLiedSeconds": 0,
+  "recoveredAfterSeconds": null
+ },
+ {
+  "label": "reset every 10 s",
+  "drafts": 60,
+  "hubTier": 55,
+  "p50": 312,
+  "p95": 315,
+  "max": 319,
+  "hubConnectsDuringRun": [
+   10.3,
+   20.4,
+   30.5,
+   40.6,
+   50.6
+  ],
+  "proxyConnections": 6,
+  "healthLiedSeconds": 0,
+  "recoveredAfterSeconds": null
+ },
+ {
+  "label": "silent drop (half-open) at 10 s",
+  "drafts": 60,
+  "hubTier": 50,
+  "p50": 312,
+  "p95": 6006,
+  "max": 6008,
+  "hubConnectsDuringRun": [
+   19.3
+  ],
+  "proxyConnections": 2,
+  "healthLiedSeconds": 8.5,
+  "recoveredAfterSeconds": 9.2
+ }
+]

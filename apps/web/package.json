@@ -14,7 +14,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@flare/shared": "0.1.0"
+    "@flare/shared": "0.1.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "4.0.0",
