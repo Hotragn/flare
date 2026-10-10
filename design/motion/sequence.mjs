@@ -20,7 +20,7 @@ if (!(await up())) {
   for (let i = 0; i < 60 && !(await up()); i++) await new Promise((r) => setTimeout(r, 250));
 }
 const browser = await chromium.launch({ channel: "chrome" });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: reduce ? "reduce" : "no-preference" });
+const ctx = await browser.newContext({ viewport: { width: Number(process.env.VW ?? 390), height: Number(process.env.VH ?? 844) }, deviceScaleFactor: 2, reducedMotion: reduce ? "reduce" : "no-preference" });
 const page = await ctx.newPage();
 await page.goto(base + url, { waitUntil: "networkidle" });
 await page.waitForTimeout(800);

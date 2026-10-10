@@ -7,7 +7,6 @@ import { DUR, EASE } from "./core.ts";
 import { VERT, FRAG } from "./flame-shader.ts";
 
 const TEX = 512; // mask texture size (px) for the 140 x 140 brand-unit area
-const S = TEX / 140;
 
 // ---------- capability and slots ----------
 let glOk: boolean | null = null;
@@ -33,61 +32,80 @@ export function acquireSlot() { if (live >= MAX_LIVE) return false; live++; retu
 export function releaseSlot() { live = Math.max(0, live - 1); }
 export const liveCount = () => live;
 
-// ---------- mask texture (built once, about 1 MB, shared) ----------
+// ---------- mask texture (built once per page, 1 MB, shared by every flame) ----------
+// One 2D canvas pass draws the three brand shapes into r, g and b (additive), so there is
+// one readback. The wide glow (a) is blurred on a 128 px copy and scaled up, which keeps
+// the one-time build short (measured in /lab/fps and docs/design/motion.md).
 let mask: Uint8Array | null = null;
 export let maskBuildMs = 0;
 
-function blur(ch: Float32Array, r: number) {
+/** In-place box blur on one channel of a w x w Float32Array, `passes` times (3 passes ~ Gaussian). */
+function blur(ch: Float32Array, w: number, r: number, passes: number) {
   const tmp = new Float32Array(ch.length);
-  const pass = (src: Float32Array, dst: Float32Array, horiz: boolean) => {
-    const w = TEX, norm = 1 / (2 * r + 1);
+  const norm = 1 / (2 * r + 1);
+  const run = (src: Float32Array, dst: Float32Array, stride: number, step: number) => {
     for (let line = 0; line < w; line++) {
-      let acc = 0;
-      const at = (i: number) => { const j = Math.min(w - 1, Math.max(0, i)); return horiz ? src[line * w + j] : src[j * w + line]; };
-      for (let i = -r; i <= r; i++) acc += at(i);
+      const o = line * stride;
+      let acc = src[o] * (r + 1);
+      for (let i = 1; i <= r; i++) acc += src[o + Math.min(w - 1, i) * step];
       for (let i = 0; i < w; i++) {
-        dst[horiz ? line * w + i : i * w + line] = acc * norm;
-        acc += at(i + r + 1) - at(i - r);
+        dst[o + i * step] = acc * norm;
+        acc += src[o + Math.min(w - 1, i + r + 1) * step] - src[o + Math.max(0, i - r) * step];
       }
     }
   };
-  for (let k = 0; k < 3; k++) { pass(ch, tmp, true); pass(tmp, ch, false); }
+  for (let k = 0; k < passes; k++) { run(ch, tmp, w, 1); run(tmp, ch, 1, w); }
 }
 
-function channel(draw: (x: CanvasRenderingContext2D) => void, r: number) {
+function draw(size: number, paint: (x: CanvasRenderingContext2D) => void) {
   const c = document.createElement("canvas");
-  c.width = c.height = TEX;
-  const x = c.getContext("2d")!;
-  x.setTransform(S, 0, 0, S, 20 * S, 30 * S);
-  x.fillStyle = x.strokeStyle = "#fff";
-  draw(x);
-  const d = x.getImageData(0, 0, TEX, TEX).data;
-  const ch = new Float32Array(TEX * TEX);
-  for (let i = 0; i < ch.length; i++) ch[i] = d[i * 4 + 3] / 255;
-  if (r) blur(ch, r);
-  return ch;
+  c.width = c.height = size;
+  const x = c.getContext("2d", { willReadFrequently: true })!;
+  const k = size / 140;
+  x.setTransform(k, 0, 0, k, 20 * k, 30 * k);
+  paint(x);
+  return x.getImageData(0, 0, size, size).data;
 }
 
 function buildMask() {
   if (mask) return mask;
   const t0 = performance.now();
   const flame = new Path2D(`${FLAME} ${ring(HOLE.cx, HOLE.cy, HOLE.r)}`);
-  const r = channel((x) => x.fill(flame, "evenodd"), 1);
-  const g = channel((x) => x.fill(new Path2D(`${DOME} ${ring(50, 81, 8)}`), "evenodd"), 1);
-  const b = channel((x) => {
+  const d = draw(TEX, (x) => {
+    // Opaque black first, so each channel's value is the shape's coverage (no unpremultiply).
+    x.fillStyle = "#000"; x.fillRect(-20, -30, 140, 140);
+    x.globalCompositeOperation = "lighter";
+    x.fillStyle = "#f00"; x.fill(flame, "evenodd");
+    x.fillStyle = "#0f0"; x.fill(new Path2D(`${DOME} ${ring(50, 81, 8)}`), "evenodd");
     // The Gone mark from brand/logo: dashed ring and a rising smoke line.
-    x.lineCap = "round";
+    x.strokeStyle = "#00f"; x.lineCap = "round";
     x.globalAlpha = 0.7; x.lineWidth = 3; x.setLineDash([3.2, 3.2]);
     x.beginPath(); x.arc(50, 86, 7, 0, Math.PI * 2); x.stroke();
     x.setLineDash([]); x.globalAlpha = 1; x.lineWidth = 5;
     x.stroke(new Path2D("M50 76 C41 67 59 60 51 49 C45 40 58 33 61 22"));
     x.globalAlpha = 0.5; x.lineWidth = 4;
     x.stroke(new Path2D("M66 18 C70 13 67 8 72 3"));
-  }, 1);
-  const a = channel((x) => x.fill(flame, "evenodd"), 14);
-  mask = new Uint8Array(TEX * TEX * 4);
-  for (let i = 0; i < r.length; i++) {
-    mask[i * 4] = r[i] * 255; mask[i * 4 + 1] = g[i] * 255; mask[i * 4 + 2] = b[i] * 255; mask[i * 4 + 3] = Math.min(1, a[i] * 1.15) * 255;
+  });
+  const n = TEX * TEX;
+  const ch = [new Float32Array(n), new Float32Array(n), new Float32Array(n)];
+  for (let i = 0; i < n; i++) { ch[0][i] = d[i * 4] / 255; ch[1][i] = d[i * 4 + 1] / 255; ch[2][i] = d[i * 4 + 2] / 255; }
+  for (const c of ch) blur(c, TEX, 1, 1);
+  // Wide glow: 128 px copy, radius 4 (about 14 texels at full size), 3 passes.
+  const L = 128;
+  const dl = draw(L, (x) => { x.fillStyle = "#fff"; x.fill(flame, "evenodd"); });
+  const lo = new Float32Array(L * L);
+  for (let i = 0; i < lo.length; i++) lo[i] = dl[i * 4 + 3] / 255;
+  blur(lo, L, 4, 3);
+  mask = new Uint8Array(n * 4);
+  const f = (L - 1) / (TEX - 1);
+  for (let y = 0; y < TEX; y++) {
+    const sy = y * f, y0 = sy | 0, y1 = Math.min(L - 1, y0 + 1), ty = sy - y0;
+    for (let x = 0; x < TEX; x++) {
+      const sx = x * f, x0 = sx | 0, x1 = Math.min(L - 1, x0 + 1), tx = sx - x0;
+      const a = (lo[y0 * L + x0] * (1 - tx) + lo[y0 * L + x1] * tx) * (1 - ty) + (lo[y1 * L + x0] * (1 - tx) + lo[y1 * L + x1] * tx) * ty;
+      const i = y * TEX + x, o = i * 4;
+      mask[o] = ch[0][i] * 255; mask[o + 1] = ch[1][i] * 255; mask[o + 2] = ch[2][i] * 255; mask[o + 3] = Math.min(1, a * 1.15) * 255;
+    }
   }
   maskBuildMs = performance.now() - t0;
   return mask;

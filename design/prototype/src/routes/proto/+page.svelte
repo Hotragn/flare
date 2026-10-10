@@ -64,7 +64,10 @@
   // transition; arriving on a moment plays its sound and haptic.
   const cue: Record<string, Moment> = { "I4 success": "yes", "I6 lit": "lit", "I7 facing": "facing", "I9 waiting": "ember", "I9 lit": "lit", "P5 step-1": "lit" };
   let sound = $state(true);
-  function go(update: () => void) { stepTransition(update); }
+  // Wait until the next screen module has loaded and rendered, so the new snapshot is complete.
+  function go(update: () => void) {
+    stepTransition(async () => { update(); await tick(); await entry?.load(); await new Promise((r) => setTimeout(r, 0)); await tick(); });
+  }
   function next() {
     go(() => {
       if (s < moments[m].steps.length - 1) s += 1;

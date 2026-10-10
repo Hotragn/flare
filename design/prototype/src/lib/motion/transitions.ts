@@ -27,7 +27,7 @@ export function pageTransition(complete: () => Promise<void>): Promise<void> | v
 }
 
 /** For changes inside one page (prototype steps): runs update inside a view transition. */
-export function stepTransition(update: () => void) {
+export function stepTransition(update: () => void | Promise<void>) {
   const d = document as VTDoc;
   if (typeof document === "undefined" || !d.startViewTransition) { update(); return; }
   const done = mark("step");

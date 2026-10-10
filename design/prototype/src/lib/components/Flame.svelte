@@ -74,11 +74,12 @@
     if (held) { mod?.releaseSlot(); held = false; }
     glOn = false;
     shown = false;
-    onrenderer?.(null, why);
+    if (why !== "unmounted") onrenderer?.(null, why);
   }
 
   async function startGL() {
-    if (!animate || mode === "css" || glOn) return;
+    if (glOn) return;
+    if (!animate || mode === "css") return onrenderer?.(null, animate ? "css" : "static");
     if (reducedMotion(wrap)) return onrenderer?.(null, "reduced motion");
     if (mode === "auto" && size < 72) return onrenderer?.(null, "small");
     if (mode === "auto" && (document.documentElement.dataset.flame === "css" || new URLSearchParams(location.search).get("flame") === "css"))

@@ -4,7 +4,7 @@
 !.env.example
 
 # Lab session workspace (spikes). The engineering lead imports what we keep.
-lab/
+/lab/
 
 # Dependencies
 node_modules/
