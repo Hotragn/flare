@@ -77,6 +77,14 @@ const icons = {
   offline: `<path d="M7 18h10a4 4 0 0 0 .6-7.9A6 6 0 0 0 6.2 9.5 4.3 4.3 0 0 0 7 18z"/><path d="M4 4l16 16"/>`,
   sunset: `<path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 6V3M5.6 9.6 3.5 7.5M18.4 9.6l2.1-2.1"/>`,
   plusone: `<circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0M18 8v6M15 11h6"/>`,
+  close: `<path d="M6 6l12 12M18 6 6 18"/>`,
+  mic: `<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>`,
+  menu: `<path d="M4 7h16M4 12h16M4 17h10"/>`,
+  edit: `<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>`,
+  share: `<path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/>`,
+  chevron: `<path d="m9 6 6 6-6 6"/>`,
+  info: `<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>`,
+  warning: `<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17v.5"/>`,
 };
 for (const [name, body] of Object.entries(icons)) {
   write(`icons/${name}.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>\n`);

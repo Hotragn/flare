@@ -41,7 +41,7 @@ Source: 813 Week 1 entries (docs/research/00), the 12 top entries read in full, 
 | Audio-first while walking | ZSDM, Drift | Take it: the talking compass works with the screen down. |
 | Printable card instead of a screen | TrailTruth (weekly go/no-go card), Nature Bingo | Take it: Bench to Bench large-print card. |
 | Photo proof judged by AI | 6% of entries, Side Quest | Avoid (out of scope). The photo is an invitation, not evidence. |
-| Gamified XP, levels, creatures | Side Quest (hatches creatures), TouchGrass (XP, level 5 unlocks) | Avoid. Delight comes from the flame and from people arriving. |
+| Gamified XP, levels, creatures | Side Quest (hatches creatures), TouchGrass (XP, a community board at level 5) | Avoid. Delight comes from the flame and from people arriving. |
 | Map-heavy screens | 10% use Leaflet/MapLibre maps | Avoid as the main view. A compass and a sentence beat a map outdoors. |
 | Weather or frost dashboards | PLOT, FrostWise, Tendril | Avoid dashboards. One nature line per Flare. |
 | Desktop-first layouts | Side Quest runs on a desktop "home base" | Avoid. Phone-first, iPhone Safari, one column. |
