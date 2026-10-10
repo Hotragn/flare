@@ -1,0 +1,556 @@
+{
+ "version": 1,
+ "group_members": [
+  "Fuego",
+  "Amor",
+  "Shilp",
+  "Ammo"
+ ],
+ "time_zone": "America/Detroit",
+ "rules": "Times are 24 h local in the group time zone. Bare hours 1 to 7 mean PM; 8 to 11 mean AM; 12 means noon. 'close by' and 'not far' map to max_walk 10. Expected null means the parser must return 'unparsed' and show the hint (SRS-COND-8). 'error:not_in_group' must trigger SRS-COND-7. [] means a plain yes with no conditions. OR conditions are unsupported in this release and must return unparsed.",
+ "core_40": [
+  {
+   "text": "only if Amor comes",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Amor"
+    }
+   ]
+  },
+  {
+   "text": "only if Fuego comes",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Fuego"
+    }
+   ]
+  },
+  {
+   "text": "with Shilp",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Shilp"
+    }
+   ]
+  },
+  {
+   "text": "with Ammo",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Ammo"
+    }
+   ]
+  },
+  {
+   "text": "if Amor is going",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Amor"
+    }
+   ]
+  },
+  {
+   "text": "after 2",
+   "expect": [
+    {
+     "type": "after",
+     "value": "14:00"
+    }
+   ]
+  },
+  {
+   "text": "after 1pm",
+   "expect": [
+    {
+     "type": "after",
+     "value": "13:00"
+    }
+   ]
+  },
+  {
+   "text": "after 3:30",
+   "expect": [
+    {
+     "type": "after",
+     "value": "15:30"
+    }
+   ]
+  },
+  {
+   "text": "not before 2",
+   "expect": [
+    {
+     "type": "after",
+     "value": "14:00"
+    }
+   ]
+  },
+  {
+   "text": "not before 11am",
+   "expect": [
+    {
+     "type": "after",
+     "value": "11:00"
+    }
+   ]
+  },
+  {
+   "text": "back by 5",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "17:00"
+    }
+   ]
+  },
+  {
+   "text": "back by 5pm",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "17:00"
+    }
+   ]
+  },
+  {
+   "text": "back by 4:30",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "16:30"
+    }
+   ]
+  },
+  {
+   "text": "home by 6",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "18:00"
+    }
+   ]
+  },
+  {
+   "text": "need to leave by 3",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "15:00"
+    }
+   ]
+  },
+  {
+   "text": "max 10 min walk",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "max 15 minute walk",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 15
+    }
+   ]
+  },
+  {
+   "text": "10 min walk max",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "no more than 20 min walking",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 20
+    }
+   ]
+  },
+  {
+   "text": "close by only",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "just the short one",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "text": "short one",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "text": "porch only",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "text": "step 2 or less",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "text": "only the small one",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "text": "after 2, back by 5",
+   "expect": [
+    {
+     "type": "after",
+     "value": "14:00"
+    },
+    {
+     "type": "back_by",
+     "value": "17:00"
+    }
+   ]
+  },
+  {
+   "text": "only with Amor, back by 5",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Amor"
+    },
+    {
+     "type": "back_by",
+     "value": "17:00"
+    }
+   ]
+  },
+  {
+   "text": "after 1 and only if Shilp comes",
+   "expect": [
+    {
+     "type": "after",
+     "value": "13:00"
+    },
+    {
+     "type": "with",
+     "value": "Shilp"
+    }
+   ]
+  },
+  {
+   "text": "max 10 min walk, after 2",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    },
+    {
+     "type": "after",
+     "value": "14:00"
+    }
+   ]
+  },
+  {
+   "text": "short one, back by 4",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 3
+    },
+    {
+     "type": "back_by",
+     "value": "16:00"
+    }
+   ]
+  },
+  {
+   "text": "only if Ammo and Amor come",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Ammo"
+    },
+    {
+     "type": "with",
+     "value": "Amor"
+    }
+   ]
+  },
+  {
+   "text": "with Fuego after 3",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Fuego"
+    },
+    {
+     "type": "after",
+     "value": "15:00"
+    }
+   ]
+  },
+  {
+   "text": "back by 6 pm",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "18:00"
+    }
+   ]
+  },
+  {
+   "text": "after noon",
+   "expect": [
+    {
+     "type": "after",
+     "value": "12:00"
+    }
+   ]
+  },
+  {
+   "text": "after 12:15",
+   "expect": [
+    {
+     "type": "after",
+     "value": "12:15"
+    }
+   ]
+  },
+  {
+   "text": "not before 1:30pm",
+   "expect": [
+    {
+     "type": "after",
+     "value": "13:30"
+    }
+   ]
+  },
+  {
+   "text": "back by noon",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "12:00"
+    }
+   ]
+  },
+  {
+   "text": "only if amor comes",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Amor"
+    }
+   ]
+  },
+  {
+   "text": "AFTER 2",
+   "expect": [
+    {
+     "type": "after",
+     "value": "14:00"
+    }
+   ]
+  },
+  {
+   "text": "with shilp, max 15 min walk",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Shilp"
+    },
+    {
+     "type": "max_walk",
+     "value": 15
+    }
+   ]
+  }
+ ],
+ "hard_20": [
+  {
+   "text": "I can do it if Amor's there",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Amor"
+    }
+   ]
+  },
+  {
+   "text": "count me in once I'm done with lunch around 1",
+   "expect": [
+    {
+     "type": "after",
+     "value": "13:00"
+    }
+   ]
+  },
+  {
+   "text": "gotta be home for dinner at 6",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "18:00"
+    }
+   ]
+  },
+  {
+   "text": "not too far, like 10 minutes",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "only the quick version",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "text": "can't walk far today",
+   "expect": [
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "I'll come after my 2 o'clock call",
+   "expect": [
+    {
+     "type": "after",
+     "value": "14:00"
+    }
+   ]
+  },
+  {
+   "text": "if Fuego's driving I'm in",
+   "expect": [
+    {
+     "type": "with",
+     "value": "Fuego"
+    }
+   ]
+  },
+  {
+   "text": "need to be back by half four",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "16:30"
+    }
+   ]
+  },
+  {
+   "text": "earliest 3",
+   "expect": [
+    {
+     "type": "after",
+     "value": "15:00"
+    }
+   ]
+  },
+  {
+   "text": "no later than 5",
+   "expect": [
+    {
+     "type": "back_by",
+     "value": "17:00"
+    }
+   ]
+  },
+  {
+   "text": "sit somewhere close",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 4
+    },
+    {
+     "type": "max_walk",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "text": "whatever's smallest",
+   "expect": [
+    {
+     "type": "max_step",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "text": "in if Shilp or Ammo comes",
+   "expect": null
+  },
+  {
+   "text": "maybe",
+   "expect": null
+  },
+  {
+   "text": "idk",
+   "expect": null
+  },
+  {
+   "text": "after 25",
+   "expect": null
+  },
+  {
+   "text": "only if Bob comes",
+   "expect": "error:not_in_group"
+  },
+  {
+   "text": "ok",
+   "expect": []
+  },
+  {
+   "text": "I'm in!",
+   "expect": []
+  }
+ ]
+}

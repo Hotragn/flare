@@ -1,0 +1,1436 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-10T17:07:36Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1168570518,
+  "lat": 42.3040281,
+  "lon": -83.2311840,
+  "tags": {
+    "amenity": "toilets",
+    "toilets:wheelchair": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1168616420,
+  "lat": 42.3058820,
+  "lon": -83.2303351,
+  "tags": {
+    "amenity": "toilets",
+    "toilets:wheelchair": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1168616505,
+  "lat": 42.3066655,
+  "lon": -83.2286694,
+  "tags": {
+    "amenity": "toilets",
+    "toilets:wheelchair": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1168678774,
+  "lat": 42.3048218,
+  "lon": -83.2256317,
+  "tags": {
+    "amenity": "toilets",
+    "toilets:wheelchair": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786963,
+  "lat": 42.3099461,
+  "lon": -83.2460244,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786964,
+  "lat": 42.3100735,
+  "lon": -83.2460181,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786965,
+  "lat": 42.3102089,
+  "lon": -83.2460488,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786966,
+  "lat": 42.3103520,
+  "lon": -83.2463518,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786967,
+  "lat": 42.3105267,
+  "lon": -83.2462445,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 2577786968,
+  "lat": 42.3106227,
+  "lon": -83.2464213,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3150003673,
+  "lat": 42.3049791,
+  "lon": -83.2241334,
+  "tags": {
+    "amenity": "drinking_water"
+  }
+},
+{
+  "type": "node",
+  "id": 3173867351,
+  "lat": 42.3198235,
+  "lon": -83.2401382,
+  "tags": {
+    "amenity": "bench",
+    "backrest": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3207072942,
+  "lat": 42.3159922,
+  "lon": -83.2370399,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3207072950,
+  "lat": 42.3160437,
+  "lon": -83.2361490,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3207072955,
+  "lat": 42.3161434,
+  "lon": -83.2381528,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3637503240,
+  "lat": 42.3039453,
+  "lon": -83.2321314,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3637503241,
+  "lat": 42.3039592,
+  "lon": -83.2320703,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 3637503242,
+  "lat": 42.3039855,
+  "lon": -83.2320309,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 6176609647,
+  "lat": 42.3117444,
+  "lon": -83.2467690,
+  "tags": {
+    "amenity": "toilets",
+    "fee": "no",
+    "panoramax": "ce7e39b0-9397-4f3f-bfb2-f338797f42bc",
+    "panoramax:0": "506d4734-8f88-49e7-95b6-efa91cdcb61c",
+    "panoramax:1": "93bdacfc-4871-403a-838f-d39cc514d484",
+    "panoramax:10": "d5b122dd-2d7a-4ffb-9b55-3aa6b319f33d",
+    "panoramax:2": "c37816a6-4305-4541-8b14-876d04d3626d",
+    "panoramax:3": "0c8cf61c-f649-41b4-b685-1fdf702d7a1f",
+    "panoramax:4": "3e915aeb-8bea-4ee0-9ad3-0c1709729c00",
+    "panoramax:5": "a8b7c524-5875-4ecf-a76d-34bb9048e716",
+    "panoramax:6": "583e0b84-a0ef-41e8-bc4a-32293f846a59",
+    "panoramax:7": "fdd7cb7a-3b0c-4160-9447-89f973cd3712",
+    "panoramax:8": "c76ff511-3741-408a-a480-229a7a53f8f5",
+    "panoramax:9": "14969ff9-078c-4ecb-857e-9a072838a407",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7416230490,
+  "lat": 42.2920281,
+  "lon": -83.2341209,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 7416230491,
+  "lat": 42.2920387,
+  "lon": -83.2340840,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 7715231176,
+  "lat": 42.3155166,
+  "lon": -83.1940307,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 8462265804,
+  "lat": 42.3108868,
+  "lon": -83.2570467,
+  "tags": {
+    "amenity": "drinking_water",
+    "panoramax": "c1987002-5b9c-4794-9352-476f44f2efee"
+  }
+},
+{
+  "type": "node",
+  "id": 9451022011,
+  "lat": 42.3057755,
+  "lon": -83.2469092,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451022012,
+  "lat": 42.3057539,
+  "lon": -83.2468996,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451022013,
+  "lat": 42.3057336,
+  "lon": -83.2468915,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451022014,
+  "lat": 42.3057897,
+  "lon": -83.2467367,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451022015,
+  "lat": 42.3057715,
+  "lon": -83.2467282,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032625,
+  "lat": 42.3059591,
+  "lon": -83.2463139,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032626,
+  "lat": 42.3059115,
+  "lon": -83.2462951,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032627,
+  "lat": 42.3058946,
+  "lon": -83.2463823,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032628,
+  "lat": 42.3058877,
+  "lon": -83.2462857,
+  "tags": {
+    "amenity": "drinking_water"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032630,
+  "lat": 42.3057891,
+  "lon": -83.2464666,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032631,
+  "lat": 42.3057848,
+  "lon": -83.2464891,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032632,
+  "lat": 42.3057806,
+  "lon": -83.2465098,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9451032633,
+  "lat": 42.3057754,
+  "lon": -83.2465333,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9496237118,
+  "lat": 42.3083763,
+  "lon": -83.2366467,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9566240611,
+  "lat": 42.3254735,
+  "lon": -83.2091857,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9566240612,
+  "lat": 42.3254519,
+  "lon": -83.2091583,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9566240613,
+  "lat": 42.3252547,
+  "lon": -83.2087602,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9566240614,
+  "lat": 42.3252396,
+  "lon": -83.2087345,
+  "tags": {
+    "leisure": "picnic_table"
+  }
+},
+{
+  "type": "node",
+  "id": 9950027024,
+  "lat": 42.3135493,
+  "lon": -83.1971847,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9950027025,
+  "lat": 42.3136464,
+  "lon": -83.1968519,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9950027026,
+  "lat": 42.3137021,
+  "lon": -83.1966640,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446869,
+  "lat": 42.3145750,
+  "lon": -83.1967047,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446870,
+  "lat": 42.3146653,
+  "lon": -83.1961349,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446871,
+  "lat": 42.3150853,
+  "lon": -83.1974134,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446872,
+  "lat": 42.3149852,
+  "lon": -83.1975630,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446873,
+  "lat": 42.3147274,
+  "lon": -83.1991583,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 9959446874,
+  "lat": 42.3147045,
+  "lon": -83.1956102,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 10286595180,
+  "lat": 42.3251674,
+  "lon": -83.2407941,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 10286595181,
+  "lat": 42.3251767,
+  "lon": -83.2408216,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 10286595182,
+  "lat": 42.3251874,
+  "lon": -83.2408483,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 10286595183,
+  "lat": 42.3251992,
+  "lon": -83.2408769,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 11805411471,
+  "lat": 42.3163984,
+  "lon": -83.2223851,
+  "tags": {
+    "amenity": "toilets",
+    "level": "0"
+  }
+},
+{
+  "type": "node",
+  "id": 13884508583,
+  "lat": 42.3054745,
+  "lon": -83.2273253,
+  "tags": {
+    "amenity": "bench",
+    "backrest": "yes",
+    "material": "wood"
+  }
+},
+{
+  "type": "node",
+  "id": 13884508584,
+  "lat": 42.3053930,
+  "lon": -83.2272707,
+  "tags": {
+    "amenity": "bench",
+    "backrest": "yes",
+    "material": "wood"
+  }
+},
+{
+  "type": "node",
+  "id": 13884508585,
+  "lat": 42.3053518,
+  "lon": -83.2273200,
+  "tags": {
+    "amenity": "bench",
+    "backrest": "yes",
+    "material": "wood"
+  }
+},
+{
+  "type": "node",
+  "id": 13884508586,
+  "lat": 42.3053900,
+  "lon": -83.2274397,
+  "tags": {
+    "amenity": "bench",
+    "backrest": "yes",
+    "material": "wood"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879034,
+  "lat": 42.3056756,
+  "lon": -83.2293293,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879037,
+  "lat": 42.3067567,
+  "lon": -83.2296773,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879038,
+  "lat": 42.3067498,
+  "lon": -83.2295633,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879040,
+  "lat": 42.3068465,
+  "lon": -83.2291204,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879041,
+  "lat": 42.3069015,
+  "lon": -83.2280385,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879044,
+  "lat": 42.3062929,
+  "lon": -83.2275270,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879045,
+  "lat": 42.3062788,
+  "lon": -83.2275076,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879048,
+  "lat": 42.3061440,
+  "lon": -83.2276884,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879049,
+  "lat": 42.3061582,
+  "lon": -83.2277079,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879050,
+  "lat": 42.3060783,
+  "lon": -83.2280891,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "node",
+  "id": 14159879053,
+  "lat": 42.3062140,
+  "lon": -83.2282718,
+  "tags": {
+    "amenity": "bench"
+  }
+},
+{
+  "type": "way",
+  "id": 36971522,
+  "center": {
+    "lat": 42.3335859,
+    "lon": -83.2548955
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Parkland Recreation Area"
+  }
+},
+{
+  "type": "way",
+  "id": 60844172,
+  "center": {
+    "lat": 42.3312056,
+    "lon": -83.1929558
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Ford Woods Park",
+    "wikidata": "Q34876775"
+  }
+},
+{
+  "type": "way",
+  "id": 79490808,
+  "center": {
+    "lat": 42.2968605,
+    "lon": -83.1803324
+  },
+  "tags": {
+    "leisure": "park",
+    "note": "possibly not open to the pu blic, but there is a proposal that it will be"
+  }
+},
+{
+  "type": "way",
+  "id": 101621385,
+  "center": {
+    "lat": 42.3065455,
+    "lon": -83.2264679
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Village Green"
+  }
+},
+{
+  "type": "way",
+  "id": 189777181,
+  "center": {
+    "lat": 42.3204486,
+    "lon": -83.2181877
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 189777182,
+  "center": {
+    "lat": 42.3205033,
+    "lon": -83.2181921
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 190359826,
+  "center": {
+    "lat": 42.3118680,
+    "lon": -83.2207059
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 190359840,
+  "center": {
+    "lat": 42.3124673,
+    "lon": -83.2208054
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 194168152,
+  "center": {
+    "lat": 42.3162021,
+    "lon": -83.2165359
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 239372087,
+  "center": {
+    "lat": 42.3104736,
+    "lon": -83.2474652
+  },
+  "tags": {
+    "ele": "177",
+    "gnis:feature_id": "626225",
+    "leisure": "park",
+    "name": "Ford Field"
+  }
+},
+{
+  "type": "way",
+  "id": 257178038,
+  "center": {
+    "lat": 42.2975529,
+    "lon": -83.2350455
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 323909780,
+  "center": {
+    "lat": 42.3223352,
+    "lon": -83.1990519
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Rosalie-Hubbard Park"
+  }
+},
+{
+  "type": "way",
+  "id": 327517949,
+  "center": {
+    "lat": 42.3143225,
+    "lon": -83.1869824
+  },
+  "tags": {
+    "ele": "181",
+    "gnis:feature_id": "626703",
+    "leisure": "park",
+    "name": "Geer Park",
+    "wikidata": "Q49493142"
+  }
+},
+{
+  "type": "way",
+  "id": 328492822,
+  "center": {
+    "lat": 42.3316753,
+    "lon": -83.2209945
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Lloyd H. Ryan Playground",
+    "wikidata": "Q49518425"
+  }
+},
+{
+  "type": "way",
+  "id": 396487118,
+  "center": {
+    "lat": 42.3107738,
+    "lon": -83.2568780
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Cherry Hill"
+  }
+},
+{
+  "type": "way",
+  "id": 396487127,
+  "center": {
+    "lat": 42.3390569,
+    "lon": -83.2494686
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Parkland Community Park",
+    "wikidata": "Q49539529"
+  }
+},
+{
+  "type": "way",
+  "id": 407487389,
+  "center": {
+    "lat": 42.3227907,
+    "lon": -83.2582006
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Oak Park",
+    "wikidata": "Q49534115"
+  }
+},
+{
+  "type": "way",
+  "id": 407487392,
+  "center": {
+    "lat": 42.3151611,
+    "lon": -83.2564778
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Tannahill Park"
+  }
+},
+{
+  "type": "way",
+  "id": 407487394,
+  "center": {
+    "lat": 42.3062858,
+    "lon": -83.2452919
+  },
+  "tags": {
+    "addr:city": "Dearborn",
+    "addr:housenumber": "22054",
+    "addr:postcode": "48124",
+    "addr:state": "MI",
+    "addr:street": "Michigan Avenue",
+    "leisure": "park",
+    "name": "WDDA Pocket Park"
+  }
+},
+{
+  "type": "way",
+  "id": 408751937,
+  "center": {
+    "lat": 42.3139375,
+    "lon": -83.1970904
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 408751944,
+  "center": {
+    "lat": 42.3119120,
+    "lon": -83.1929598
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Bennington Park"
+  }
+},
+{
+  "type": "way",
+  "id": 408751945,
+  "center": {
+    "lat": 42.3178032,
+    "lon": -83.1974821
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Palmer-Jerome Park"
+  }
+},
+{
+  "type": "way",
+  "id": 468480146,
+  "center": {
+    "lat": 42.3059707,
+    "lon": -83.2301967
+  },
+  "tags": {
+    "ele": "8.37",
+    "leisure": "park",
+    "name": "Liberty Craft Works"
+  }
+},
+{
+  "type": "way",
+  "id": 468481465,
+  "center": {
+    "lat": 42.3062098,
+    "lon": -83.2272928
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Edison's Menlo Park"
+  }
+},
+{
+  "type": "way",
+  "id": 468481466,
+  "center": {
+    "lat": 42.3045775,
+    "lon": -83.2230527
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Henry Ford Academy & Windmill Park"
+  }
+},
+{
+  "type": "way",
+  "id": 468482075,
+  "center": {
+    "lat": 42.3034443,
+    "lon": -83.2340932
+  },
+  "tags": {
+    "ele": "165.8",
+    "gnis:feature_id": "1327321",
+    "leisure": "park",
+    "name": "The Henry Ford"
+  }
+},
+{
+  "type": "way",
+  "id": 468482560,
+  "center": {
+    "lat": 42.3062059,
+    "lon": -83.2337234
+  },
+  "tags": {
+    "ele": "45.2",
+    "leisure": "park",
+    "name": "Firestone Farm Park"
+  }
+},
+{
+  "type": "way",
+  "id": 494350186,
+  "center": {
+    "lat": 42.2939917,
+    "lon": -83.2366981
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 544389438,
+  "center": {
+    "lat": 42.2946225,
+    "lon": -83.2236624
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 556607450,
+  "center": {
+    "lat": 42.3043995,
+    "lon": -83.2319035
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 559469864,
+  "center": {
+    "lat": 42.2966897,
+    "lon": -83.2375506
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 638029160,
+  "center": {
+    "lat": 42.2943002,
+    "lon": -83.2240547
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down"
+  }
+},
+{
+  "type": "way",
+  "id": 643029257,
+  "center": {
+    "lat": 42.3303196,
+    "lon": -83.2335721
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 686977712,
+  "center": {
+    "lat": 42.2908546,
+    "lon": -83.2152781
+  },
+  "tags": {
+    "highway": "steps",
+    "incline": "down"
+  }
+},
+{
+  "type": "way",
+  "id": 826332185,
+  "center": {
+    "lat": 42.3154355,
+    "lon": -83.1996855
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up",
+    "step_count": "2",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 903104057,
+  "center": {
+    "lat": 42.3057985,
+    "lon": -83.2429071
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903104059,
+  "center": {
+    "lat": 42.3057993,
+    "lon": -83.2429287
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903104063,
+  "center": {
+    "lat": 42.3056993,
+    "lon": -83.2433051
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down"
+  }
+},
+{
+  "type": "way",
+  "id": 903104064,
+  "center": {
+    "lat": 42.3057260,
+    "lon": -83.2435052
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down"
+  }
+},
+{
+  "type": "way",
+  "id": 903104066,
+  "center": {
+    "lat": 42.3057881,
+    "lon": -83.2433416
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down"
+  }
+},
+{
+  "type": "way",
+  "id": 903104067,
+  "center": {
+    "lat": 42.3058249,
+    "lon": -83.2433331
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up"
+  }
+},
+{
+  "type": "way",
+  "id": 903148455,
+  "center": {
+    "lat": 42.3054976,
+    "lon": -83.2446976
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Wagner Park"
+  }
+},
+{
+  "type": "way",
+  "id": 903148459,
+  "center": {
+    "lat": 42.3055706,
+    "lon": -83.2442969
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up",
+    "ramp": "no",
+    "step_count": "2",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 903148463,
+  "center": {
+    "lat": 42.3058782,
+    "lon": -83.2449802
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "up",
+    "ramp": "separate",
+    "ramp:wheelchair": "separate",
+    "step_count": "5",
+    "surface": "concrete"
+  }
+},
+{
+  "type": "way",
+  "id": 903148467,
+  "center": {
+    "lat": 42.3062170,
+    "lon": -83.2435621
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903148468,
+  "center": {
+    "lat": 42.3063171,
+    "lon": -83.2431774
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903150104,
+  "center": {
+    "lat": 42.3064280,
+    "lon": -83.2437029
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903150106,
+  "center": {
+    "lat": 42.3069500,
+    "lon": -83.2435734
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 903150111,
+  "center": {
+    "lat": 42.3068786,
+    "lon": -83.2437504
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 911001745,
+  "center": {
+    "lat": 42.3118313,
+    "lon": -83.2469370
+  },
+  "tags": {
+    "handrail": "yes",
+    "highway": "steps",
+    "incline": "down",
+    "lit": "yes",
+    "ramp": "no",
+    "surface": "concrete",
+    "tactile_paving": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 955388622,
+  "center": {
+    "lat": 42.3137181,
+    "lon": -83.2328146
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 955388624,
+  "center": {
+    "lat": 42.3137768,
+    "lon": -83.2328730
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 1041176757,
+  "center": {
+    "lat": 42.3054663,
+    "lon": -83.2517790
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 1085116970,
+  "center": {
+    "lat": 42.3135381,
+    "lon": -83.1950098
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "toilets",
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1086505648,
+  "center": {
+    "lat": 42.3201718,
+    "lon": -83.2136409
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 1443551430,
+  "center": {
+    "lat": 42.2970751,
+    "lon": -83.2363440
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 1523801316,
+  "center": {
+    "lat": 42.2971235,
+    "lon": -83.2364561
+  },
+  "tags": {
+    "highway": "steps"
+  }
+},
+{
+  "type": "way",
+  "id": 1530480716,
+  "center": {
+    "lat": 42.3040867,
+    "lon": -83.2486212
+  },
+  "tags": {
+    "addr:city": "Dearborn",
+    "addr:housenumber": "22271",
+    "addr:postcode": "48214",
+    "addr:state": "MI",
+    "addr:street": "West Village Drive",
+    "leisure": "park",
+    "name": "Dearborn Peace Park West"
+  }
+},
+{
+  "type": "relation",
+  "id": 6601938,
+  "center": {
+    "lat": 42.3769216,
+    "lon": -83.3606054
+  },
+  "tags": {
+    "ele": "186",
+    "gnis:feature_id": "632272",
+    "leisure": "park",
+    "name": "Hines Parkway",
+    "note": "Boundaries of recreation areas are arbitrary, roughly approximating area on individual maps when available. Boundaries of rec areas are drawn to outside edge of parkway to avoid a multipolygon parks within a park situation.",
+    "old_name": "Middle Rouge Parkway",
+    "type": "multipolygon",
+    "wikidata": "Q49526033"
+  }
+},
+{
+  "type": "relation",
+  "id": 7253670,
+  "center": {
+    "lat": 42.3252306,
+    "lon": -83.2090622
+  },
+  "tags": {
+    "landuse": "grass",
+    "leisure": "park",
+    "type": "multipolygon"
+  }
+},
+{
+  "type": "relation",
+  "id": 8226280,
+  "center": {
+    "lat": 42.3164670,
+    "lon": -83.2135013
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Arjay Miller Arboretum",
+    "type": "multipolygon"
+  }
+}
+
+  ]
+}

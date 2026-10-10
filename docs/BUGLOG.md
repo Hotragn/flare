@@ -32,3 +32,20 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** The first extractor looked for an end marker (`crayons-article__main`) that doesn't exist, then fell back to taking the rest of the page, including comments, sidebars and ad slots.
 - **Fix:** End at `below-post-bb` (551 of 560 pages) or `id="comments"` (9 of 560).
 - **Proof:** Postgres fell to 21 of 682 and the median to 725 words. Other counts moved by 2 points or less.
+
+## BUG-004: Overpass returns "too busy" or stale data
+
+- **Date:** 2026-10-10
+- **Area:** Maps data
+- **Symptom:** overpass-api.de returned an HTML page "Dispatcher_Client::request_read_and_idx::timeout. The server is probably too busy" (HTTP error) on 3 of 4 tries. overpass.private.coffee answered but its data timestamp was 2026-05-31 (4 months stale). maps.mail.ru returned 504.
+- **Cause:** Public Overpass load; mirrors lag.
+- **Fix:** Retry overpass-api.de with backoff (20 s, 30 s, 40 s...). Always check `osm3s.timestamp_osm_base` in the response before trusting a mirror. Send a User-Agent. Ship a pre-fetched pack for the test area.
+- **Proof:** Fourth attempt succeeded with timestamp 2026-10-10T17:07:36Z; result saved in docs/requirements/evidence/.
+
+## BUG-005: BLS and CDC block scripted fetches
+
+- **Date:** 2026-10-10
+- **Area:** Research
+- **Symptom:** curl to bls.gov and cdc.gov returns 403 even with a browser User-Agent.
+- **Fix:** Read BLS release pages in the built-in browser. For CDC disability numbers, use the open data API: `https://data.cdc.gov/resource/s2qv-b27b.json` (DHDS), filter `locationabbr`, `stratification1='Overall'`, `indicatorid='STATTYPE'`.
+- **Proof:** DHDS returned US 2022 mobility 12.2%, vision 5.5%; BLS 2025 release text read in the browser.

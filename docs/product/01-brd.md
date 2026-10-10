@@ -28,11 +28,11 @@ Every existing "go outside" app treats this as a one-person motivation problem. 
 | Loneliness is common | "Nearly half" of young adults report loneliness in an eight-country study | WashU, 6 Mar 2026, https://source.washu.edu/2026/03/nearly-half-of-young-adults-report-loneliness-in-eight-country-study/ | Headline fetched Oct 10 |
 | Friends drive where people go | 65% of Snapchatters' visits to new places are to spots a friend visited in the past year (correlational) | Snap Newsroom, https://newsroom.snap.com/location-sharing-redefining-friends-connect | Fetched Oct 10 |
 | Benches decide who goes out | Benches along a route raise the chance a mobility-impaired senior goes for a walk from 60% to 75% (healthy peers: 90%) | Netspar, https://www.netspar.nl/en/knowledge-hub/do-modern-cities-encourage-or-discourage-walking-of-health-impaired-seniors/ | Fetched Oct 10 |
-| Face-to-face time is falling | Ages 15 to 24: about 61 to 35 min/day, 2003 to 2025 (ATUS) | Axios, https://www.axios.com/2026/07/05/americans-socializing-decline | **Not re-verified** (site returned 403). Cite only with that caveat or find the ATUS table. |
-| Disability is common | 12.2% of US adults have a mobility disability, 5.5% a vision disability | CDC, https://www.cdc.gov/disability-and-health/articles-documents/disability-impacts-all-of-us-infographic.html | **Not re-verified** (403). Same rule. |
+| Fewer people socialize | 30% of people socialized and communicated on an average day in 2025, down from 38% in 2015 | BLS ATUS 2025 results, https://www.bls.gov/news.release/atus.nr0.htm | Verified by the analyst Oct 10. The Axios "61 to 35 min/day, ages 15 to 24" figure is not in the primary release: do not cite. |
+| Disability is common | 12.2% of US adults have a mobility disability, 5.5% a vision disability (2022 BRFSS, age-adjusted) | CDC DHDS, data.cdc.gov dataset s2qv-b27b | Verified by the analyst Oct 10 |
 | No-signal texting exists | iPhone 14 or later can send iMessage or SMS via satellite (iOS 18+) | Apple, https://support.apple.com/en-us/120930 | Fetched Oct 10 |
 | In-browser GPU on iPhone | Safari 26 adds WebGPU | WebKit, https://webkit.org/blog/16993/news-from-wwdc25-web-technology-coming-this-fall-in-safari-26-beta/ | Fetched Oct 10 |
-| The test area has places to sit | Within 3 km of Fairlane Town Center (42.3233, -83.2105): 48 benches, 9 picnic tables, 6 restrooms, 1 drinking fountain, 22 parks | OpenStreetMap via Overpass, queried Oct 10 | Our query. The founder's count (54, 6, 2, 24) used a different centre or tag set. Engineering re-runs it for the offline pack. |
+| The test area has places to sit | Within 3 km of Fairlane Town Center: 54 benches, 7 picnic tables, 7 restrooms, 3 drinking fountains, 32 parks, 28 sets of steps | Pinned Overpass query, docs/requirements/evidence/ (OSM data 2026-10-10 17:07 UTC) | Pinned by the analyst; supersedes earlier counts |
 
 ## 4. Goals
 
