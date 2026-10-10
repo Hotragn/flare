@@ -19,10 +19,11 @@
     onmenu,
     children,
     actions,
+    overlay,
     wire = false,
   }: {
     theme?: Theme; title?: string; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
-    tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; wire?: boolean;
+    tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; overlay?: Snippet; wire?: boolean;
   } = $props();
 </script>
 
@@ -43,6 +44,7 @@
   {#if actions}
     <footer class="actions">{@render actions()}</footer>
   {/if}
+  {#if overlay}{@render overlay()}{/if}
 </div>
 
 <style>

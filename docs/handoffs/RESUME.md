@@ -31,5 +31,10 @@ Done: docs/design/01-brief-and-ux-scan.md, 02-flows-and-ia.md (screen ids H1..H6
 Lab inputs (Oct 10): photo AI runs on the hub (gemma4:e4b, ~3.0 s per photo), no in-browser vision on iPhone; design the draft as arriving in ~3 s, typed six-word fallback when the hub is unreachable. Flame: lab recommends a 1.9 KB WebGL shader with CSS fallback (prototype uses SVG/CSS; note for engineering). Fairlane pack 6.7 KB.
 Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, TypeWords, NeedCount, AccessLine, NatureLine, Sheet, TextField, QuorumToggle, Banner, Compass, StepLadder, ListRow, TopBar, Screen), screens registry + one component per screen id, routes (/screens, /screens/[id], /proto, /components, /site), scripts/export.mjs (playwright-core + Chrome: hi-fi PNGs per screen/state/theme, wireframes via data-wire), scripts/a11y.mjs (axe-core), docs/design/03..07, handoff 04 (motion and copy).
 
+## Progress (product design)
+- Components done: Flame, Button, Icon, PhotoPrint, TypeWords, NeedCount, InfoLines, Screen (with overlay slot), Sheet (Bits Dialog + inline), TextField, Choice (Bits ToggleGroup), Compass, Ladder, SampleScene. sample.ts holds shared copy and data.
+- Screens done: H1 to H6 (src/lib/screens), registry.ts, /screens/[id] route, /screens/manifest.json, scripts/export.mjs (44 PNGs + 6 wireframes, 0 page errors), scripts/contact.mjs, scripts/shot.mjs.
+- Gotchas: screen prop is `view`, not `state` (clashes with $state rune); imports use #lib/...ts with extension (BUG-008).
+
 ## Exact next step now
-Write design/prototype/src/lib/styles/app.css and the core components.
+Add a Hearth component (flame + ground shadow + rising sparks on Lit + pine horizon) and use it on H4, H5, H6; then write invitee screens I0 to I12, plan screens P1 to P7, other screens O0 to O8, add them to registry.ts, export, review.
