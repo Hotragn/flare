@@ -14,3 +14,6 @@ design/prototype/.svelte-kit/
 design/prototype/build/
 design/prototype/src/lib/generated/
 design/prototype/static/exports/
+
+# Generated design exports (regenerate: cd design/prototype && npm run build && npm run export)
+design/exports/
