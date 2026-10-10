@@ -5,10 +5,12 @@
   "type": "module",
   "description": "Flare hi-fi screens, component catalog, clickable prototype and website design.",
   "scripts": {
+    "predev": "node scripts/sync-assets.mjs",
     "dev": "vite dev --port 5317",
+    "prebuild": "node scripts/sync-assets.mjs",
     "build": "vite build",
     "preview": "vite preview --port 5318",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check": "node scripts/sync-assets.mjs && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "export": "node scripts/export.mjs",
     "a11y": "node scripts/a11y.mjs"
   },
@@ -29,5 +31,8 @@
   },
   "overrides": {
     "@sveltejs/kit": "$@sveltejs/kit"
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*"
   }
 }

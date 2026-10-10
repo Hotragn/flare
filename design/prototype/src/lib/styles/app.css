@@ -1,0 +1,57 @@
+@import "../generated/tokens.css";
+@import "@fontsource/fraunces/400.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/atkinson-hyperlegible-next/400.css";
+@import "@fontsource/atkinson-hyperlegible-next/500.css";
+@import "@fontsource/atkinson-hyperlegible-next/700.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: calc(var(--t-body-size) * var(--text-scale));
+  line-height: var(--t-body-line);
+  font-weight: var(--t-body-weight);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+/* Respect iOS Dynamic Type when the app runs on an iPhone. */
+@supports (font: -apple-system-body) {
+  html.dynamic-type { font: -apple-system-body; }
+}
+img, svg { display: block; max-width: 100%; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--c-gold-400); outline-offset: 3px; border-radius: 6px; }
+[data-sun] :focus-visible, [data-theme="light"] :focus-visible { outline-color: var(--c-dusk-700); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Type styles */
+.t-display, .t-title, .t-invite { font-family: var(--font-display); margin: 0; }
+.t-display { font-size: calc(var(--t-display-size) * var(--text-scale)); line-height: var(--t-display-line); font-weight: var(--t-display-weight); letter-spacing: var(--t-display-tracking); }
+.t-title { font-size: calc(var(--t-title-size) * var(--text-scale)); line-height: var(--t-title-line); font-weight: var(--t-title-weight); letter-spacing: var(--t-title-tracking); }
+.t-invite { font-size: calc(var(--t-invite-size) * var(--text-scale)); line-height: var(--t-invite-line); font-weight: var(--t-invite-weight); letter-spacing: var(--t-invite-tracking); }
+.t-heading { font-size: calc(var(--t-heading-size) * var(--text-scale)); line-height: var(--t-heading-line); font-weight: 700; margin: 0; }
+.t-sun { font-size: calc(var(--t-sun-size) * var(--text-scale)); line-height: var(--t-sun-line); font-weight: 700; margin: 0; }
+.t-small { font-size: calc(var(--t-small-size) * var(--text-scale)); line-height: var(--t-small-line); }
+.t-muted { color: var(--text-muted); }
+.t-accent { color: var(--accent-text); }
+
+/* Paper grain on large backgrounds (brand book section 6) */
+.grain { position: relative; isolation: isolate; }
+.grain::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+  background-image: url("/brand/paper-grain-256.png"); background-size: 256px; opacity: 0.6; mix-blend-mode: multiply;
+}
+[data-theme="dark"]:not([data-sun]) .grain::after, [data-theme="dark"]:not([data-sun]).grain::after { mix-blend-mode: screen; opacity: 0.25; }
+@media (prefers-reduced-transparency: reduce) { .grain::after { display: none; } }
+
+/* Wireframe mode: same layout, no color or imagery (design/exports/wireframes) */
+[data-wire] { --c-maple-500: #9a9a9a; --c-maple-600: #8a8a8a; --c-maple-700: #6a6a6a; --c-ember-700: #7a7a7a; --c-gold-300: #bdbdbd; --c-gold-400: #b0b0b0; --c-pine-700: #555; --c-pine-500: #777;
+  --bg: #f4f4f4 !important; --surface: #fff !important; --text: #222 !important; --text-muted: #666 !important; --accent-bg: #555 !important; --accent-text: #333 !important; --on-accent: #fff !important; --line: #ddd !important;
+  --lit: #888 !important; --kindling: #999 !important; --ember: #777 !important; --gone: #aaa !important; --positive: #444 !important; }
+[data-wire] .t-display, [data-wire] .t-title, [data-wire] .t-invite { font-family: var(--font-body); }
+[data-wire] .photo-art, [data-wire] .wire-hide { filter: grayscale(1) contrast(0.4) brightness(1.3); }
+[data-wire] .grain::after { display: none; }

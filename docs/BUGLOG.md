@@ -67,3 +67,15 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** bits-ui → runed and svelte-toolbelt declare @sveltejs/kit ^2 as a peer, so npm installed a nested kit 2.x with the old cookie.
 - **Fix:** `"overrides": { "@sveltejs/kit": "$@sveltejs/kit" }` in package.json, so every dependent uses our kit 3.0.1.
 - **Proof:** `npm audit`: found 0 vulnerabilities; `npm ls @sveltejs/kit` shows one deduped 3.0.1.
+
+## BUG-008: SvelteKit 3 rejects svelte.config.js, `kit` options and $lib
+
+- **Date:** 2026-10-10
+- **Area:** Prototype (SvelteKit 3.0.1)
+- **Symptoms and fixes:**
+  1. `config_file_unsupported`: SvelteKit 3 no longer reads `svelte.config.js`. Pass options to the Vite plugin: `sveltekit({ adapter, prerender })` in vite.config.ts.
+  2. `config_kit_namespace`: options are passed flat, not under `kit: {}`.
+  3. `config_option_deprecated_alias`: `alias` is deprecated. `$lib` is no longer predefined (generated `paths` is `{}`). Use Node subpath imports: `"imports": { "#lib/*": "./src/lib/*" }` in package.json, and import with the file extension (`#lib/brand.ts`, `#lib/components/Flame.svelte`).
+  4. `tsconfig_extends_missing`: tsconfig must `"extends": "$app/tsconfig"` (written to node_modules/$app/tsconfig.json by `svelte-kit sync`).
+  5. Subpath import targets can't leave the package, so files from design/system and brand/ are copied in by `scripts/sync-assets.mjs` (runs before dev, build and check).
+- **Proof:** `npm run check`: 0 errors, 0 warnings across 649 files; `npm run build` wrote the static site.
