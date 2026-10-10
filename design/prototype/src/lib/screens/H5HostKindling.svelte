@@ -4,6 +4,7 @@
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
   import NeedCount from "../components/NeedCount.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { flare } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "growing", theme = "sun", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
@@ -12,15 +13,15 @@
   const progress = $derived((have - 1) / (quorum - 1));
 </script>
 
-<Screen {theme} {wire} heading="Your Flare is waiting" title="Your Flare" offline={view === "offline" ? "Offline. Saved at 2:14 PM." : ""}>
+<Screen {theme} {wire} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={view === "offline" ? t("app.offline", { time: flare.savedAt }) : ""}>
   <div class="center">
     <Hearth state="kindling" {progress} size={230} />
     <NeedCount {have} {quorum} />
-    <p class="t-muted">{view === "zero" ? "Sent 2 min ago. Friends answer in private." : "Goes small in 18 min if it doesn't catch."}</p>
+    <p class="t-muted">{view === "zero" ? t("host.kindling.sentAgo", { min: flare.sentMin }) : t("host.kindling.shrinkIn", { min: flare.shrinkMin })}</p>
   </div>
   <p class="hostline t-small">{flare.hostLine}</p>
   {#snippet actions()}
-    <Button variant="text">Cancel Flare</Button>
+    <Button variant="text">{t("host.kindling.cancel")}</Button>
   {/snippet}
 </Screen>
 

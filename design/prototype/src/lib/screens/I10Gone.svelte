@@ -3,6 +3,7 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
+  import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let { view = "gone", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
 </script>
@@ -10,11 +11,11 @@
 <Screen {theme} {wire} close={false}>
   <div class="center">
     <Hearth state="gone" size={170} />
-    <h1 class="t-display">Not this time.</h1>
-    <p>Nothing about it was kept. Try again another day.</p>
+    <h1 class="t-display">{t("gone.title")}</h1>
+    <p>{t("gone.body")}</p>
   </div>
   {#snippet actions()}
-    <Button variant="secondary">Close</Button>
+    <Button variant="secondary">{t("gone.close")}</Button>
   {/snippet}
 </Screen>
 

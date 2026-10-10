@@ -5,6 +5,7 @@
   import Ladder from "../components/Ladder.svelte";
   import Sheet from "../components/Sheet.svelte";
   import TextField from "../components/TextField.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { plan } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "drafted", theme = "light", wire = false, onsend }: { view?: string; theme?: Theme; wire?: boolean; onsend?: () => void } = $props();
@@ -14,25 +15,25 @@
 
 <Screen {theme} {wire} title={plan.ask}>
   <div class="intro">
-    <h1 class="t-title">If people are tired, it gets smaller.</h1>
-    <p class="t-muted">Anyone can quietly make it one step smaller. Nobody sees who.</p>
+    <h1 class="t-title">{t("ladder.headline")}</h1>
+    <p class="t-muted">{t("ladder.body")}</p>
   </div>
   {#if view === "drafting"}
     <ol class="sk" aria-hidden="true">{#each [0, 1, 2, 3] as _}<li></li>{/each}</ol>
-    <p class="t-muted" role="status">Drafting 4 steps from the map and the weather…</p>
+    <p class="t-muted" role="status">{t("ladder.drafting")}</p>
   {:else}
     <Ladder {steps} editable editing={view === "editing" ? 1 : -1} />
-    <p class="t-small t-muted">Made on our laptop from OpenStreetMap and today's sunset.</p>
+    <p class="t-small t-muted">{t("ladder.madeHub")}</p>
   {/if}
   {#snippet actions()}
-    <Button icon="share" onclick={onsend} disabled={view === "drafting"}>Send it</Button>
+    <Button icon="share" onclick={onsend} disabled={view === "drafting"}>{t("send.cta")}</Button>
   {/snippet}
   {#snippet overlay()}
     {#if view === "editing"}
-      <Sheet inline title="Step 2">
-        <TextField label="Name" bind:value={stepName} max={40} />
-        <div class="mins"><span class="lbl">Minutes</span><span class="t-heading">30</span></div>
-        <Button>Save step</Button>
+      <Sheet inline title={t("ladder.editTitle", { k: 2 })}>
+        <TextField label={t("ladder.nameLabel")} bind:value={stepName} max={40} />
+        <div class="mins"><span class="lbl">{t("ladder.minutesLabel")}</span><span class="t-heading">30</span></div>
+        <Button>{t("ladder.save")}</Button>
       </Sheet>
     {/if}
   {/snippet}

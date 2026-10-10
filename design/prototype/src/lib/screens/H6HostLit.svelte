@@ -5,39 +5,40 @@
   import Hearth from "../components/Hearth.svelte";
   import Sheet from "../components/Sheet.svelte";
   import Icon from "../components/Icon.svelte";
-  import { people } from "../sample";
+  import { t } from "#lib/copy/index.ts";
+  import { people, flare } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "lit", theme = "sun", wire = false, ondone }: { view?: string; theme?: Theme; wire?: boolean; ondone?: () => void } = $props();
   const here = $derived(view === "lit" ? 1 : 3);
 </script>
 
-<Screen {theme} {wire} title="It's lit">
+<Screen {theme} {wire} title={t("host.lit.title")}>
   <div class="center">
     <Hearth state="lit" size={210} celebrate />
-    <h1 class="t-display">It's lit.</h1>
-    <p class="t-sun">3 are coming. Wait at the bench by the pond.</p>
+    <h1 class="t-display">{t("host.lit.headline")}</h1>
+    <p class="t-sun">{t("host.lit.coming", { n: flare.coming, spot: "the bench by the pond" })}</p>
   </div>
   <div class="here" aria-live="polite">
-    <span class="t-heading">Here: {here}</span>
-    <Button variant="secondary" icon="plusone" full={false}>Add one</Button>
+    <span class="t-heading">{t("host.lit.here", { n: here })}</span>
+    <Button variant="secondary" icon="plusone" full={false}>{t("host.lit.addOne")}</Button>
   </div>
   {#snippet actions()}
-    <Button onclick={ondone}>We're done</Button>
+    <Button onclick={ondone}>{t("host.lit.done")}</Button>
   {/snippet}
   {#snippet overlay()}
     {#if view === "plusone"}
-      <Sheet inline title="Who's here?" description="Only you see these names.">
+      <Sheet inline title={t("host.plus.title")} description={t("host.plus.body")}>
         <ul class="names">
           {#each people.friends as n, i}
             <li><button class="row" aria-pressed={i < 2}><span>{n}</span>{#if i < 2}<Icon name="here" />{/if}</button></li>
           {/each}
-          <li><button class="row"><span>Someone else</span><Icon name="plusone" /></button></li>
+          <li><button class="row"><span>{t("host.plus.someone")}</span><Icon name="plusone" /></button></li>
         </ul>
       </Sheet>
     {:else if view === "done"}
-      <Sheet inline title="End it for everyone?" description="Then it's gone. Nothing is kept but a count.">
-        <Button>End it</Button>
-        <Button variant="text">Not yet</Button>
+      <Sheet inline title={t("host.done.title")} description={t("host.done.body")}>
+        <Button>{t("host.done.yes")}</Button>
+        <Button variant="text">{t("host.done.no")}</Button>
       </Sheet>
     {/if}
   {/snippet}

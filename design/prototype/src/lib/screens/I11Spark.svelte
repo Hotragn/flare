@@ -4,33 +4,35 @@
   import Button from "../components/Button.svelte";
   import TextField from "../components/TextField.svelte";
   import Icon from "../components/Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
+  import { sparks } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "empty", theme = "light", wire = false, onsave }: { view?: string; theme?: Theme; wire?: boolean; onsave?: () => void } = $props();
   let line = $state("");
-  $effect(() => { line = view === "typing" ? "Geese took our bench. We let them." : ""; });
+  $effect(() => { line = view === "typing" ? sparks[0].line : ""; });
 </script>
 
 <Screen {theme} {wire}>
   {#if view === "saved"}
     <div class="center">
       <Icon name="spark" size={56} />
-      <h1 class="t-title">Saved.</h1>
-      <p>It shows up next time your group meets here.</p>
+      <h1 class="t-title">{t("spark.saved")}</h1>
+      <p>{t("spark.savedBody")}</p>
     </div>
   {:else}
     <div class="intro">
       <Icon name="spark" size={40} />
-      <h1 class="t-title">One line about today?</h1>
-      <p class="t-muted">Optional. Your words only. Only this group can read it.</p>
+      <h1 class="t-title">{t("spark.prompt")}</h1>
+      <p class="t-muted">{t("spark.body")}</p>
     </div>
-    <TextField label="Your Spark" bind:value={line} placeholder="The light on the water at 5" max={140} multiline />
+    <TextField label={t("spark.label")} bind:value={line} placeholder={t("spark.placeholder")} max={140} multiline />
   {/if}
   {#snippet actions()}
     {#if view === "saved"}
-      <Button variant="secondary">Close</Button>
+      <Button variant="secondary">{t("gone.close")}</Button>
     {:else}
-      <Button onclick={onsave} disabled={!line}>Save it</Button>
-      <Button variant="text">Skip</Button>
+      <Button onclick={onsave} disabled={!line}>{t("spark.save")}</Button>
+      <Button variant="text">{t("spark.skip")}</Button>
     {/if}
   {/snippet}
 </Screen>

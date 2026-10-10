@@ -4,45 +4,46 @@
   import Button from "../components/Button.svelte";
   import TextField from "../components/TextField.svelte";
   import Icon from "../components/Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
   import { loop } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "loop", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
   let ask = $state(loop.ask);
 </script>
 
-<Screen {theme} {wire} title="Bench to Bench">
+<Screen {theme} {wire} title={t("loop.title")}>
   {#if view === "request"}
-    <h1 class="t-title">What kind of walk?</h1>
-    <TextField label="In your words" bind:value={ask} placeholder="Knee's bad, 40 minutes, want trees" mic max={80} />
+    <h1 class="t-title">{t("loop.ask")}</h1>
+    <TextField label={t("loop.label")} bind:value={ask} placeholder={t("loop.placeholder")} mic max={80} />
   {:else if view === "readback"}
-    <h1 class="t-title">Got it: {loop.readback} Right?</h1>
+    <h1 class="t-title">{t("loop.readback", { summary: loop.readback })}</h1>
   {:else if view === "none"}
     <div class="none">
       <Icon name="bench" size={48} />
-      <h1 class="t-title">No loop keeps benches that close.</h1>
-      <p>Try 300 m between seats?</p>
+      <h1 class="t-title">{t("loop.none")}</h1>
+      <p>{t("loop.tryNext", { m: loop.nextLimit })}</p>
     </div>
   {:else}
-    <h1 class="t-title">{loop.minutes} min · {(loop.totalMeters / 1000).toFixed(1)} km · 4 benches</h1>
-    <article class="card" aria-label="Large-print card preview">
+    <h1 class="t-title">{t("loop.summary", { min: loop.minutes, km: (loop.totalMeters / 1000).toFixed(1), n: loop.benches })}</h1>
+    <article class="card" aria-label={t("loop.cardAria")}>
       <svg class="sketch" viewBox="0 0 300 140" aria-hidden="true">
         <path d="M40 110 C40 40 120 20 180 30 C250 40 270 100 220 120 C170 135 90 135 40 110 Z" fill="none" stroke="var(--c-ink-900)" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round" />
         {#each [[40, 110], [120, 26], [220, 50], [200, 124]] as [x, y], i}<g><circle cx={x} cy={y} r="13" fill="var(--c-maple-700)" /><text x={x} y={y + 6} text-anchor="middle" font-size="16" font-weight="700" fill="#fff">{i + 1}</text></g>{/each}
       </svg>
-      <ol class="turns">{#each loop.turns as t}<li>{t}</li>{/each}</ol>
-      <p class="warn">Check the path. Map data can be wrong.</p>
+      <ol class="turns">{#each loop.turns as turn}<li>{turn}</li>{/each}</ol>
+      <p class="warn">{t("loop.warn")}</p>
     </article>
   {/if}
   {#snippet actions()}
     {#if view === "loop"}
-      <Button icon="card">Print card</Button>
-      <Button variant="text">Read it aloud</Button>
+      <Button icon="card">{t("loop.print")}</Button>
+      <Button variant="text">{t("loop.read")}</Button>
     {:else if view === "readback"}
-      <Button>Make the loop</Button><Button variant="text">Fix it</Button>
+      <Button>{t("loop.make")}</Button><Button variant="text">{t("readback.fix")}</Button>
     {:else if view === "none"}
-      <Button>Try 300 m</Button>
+      <Button>{t("loop.try", { m: loop.nextLimit })}</Button>
     {:else}
-      <Button>Check it</Button>
+      <Button>{t("cond.check")}</Button>
     {/if}
   {/snippet}
 </Screen>

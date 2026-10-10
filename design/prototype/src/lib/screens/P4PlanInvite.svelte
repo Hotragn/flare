@@ -4,19 +4,20 @@
   import Button from "../components/Button.svelte";
   import Ladder from "../components/Ladder.svelte";
   import FlameMeter from "../components/FlameMeter.svelte";
-  import { plan } from "../sample";
+  import { t } from "#lib/copy/index.ts";
+  import { plan, people } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "open", theme = "light", wire = false, onyes, onshort }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; onshort?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title="From Fuego">
+<Screen {theme} {wire} title={t("invite.title", { host: people.host })}>
   <h1 class="t-invite">{plan.ask}</h1>
-  <p class="t-muted">Answer by {plan.deadline}. Four sizes, biggest first.</p>
-  <FlameMeter have={view === "need" ? 2 : 1} quorum={3} note={view === "need" ? "Need 1 more for the Ford Woods loop." : "Nobody sees who. Only the count."} />
+  <p class="t-muted">{t("planInvite.meta", { deadline: plan.deadline })}</p>
+  <FlameMeter have={view === "need" ? 2 : 1} quorum={3} note={view === "need" ? t("planInvite.needAt", { n: 1, k: 1, step: plan.steps[0].name }) : t("planInvite.private")} />
   <Ladder steps={plan.steps} />
   {#snippet actions()}
-    <Button icon="here" onclick={onyes}>I'm in</Button>
-    <Button variant="text" onclick={onshort}>Short one only</Button>
+    <Button icon="here" onclick={onyes}>{t("invite.yes")}</Button>
+    <Button variant="text" onclick={onshort}>{t("planInvite.short")}</Button>
   {/snippet}
 </Screen>
 

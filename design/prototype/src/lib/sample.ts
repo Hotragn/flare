@@ -2,6 +2,7 @@
 // names (allowed by the founder). Places are real OpenStreetMap features near
 // Fairlane Town Center; distances are illustrative until the field test.
 import type { Step } from "./components/parts";
+import { t } from "./copy/index.ts";
 
 export const people = { host: "Fuego", friends: ["Amor", "Shilp", "Ammo"] };
 
@@ -10,11 +11,20 @@ export const flare = {
   scene: "A pond with yellow trees and an empty bench.",
   spot: "Ford Woods Park, by the pond",
   spotShort: "the pond",
-  hostLine: "Fuego is waiting at the bench by the pond.",
-  walk: "9 min walk",
+  hostLine: t("send.hostLine", { host: "Fuego", spot: "the bench by the pond" }),
+  walk: t("invite.walk", { min: 9 }),
+  walkMin: 9,
   emberBench: "the bench by the lot",
-  emberDistance: "80 m from the pond",
+  emberBenchCap: "The bench by the lot",
+  emberMeters: 80,
+  emberFrom: "the pond",
   sunset: "Sunset 6:57 PM",
+  sunsetTime: "6:57 PM",
+  shrinkMin: 18,
+  sentMin: 2,
+  coming: 3,
+  here: 3,
+  savedAt: "2:14 PM",
   code: "K7Q2M",
 };
 
@@ -32,17 +42,23 @@ export const plan = {
 
 export const loop = {
   ask: "Knee's bad, 40 minutes, want trees",
-  readback: "40 min, a seat every 200 m, trees, no steps.",
+  readback: "40 min, seats every 200 m, trees, no steps.",
+  nextLimit: 300,
+  benches: 4,
   turns: [
-    "Start at the bench by the pond.",
-    "Left on the pond path. Bench in 150 m.",
-    "Right at the big oak. Bench in 180 m, under trees.",
-    "Straight past the playground. Restroom on your left.",
-    "Left back to the pond. Bench in 170 m.",
+    t("loop.turn.start", { place: "the bench by the pond" }),
+    t("loop.turn.left", { path: "the pond path", m: 150 }),
+    t("loop.turn.right", { landmark: "the big oak", m: 180 }),
+    t("loop.turn.restroom", { side: "left" }),
+    t("loop.turn.straight", { landmark: "the playground", m: 170 }),
+    t("loop.turn.end", { place: "the bench by the pond" }),
   ],
   totalMeters: 1950,
   minutes: 39,
 };
+
+// Phone tier download (O8): size is a placeholder until the lab picks the model.
+export const phoneModel = { mb: 290, pct: 38 };
 
 export const sparks = [
   { place: "Ford Woods Park, by the pond", times: 2, line: "Geese took our bench. We let them." },

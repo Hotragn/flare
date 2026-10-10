@@ -7,12 +7,14 @@
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
-  import { flare, sparks } from "../sample";
+  import { t, dot } from "#lib/copy/index.ts";
+  import { flare, sparks, people } from "../sample";
   import type { Theme } from "../components/parts";
   let { view = "kindling", theme = "light", wire = false, onyes, oncondition }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; oncondition?: () => void } = $props();
+  const host = people.host;
 </script>
 
-<Screen {theme} {wire} title="From Fuego" heading={view === "loading" ? "Loading Fuego's invite" : ""}>
+<Screen {theme} {wire} title={t("invite.title", { host })} heading={view === "loading" ? t("invite.loading", { host }) : ""}>
   {#if view === "loading"}
     <div class="skeleton print-sk" aria-hidden="true"></div>
     <div class="skeleton line" aria-hidden="true"></div>
@@ -20,14 +22,14 @@
   {:else if view === "missing-key"}
     <div class="center">
       <Icon name="warning" size={48} />
-      <h1 class="t-title">This link is missing its key.</h1>
-      <p class="t-muted">Ask Fuego to send it again. The key is the part after #.</p>
+      <h1 class="t-title">{t("invite.missingKey")}</h1>
+      <p class="t-muted">{t("invite.missingKeyHelp", { host })}</p>
     </div>
   {:else if view === "gone"}
     <div class="center">
       <Flame state="gone" size={120} />
-      <h1 class="t-title">Not this time.</h1>
-      <p class="t-muted">This Flare is over. Nothing about it was kept.</p>
+      <h1 class="t-title">{t("gone.title")}</h1>
+      <p class="t-muted">{t("gone.body")}</p>
     </div>
   {:else}
     <PhotoPrint scene={flare.scene} height={200} tilt={1.2} />
@@ -35,8 +37,8 @@
     <div class="where">
       <Icon name="hotspots" size={22} />
       <div>
-        <p><b>Fuego</b> is at {flare.spot}. {flare.walk}.</p>
-        <p class="spark t-small"><Icon name="spark" size={18} /><span>Met here {sparks[0].times + 1} times · "{sparks[0].line}"</span></p>
+        <p>{dot(t("invite.where", { host, spot: flare.spot }), flare.walk)}</p>
+        <p class="spark t-small"><Icon name="spark" size={18} /><span>{t("invite.metHere", { n: sparks[0].times + 1 })} {t("invite.sparkQuote", { line: sparks[0].line })}</span></p>
       </div>
     </div>
     <FlameMeter state={view === "lit" ? "lit" : "kindling"} have={view === "lit" ? 2 : 1} quorum={2} />
@@ -44,10 +46,10 @@
   {/if}
   {#snippet actions()}
     {#if view === "kindling" || view === "lit"}
-      <Button icon="here" onclick={onyes}>I'm in</Button>
-      <Button variant="text" onclick={oncondition}>Add a condition</Button>
+      <Button icon="here" onclick={onyes}>{t("invite.yes")}</Button>
+      <Button variant="text" onclick={oncondition}>{t("invite.condition")}</Button>
     {:else if view === "missing-key" || view === "gone"}
-      <Button variant="secondary">Close</Button>
+      <Button variant="secondary">{t("gone.close")}</Button>
     {/if}
   {/snippet}
 </Screen>

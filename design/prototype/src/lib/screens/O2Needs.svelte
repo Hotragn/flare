@@ -4,21 +4,23 @@
   import Button from "../components/Button.svelte";
   import Choice from "../components/Choice.svelte";
   import Icon from "../components/Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let { view = "set", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
   let steps = $state("yes");
   let rest = $state("200");
   let wc = $state("yes");
   $effect(() => { if (view === "empty") { steps = ""; rest = ""; wc = ""; } });
+  const yesNo = [{ value: "yes", label: t("needs.yes") }, { value: "no", label: t("needs.no") }];
 </script>
 
-<Screen {theme} {wire} heading="My needs" title="My needs">
-  <p class="lock"><Icon name="info" size={20} /><span>Only on this phone. Friends never see these.</span></p>
-  <Choice label="Avoid steps" bind:value={steps} options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]} />
-  <Choice label="A seat at least every" bind:value={rest} options={[{ value: "100", label: "100 m" }, { value: "200", label: "200 m" }, { value: "400", label: "400 m" }, { value: "none", label: "No need" }]} />
-  <Choice label="Restroom within 300 m" bind:value={wc} options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]} />
-  <p class="t-small t-muted">If a spot doesn't fit, Flare offers you a closer one, and nobody learns why.</p>
-  {#snippet actions()}<Button>Save</Button>{/snippet}
+<Screen {theme} {wire} heading={t("needs.title")} title={t("needs.title")}>
+  <p class="lock"><Icon name="info" size={20} /><span>{t("needs.lock")}</span></p>
+  <Choice label={t("needs.steps")} bind:value={steps} options={yesNo} />
+  <Choice label={t("needs.rest")} bind:value={rest} options={[{ value: "100", label: t("needs.m100") }, { value: "200", label: t("needs.m200") }, { value: "400", label: t("needs.m400") }, { value: "none", label: t("needs.none") }]} />
+  <Choice label={t("needs.restroom")} bind:value={wc} options={yesNo} />
+  <p class="t-small t-muted">{view === "empty" ? t("needs.empty") : t("needs.foot")}</p>
+  {#snippet actions()}<Button>{t("needs.save")}</Button>{/snippet}
 </Screen>
 
 <style>
