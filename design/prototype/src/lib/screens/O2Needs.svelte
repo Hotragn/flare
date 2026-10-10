@@ -12,7 +12,7 @@
   $effect(() => { if (view === "empty") { steps = ""; rest = ""; wc = ""; } });
 </script>
 
-<Screen {theme} {wire} title="My needs">
+<Screen {theme} {wire} heading="My needs" title="My needs">
   <p class="lock"><Icon name="info" size={20} /><span>Only on this phone. Friends never see these.</span></p>
   <Choice label="Avoid steps" bind:value={steps} options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]} />
   <Choice label="A seat at least every" bind:value={rest} options={[{ value: "100", label: "100 m" }, { value: "200", label: "200 m" }, { value: "400", label: "400 m" }, { value: "none", label: "No need" }]} />

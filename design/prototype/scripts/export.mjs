@@ -41,6 +41,24 @@ for (const s of manifest) {
   await page.waitForTimeout(150);
   await page.screenshot({ path: path.join(OUT, "wireframes", `${s.id}.png`) });
 }
+// Full pages: website (mobile and desktop), component catalog, prototype.
+if (!only.length || only.includes("pages")) {
+  fs.mkdirSync(path.join(OUT, "pages"), { recursive: true });
+  const pages = [
+    ["site-mobile", "/site/", 390, 844], ["site-desktop", "/site/", 1440, 900],
+    ["components-light-dark-sun", "/components/", 1280, 900], ["prototype", "/proto/", 1280, 960],
+  ];
+  for (const [name, route, w, h] of pages) {
+    const pctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: w > 1000 ? 1 : 2, reducedMotion: "reduce" });
+    const pg = await pctx.newPage();
+    pg.on("pageerror", (e) => errors.push(`${route}: ${e}`));
+    await pg.goto(base + route, { waitUntil: "networkidle" });
+    await pg.waitForTimeout(400);
+    await pg.screenshot({ path: path.join(OUT, "pages", `${name}.png`), fullPage: true });
+    await pctx.close();
+  }
+  console.log("Exported pages:", pages.map((p) => p[0]).join(", "));
+}
 await browser.close();
 server.kill();
 console.log(`Exported ${n} screens and ${manifest.filter((s) => !only.length || only.includes(s.id)).length} wireframes.`);

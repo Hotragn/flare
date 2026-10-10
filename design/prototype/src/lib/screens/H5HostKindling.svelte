@@ -12,7 +12,7 @@
   const progress = $derived((have - 1) / (quorum - 1));
 </script>
 
-<Screen {theme} {wire} title="Your Flare" offline={view === "offline" ? "Offline. Saved at 2:14 PM." : ""}>
+<Screen {theme} {wire} heading="Your Flare is waiting" title="Your Flare" offline={view === "offline" ? "Offline. Saved at 2:14 PM." : ""}>
   <div class="center">
     <Hearth state="kindling" {progress} size={230} />
     <NeedCount {have} {quorum} />

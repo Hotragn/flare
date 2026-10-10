@@ -14,7 +14,7 @@
   let hostLine = $state(flare.hostLine);
 </script>
 
-<Screen {theme} {wire} title="Send it" offline={view === "offline" ? "Offline. It sends when you're back." : ""}>
+<Screen {theme} {wire} heading="Send it" title="Send it" offline={view === "offline" ? "Offline. It sends when you're back." : ""}>
   <div class="top">
     <div class="thumb"><PhotoPrint scene={flare.scene} height={150} tilt={-3} /></div>
     <p class="t-title words">{flare.words}</p>

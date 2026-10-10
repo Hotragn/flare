@@ -13,7 +13,7 @@
   $effect(() => { ask = view === "empty" ? "" : plan.ask; });
 </script>
 
-<Screen {theme} {wire} title="Plan for later" offline={view === "offline" ? "Offline. Drafts from a template." : ""}>
+<Screen {theme} {wire} heading="Plan for later" title="Plan for later" offline={view === "offline" ? "Offline. Drafts from a template." : ""}>
   <TextField label="What's the plan?" bind:value={ask} placeholder="Fairlane walk at 11?" mic max={60} />
   <div class="times">
     <div class="time"><span class="lbl">Starts</span><button class="pick"><Icon name="plan" size={20} />Sun 11:00 AM</button></div>

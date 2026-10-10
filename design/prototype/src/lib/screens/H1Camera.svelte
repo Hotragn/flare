@@ -9,7 +9,7 @@
   let { view = "live", theme = "light", wire = false, onshoot, onmenu }: { view?: string; theme?: Theme; wire?: boolean; onshoot?: () => void; onmenu?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} menu close={false} grain={false} {onmenu}>
+<Screen {theme} {wire} heading="Take a photo of where you are" menu close={false} grain={false} {onmenu}>
   <div class="viewfinder" class:off={view !== "live"}>
     {#if view === "live"}
       <div class="live photo-art"><SampleScene /></div>

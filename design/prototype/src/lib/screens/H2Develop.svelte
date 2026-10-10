@@ -16,7 +16,7 @@
   let own = $state("");
 </script>
 
-<Screen {theme} {wire} offline={view === "offline" ? "Offline. Write six words, it sends later." : ""}>
+<Screen {theme} {wire} heading="Your invite" offline={view === "offline" ? "Offline. Write six words, it sends later." : ""}>
   <PhotoPrint state={view === "developing" ? "developing" : "developed"} scene={flare.scene} height={290} />
   <p class="spot"><Icon name="hotspots" size={20} /><span>{flare.spot}</span></p>
   {#if view === "developing"}

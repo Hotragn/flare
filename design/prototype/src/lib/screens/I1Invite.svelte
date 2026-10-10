@@ -12,12 +12,11 @@
   let { view = "kindling", theme = "light", wire = false, onyes, oncondition }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void; oncondition?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} title="From Fuego">
+<Screen {theme} {wire} title="From Fuego" heading={view === "loading" ? "Loading Fuego's invite" : ""}>
   {#if view === "loading"}
     <div class="skeleton print-sk" aria-hidden="true"></div>
     <div class="skeleton line" aria-hidden="true"></div>
     <div class="skeleton line short" aria-hidden="true"></div>
-    <p class="visually-hidden" role="status">Loading the invite</p>
   {:else if view === "missing-key"}
     <div class="center">
       <Icon name="warning" size={48} />
@@ -32,7 +31,7 @@
     </div>
   {:else}
     <PhotoPrint scene={flare.scene} height={200} tilt={1.2} />
-    <p class="t-invite words">{flare.words}</p>
+    <h1 class="t-invite words">{flare.words}</h1>
     <div class="where">
       <Icon name="hotspots" size={22} />
       <div>

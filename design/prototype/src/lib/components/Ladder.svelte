@@ -24,7 +24,8 @@
   .ladder { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
   .step { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 2px solid var(--line); }
   .current { border-color: var(--lit); box-shadow: var(--e-2); }
-  .past { opacity: 0.5; }
+  .past { background: transparent; }
+  .past .name, .past .num { color: var(--text-muted); }
   .editing { border-style: dashed; border-color: var(--text); }
   .num { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: color-mix(in srgb, var(--text) 8%, transparent); flex: none; }
   .current .num { background: var(--lit); color: var(--c-ink-900); }

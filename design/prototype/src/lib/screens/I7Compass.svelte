@@ -10,7 +10,7 @@
   const bearing = $derived(view === "facing" ? 4 : -35);
 </script>
 
-<Screen {theme} {wire} title="Find them" offline={view === "offline" ? "Offline. Pointing to the spot saved at 2:14 PM." : ""}>
+<Screen {theme} {wire} heading="Find them" title="Find them" offline={view === "offline" ? "Offline. Pointing to the spot saved at 2:14 PM." : ""}>
   <div class="center">
     <Compass {status} {meters} {bearing} />
   </div>

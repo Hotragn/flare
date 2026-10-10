@@ -13,3 +13,4 @@ node_modules/
 design/prototype/.svelte-kit/
 design/prototype/build/
 design/prototype/src/lib/generated/
+design/prototype/static/exports/

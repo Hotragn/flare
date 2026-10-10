@@ -9,7 +9,7 @@
   const reviewed = $derived(tags.every((t) => t[2]));
 </script>
 
-<Screen {theme} {wire} title="Fix the map">
+<Screen {theme} {wire} heading="Fix the map" title="Fix the map">
   <PhotoPrint state={view === "drafting" ? "developing" : "developed"} scene="A wooden bench with a backrest by a path." height={190} tilt={-1.5} />
   {#if view === "drafting"}
     <p class="t-muted" role="status">Drafting tags on our laptop…</p>
