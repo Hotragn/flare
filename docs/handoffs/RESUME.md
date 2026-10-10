@@ -26,5 +26,10 @@ Write brand/tools/covers.mjs with the three directions, render them, review the 
 ## Update: brand share-image fix DONE (committed)
 Golden-hour direction shipped to DEV cover and OG; icon fixed after the home-screen check.
 
+## Product design: in progress
+Done: docs/design/01-brief-and-ux-scan.md, 02-flows-and-ia.md (screen ids H1..H6, I0..I12, P1..P7, O0..O8, W1..W6); design/system/build-tokens.mjs -> tokens.css/json; design/prototype scaffold (SvelteKit 3.0.1, Svelte 5.57.2, Vite 8.3.4, Bits UI 2.19.5, TS 6.0.3, overrides fix BUG-007, 0 vulns).
+Lab inputs (Oct 10): photo AI runs on the hub (gemma4:e4b, ~3.0 s per photo), no in-browser vision on iPhone; design the draft as arriving in ~3 s, typed six-word fallback when the hub is unreachable. Flame: lab recommends a 1.9 KB WebGL shader with CSS fallback (prototype uses SVG/CSS; note for engineering). Fairlane pack 6.7 KB.
+Remaining: src/lib/styles/app.css, components (Flame, Button, Icon, PhotoPrint, TypeWords, NeedCount, AccessLine, NatureLine, Sheet, TextField, QuorumToggle, Banner, Compass, StepLadder, ListRow, TopBar, Screen), screens registry + one component per screen id, routes (/screens, /screens/[id], /proto, /components, /site), scripts/export.mjs (playwright-core + Chrome: hi-fi PNGs per screen/state/theme, wireframes via data-wire), scripts/a11y.mjs (axe-core), docs/design/03..07, handoff 04 (motion and copy).
+
 ## Exact next step now
-Start the product designer role: write docs/design/01-brief-and-ux-scan.md, then scaffold design/prototype (SvelteKit + Bits UI + brand tokens).
+Write design/prototype/src/lib/styles/app.css and the core components.

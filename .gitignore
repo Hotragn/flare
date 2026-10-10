@@ -8,3 +8,7 @@ lab/
 
 # Dependencies
 node_modules/
+
+# Prototype build output
+design/prototype/.svelte-kit/
+design/prototype/build/

@@ -58,3 +58,12 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** opentype.js 2.0.0 `toPathData()` output, concatenated across glyphs, was placed wrongly by resvg on glyphs with several contours.
 - **Fix:** Serialize `path.commands` ourselves as absolute M, L, C, Q, Z (`absPath` in brand/tools/build.mjs). Also: opentype.js 2.0.0 can't read WOFF2 without a decompressor; read the `.woff` files.
 - **Proof:** Re-rendered OG image and DEV cover show "Kindling" correctly.
+
+## BUG-007: Bits UI pulls a vulnerable nested SvelteKit 2
+
+- **Date:** 2026-10-10
+- **Area:** Prototype dependencies
+- **Symptom:** `npm audit` reported 5 low-severity issues (cookie < 0.7.0, GHSA-pxg6-pf52-xh8x) after installing bits-ui 2.19.5 with @sveltejs/kit 3.0.1. `npm audit fix --force` proposed downgrading bits-ui to 2.11.7.
+- **Cause:** bits-ui → runed and svelte-toolbelt declare @sveltejs/kit ^2 as a peer, so npm installed a nested kit 2.x with the old cookie.
+- **Fix:** `"overrides": { "@sveltejs/kit": "$@sveltejs/kit" }` in package.json, so every dependent uses our kit 3.0.1.
+- **Proof:** `npm audit`: found 0 vulnerabilities; `npm ls @sveltejs/kit` shows one deduped 3.0.1.
