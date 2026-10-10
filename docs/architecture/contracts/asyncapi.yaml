@@ -34,8 +34,10 @@ channels:
     description: |
       One socket at a time; a new hub replaces the old one (close code 4000). Text frames are
       JSON control messages. A photo job is a `job` text frame followed by exactly one binary
-      frame holding the JPEG. Max frame 2 MB. The server pings every 20 s; the hub reconnects
-      with backoff from 1 s up to 30 s. A job with no result in 6 s (photo) or 8 s (ladder)
+      frame holding the JPEG. Max frame 2 MB. The server pings every 5 s and drops a hub silent
+      for 12.5 s (or 3 s after a job timeout); the hub drops a server silent for 15 s and
+      redials after 250 ms, backing off to 30 s. Jobs pending on a closed socket are answered
+      at once with the template (spike E1). A job with no result in 6 s (photo) or 8 s (ladder)
       falls back to the rules tier on the server (BR-AI-1).
     servers:
       - $ref: "#/servers/local"

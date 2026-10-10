@@ -112,6 +112,8 @@ const plan = async () =>
   ).rows
     .map((r) => r["QUERY PLAN"])
     .join(" | ");
+// Migration 0002 adds the partial index this spike recommended; drop it to measure without.
+await db.query("drop index if exists gatherings_gone");
 await db.query("analyze");
 const planBefore = await plan();
 await db.query("create index gatherings_gone on gatherings(state_since) where state = 'gone'");

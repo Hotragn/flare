@@ -198,7 +198,7 @@ Deploying, the cron job, the paid plan and the Telegram webhook all wait for the
 | Scenario | Response | Measure |
 | --- | --- | --- |
 | The Mac sleeps mid-test | Health shows `hub: absent`; drafts return the template in ≤ 6 s; the host types six words | No P0 flow blocked |
-| Render restarts during Kindling | Hub reconnects (1 to 30 s); phones' SSE reconnects; scheduler rebuilds timers from `jobs` | Timer fires within 30 s of schedule (SRS-ST-2) |
+| Render restarts during Kindling | Hub reconnects (0.25 to 30 s); phones' SSE reconnects; scheduler rebuilds timers from `jobs` | Timer fires within 30 s of schedule (SRS-ST-2) |
 | A friend loses signal after Lit | Saved Lit data and compass work; taps queue in the outbox | "Offline. Saved at {time}." |
 | 12 friends tap within 1 s | Each yes is one transaction with `SELECT … FOR UPDATE` on the gathering; the solver runs in under 5 ms for 12 (exhaustive, BR-S-4) | p95 ≤ 300 ms (SRS-PERF-3) |
 | A database row survives Gone | The audit counts it; the cron sweep deletes it within 5 min | Audit 0 |

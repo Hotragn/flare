@@ -9,7 +9,7 @@ Photo AI runs on the team's Mac (Gemma 4 E4B, 3.0 s per photo on its GPU). Phone
 The hub (`apps/hub`) opens `wss://{server}/hub` with `Authorization: Bearer {HUB_SECRET}` and keeps it open. The server sends jobs down it and waits for results. Protocol `flare-hub.v1`, in [asyncapi.yaml](../contracts/asyncapi.yaml):
 - Text frames carry JSON (`hello`, `job`, `result`, `ping`, `pong`), validated by zod on both ends (`packages/shared/src/hub-protocol.ts`).
 - A photo is one `job` header then one binary frame (the 768 px JPEG, about 13 to 150 KB). No base64 on the wire.
-- Server pings every 20 s; the hub reconnects with backoff 1 s to 30 s; a new hub replaces the old one (close code 4000).
+- Heartbeat (amended after spike E1, BUG-030): the server pings every 5 s and drops a hub it hasn't heard from in 12.5 s, or 3 s after a job timeout; the hub drops a server it hasn't heard from in 15 s. Pending jobs are answered with the template the moment their socket closes. The hub redials after 250 ms, then backs off to 30 s. A new hub replaces the old one (close code 4000). A silent half-open link recovers in about 16 s.
 - Budgets: 6 s per photo job (BR-AI-1), 8 s per ladder job (SRS-PLAN-2). Late results are dropped; the phone already has the template.
 - The secret is compared with `timingSafeEqual`; a wrong secret gets HTTP 401 and no upgrade.
 

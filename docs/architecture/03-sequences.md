@@ -223,12 +223,12 @@ sequenceDiagram
   Hb->>S: WSS /hub, Authorization: Bearer HUB_SECRET
   S->>S: timingSafeEqual, wrong → 401
   Hb->>S: hello {protocol flare-hub.v1, model, ready: true}
-  loop every 20 s
+  loop every 5 s, silent 12.5 s: server drops the hub, silent 15 s: hub redials
     S->>Hb: ping
     Hb->>S: pong
   end
   Note over Hb,S: Wi-Fi drops: socket closes, health shows hub absent, drafts use the template
-  Hb->>S: Reconnect after 1, 2, 4 ... 30 s
+  Hb->>S: Reconnect after 0.25, 0.5, 1 ... 30 s
   Hb->>S: hello
   loop every 20 min
     Hb->>O: Warm-up chat (keeps the 30 min keep_alive from expiring)
