@@ -71,7 +71,7 @@ Open `http://localhost:8787/app/` in Chrome on the same computer, or on a phone 
 | [apps/web](apps/web) | SvelteKit app: the phone app and the link page |
 | [packages/shared](packages/shared) | Code both sides use: photo prompt and `enforce()`, short codes, plain-text SMS forms, hub protocol |
 | [packages/engine](packages/engine) | The core engine: quorum, conditions, Ember, the smaller plan |
-| [evals](evals) | Datasets, harness and reports for every model task |
+| [evals](evals) | Datasets, the eval runner and reports for every model task |
 | [docs/](docs) | Everything else, indexed in [docs/README.md](docs/README.md) |
 | [design/prototype](design/prototype) | Clickable prototype of all 33 screens |
 
