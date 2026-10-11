@@ -2,6 +2,7 @@
 // bearer token; every write goes through the outbox (ICD-5), which stores it first and adds
 // the Idempotency-Key. Bodies and ids are never logged (09-observability.md).
 import type { ClientIcd } from "@flare/shared/icd/index";
+import { timed } from "#lib/net/waking.svelte.ts";
 import type { ApiError, ErrorCode } from "./api-types.ts";
 import type { Deps } from "./deps.ts";
 
@@ -71,7 +72,7 @@ async function bodyOf(r: Response): Promise<unknown> {
 export async function getJson<T>(d: Deps, path: string, auth?: string): Promise<Res<T>> {
   let r: Response;
   try {
-    r = await d.fetch(BASE + path, { headers: auth ? { authorization: auth } : {}, cache: "no-store" });
+    r = await timed(d.fetch(BASE + path, { headers: auth ? { authorization: auth } : {}, cache: "no-store" }));
   } catch {
     return { ok: false, code: "network", status: 0 };
   }
@@ -83,7 +84,7 @@ export async function getJson<T>(d: Deps, path: string, auth?: string): Promise<
 export async function getBytes(d: Deps, path: string): Promise<Res<Uint8Array>> {
   let r: Response;
   try {
-    r = await d.fetch(BASE + path);
+    r = await timed(d.fetch(BASE + path));
   } catch {
     return { ok: false, code: "network", status: 0 };
   }
@@ -107,7 +108,7 @@ export async function write<T>(
 ): Promise<WriteRes<T>> {
   try {
     // No body (DELETE /me, fade, done, cancel): undefined, so the outbox sends none.
-    const value = await d.outbox.send<T>({ method, path: BASE + path, body });
+    const value = await timed(d.outbox.send<T>({ method, path: BASE + path, body }));
     return { ok: true, value, status: value === null ? 202 : 200 };
   } catch (e) {
     return failOf(e);

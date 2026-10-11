@@ -62,7 +62,8 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
     const out = formatPlan(deployPlan(VARS, REPO));
     expect(out).toContain("PUBLIC_BASE_URL: set");
     expect(out).toContain("TELEGRAM_WEBHOOK_SECRET: missing");
-    expect(out).toContain("*/5 * * * *");
+    expect(out).toContain("free, health /api/v1/health");
+    expect(out).not.toContain("cron");
     for (const v of Object.values(VARS)) expect(out).not.toContain(v);
   });
   it("the CLI without --yes calls nothing and exits 1 when required settings are missing", async () => {
@@ -79,15 +80,13 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
     expect(reqs.length).toBe(before);
     fs.rmSync(dir, { recursive: true, force: true });
   });
-  it("--yes creates Postgres, web service and cron in Ohio, sets env, deploys (fake Render API)", async () => {
+  it("--yes creates free Postgres and a free web service in Ohio, no cron, sets env, deploys (fake Render API)", async () => {
     reqs.length = 0;
     const done = await deploy(VARS, REPO, base);
     expect(done).toEqual([
       "created flare-db",
       "created flare-outside",
       "set 6 env vars on flare-outside",
-      "created flare-sweep",
-      "set 2 env vars on flare-sweep",
       "deploy started for flare-outside",
     ]);
     expect(reqs.every((r) => r.auth === `Bearer ${VARS.RENDER_KEY}`)).toBe(true);
@@ -95,8 +94,11 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
     expect(web?.body).toMatchObject({
       type: "web_service",
       repo: REPO,
-      serviceDetails: { region: "ohio", numInstances: 1, healthCheckPath: "/api/v1/health" },
+      serviceDetails: { region: "ohio", plan: "free", healthCheckPath: "/api/v1/health" },
     });
+    const db = reqs.find((r) => r.url === "/v1/postgres" && r.method === "POST");
+    expect(db?.body).toMatchObject({ plan: "free" });
+    expect(reqs.some((r) => JSON.stringify(r.body ?? "").includes("cron_job"))).toBe(false);
     const env = reqs.find((r) => r.url === `/v1/services/svc-${NAMES.web}/env-vars`)?.body as { key: string }[];
     expect(env.map((e) => e.key).sort()).toEqual(
       [

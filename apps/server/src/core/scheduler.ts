@@ -86,13 +86,17 @@ export function startScheduler(ctx: Ctx, opts: { tickMs?: number; sweepMs?: numb
     }
   };
   const t = setInterval(tick, opts.tickMs ?? 1000);
-  const s = setInterval(() => {
+  const sweepNow = () => {
     if (!ctx.db) return;
     sweep(ctx.db, ctx.clock.now()).catch(() => log.error({ event: "sweep.failed" }, "sweep failed"));
-  }, opts.sweepMs ?? 60_000);
+  };
+  const s = setInterval(sweepNow, opts.sweepMs ?? 60_000);
   t.unref();
   s.unref();
   void tick();
+  // At boot too: on Render's free tier the server sleeps when idle, so anything that expired
+  // while it slept is deleted the moment it wakes (BR-D-1; ADR-0005 amended).
+  sweepNow();
   return {
     stop: () => {
       clearInterval(t);

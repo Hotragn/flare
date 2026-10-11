@@ -96,6 +96,11 @@
       "kind": "status",
       "where": "all"
     },
+    "app.waking": {
+      "text": "Waking up the server. About a minute.",
+      "kind": "status",
+      "where": "every screen"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",
@@ -4234,6 +4239,11 @@
       "kind": "prose",
       "where": "site W4",
       "fixed": "ADR-0022"
+    },
+    "site.privacy.l.sleep": {
+      "text": "Our server runs on a free plan that sleeps when nobody uses it. A Flare that ends while it sleeps is deleted the moment it wakes, not within 5 minutes.",
+      "kind": "prose",
+      "where": "W3"
     },
     "ai.cloud.title": {
       "text": "When DigitalOcean is used",

@@ -23,7 +23,7 @@ Pass bar: CI green (GitHub Actions too), real flow 5/5 with 0 page errors, e2e-h
 git tag -a rc-1 -m "Flare RC 1 for the field test" && git push origin rc-1
 ```
 
-## 09:35 Deploy to Render (**YES**: deploy, Starter web $7/month, Basic Postgres, sweep cron)
+## Deploy to Render (**YES**: deploy, free web service and free Postgres, $0; ADR-0005 amended)
 
 1. Settings check, values never shown:
    ```bash
@@ -35,7 +35,8 @@ git tag -a rc-1 -m "Flare RC 1 for the field test" && git push origin rc-1
    ```bash
    npm run deploy:render -- --yes
    ```
-   It finds or creates `flare-db` (Postgres, Ohio), `flare-outside` (web, 1 instance, health `/api/v1/health`) and `flare-sweep` (cron every 5 min), sets env, and starts a deploy. It prints the `https://….onrender.com` URL. First deploy takes about 5 minutes.
+   It finds or creates `flare-db` (free Postgres, Ohio) and `flare-outside` (free web service, health `/api/v1/health`), sets env, and starts a deploy. No cron: the server sweeps itself every 60 s and at boot. It prints the `https://….onrender.com` URL. First deploy takes about 5 minutes.
+   Free tier: the server sleeps after 15 min idle and wakes in 30 to 60 s. The hub's keep-warm ping (every 5 min) keeps it awake for the whole test; start the hub before the phones open the app.
 
 ## 09:45 Connect the hub
 
@@ -45,7 +46,7 @@ On the hub Mac, with every other app closed and the Mac plugged in:
 FLARE_SERVER_URL=wss://flare-outside.onrender.com npm run hub:field
 ```
 
-The health line every 30 s must show the server link up and the model loaded. Keep the load below about 10, or photos miss the 6 s budget and fall back to typed words.
+The health line every 30 s must show the server link up and the model loaded, and `hub: keep-warm 200` every 5 min. Keep the load below about 10, or photos miss the 6 s budget and fall back to typed words.
 
 ## 09:50 Smoke test
 

@@ -1,6 +1,15 @@
 # ADR-0005: One Render web service plus Render Postgres; HTTPS from day one
 
-Status: Accepted (deploy itself waits for the founder's yes). Date: 2026-10-10.
+Status: Accepted (deploy itself waits for the founder's yes). Date: 2026-10-10. **Amended Sun 2026-10-11 ~10:30 ET: free tier** (below).
+
+## Amendment: Render free tier (founder decision, no paid hosting)
+
+- **Web service and Postgres on the free plan.** No cron job (the free tier has none): the server sweeps in process every 60 s, and once at boot.
+- **Sleep.** A free web service sleeps after 15 minutes without inbound HTTP traffic and takes about 30 to 60 s to wake. While the hub runs, it asks for `/api/v1/health` every 5 minutes (`apps/hub/src/main.ts`, `FLARE_KEEP_WARM_MS`), which keeps the server awake, so relaying photos, timers and the deletion sweep all run. The phone shows "Waking up the server. About a minute." on any request slower than 4 s (`lib/net/waking.svelte.ts`).
+- **What this costs the privacy promise, said plainly.** "Deleted within 5 minutes of the end" holds while the server is awake: during the field test, and for 15 minutes after anyone last used it. A Flare that ends or expires while the server is asleep (nobody using it, hub off) is deleted the moment it next wakes, by the boot sweep. The privacy page says so (`site.privacy.l.sleep`).
+- **Free Postgres** expires after 30 days on Render; fine for a challenge entry, and everything in it is short-lived by design.
+- The Starter rationale below stays for the record; the founder chose $0 over no sleep.
+
 
 ## Context
 Phones need HTTPS for the camera, geolocation, device orientation, service workers and Web Push (lab report 04). The hub needs a server it can dial out to (ADR-0006). RENDER_KEY is available for the Render API. Ollama cannot run on Render: CPU-only E4B took 126 to 215 s per photo (lab report 08).

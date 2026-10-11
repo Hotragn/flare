@@ -37,6 +37,22 @@ const warm = async () => {
 };
 await warm();
 setInterval(warm, 20 * 60_000).unref();
+// Render's free tier sleeps after 15 min without inbound HTTP traffic, and a sleeping server
+// neither relays photos nor runs the deletion sweep. While the hub runs (the whole field test)
+// it asks for the health page every 5 min, which keeps the server awake. FLARE_KEEP_WARM_MS=0
+// turns it off.
+export function healthUrl(ws: string): string {
+  return `${ws.replace(/^ws(s?):\/\//, "http$1://").replace(/\/$/, "")}/api/v1/health`;
+}
+const keepWarmMs = Number(process.env.FLARE_KEEP_WARM_MS ?? 5 * 60_000);
+if (keepWarmMs > 0) {
+  const ping = () =>
+    fetch(healthUrl(serverUrl), { signal: AbortSignal.timeout(60_000) }).then(
+      (r) => console.info(`hub: keep-warm ${r.status}`),
+      () => console.info("hub: keep-warm failed (server waking or offline)"),
+    );
+  setInterval(ping, keepWarmMs).unref();
+}
 startHub({
   serverUrl,
   secret: need("HUB_SECRET"),

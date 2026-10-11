@@ -1,5 +1,7 @@
 // One-step Render deploy (BE10, SRS-MNT-3, docs/architecture/01-system-architecture.md 6):
-// Postgres, the web service and the 5-minute sweep cron, all in Ohio, env from .env.
+// Postgres and the web service on Render's free tier (founder decision, Sun 2026-10-11:
+// no paid hosting), in Ohio, env from .env. Free has no cron jobs: the server sweeps in
+// process every 60 s and once at boot, and the hub keeps it awake (ADR-0005 amended).
 // Waits for the founder: without --yes it prints the plan and calls nothing. Values are
 // never printed; each env var shows only "set" or "missing".
 // Usage: npm run deploy:render            (dry run, offline)
@@ -11,7 +13,7 @@ import { hasYes, loadVars, type Vars } from "./telegram-lib.ts";
 
 export const REGION = "ohio";
 export const NODE_VERSION = "24.21.0";
-export const NAMES = { web: "flare-outside", db: "flare-db", cron: "flare-sweep" };
+export const NAMES = { web: "flare-outside", db: "flare-db" };
 /** Sent to the web service and the cron job from .env. DATABASE_URL comes from Render. */
 export const WEB_KEYS = [
   "PUBLIC_BASE_URL",
@@ -67,14 +69,14 @@ export function deployPlan(vars: Vars, repo: string): DeployPlan {
     })),
     steps: [
       { what: "find the workspace (owner)", method: "GET", path: "/v1/owners" },
-      { what: `find or create Postgres ${NAMES.db} (${REGION})`, method: "POST", path: "/v1/postgres" },
+      { what: `find or create Postgres ${NAMES.db} (free, ${REGION})`, method: "POST", path: "/v1/postgres" },
       {
         what: "read its internal connection string as DATABASE_URL",
         method: "GET",
         path: "/v1/postgres/{id}/connection-info",
       },
       {
-        what: `find or create web service ${NAMES.web} (starter, 1 instance, health /api/v1/health)`,
+        what: `find or create web service ${NAMES.web} (free, health /api/v1/health; sleeps after 15 min idle)`,
         method: "POST",
         path: "/v1/services",
       },
@@ -83,12 +85,6 @@ export function deployPlan(vars: Vars, repo: string): DeployPlan {
         method: "PUT",
         path: "/v1/services/{id}/env-vars",
       },
-      {
-        what: `find or create cron job ${NAMES.cron} (*/5 * * * *, npm run sweep)`,
-        method: "POST",
-        path: "/v1/services",
-      },
-      { what: `set DATABASE_URL on ${NAMES.cron}`, method: "PUT", path: "/v1/services/{id}/env-vars" },
       { what: `deploy ${NAMES.web}`, method: "POST", path: "/v1/services/{id}/deploys" },
     ],
     problems,
@@ -151,7 +147,7 @@ export async function deploy(
     const made = await api<{ id: string }>("POST", "/v1/postgres", {
       name: NAMES.db,
       ownerId,
-      plan: "basic_256mb",
+      plan: "free",
       region: REGION,
       version: "17",
     });
@@ -172,7 +168,7 @@ export async function deploy(
     { key: "DATABASE_URL", value: conn.internalConnectionString },
     { key: "NODE_VERSION", value: NODE_VERSION },
   ];
-  const service = async (name: string, details: Record<string, unknown>, type: "web_service" | "cron_job") => {
+  const service = async (name: string, details: Record<string, unknown>, type: "web_service") => {
     const found = await api<Listed<"service", { id: string }>>("GET", `/v1/services?name=${name}&limit=1`);
     let id = found[0]?.service.id;
     if (!id) {
@@ -197,8 +193,7 @@ export async function deploy(
     {
       runtime: "node",
       region: REGION,
-      plan: "starter",
-      numInstances: 1,
+      plan: "free",
       healthCheckPath: "/api/v1/health",
       envSpecificDetails: { buildCommand: "npm ci && npm run build", startCommand: "npm start" },
     },
@@ -216,22 +211,6 @@ export async function deploy(
   await api("PUT", `/v1/services/${webId}/env-vars`, env);
   done.push(`set ${env.length} env vars on ${NAMES.web}`);
 
-  const cronId = await service(
-    NAMES.cron,
-    {
-      runtime: "node",
-      region: REGION,
-      plan: "starter",
-      schedule: "*/5 * * * *",
-      envSpecificDetails: { buildCommand: "npm ci", startCommand: "npm run sweep" },
-    },
-    "cron_job",
-  );
-  await api("PUT", `/v1/services/${cronId}/env-vars`, [
-    { key: "DATABASE_URL", value: conn.internalConnectionString },
-    { key: "NODE_VERSION", value: NODE_VERSION },
-  ]);
-  done.push(`set 2 env vars on ${NAMES.cron}`);
   await api("POST", `/v1/services/${webId}/deploys`, { clearCache: "do_not_clear" });
   done.push(`deploy started for ${NAMES.web}`);
   return done;

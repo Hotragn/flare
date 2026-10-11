@@ -8,6 +8,7 @@
   import Icon from "./Icon.svelte";
   import SoundToggle from "./SoundToggle.svelte";
   import { themeAttrs, type Theme } from "./parts";
+  import { net } from "#lib/net/waking.svelte.ts";
 
   let {
     theme = "light",
@@ -44,6 +45,8 @@
   </header>
   {#if offline}
     <div class="offline" role="status"><Icon name="offline" size={20} /><span>{offline}</span></div>
+  {:else if net.slow > 0}
+    <div class="offline" role="status"><Icon name="info" size={20} /><span>{t("app.waking")}</span></div>
   {/if}
   <!-- tabindex lets keyboard users scroll long content (WCAG 2.1.1, axe scrollable-region-focusable) -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
