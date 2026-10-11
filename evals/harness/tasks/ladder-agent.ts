@@ -4,7 +4,7 @@
 // its tools (sunset, weather window, Fairlane places, templates) and its rewrite of the job.
 // Each item runs both variants back to back (order swapped every other item) so both see the
 // same Mac load.
-import { ladderFromAsk } from "../../../apps/hub/src/ollama.ts";
+import { LADDER_RETRY, type LadderRetry, ladderFromAsk } from "../../../apps/hub/src/ollama.ts";
 import { runLadderAgent } from "../../../apps/server/src/agent/ladder-agent.ts";
 import {
   clearToolCaches,
@@ -41,6 +41,8 @@ function tomorrow11(): string {
 /** The coarse area the phone would send: the pack place the ask names, else the pack name. */
 const areaOf = (ask: string) => nearbyPlaces(ask).named[0] ?? "fairlane";
 const BUDGET = LADDER_PROMPT.budgetMs; // 8 s, the route's ctx.ladderTimeoutMs
+/** The hub's retry after an unusable answer: EVAL_LADDER_RETRY=corrective|none (default: the hub's). */
+const RETRY: LadderRetry = (process.env.EVAL_LADDER_RETRY as LadderRetry | undefined) ?? LADDER_RETRY;
 
 /** The hub as the relay sees it: one ladder job, a guarded ladder or null on timeout. */
 function localRelay(jobs: LadderInputT[], hub: { ms: number } = { ms: 0 }): HubRelay {
@@ -51,7 +53,10 @@ function localRelay(jobs: LadderInputT[], hub: { ms: number } = { ms: 0 }): HubR
       const t = performance.now();
       try {
         const cfg = { url: OLLAMA_URL, model: MODEL, timeoutMs };
-        const l = await ladderFromAsk(cfg, job as never, AbortSignal.timeout(timeoutMs));
+        const l = await ladderFromAsk(cfg, job as never, AbortSignal.timeout(timeoutMs), {
+          retry: RETRY,
+          deadline: performance.now() + timeoutMs,
+        });
         return l ? { ok: true, model: MODEL, ladder: l } : { ok: false, error: "invalid" };
       } catch (e) {
         return (e as Error).name === "TimeoutError" ? null : { ok: false, error: "hub_error" };
@@ -233,7 +238,7 @@ export async function runLadderAgentEval(tier: string, limit?: number): Promise<
   const hubTimeouts = (rows: Row[]) => rows.filter((r) => (r.hub_ms ?? 0) >= BUDGET - 100).length;
   return {
     task: "ladder-agent",
-    tier,
+    tier: RETRY === LADDER_RETRY ? tier : `${tier}-retry-${RETRY}`,
     model: MODEL,
     prompt: `${LADDER_PROMPT.id}@${LADDER_PROMPT.version}`,
     date: new Date().toISOString(),
@@ -262,7 +267,7 @@ export async function runLadderAgentEval(tier: string, limit?: number): Promise<
       `12 original asks: current p95 ${cur12.p95_ms} ms (median ${cur12.median_ms}), agent p95 ${ag12.p95_ms} ms (median ${ag12.median_ms}). With 12 items, p95 is the slowest item.`,
       `Agent overhead (run minus relay time): median ${over.median_ms} ms, p95 ${over.p95_ms} ms, max ${over.max_ms} ms. Relay calls that hit the 8 s budget: current ${hubTimeouts(cur)}, agent ${hubTimeouts(ag)}.`,
       `Asked activity put back on step 1 by the agent's rule (not by the model): ${ag.filter((r) => r.kept).length} items. Tool caches: weather ${cache.weather_hits} hits / ${cache.weather_misses} misses, sunset ${cache.sunset_hits} hits / ${cache.sunset_misses} misses.`,
-      "Both variants run the hub's own ladderFromAsk() (retry once) on the local Ollama through a stand-in relay with the route's 8 s budget; the guard runs again on the server side against the phone's ask.",
+      `Both variants run the hub's own ladderFromAsk() on the local Ollama through a stand-in relay with the route's 8 s budget; hub retry: ${RETRY} (one retry with a correction only when it fits before the deadline, or none). The guard runs again on the server side against the phone's ask.`,
       "Adversarial asks (L11 injection, L12 person bait) count toward safety bars, not the usable bar.",
     ],
     items: items.map((it, i) => ({

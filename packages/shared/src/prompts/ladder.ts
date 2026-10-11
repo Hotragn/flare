@@ -101,6 +101,69 @@ export function inventsNames(label: string, ask: string): boolean {
   return words.some((w, i) => i > 0 && /^\p{Lu}/u.test(w) && !STOP.has(w) && !askWords.has(w.toLowerCase()));
 }
 
+/** Short words English Title Case leaves in lower case ("Walk by the Pond"). */
+const SMALL_WORDS = new Set(["a", "an", "the", "and", "or", "of", "to", "by", "at", "in", "on", "for", "with", "near"]);
+
+/**
+ * Title Case: at least two words after the first, small words aside, and all of them start upper
+ * case ("Covered Frisbee Play"). One capitalised word ("Walk to Paris") reads as a name, not a style.
+ */
+export function isTitleCase(label: string): boolean {
+  const rest = (label.match(/[\p{L}']+/gu) ?? []).slice(1).filter((w) => !SMALL_WORDS.has(w.toLowerCase()));
+  return rest.length >= 2 && rest.every((w) => /^\p{Lu}/u.test(w));
+}
+
+/** Words that end a place name ("Dearborn Mall", "Central Park"). */
+const PLACE_NOUNS = new Set(
+  "park mall lake river creek pond street st road rd avenue ave center centre cafe beach trail garden gardens square plaza market museum library station bridge island woods field".split(
+    " ",
+  ),
+);
+
+/**
+ * In a Title Case answer, "X Mall" with X capitalised, not the label's first word, not a small
+ * word and not in the ask still reads as an invented place, even though the label is going to
+ * sentence case. "Short Park Walk" passes (Short is first); "Walk To Dearborn Mall" does not.
+ */
+export function namesPlace(label: string, ask: string): boolean {
+  const askWords = new Set((ask.match(/[\p{L}']+/gu) ?? []).map((w) => w.toLowerCase()));
+  const w = label.match(/[\p{L}']+/gu) ?? [];
+  return w.some((x, i) => {
+    const prev = w[i - 1];
+    return (
+      i >= 2 &&
+      PLACE_NOUNS.has(x.toLowerCase()) &&
+      !!prev &&
+      /^\p{Lu}/u.test(prev) &&
+      !SMALL_WORDS.has(prev.toLowerCase()) &&
+      !askWords.has(prev.toLowerCase())
+    );
+  });
+}
+
+/**
+ * Sentence case for a Title Case label: words after the first go lower case, except names the
+ * ask capitalises after its own first word ("Ford Woods Park") and all-caps words ("WDDA"),
+ * which stay as written so inventsNames() still checks them.
+ */
+export function sentenceCase(label: string, ask: string): string {
+  const askNames = new Set(
+    (cleanAsk(ask).match(/[\p{L}']+/gu) ?? [])
+      .slice(1)
+      .filter((w) => /^\p{Lu}/u.test(w))
+      .map((w) => w.toLowerCase()),
+  );
+  let first = true;
+  return label.replace(/[\p{L}']+/gu, (w) => {
+    if (first) {
+      first = false;
+      return w;
+    }
+    if (askNames.has(w.toLowerCase()) || (w.length > 1 && w === w.toUpperCase())) return w;
+    return w.toLowerCase();
+  });
+}
+
 /** Accept v2 {labels, minutes}, v1 {steps: [...]}, or a bare array of steps. */
 function toSteps(raw: unknown): unknown[] | null {
   if (Array.isArray(raw)) return raw;
@@ -131,6 +194,11 @@ export function enforceLadder(text: string, input: LadderInputT): LadderDraft | 
   const items = list.slice(0, 4) as { label?: unknown; minutes?: unknown }[];
   let templateSteps = 0;
   const seen = new Set<string>();
+  // A whole answer in Title Case (3 or more of the 4 labels) is a style, not 3 to 12 place
+  // names: those labels go to sentence case before the invented-name check. A single
+  // capitalised word in an otherwise sentence-case answer still counts ("Walk to Paris").
+  const titleStyle = items.filter((it) => typeof it?.label === "string" && isTitleCase(it.label as string)).length >= 3;
+  if (titleStyle) repaired.push("labels:sentence case");
   const labels = items.map((it, i) => {
     const fallback = TEMPLATE_LABELS[i] ?? "A quick hello";
     if (typeof it?.label !== "string") {
@@ -138,12 +206,14 @@ export function enforceLadder(text: string, input: LadderInputT): LadderDraft | 
       repaired.push(`step${i + 1}:label template`);
       return fallback;
     }
-    const l = clipWords(it.label, 4, `step${i + 1}`, repaired).replace(/[.!]+$/, "");
+    const placeLike = titleStyle && namesPlace(it.label, input.ask);
+    const raw = titleStyle ? sentenceCase(it.label, input.ask) : it.label;
+    const l = clipWords(raw, 4, `step${i + 1}`, repaired).replace(/[.!]+$/, "");
     const key = l.toLowerCase();
     const dup = seen.has(key);
     seen.add(key);
     // A repeated label would make two steps look the same on the ladder.
-    if (!l || dup || hasPersonWords(l) || inventsNames(l, input.ask)) {
+    if (!l || dup || placeLike || hasPersonWords(l) || inventsNames(l, input.ask)) {
       templateSteps++;
       repaired.push(`step${i + 1}:label template`);
       return fallback;
