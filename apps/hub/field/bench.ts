@@ -2,11 +2,12 @@
 // Ollama is shared on this Mac.
 //   photo: POST each JPEG in <dir> to <server>/api/v1/drafts (phone -> server -> hub -> Ollama)
 //   ladder: five ask lines straight to Ollama with the hub's ladder job code
-// Usage: node apps/hub/field/bench.ts --server http://localhost:8843 --photos <dir of 768 px JPEGs>
+// Usage: node apps/hub/field/bench.ts [--server http://localhost:8843] --photos <dir of 768 px JPEGs>
+//   without --server, photos go straight to Ollama after the hub's image warm-up
 // Prints timings and tiers only, never the drafts (they describe the photos).
 import fs from "node:fs";
 import path from "node:path";
-import { ladderFromAsk } from "../src/ollama.ts";
+import { draftFromPhoto, ladderFromAsk, warm } from "../src/ollama.ts";
 
 const arg = (k: string) => {
   const i = process.argv.indexOf(k);
@@ -39,6 +40,19 @@ if (server && dir) {
     tiers.push(`${j.tier}:${(j.invite ?? "").split(/\s+/).filter(Boolean).length}w`);
   }
   out.photo = { n: ms.length, round_trip_ms: ms, median_ms: pct(ms, 0.5), max_ms: Math.max(...ms), tiers };
+} else if (dir) {
+  // No server: warm exactly as the hub does, then time each photo straight to Ollama.
+  const tw = performance.now();
+  await warm(ollama);
+  const warmMs = Math.round(performance.now() - tw);
+  const ms: number[] = [];
+  let usable = 0;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".jpg"))) {
+    const t = performance.now();
+    if (await draftFromPhoto(ollama, fs.readFileSync(path.join(dir, f)))) usable++;
+    ms.push(Math.round(performance.now() - t));
+  }
+  out.photo_direct = { warm_ms: warmMs, n: ms.length, ms, first_ms: ms[0], median_ms: pct(ms, 0.5), usable };
 }
 
 const ASKS = [

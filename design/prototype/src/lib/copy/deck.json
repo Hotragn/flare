@@ -1752,30 +1752,6 @@
       "where": "P2 step edit",
       "owner": "apps/web/src/lib/ai"
     },
-    "ladder.tpl.1": {
-      "text": "Full walk",
-      "kind": "option",
-      "where": "P2 template ladder, step 1",
-      "owner": "apps/web/src/lib/ai"
-    },
-    "ladder.tpl.2": {
-      "text": "Half walk",
-      "kind": "option",
-      "where": "P2 template ladder, step 2",
-      "owner": "apps/web/src/lib/ai"
-    },
-    "ladder.tpl.3": {
-      "text": "Short walk",
-      "kind": "option",
-      "where": "P2 template ladder, step 3",
-      "owner": "apps/web/src/lib/ai"
-    },
-    "ladder.tpl.4": {
-      "text": "Sit nearby",
-      "kind": "option",
-      "where": "P2 template ladder, step 4",
-      "owner": "apps/web/src/lib/ai"
-    },
     "ladder.tmpl.1": {
       "text": "Long walk",
       "kind": "label",

@@ -173,7 +173,7 @@ describe("FE5 Plan logic", () => {
 
   it("SRS-PLAN-10: the answer names steps from this ladder", () => {
     const ctx = { members: [{ id: "a", name: "Amor" }], tz: "America/Detroit", now: created };
-    const r = planAnswer("at least the half walk, back by 5", ctx, templateLadder(60));
+    const r = planAnswer("at least a shorter loop, back by 5", ctx, templateLadder(60));
     expect(r).toMatchObject({ ok: true, readBack: "Got it: step 2 or bigger, back by 5 PM. Right?" });
     if (r.ok) expect(stepsAllowed(r.rules)).toEqual([1, 2]);
     expect(planAnswer("maybe", ctx, templateLadder(60))).toMatchObject({ ok: false });
