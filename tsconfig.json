@@ -23,6 +23,7 @@
     "apps/server/test/**/*.ts",
     "apps/hub/src/**/*.ts",
     "apps/hub/test/**/*.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "evals/**/*.ts"
   ]
 }

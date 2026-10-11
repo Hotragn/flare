@@ -7,6 +7,7 @@ export default defineConfig({
       "apps/server/test/**/*.test.ts",
       "apps/hub/test/**/*.test.ts",
       "scripts/test/**/*.test.ts",
+      "evals/test/**/*.test.ts",
     ],
     testTimeout: 20000,
   },

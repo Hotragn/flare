@@ -31,7 +31,8 @@
     "budget": "node scripts/budget.ts",
     "hooks": "git config core.hooksPath .githooks",
     "diagrams": "node scripts/check-diagrams.ts",
-    "device-check": "node scripts/device-check.ts"
+    "device-check": "node scripts/device-check.ts",
+    "eval": "node evals/harness/run.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
