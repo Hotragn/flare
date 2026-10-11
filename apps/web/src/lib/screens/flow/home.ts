@@ -9,6 +9,7 @@ import { sunset } from "#lib/map/sun.ts";
 export const GOLDEN_MIN = 60; // golden hour: the last hour before sunset
 export const GREEN_RADIUS_M = 1500;
 const WALK_M_PER_MIN = 80;
+const SEASON = /^Week \d+ of \w+\.?$/;
 
 export type Golden = { kind: "soon"; minutes: number } | { kind: "now"; minutes: number } | { kind: "after" };
 export type Green = { name: string; walkMin: number; line: string };
@@ -26,9 +27,11 @@ export function golden(at: LatLon, now: Date): Golden {
 export function nearestGreen(pack: MapPack, at: LatLon, now: Date, tz: string): Green | null {
   const hit = near(pack, at, new Set(["park", "water"]), GREEN_RADIUS_M).find(({ place }) => place.name);
   if (!hit?.place.name) return null;
+  const line = natureLine(pack, hit.place, now, tz);
   return {
     name: hit.place.name,
     walkMin: Math.max(1, Math.round((hit.m * 1.3) / WALK_M_PER_MIN)),
-    line: natureLine(pack, hit.place, now, tz),
+    // The generic season line ("Week 3 of fall") is not a notice-this fact; drop it.
+    line: SEASON.test(line.trim()) ? "" : line,
   };
 }

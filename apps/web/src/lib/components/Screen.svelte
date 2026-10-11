@@ -9,6 +9,7 @@
   import SoundToggle from "./SoundToggle.svelte";
   import { themeAttrs, type Theme } from "./parts";
   import { net } from "#lib/net/waking.svelte.ts";
+  import Waking from "./Waking.svelte";
 
   let {
     theme = "light",
@@ -59,8 +60,6 @@
   </header>
   {#if offline}
     <div class="offline" role="status"><Icon name="offline" size={20} /><span>{offline}</span></div>
-  {:else if net.slow > 0}
-    <div class="offline" role="status"><Icon name="info" size={20} /><span>{t("app.waking")}</span></div>
   {/if}
   <!-- tabindex lets keyboard users scroll long content (WCAG 2.1.1, axe scrollable-region-focusable) -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -85,6 +84,7 @@
   {/if}
   {/if}
   {#if overlay}{@render overlay()}{/if}
+  {#if net.slow > 0 && !offline}<Waking />{/if}
 </div>
 
 <style>
@@ -105,7 +105,8 @@
   .actions { padding: 12px var(--l-gutter) 24px; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
 
   /* Stage: the photo is the screen (docs/design/09-2026-direction.md, rules 1, 6). */
-  .staged { background: #0b0b0d; }
+  /* While the photo decrypts (about 1.5 s), the warm light shows, never a black screen. */
+  .staged { background: radial-gradient(120% 80% at 50% 30%, var(--c-maple-600) 0%, var(--c-ember-700) 45%, #120806 100%); }
   .backdrop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
   .backdrop.art :global(svg), .backdrop.art :global(.scenery) { width: 100%; height: 100%; display: block; }
   .backdrop.art :global(svg) { object-fit: cover; }
