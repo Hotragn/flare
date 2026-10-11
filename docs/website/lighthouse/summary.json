@@ -1,0 +1,89 @@
+{
+  "at": "2026-10-11T01:29:02.945Z",
+  "lighthouse": "13.5.0",
+  "chrome": "154.0.8037.99",
+  "min": 95,
+  "lowest": 98,
+  "rows": [
+    {
+      "page": "/",
+      "form": "mobile",
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/how/",
+      "form": "mobile",
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/privacy/",
+      "form": "mobile",
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/accessibility/",
+      "form": "mobile",
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/run/",
+      "form": "mobile",
+      "performance": 99,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/",
+      "form": "desktop",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/how/",
+      "form": "desktop",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/privacy/",
+      "form": "desktop",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/accessibility/",
+      "form": "desktop",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    {
+      "page": "/run/",
+      "form": "desktop",
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    }
+  ]
+}

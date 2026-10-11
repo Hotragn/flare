@@ -25,7 +25,10 @@ const SHELL = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title
 </head><body><div id="app"></div><script>__sveltekit_x = {base: ""};</script></body></html>`;
 
 beforeAll(() => {
-  dir = fs.mkdtempSync(path.join(os.tmpdir(), "flare-preview-"));
+  // Not in os.tmpdir(): the hub test watches that folder to prove the hub writes no files (BUG-027).
+  const cache = path.resolve(import.meta.dirname, "../../../../node_modules/.cache");
+  fs.mkdirSync(cache, { recursive: true });
+  dir = fs.mkdtempSync(path.join(cache, "flare-preview-"));
   fs.writeFileSync(path.join(dir, "200.html"), SHELL);
   app = new Hono();
   mountPreview(app, {

@@ -17,7 +17,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit && npm run -w apps/web check",
-    "test": "npm exec -w apps/web -- svelte-kit sync && vitest run",
+    "test": "npm exec -w apps/web -- svelte-kit sync && vitest run && vitest run --config apps/web/test/flow/vitest.config.ts && vitest run --config apps/web/test/site/vitest.config.ts",
     "build": "npm run -w apps/web build",
     "contracts": "node scripts/check-contracts.ts",
     "dev:server": "node --watch apps/server/src/main.ts",

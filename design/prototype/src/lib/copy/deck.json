@@ -2137,6 +2137,16 @@
       "where": "O1",
       "fixed": "BR-D-5"
     },
+    "more.noGroup": {
+      "text": "Open your group's link on this phone first.",
+      "kind": "message",
+      "where": "O1 O2 forget"
+    },
+    "forget.failed": {
+      "text": "Couldn't forget it yet. Your group is still here.",
+      "kind": "error",
+      "where": "forget"
+    },
     "needs.title": {
       "text": "My needs",
       "kind": "title",
@@ -3244,6 +3254,46 @@
       "kind": "og-desc",
       "where": "website og:image:alt"
     },
+    "og.how.title": {
+      "text": "How Flare works",
+      "kind": "og-title",
+      "where": "/how/ head"
+    },
+    "og.how.desc": {
+      "text": "Snap where you are, friends say yes in private, and it lights when enough can come. If not, it gets smaller.",
+      "kind": "og-desc",
+      "where": "/how/ head"
+    },
+    "og.privacy.title": {
+      "text": "Flare privacy promise",
+      "kind": "og-title",
+      "where": "/privacy/ head"
+    },
+    "og.privacy.desc": {
+      "text": "What Flare keeps, where, and when it's deleted. Plus the limits we're honest about and a live deletion audit.",
+      "kind": "og-desc",
+      "where": "/privacy/ head"
+    },
+    "og.access.title": {
+      "text": "Flare accessibility statement",
+      "kind": "og-title",
+      "where": "/accessibility/ head"
+    },
+    "og.access.desc": {
+      "text": "Benches, restrooms and steps on every invite, a talking compass, and what we tested. Known gaps are listed too.",
+      "kind": "og-desc",
+      "where": "/accessibility/ head"
+    },
+    "og.run.title": {
+      "text": "Run Flare yourself",
+      "kind": "og-title",
+      "where": "/run/ head"
+    },
+    "og.run.desc": {
+      "text": "Flare is open source. Run the app and the Gemma 4 model on your own laptop with Ollama.",
+      "kind": "og-desc",
+      "where": "/run/ head"
+    },
     "site.nav.home": {
       "text": "Flare home",
       "kind": "aria",
@@ -3273,6 +3323,21 @@
       "text": "Run it",
       "kind": "button",
       "where": "site"
+    },
+    "site.nav.skip": {
+      "text": "Skip to content",
+      "kind": "aria",
+      "where": "W0"
+    },
+    "site.nav.footAria": {
+      "text": "All pages",
+      "kind": "aria",
+      "where": "W7"
+    },
+    "site.nav.open": {
+      "text": "Open Flare",
+      "kind": "button",
+      "where": "W0 W1"
     },
     "site.hero.kicker": {
       "text": "Flare, for getting friends outside",
@@ -3341,6 +3406,27 @@
       "kind": "prose",
       "where": "site W2"
     },
+    "site.home.readHow": {
+      "text": "Read how a Flare works, step by step.",
+      "kind": "prose",
+      "where": "/ W2"
+    },
+    "site.home.readPrivacy": {
+      "text": "Read the full privacy promise.",
+      "kind": "prose",
+      "where": "/ W4"
+    },
+    "site.home.readAccess": {
+      "text": "Read the full accessibility statement.",
+      "kind": "prose",
+      "where": "/ W5",
+      "gradeNote": "A 6-word link. Accessibility is one 6-syllable word, and the word people search for."
+    },
+    "site.home.readRun": {
+      "text": "Read the setup steps.",
+      "kind": "prose",
+      "where": "/ W6"
+    },
     "site.shrink.title": {
       "text": "It shrinks instead of dying",
       "kind": "title",
@@ -3375,6 +3461,12 @@
       "text": "Plans for later come in four sizes, from a 60 min loop to 20 minutes on a bench. Anyone who's tired can quietly make it one step smaller.",
       "kind": "prose",
       "where": "site W3"
+    },
+    "site.how.gemma": {
+      "text": "Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms.",
+      "kind": "prose",
+      "where": "/how/",
+      "gradeNote": "Required license wording, quoted word for word from the Gemma Terms of Use (docs/ml/model-selection.md)."
     },
     "site.privacy.title": {
       "text": "The privacy promise",
@@ -3647,6 +3739,46 @@
       "where": "site W4 audit block",
       "fixed": "BR-D-7"
     },
+    "site.privacy.audit.live": {
+      "text": "Live from our server, checked at {time}.",
+      "kind": "prose",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.pass": {
+      "text": "Passing: 0 leftover records in {n} stores.",
+      "kind": "prose",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.fail": {
+      "text": "{n} leftover records past their delete time. We publish this as it is.",
+      "kind": "prose",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.down": {
+      "text": "The live audit can't be reached. Try again later.",
+      "kind": "prose",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.colStore": {
+      "text": "Store",
+      "kind": "label",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.colLeft": {
+      "text": "Leftover",
+      "kind": "label",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.colTotal": {
+      "text": "Rows now",
+      "kind": "label",
+      "where": "/privacy/ W4"
+    },
+    "site.privacy.audit.caption": {
+      "text": "Records past their delete time, per store",
+      "kind": "label",
+      "where": "/privacy/ W4"
+    },
     "site.access.title": {
       "text": "Built for friends with access needs",
       "kind": "title",
@@ -3779,6 +3911,36 @@
       "text": "The repository link goes live when the repo is public. Setup steps are in the README.",
       "kind": "prose",
       "where": "site W6"
+    },
+    "site.run.needs": {
+      "text": "You need Node 24.21 or later. For the photo AI, use a Mac or any machine with a GPU, running Ollama.",
+      "kind": "prose",
+      "where": "/run/ W6"
+    },
+    "site.run.s1": {
+      "text": "Install it, set one secret, and start the server and web app.",
+      "kind": "prose",
+      "where": "/run/ W6"
+    },
+    "site.run.s2": {
+      "text": "In a second terminal, on the machine with Ollama, start the AI hub.",
+      "kind": "prose",
+      "where": "/run/ W6"
+    },
+    "site.run.s3": {
+      "text": "Open localhost:8787/hello/ and pick a photo. Six words come back in about 3.5 seconds.",
+      "kind": "prose",
+      "where": "/run/ W6"
+    },
+    "site.run.db": {
+      "text": "Postgres is optional for local runs. The tests use an in-memory Postgres.",
+      "kind": "prose",
+      "where": "/run/ W6"
+    },
+    "site.run.license": {
+      "text": "License: AGPL-3.0 or later. Map data © OpenStreetMap contributors, ODbL. Model: Gemma 4, under the Gemma terms of use.",
+      "kind": "prose",
+      "where": "/run/ W6"
     },
     "site.foot.made": {
       "text": "Made for the DEV Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass.",

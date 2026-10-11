@@ -31,7 +31,11 @@ function slimDeck(): Plugin {
 export default defineConfig({
   plugins: [
     slimDeck(),
-    sveltekit({ adapter: adapter({ fallback: "200.html" }), prerender: { handleHttpError: "warn" } }),
+    sveltekit({
+      adapter: adapter({ fallback: "200.html" }),
+      prerender: { handleHttpError: "warn" },
+      inlineStyleThreshold: 16384, // website: inline small CSS for first paint (Lighthouse)
+    }),
   ],
   server: { port: 5180, strictPort: true, proxy: { "/api": "http://localhost:8787" } },
   preview: { port: 8860, strictPort: true },
