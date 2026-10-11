@@ -54,7 +54,7 @@ export class LinkFlow {
   /** Minutes from arrival to Gone, or null (not arrived, or not over yet). */
   get outsideMin(): number | null {
     const v = this.view;
-    if (!v || v.state !== "gone" || this.outsideSince === null) return null;
+    if (v?.state !== "gone" || this.outsideSince === null) return null;
     return Math.max(1, Math.round((Date.parse(v.state_since) - this.outsideSince) / 60_000));
   }
   sealed = $state<SealedGatheringT | null>(null);

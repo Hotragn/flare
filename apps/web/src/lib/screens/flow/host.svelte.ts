@@ -71,7 +71,7 @@ export class HostFlow {
   outsideSince = $state<number | null>(null);
   get outsideMin(): number | null {
     const v = this.view;
-    if (!v || v.state !== "gone" || this.outsideSince === null) return null;
+    if (v?.state !== "gone" || this.outsideSince === null) return null;
     return Math.max(1, Math.round((Date.parse(v.state_since) - this.outsideSince) / 60_000));
   }
   link = $state("");

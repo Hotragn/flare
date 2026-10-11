@@ -14,6 +14,7 @@
       "!**/*.svelte",
       "!apps/web/static/check/capability",
       "!apps/web/static/check/guide.js",
+      "!.entire",
       "!apps/web/test/fixtures",
       "!evals/reports",
       "!apps/web/static/maps"
