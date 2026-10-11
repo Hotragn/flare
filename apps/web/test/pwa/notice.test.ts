@@ -1,8 +1,9 @@
 import "fake-indexeddb/auto";
 import { readFileSync } from "node:fs";
+import { NoticeText } from "@flare/shared/sealed";
 import { describe, expect, it } from "vitest";
 import { aad, flareCrypto as c } from "../../src/lib/crypto/index.ts";
-import { buildNotice, parsePayload } from "../../src/lib/push/notice.ts";
+import { buildNotice, isNoticeText, parsePayload } from "../../src/lib/push/notice.ts";
 import copy from "../../src/lib/push/push-copy.json" with { type: "json" };
 import { createStore } from "../../src/lib/store/index.ts";
 
@@ -96,6 +97,24 @@ describe("PW5 push notice (ADR-0014, SRS-IF-3)", () => {
     expect(await b("gone", {})).toBe("Not this time.");
     const plan = await buildNotice({ ...payload("plan_on", { notice_ct, step: 1, at }), kind: "plan" }, store);
     expect(plan.title).toBe("Fuego's Plan");
+  });
+
+  it("isNoticeText agrees with the shared zod NoticeText on 12 samples", () => {
+    const samples: unknown[] = [
+      { v: 1, host: "Fuego", spot: "pond" },
+      { v: 1, host: "Fuego", spot: "" },
+      { v: 1, host: "", spot: "pond" },
+      { v: 2, host: "Fuego", spot: "pond" },
+      { v: 1, host: "x".repeat(41), spot: "pond" },
+      { v: 1, host: "Fuego", spot: "y".repeat(121) },
+      { v: 1, host: "Fuego", spot: "pond", benches: { c1: "bench" } },
+      { v: 1, host: "Fuego", spot: "pond", benches: { c1: 3 } },
+      { v: 1, host: "Fuego", spot: "pond", steps: { "step:1": "z".repeat(41) } },
+      { v: 1, host: "Fuego", spot: "pond", steps: ["a"] },
+      null,
+      "text",
+    ];
+    for (const s of samples) expect(isNoticeText(s)).toBe(NoticeText.safeParse(s).success);
   });
 
   it("a payload that breaks the contract still shows a notice", async () => {

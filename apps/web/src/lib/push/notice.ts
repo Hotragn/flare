@@ -2,7 +2,7 @@
 // `notice_ct` with the group key from IndexedDB and fills the copy deck templates. If it
 // can't (no key on this phone, wrong key, damaged text), it shows the fallback, which has no
 // names or places. iOS needs a visible notice for every push, so this never throws.
-import { NoticeText, type NoticeTextT } from "@flare/shared/sealed";
+import type { NoticeTextT } from "@flare/shared/sealed";
 import { aad, flareCrypto } from "../crypto/index.ts";
 import type { FlareStore } from "../store/index.ts";
 import copy from "./push-copy.json" with { type: "json" };
@@ -62,6 +62,22 @@ export function formatTime(iso: string, timeZone?: string): string | null {
   }).format(d);
 }
 
+const isStr = (v: unknown, min: number, max: number): v is string =>
+  typeof v === "string" && v.length >= min && v.length <= max;
+const isNames = (v: unknown, max: number): boolean =>
+  v === undefined ||
+  (typeof v === "object" && v !== null && !Array.isArray(v) && Object.values(v).every((x) => isStr(x, 0, max)));
+
+/**
+ * The same rules as zod `NoticeText` in packages/shared/src/sealed.ts, written out so the
+ * service worker doesn't ship zod (31 KB gzipped). notice.test.ts checks both agree.
+ */
+export function isNoticeText(v: unknown): v is NoticeTextT {
+  if (typeof v !== "object" || v === null || Array.isArray(v)) return false;
+  const o = v as Record<string, unknown>;
+  return o.v === 1 && isStr(o.host, 1, 40) && isStr(o.spot, 0, 120) && isNames(o.benches, 120) && isNames(o.steps, 40);
+}
+
 function stepName(n: NoticeTextT, p: PushPayload): string | undefined {
   const label = p.label ?? (p.step ? `step:${p.step}` : undefined);
   return label ? n.steps?.[label] : undefined;
@@ -112,8 +128,8 @@ export async function buildNotice(raw: unknown, store: FlareStore | null, timeZo
         const fragment = await store.fragment(group.groupId);
         if (fragment) url = `/g/${p.g}/#k=${fragment}`;
         if (p.notice_ct) {
-          const opened = NoticeText.safeParse(await flareCrypto.openJson(group.key, aad.notice(p.g), p.notice_ct));
-          const text = opened.success ? readable(opened.data, p, timeZone) : null;
+          const opened = await flareCrypto.openJson<unknown>(group.key, aad.notice(p.g), p.notice_ct);
+          const text = isNoticeText(opened) ? readable(opened, p, timeZone) : null;
           if (text) return { ...text, tag, url };
         }
       }
