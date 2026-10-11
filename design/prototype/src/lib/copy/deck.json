@@ -818,7 +818,7 @@
       "where": "H2"
     },
     "develop.hubDown": {
-      "text": "Couldn't reach our laptop. Write your own?",
+      "text": "Tap a place word, or write your own six.",
       "kind": "message",
       "where": "H2"
     },
@@ -3324,7 +3324,7 @@
       "where": "O8"
     },
     "ai.hubFallback": {
-      "text": "If it can't be reached, you write the six words.",
+      "text": "When it is off, tap place words or ask cloud Gemma.",
       "kind": "hint",
       "where": "O8"
     },
@@ -3507,7 +3507,7 @@
       "owner": "apps/web/src/routes/ai"
     },
     "ai.why.hub_down": {
-      "text": "Our laptop wasn't connected.",
+      "text": "Our laptop was off at that moment.",
       "kind": "status",
       "where": "/ai/",
       "owner": "apps/web/src/routes/ai"
@@ -3969,12 +3969,12 @@
       "where": "/accessibility/ head"
     },
     "og.run.title": {
-      "text": "Run Flare yourself",
+      "text": "Host your own copy of Flare",
       "kind": "og-title",
       "where": "/run/ head"
     },
     "og.run.desc": {
-      "text": "Flare is open source. Host your own copy, with the Gemma 4 model on a laptop with Ollama.",
+      "text": "Using Flare needs nothing but the link. This page is for people who want their own server.",
       "kind": "og-desc",
       "where": "/run/ head"
     },
@@ -4266,7 +4266,7 @@
       "where": "W1 home, feature cards and Built with (backlog #14)"
     },
     "site.built.gemma": {
-      "text": "Gemma 4 writes the invite and the Plan steps, on our laptop with Ollama.",
+      "text": "Gemma 4 writes the invite and the Plan steps. It runs on our laptop with Ollama, for everyone.",
       "kind": "prose",
       "where": "W1 home, feature cards and Built with (backlog #14)"
     },
@@ -4357,7 +4357,7 @@
       "gradeNote": "A 6-word link. Accessibility is one 6-syllable word, and the word people search for."
     },
     "site.home.readRun": {
-      "text": "Read the setup steps.",
+      "text": "Host your own copy.",
       "kind": "prose",
       "where": "/ W6"
     },
@@ -4831,13 +4831,38 @@
       "kind": "prose",
       "where": "site W5"
     },
+    "develop.hubDownCloud": {
+      "text": "Tap a place word, write your own, or ask cloud Gemma.",
+      "kind": "message",
+      "where": "H2 when our laptop is off and the cloud tier is on"
+    },
+    "site.run.levels.title": {
+      "text": "Three levels, pick one",
+      "kind": "title",
+      "where": "W6 /run/"
+    },
+    "site.run.level1": {
+      "text": "No AI keys. Everything works, and you write the six words, with place-word chips and the rules.",
+      "kind": "prose",
+      "where": "W6 /run/"
+    },
+    "site.run.level2": {
+      "text": "A free Google AI Studio key (GEMINI_API_KEY). Gemma 4 in the cloud, with no GPU and no laptop.",
+      "kind": "prose",
+      "where": "W6 /run/"
+    },
+    "site.run.level3": {
+      "text": "Ollama on your own machine. The private option: the photo never leaves your machine.",
+      "kind": "prose",
+      "where": "W6 /run/"
+    },
     "site.run.title": {
-      "text": "Run it yourself",
+      "text": "Host your own copy",
       "kind": "title",
       "where": "site W6"
     },
     "site.run.body": {
-      "text": "You don't need to install anything to use Flare. It is open source, so anyone can host a copy: the AI is the open Gemma 4 model, run with Ollama on a laptop.",
+      "text": "Using Flare needs nothing: you open the link, and that's all. This page is only for people who want their own server.",
       "kind": "prose",
       "where": "site W6"
     },
@@ -4847,7 +4872,7 @@
       "where": "site W6"
     },
     "site.run.needs": {
-      "text": "You need Node 24.21 or later. For the photo AI, use a Mac or any machine with a GPU, running Ollama.",
+      "text": "You need Node 24.21 or later. A model is optional. Pick one of three levels.",
       "kind": "prose",
       "where": "/run/ W6"
     },
@@ -4857,12 +4882,12 @@
       "where": "/run/ W6"
     },
     "site.run.s2": {
-      "text": "In a second terminal, on the machine with Ollama, start the AI hub.",
+      "text": "For level 3, start the AI hub on the machine with Ollama, in a second terminal.",
       "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.s3": {
-      "text": "Open localhost:8787/hello/ and pick a photo. Six words come back in about 3.5 seconds.",
+      "text": "Open localhost:8787/app/ and light a Flare.",
       "kind": "prose",
       "where": "/run/ W6"
     },

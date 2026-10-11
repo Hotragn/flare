@@ -32,7 +32,7 @@ describe("SRS-AI-1 photo draft tiers", () => {
     expect(r.label).toBe("Made from a template");
     if (r.tier === "rules") {
       expect(r.why).toBe("hub_down");
-      expect(r.message).toBe("Couldn't reach our laptop. Write your own?");
+      expect(r.message).toBe("Tap a place word, or write your own six.");
     }
   });
 

@@ -23,6 +23,8 @@ Now picture the friend with low vision. Gemma has already turned the photo into 
 
 Afterwards it says how long you were outside together, and then it deletes itself.
 
+**Nothing to install.** You and your friends open a link. Gemma runs on our laptop and serves everyone, so you don't need a laptop, a GPU, a key or an account.
+
 ### At a glance
 
 | What happens | The open piece doing it | Proof |
@@ -62,7 +64,12 @@ I haven't run a group meetup with it yet, so I won't claim one. [FIELD: replace 
 
 {% github Hotragn/flare %}
 
-[FIELD: make the repo public.] AGPL-3.0. The README has a 3-step quick start: server, hub, phone. `docs/README.md` indexes 30 architecture decision records, the requirements and the evals.
+[FIELD: make the repo public.] AGPL-3.0. Hosting your own copy is optional, in three levels:
+- no AI keys, where you write the six words with place-word chips;
+- a free Google AI Studio key, for Gemma 4 in the cloud with no GPU;
+- Ollama on your own machine, so the photo never leaves it.
+
+An end-to-end test checks the first two on a fresh server. `docs/README.md` indexes 30 architecture decision records, the requirements and the evals.
 
 ## How I Built It
 

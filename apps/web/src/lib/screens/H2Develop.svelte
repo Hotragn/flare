@@ -68,7 +68,7 @@
     <p class="tier t-small t-muted">{dot(t(tier === "hub" ? "app.tier.hub" : tier === "cloud" ? "app.tier.cloud" : "app.tier.rules"), t("develop.editHint"))}</p>
     <FlameMeter have={1} quorum={2} note={t("develop.flameNote")} />
   {:else}
-    <p class="t-muted t-small notice"><Icon name="info" size={20} />{view === "offline" ? t("develop.noSignal") : t("develop.hubDown")}</p>
+    <p class="t-muted t-small notice"><Icon name="info" size={20} />{view === "offline" ? t("develop.noSignal") : cloud ? t("develop.hubDownCloud") : t("develop.hubDown")}</p>
     <TextField label={t("develop.fieldLabel")} bind:value={own} placeholder={t("develop.template", { spot: spot || t("perm.locationHost.placeholder") })} error={tooLong ? t("develop.tooLong") : ""} max={48} />
     {#if view === "hub-unreachable" && cloud}
       <div class="cloud">

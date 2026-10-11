@@ -4,11 +4,19 @@ Snap where you are. If enough friends quietly say yes, it's on.
 
 Flare is an installable web app for small groups of friends (2 to 12). A host sends a photo of where they are, or a Plan for later. Friends say yes in private, with conditions if they like ("after 2", "only with Amor"). It lights only when enough people can come, it shrinks to a smaller plan instead of failing, it works for friends with low vision or limited mobility and with no signal, and it deletes itself within 5 minutes of ending.
 
-Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". Field test: Sunday 2026-10-11, near Fairlane Town Center, Dearborn MI, on four iPhones.
+Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". Tested on the real stack end to end, on two iPhones (16 Pro Max, 13) and in a 48-friend simulation; no group meetup with it yet.
 
-## Run it yourself
+**Using Flare needs nothing.** Open https://flare-outside.onrender.com/app/ (or the [demo](https://flare-outside.onrender.com/app/demo/)) and send the link to friends. Gemma runs on our laptop for everyone. The rest of this page is only for hosting your own copy.
 
-You need Node 24.21.0 or later ([.nvmrc](.nvmrc)). For the photo AI you also need a Mac (or any machine with a GPU) running [Ollama](https://ollama.com). Everything else is optional: `DATABASE_URL=pglite:memory` gives an in-memory Postgres, and without the hub the app falls back to typed words.
+## Host your own copy
+
+You need Node 24.21.0 or later ([.nvmrc](.nvmrc)). A model is optional. Pick one of three levels:
+
+1. **No AI keys.** Everything works. The host writes the six words, with place-word chips from the map, and the rules engine does the rest. (`npm run e2e:no-keys` checks this: a Flare sent from typed words lights, and Plans get the template steps.)
+2. **A free Google AI Studio key.** Put `GEMINI_API_KEY=` in `.env` (a key from [aistudio.google.com](https://aistudio.google.com)). Gemma 4 runs in the cloud, with no GPU and no laptop. Plan drafts use it automatically, and a photo goes there only when the host taps **Ask cloud Gemma** for that Flare. Google's free tier may review what it receives. (`npm run e2e:cloud-only` checks this: Gemma's words for a photo in about 3.4 s, a Plan draft in 1.3 s.)
+3. **Ollama on your own machine.** The private option: the photo never leaves your machine. Start the hub (step 2 below) on a Mac or any machine with a GPU.
+
+`DATABASE_URL=pglite:memory` gives an in-memory Postgres for a quick run.
 
 **1. The server and the app**
 
@@ -22,7 +30,7 @@ npm run build && npm start  # server and web app on http://localhost:8787
 
 Set `DATABASE_URL=pglite:memory` in `.env` for a quick local run (an in-memory Postgres, wiped on restart), or `postgres://…` for a real one. With it empty the server starts, but Flares can't be saved.
 
-**2. The AI hub** (second terminal, on the machine with Ollama)
+**2. The AI hub, for level 3 only** (second terminal, on the machine with Ollama)
 
 ```bash
 ollama pull gemma4:e4b-it-q4_K_M
