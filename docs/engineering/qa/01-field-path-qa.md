@@ -45,3 +45,16 @@ Sun 2026-10-11, 03:40 ET, on main after integration point 1. Everything below wa
 | Fix the map `/app/fix-map/` | Menu link 404 | Built; review every tag, export note (clipboard) or `.osm` | same run: export locked until 0 pending, bad value refused, 0 requests to OSM or the API |
 
 Known limit: Fix the map starts from the usual tags for the thing, not from a photo, because the hub has no tag-drafting job (ML5).
+
+## Integration point 3 (Sun 2026-10-11, ~06:55 ET, run early)
+
+| Area | Result |
+| --- | --- |
+| `npm ci` + `npm run ci` | Green: 596 + 37 + 26 tests, contracts, build. One fix first: `Handle` import for SvelteKit 3 (pre-push now runs svelte-check, gate 26 s) |
+| e2e:hello | Pass, tier hub, 3,747 ms, upload 13 KB |
+| e2e:pwa | ALL PASS |
+| e2e:field | 27/27 (real server, real engine, PGlite) |
+| e2e:sparks | All pass |
+| e2e:loop | All pass (loop, no-loop, Fix the map, photo draft through the hub) |
+| flow.ts 5 real | 5/5 lit, host median 3,211 ms, friend median 291 ms, 0 page errors, CSP on 10 documents |
+| smoke (local server + hub) | Run 1: all required pass, photo draft rules at 6,008 ms (cold model, expected); run 2: photo draft hub in 3,546 ms |

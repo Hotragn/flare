@@ -1,9 +1,9 @@
-# PWA e2e, 2026-10-11T06:39:46.479Z, Chrome 154.0.8037.99, 390 x 844
-PASS SW installs and controls the page after one reload: 202 ms
-PASS one versioned cache: flare-1791700683430
-PASS precache has the shell, /hello/ and the map pack: 146 entries
+# PWA e2e, 2026-10-11T10:53:28.177Z, Chrome 154.0.8037.99, 390 x 844
+PASS SW installs and controls the page after one reload: 190 ms
+PASS one versioned cache: flare-1791715932509
+PASS precache has the shell, /hello/ and the map pack: 157 entries
 PASS precache skips splash and the device-check kit
-PASS SRS-OFF-4: app shell loads offline: h1=If enough friends say yes, it's on., 35 ms
+PASS SRS-OFF-4: app shell loads offline: h1=If enough friends say yes, it's on., 25 ms
 PASS SRS-OFF-4: a prerendered page loads offline
 PASS SRS-OFF-4: an SPA link route gets the cached shell offline: status 200
 PASS ADR-0010: the map pack answers offline
@@ -11,11 +11,11 @@ PASS SRS-OFF-1 / T-OFF-1 (data): saved Lit data reads back in airplane mode: {"s
 PASS SRS-OFF-3: 5 offline taps queue (send resolves null): size 5
 PASS SRS-OFF-3: the online event sends all 5, in order, once: effects 5, left 0
 PASS T-OFF-2: 20 taps on a flaky network are applied exactly once each, in order: effects 20, unique keys 20, replays served 13
-PASS SRS-SOL-3: under throttling a change reaches the page within 5 s: 423 ms
-PASS outbox write under throttling is confirmed: 490 ms round trip
+PASS SRS-SOL-3: under throttling a change reaches the page within 5 s: 385 ms
+PASS outbox write under throttling is confirmed: 460 ms round trip
 PASS SRS-IF-3: push opens notice_ct with the key from IndexedDB: ["Fuego's Flare | It's lit. Fuego is at Ford Woods Park pond."]
 PASS ADR-0014: no key on this phone shows the generic notice: ["Fuego's Flare | It's lit. Fuego is at Ford Woods Park pond.","Flare | It's lit. Open Flare to see where."]
 PASS update: the new version waits (no skipWaiting on install)
 PASS update: the Reload tap activates it (controllerchange)
-PASS versioning: still one flare cache after the update: flare-1791700683430
+PASS versioning: still one flare cache after the update: flare-1791715932509
 ALL PASS

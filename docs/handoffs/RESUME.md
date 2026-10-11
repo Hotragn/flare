@@ -160,3 +160,5 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Next: 08:00 integration point 3 (runbook), 08:30 device check incl. row 5a, 09:30 rc-1, deploy on YES. Then the Telegram card, then ML5 findings.
 
 - Manager approved Lighthouse (median of 3, all runs listed). Decision: /ai/ stays out of search (app page). ML5 resumes after the field test from evals/reports/osm-tags-hub.md next steps.
+
+## Integration point 3 DONE (Sun ~06:55 ET): all green, details in docs/engineering/qa/01-field-path-qa.md. Next: Telegram branded card plus photo opt-in, then device-check kit ready, then stop and hold the window.
