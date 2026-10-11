@@ -182,6 +182,19 @@ try {
     );
   check("Hot spots lists the place (SRS-HOT-1)", listed);
   await host.screenshot({ path: path.join(OUT, "e2e-o1-hotspots.png") });
+  // Crew space (backlog #5): the crew's counters after one outing, the place as a postcard.
+  await host.goto(`${URL0}/app/crew/`);
+  const crewOk = await host
+    .getByText(/\d+ outings? · .* outside · \d+ Embers saved/)
+    .first()
+    .waitFor({ timeout: 10_000 })
+    .then(
+      () => true,
+      () => false,
+    );
+  check("Crew shows the crew's story from counters", crewOk);
+  check("Crew lists the place as a postcard", (await host.locator(".postcard").count()) > 0);
+  await host.screenshot({ path: path.join(ROOT, "docs/design/redesign/after/crew.jpg"), type: "jpeg", quality: 78 });
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));
   await friend.screenshot({ path: path.join(OUT, "e2e-sparks-fail-friend.png") }).catch(() => {});

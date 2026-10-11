@@ -281,3 +281,63 @@ export async function saveTelegramPhotos(deps: { fetch: Fetch }, group: GroupRec
   if (!res.ok) throw failure(res.status);
   return ((await res.json()) as { show_photos?: unknown }).show_photos === true;
 }
+
+// ---------- Crew space (backlog #5) ----------
+
+export type CrewStats = { outings: number; outside_min: number; outside_min_week: number; embers_saved: number };
+export type Crew = {
+  people: { id: string; name: string; me: boolean }[];
+  /** Live Flares and Plans that are lit right now: "N out now" (counts, never names). */
+  outNow: number;
+  live: number;
+  stats: CrewStats | null;
+};
+
+/** Members (names opened on this phone), live state and the crew's counters. */
+export async function loadCrew(
+  deps: { fetch: Fetch; crypto: Crypto },
+  group: GroupRecord,
+  telegramName: string,
+): Promise<Crew> {
+  const base = `/api/v1/groups/${encodeURIComponent(group.groupId)}`;
+  const headers = { authorization: bearer(group) };
+  const [g, s] = await Promise.all([
+    call(deps.fetch, base, { headers, cache: "no-store" }),
+    call(deps.fetch, `${base}/stats`, { headers, cache: "no-store" }),
+  ]);
+  if (!g.ok) throw failure(g.status);
+  const body = (await g.json()) as {
+    members: { id: string; name_ct: string | null }[];
+    live: { id: string; state: string }[];
+  };
+  const people: Crew["people"] = [];
+  for (const m of body.members) {
+    const known = group.names?.[m.id];
+    if (known) {
+      people.push({ id: m.id, name: known, me: m.id === group.memberId });
+      continue;
+    }
+    if (!m.name_ct) {
+      people.push({ id: m.id, name: telegramName, me: false });
+      continue;
+    }
+    try {
+      const bytes = await deps.crypto.open(group.key, `m:${group.groupId}:${m.id}`, m.name_ct);
+      people.push({ id: m.id, name: new TextDecoder().decode(bytes), me: m.id === group.memberId });
+    } catch {
+      // Sealed under another key: not shown.
+    }
+  }
+  const stats = s.ok ? ((await s.json()) as CrewStats) : null;
+  return {
+    people,
+    outNow: body.live.filter((x) => x.state === "lit").length,
+    live: body.live.length,
+    stats,
+  };
+}
+
+/** "3 h 10 min" or "45 min". */
+export function hoursMinutes(min: number): { h: number; m: number } {
+  return { h: Math.floor(min / 60), m: min % 60 };
+}

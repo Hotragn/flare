@@ -59,7 +59,8 @@ export class HostFlow {
   cloudOptIn = $state(false);
   spot = $state<Spot | null>(null);
   askLocation = $state(false);
-  quorum = $state("2");
+  /** Starts from the crew's usual quorum (Manage crew, on this phone), else 2. */
+  quorum = $state(defaultQuorum());
   hostName = $state("");
   hostLine = $state("");
   access = $state<Access | null>(null);
@@ -707,6 +708,15 @@ export class HostFlow {
 function benchName(p: Place, m: number): string {
   const r = Math.round(m / 10) * 10;
   return p.kind === "picnic_table" ? t("place.tableNear", { m: r }) : t("place.benchNear", { m: r });
+}
+
+function defaultQuorum(): string {
+  try {
+    const q = globalThis.localStorage?.getItem("flare.quorum") ?? "";
+    return ["2", "3", "4"].includes(q) ? q : "2";
+  } catch {
+    return "2";
+  }
 }
 
 function storedName(): string {

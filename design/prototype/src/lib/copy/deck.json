@@ -306,6 +306,94 @@
       "kind": "hint",
       "where": "H3"
     },
+    "crew.title": {
+      "text": "Your crew",
+      "kind": "title",
+      "where": "O8"
+    },
+    "crew.outNow": {
+      "text": "{n} out now",
+      "one": "1 out now",
+      "kind": "label",
+      "where": "O8"
+    },
+    "crew.week": {
+      "text": "{h} h {m} min outside together this week",
+      "kind": "title",
+      "where": "O8"
+    },
+    "crew.weekMin": {
+      "text": "{m} min outside together this week",
+      "one": "1 min outside together this week",
+      "kind": "title",
+      "where": "O8"
+    },
+    "crew.weekNone": {
+      "text": "No time outside yet this week",
+      "kind": "title",
+      "where": "O8"
+    },
+    "crew.stats": {
+      "text": "{outings} outings · {time} outside · {embers} Embers saved",
+      "kind": "label",
+      "where": "O8",
+      "one": "1 outing · {time} outside · {embers} Embers saved"
+    },
+    "crew.places": {
+      "text": "Your places",
+      "kind": "heading",
+      "where": "O8"
+    },
+    "crew.placesEmpty": {
+      "text": "Places you meet show up here.",
+      "kind": "hint",
+      "where": "O8"
+    },
+    "crew.manage": {
+      "text": "Manage crew",
+      "kind": "button",
+      "where": "O8"
+    },
+    "crew.light": {
+      "text": "Light a Flare",
+      "kind": "button",
+      "where": "O8"
+    },
+    "crew.empty": {
+      "text": "Send your first Flare to start a crew.",
+      "kind": "label",
+      "where": "O8"
+    },
+    "crew.rename": {
+      "text": "Crew name, on this phone",
+      "kind": "label",
+      "where": "O8"
+    },
+    "crew.quorum": {
+      "text": "Usually goes ahead with",
+      "kind": "label",
+      "where": "O8"
+    },
+    "crew.saved": {
+      "text": "Saved on this phone.",
+      "kind": "status",
+      "where": "O8"
+    },
+    "crew.never": {
+      "text": "Flare never shows who said no.",
+      "kind": "hint",
+      "where": "O8"
+    },
+    "menu.crew": {
+      "text": "Your crew",
+      "kind": "label",
+      "where": "O0"
+    },
+    "menu.crewSub": {
+      "text": "People, places and time outside",
+      "kind": "hint",
+      "where": "O0"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",
