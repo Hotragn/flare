@@ -1511,6 +1511,16 @@
       "where": "Compass",
       "owner": "motion:Compass"
     },
+    "compass.near": {
+      "text": "{name} is close. Look around.",
+      "kind": "message",
+      "where": "I7"
+    },
+    "compass.figure8": {
+      "text": "Move your phone in a figure 8 to fix the compass.",
+      "kind": "message",
+      "where": "I7"
+    },
     "here.title": {
       "text": "You made it.",
       "kind": "title",

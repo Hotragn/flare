@@ -139,10 +139,27 @@ for (let run = 1; run <= RUNS; run++) {
       w.__permCalls.push(active);
       return active ? Promise.resolve("granted") : Promise.reject(new DOMException("gesture", "NotAllowedError"));
     };
+    // Real phones send 20 to 50 headings a second and the guide smooths them, so a turn is a
+    // one-second stream at 30 Hz, not one event.
+    let stream = 0;
     w.__turn = (deg) => {
-      const e = new Event("deviceorientation");
-      Object.assign(e, { alpha: null, beta: 0, gamma: 0, absolute: false, webkitCompassHeading: deg });
-      window.dispatchEvent(e);
+      const id = ++stream; // a phone has one heading: a new turn replaces the old stream
+      let n = 0;
+      const send = () => {
+        if (id !== stream) return;
+        const e = new Event("deviceorientation");
+        Object.assign(e, {
+          alpha: null,
+          beta: 0,
+          gamma: 0,
+          absolute: false,
+          webkitCompassHeading: deg,
+          webkitCompassAccuracy: 12,
+        });
+        window.dispatchEvent(e);
+        if (++n < 30) setTimeout(send, 33);
+      };
+      send();
     };
   });
   const friend = await friendCtx.newPage();

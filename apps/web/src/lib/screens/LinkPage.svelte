@@ -23,7 +23,8 @@
   import P7PlanGone from "./P7PlanGone.svelte";
   import type { Deps } from "./flow/deps.ts";
   import { LinkFlow, rememberedName } from "./flow/link.svelte.ts";
-  import { bearingDeg, distanceM, type Reading, relative, roundMeters, type SensorState, startSensors } from "./flow/compass.ts";
+  import { roundMeters, type SensorState, startSensors } from "./flow/compass.ts";
+  import { createGuide, type GuideState } from "#lib/compass/guide.ts";
   import { clock } from "./flow/format.ts";
 
   let {
@@ -41,7 +42,7 @@
   let condText = $state("");
   let sparkLine = $state("");
   let fadeView = $state<"confirm" | "notice">("confirm");
-  let reading = $state<Reading>({ heading: null, position: null, accuracy: null });
+  let guided = $state<GuideState | null>(null);
   let sensor = $state<SensorState>("asking");
   let talking = $state(true);
   let stopSensors: (() => void) | null = null;
@@ -72,12 +73,12 @@
   /** Find them: sensors start inside the tap, orientation first (spike E3). */
   function find() {
     stopSensors?.();
+    guided = null;
     stopSensors = startSensors(
-      (r) => {
-        reading = r;
-        if (r.position) flow.setPosition(r.position);
-      },
-      (s) => (sensor = s),
+      createGuide(flow.target),
+      (g) => (guided = g),
+      (st) => (sensor = st),
+      (p) => flow.setPosition(p),
     );
     flow.find();
   }
@@ -88,15 +89,24 @@
   }
 
   const target = $derived(flow.target);
-  const meters = $derived(reading.position && target ? roundMeters(distanceM(reading.position, target)) : 0);
-  const bearing = $derived(
-    reading.position && target && reading.heading !== null ? relative(bearingDeg(reading.position, target), reading.heading) : 0,
-  );
+  // The guide (lib/compass/guide.ts) smooths and gates; the screen only shows its answer.
+  const meters = $derived(guided?.distance_m != null ? roundMeters(guided.distance_m) : 0);
+  const bearing = $derived(guided?.rel_deg ?? 0);
   const status = $derived(
-    !reading.position ? "no-gps" : reading.heading === null ? "no-orientation" : "pointing",
-  ) as "pointing" | "no-orientation" | "no-gps";
+    guided?.distance_m == null ? "no-gps" : guided.near ? "near" : guided.rel_deg === null ? "no-orientation" : guided.facing ? "facing" : "pointing",
+  ) as "pointing" | "facing" | "near" | "no-orientation" | "no-gps";
   const compassNote = $derived(
-    sensor === "orientation-denied" ? t("perm.motion.denied") : sensor === "gps-denied" ? t("perm.locationFriend.denied") : !reading.position ? t("compass.finding") : "",
+    sensor === "orientation-denied"
+      ? t("perm.motion.denied")
+      : sensor === "gps-denied"
+        ? t("perm.locationFriend.denied")
+        : guided?.distance_m == null
+          ? t("compass.finding")
+          : guided.hint === "flat"
+            ? t("compass.holdFlat")
+            : guided.hint === "figure8"
+              ? t("compass.figure8")
+              : "",
   );
 
   const exit = () => (onexit ? onexit() : history.length > 1 ? history.back() : window.close());

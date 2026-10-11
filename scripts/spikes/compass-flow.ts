@@ -83,16 +83,15 @@ for (const answer of ["granted", "denied"]) {
     [270, "to your right"],
     [180, "behind you"],
   ] as const) {
-    await page.evaluate((d) => window.__turn?.(d), deg);
+    // Real phones send 20 to 50 headings a second and the guide smooths them: stream for 1 s.
+    for (let i = 0; i < 30; i++) {
+      await page.evaluate((d) => window.__turn?.(d), deg);
+      await page.waitForTimeout(33);
+    }
     const text = (await page.textContent("#spoken")) ?? "";
     if (answer === "granted")
       check(`granted: heading ${deg}° says "${want}"`, text.includes(want) && /Target, 3[0-1] meters/.test(text), text);
-    else
-      check(
-        `denied: distance only at ${deg}°`,
-        text.includes("Hold your phone flat") && /3[0-1] meters/.test(text),
-        text,
-      );
+    else check(`denied: distance only at ${deg}°`, text.includes("Motion is off") && /3[0-1] meters/.test(text), text);
   }
   if (answer === "granted") {
     const R2 = await page.evaluate(() => window.__compass.R);

@@ -14,6 +14,7 @@
   import { FLAME, HOLE, ring as ringPath } from "../brand";
   import { feedback } from "#lib/motion/feedback.ts";
   import { speechDue, type Spoken } from "#lib/motion/speech.ts";
+  import { unwrapAngle } from "#lib/compass/guide.ts";
   let {
     name = "Fuego",
     meters = 400,
@@ -26,7 +27,7 @@
     name?: string;
     meters?: number;
     bearing?: number;
-    status?: "pointing" | "facing" | "no-orientation" | "no-gps";
+    status?: "pointing" | "facing" | "near" | "no-orientation" | "no-gps";
     /** Play the facing tick (haptic, or a tone where there is no vibration) when it locks on. Off in static screens. */
     cues?: boolean;
     /** Speak the line with the SRS-CMP-2 cadence (speechSynthesis). */
@@ -54,10 +55,15 @@
   onMount(() => { mounted = true; });
 
   const facing = $derived(locked);
+  // The needle turns the short way: 170° to -170° is a 20° turn, never a full spin.
+  let shown = $state(untrack(() => bearing));
+  $effect(() => {
+    shown = unwrapAngle(untrack(() => shown), bearing);
+  });
   const a = $derived(Math.abs(bearing));
   const dir = $derived(t(a < 15 ? "compass.dir.ahead" : a < 45 ? (bearing < 0 ? "compass.dir.slightLeft" : "compass.dir.slightRight") : a > 135 ? "compass.dir.behind" : bearing < 0 ? "compass.dir.left" : "compass.dir.right"));
   const km = $derived(meters >= 1000 ? (Math.round(meters / 100) / 10).toString() : "");
-  const spoken = $derived(status === "no-gps" ? t("compass.noGps") : status === "no-orientation" ? t("compass.spokenNoDir", { name, meters }) : km ? t("compass.spokenKm", { name, km, direction: dir }) : t("compass.spoken", { name, meters, direction: dir }));
+  const spoken = $derived(status === "no-gps" ? t("compass.noGps") : status === "near" ? t("compass.near", { name }) : status === "no-orientation" ? t("compass.spokenNoDir", { name, meters }) : km ? t("compass.spokenKm", { name, km, direction: dir }) : t("compass.spoken", { name, meters, direction: dir }));
   // Closeness 0 (far, 800 m+) to 1 (here). Rings tighten toward the flame.
   const close = $derived(Math.max(0, Math.min(1, 1 - Math.log2(Math.max(meters, 25) / 25) / 5)));
   const flameD = `${FLAME} ${ringPath(HOLE.cx, HOLE.cy, HOLE.r)}`;
@@ -91,12 +97,17 @@
       <circle class="glow" cx="120" cy="120" r="70" />
       {#key pulse}{#if pulse}<circle class="lock" cx="120" cy="120" r="70" />{/if}{/key}
       {#if status === "pointing" || status === "facing"}
-        <g class="pointer" style:transform="rotate({bearing}deg)">
+        <g class="pointer" style:transform="rotate({shown}deg)">
           <!-- The pin-flame, tip forward. Its hole sits on the dial's centre. -->
           <g transform="translate(120 120) scale(1.15) translate(-50 -67)">
             <path fill-rule="evenodd" d={flameD} fill="var(--lit)" />
             {#if facing}<circle class="dot" cx={HOLE.cx} cy={HOLE.cy} r="6.5" fill="var(--c-gold-400)" />{/if}
           </g>
+        </g>
+      {:else if status === "near"}
+        <g class="near" transform="translate(120 120) scale(1.15) translate(-50 -67)">
+          <path fill-rule="evenodd" d={flameD} fill="var(--lit)" />
+          <circle cx={HOLE.cx} cy={HOLE.cy} r="6.5" fill="var(--c-gold-400)" />
         </g>
       {:else}
         <g transform="translate(120 120) scale(1.15) translate(-50 -67)" opacity="0.35">

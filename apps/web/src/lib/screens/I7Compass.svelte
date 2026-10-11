@@ -21,7 +21,7 @@
   }: {
     theme?: Theme;
     name: string;
-    status?: "pointing" | "facing" | "no-orientation" | "no-gps";
+    status?: "pointing" | "facing" | "near" | "no-orientation" | "no-gps";
     meters?: number;
     bearing?: number;
     talking?: boolean;
