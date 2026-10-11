@@ -2,13 +2,15 @@
 
 Brief: docs/engineering/briefs/6b-core-engine.md. Handoff: docs/handoffs/06b-core-engine.md.
 
-## Done
-- Package skeleton, solver (`src/solve.ts`), transitions F and P (`src/transition.ts`), view, create (F1, P1), Sparks and Hot spots rules (`src/sparks.ts`). Flare rows F1-F14 and Plan rows P1-P11 tested (89 tests); solver cases, Ember, arrivals, view, Sparks and Hot spots (133 tests); property tests INV-1 to INV-10, B14 bench (p50 0.022 ms, p99 0.06 ms), coverage lines 100%, branches 96.8% (141 tests).
+## Done (Sat 2026-10-10)
+- `packages/engine` (`@flare/engine`): solver, Flare F1 to F14, Plan P1 to P11, Ember pick, arrivals, view, create helpers, BE7 rules (Sparks tickets, Hot spots merge).
+- 141 engine tests incl. property tests INV-1 to INV-10 (300 cases each) and the B14 bench test; coverage lines 100%, branches 96.8%.
+- Bench: p50 0.022 ms, p99 0.06 ms (budget 5 ms).
+- Docs: docs/engine/01-algorithm.md, 02-api.md; bugs: docs/engineering/bugs/engine.md; handoff 06b.
+- `npm run ci` green (193 tests in the repo).
 
 ## In progress
-- Next: docs/engine/01-algorithm.md, 02-api.md, handoff 06b, npm run ci.
+- Nothing.
 
 ## Exact next step
-1. Write `src/transition.ts` (Flare rows first, then Plan rows), `src/view.ts`, `src/create.ts`, `src/index.ts` exporting `engine`.
-2. Tests per row in `packages/engine/test/`, property tests (fast-check), benchmark, coverage.
-3. Docs: docs/engine/01-algorithm.md, 02-api.md; handoff 06b.
+- None in the brief. If ICR-1 (counter `by`/`op`) is accepted, change the three counters in `end()` in packages/engine/src/transition.ts and their test in flare.test.ts "F9".
