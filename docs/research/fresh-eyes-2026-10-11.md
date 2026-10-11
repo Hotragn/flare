@@ -73,3 +73,18 @@ Left:
 - "Use my words" is disabled while the draft develops.
 - Pre-filling the place from location, which only happens on H2's location step today.
 - A "best on your phone" note on desktop.
+
+## Round 5 (6/10, on 376115a, the last round)
+Fixed after it:
+- **Who you are.** The demo now shows who you are on every step ("You: Fuego, the host" or "You: Amor, a friend").
+- **What to tap.** There are coach lines for the shrink and the compass.
+- **Clearer buttons.** "Back to you" and "Next" replace "Pocket it" in the demo.
+- **Copy.** "Use this"; "No bench or restroom info here"; "Host your own"; the home example now names a third friend.
+
+Left:
+- the host line on your own screen is in the third person ("Test is waiting at West Road");
+- the suggested park vs the street name at the spot;
+- the X on the demo's last screens;
+- buttons kept in the DOM behind the demo coach card;
+- "Sent a moment ago" never updates;
+- a gap above "What it does".
