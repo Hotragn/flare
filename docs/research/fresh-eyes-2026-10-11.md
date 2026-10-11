@@ -35,3 +35,21 @@ Tooling note: Playwright's normal `.click()` timed out on app and demo buttons (
 The headline and subtitle, the "Demo · nothing is sent" badge, the "Can't make it?" sheet, "it shrinks instead of dying", the privacy page's "Limits we're honest about", and asking for a first name only.
 
 Screenshots: kept in the session scratchpad, not committed.
+
+## Round 2 (6/10, after the round-1 fixes went live at 86d5b65)
+Worst: two place fields on Send that disagreed; the demo dropped the typed place; unexplained names (Amor, Fuego, Benny); a condition saved silently; counts that didn't add up; the phone home headline below the fold; a box in a box on fields over photos. All fixed in 0842d28.
+
+## Round 3 (5/10, on 0842d28)
+Worst two were one bug: site.css was global, and SvelteKit keeps it after a client-side jump from the website into /app/, so the site's `.hero` (navy fill) and `.art` (230 px tall) rules hit the app's own `.hero` and `.art` (the Send photo hidden under a navy block; the onboarding photo squashed). Fixed by scoping site.css under `.site` (8260be8). Also fixed: the menu had no way out (close button, room to tap outside), the demo condition skipped the parser, Benny's yes was never shown, no "back to you" after the friend's view, Plan date fields overflowing on phones, and the privacy page said the weather lookup happens only for Plans (it also happens when Home opens).
+
+Rounds were capped at 3 by the manager (time). Next round after the feature work.
+
+## Left from round 3 (by severity)
+1. Demo coach bar covers the sender's Share / Text reply / Cancel buttons on Kindling.
+2. The phone's Back button leaves the app instead of closing a sheet.
+3. Closing Send drops the photo and words without asking.
+4. One plain sentence for where the AI runs, used everywhere ("Made on our laptop", "AI on this phone", "an open model").
+5. "Use these" for one line; Edit in the demo empties the place field; "Pocket it", "Put it away" and "Phone away. Flare will wait." puzzle newcomers.
+6. The menu shows 10 items on a first visit; "Forget this group" before joining one.
+7. Phone home: "Open Flare" twice above the fold; the tagline says little; the sticky header lets text show through.
+8. Duplicate headings in the DOM on Home and after an outing (screen readers may read them twice).
