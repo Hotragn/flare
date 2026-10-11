@@ -113,7 +113,10 @@ export function detect(env: Env = defaultEnv()): Capabilities {
 export async function refreshPersisted(env: Env = defaultEnv()): Promise<boolean | null> {
   const storage = get(env.navigator, "storage");
   const fn = get(storage, "persisted");
-  if (typeof fn !== "function") return (persistedCache = null);
+  if (typeof fn !== "function") {
+    persistedCache = null;
+    return null;
+  }
   try {
     persistedCache = Boolean(await (fn as () => Promise<boolean>).call(storage));
   } catch {

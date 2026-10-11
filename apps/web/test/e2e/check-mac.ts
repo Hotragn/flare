@@ -71,7 +71,7 @@ try {
     })),
   );
   const version = browser.version();
-  console.log(JSON.stringify({ browser: `Chrome ${version}`, errors, sent: posted !== null, cards }, null, 2));
+  console.info(JSON.stringify({ browser: `Chrome ${version}`, errors, sent: posted !== null, cards }, null, 2));
 } finally {
   await browser.close();
   server.close();

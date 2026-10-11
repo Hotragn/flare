@@ -18,6 +18,7 @@ const doc = (withSwitch: boolean) => ({
 });
 class Orient {}
 class OrientIos {
+  readonly kind = "ios";
   static requestPermission() {
     return Promise.resolve("granted");
   }
