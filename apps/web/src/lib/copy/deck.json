@@ -1969,6 +1969,16 @@
       "where": "O1",
       "fixed": "BR-D-5"
     },
+    "more.noGroup": {
+      "text": "Open your group's link on this phone first.",
+      "kind": "message",
+      "where": "O1 O2 forget"
+    },
+    "forget.failed": {
+      "text": "Couldn't forget it yet. Your group is still here.",
+      "kind": "error",
+      "where": "forget"
+    },
     "needs.title": {
       "text": "My needs",
       "kind": "title",
