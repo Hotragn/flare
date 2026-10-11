@@ -1,0 +1,85 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4NYK1E10BESV4SQQD0ZKEJ8",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T17:01:29.502353Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "a02565886d5b",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 3282,
+    "cache_creation_tokens": 5498160,
+    "cache_read_tokens": 834122993,
+    "output_tokens": 1640459,
+    "api_call_count": 1619
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 1360,
+      "user_lines_removed": 28,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "apps/web/src/routes/app/demo/+page.svelte": 15,
+        "apps/web/static/scenic/manifest.json": 44,
+        "design/prototype/src/lib/copy/deck.json": 11,
+        "docs/content/02-copy-deck.md": 3,
+        "docs/content/03-checks.md": 4,
+        "docs/pwa/evidence/e2e-offline.txt": 8,
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17
+      },
+      "user_removed_per_file": {
+        "apps/web/src/routes/app/demo/+page.svelte": 12,
+        "design/prototype/src/lib/copy/deck.json": 1,
+        "docs/content/02-copy-deck.md": 1,
+        "docs/content/03-checks.md": 6,
+        "docs/pwa/evidence/e2e-offline.txt": 8
+      }
+    }
+  ]
+}
