@@ -286,6 +286,26 @@
       "kind": "aria",
       "where": "onboarding"
     },
+    "tip.home": {
+      "text": "Light a Flare from where you are. Friends get a link.",
+      "kind": "hint",
+      "where": "H0"
+    },
+    "tip.invite": {
+      "text": "Your yes is private. Only the count shows.",
+      "kind": "hint",
+      "where": "I1"
+    },
+    "tip.compass": {
+      "text": "Hold the phone flat and turn slowly.",
+      "kind": "hint",
+      "where": "I7"
+    },
+    "tip.send": {
+      "text": "It lights only when this many can come.",
+      "kind": "hint",
+      "where": "H3"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",

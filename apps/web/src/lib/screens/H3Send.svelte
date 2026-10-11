@@ -6,6 +6,7 @@
   import TextField from "../components/TextField.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
+  import Tip from "../components/Tip.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Access, Theme } from "../components/parts";
   let {
@@ -55,6 +56,7 @@
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}
   stage backdrop={photo} backdropAlt={scene}>
   {#snippet hero()}<p class="t-invite words">{words}</p>{/snippet}
+  <Tip id="send" text="tip.send" />
   {#if askName}
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
   {/if}

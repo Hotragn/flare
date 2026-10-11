@@ -4,6 +4,7 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Icon from "../components/Icon.svelte";
+  import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
   import Scenery from "../components/Scenery.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -52,6 +53,7 @@
       {/if}
     </div>
   {/snippet}
+  <Tip id="home" text="tip.home" />
   {#if green}
     <div class="green">
       <Icon name="hotspots" size={26} />

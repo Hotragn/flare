@@ -5,6 +5,7 @@
   import CountRing from "../components/CountRing.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
+  import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { InviteInfo, Theme } from "../components/parts";
@@ -69,6 +70,7 @@
       <p class="t-muted">{t("gone.body")}</p>
     </div>
   {:else if info}
+    <Tip id="invite" text="tip.invite" />
     <div class="where">
       <Icon name="hotspots" size={22} />
       <div>

@@ -4,6 +4,7 @@
   import Button from "../components/Button.svelte";
   import Compass from "../components/Compass.svelte";
   import { t } from "#lib/copy/index.ts";
+  import Tip from "../components/Tip.svelte";
   import type { Theme } from "../components/parts";
   let {
     theme = "dark", // 2026 direction: Find them is dark and full screen
@@ -39,6 +40,7 @@
   <div class="center">
     <Compass {name} {status} {meters} {bearing} cues={live} speak={live && talking} />
   </div>
+  <Tip id="compass" text="tip.compass" />
   {#if note}<p class="note t-small" role="status">{note}</p>{/if}
   <p class="note t-small t-muted">{t("compass.disclaimer")}</p>
   {#snippet actions()}
