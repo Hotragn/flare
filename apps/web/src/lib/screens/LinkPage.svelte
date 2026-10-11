@@ -111,6 +111,17 @@
               : "",
   );
 
+  // "Outside together · N min" on Lit once 2+ have arrived; ticks every 30 s.
+  let tick = $state(Date.now());
+  $effect(() => {
+    const h = setInterval(() => (tick = Date.now()), 30_000);
+    return () => clearInterval(h);
+  });
+  const together = $derived(
+    (flow.view?.headcount ?? 0) >= 2 && flow.outsideSince !== null
+      ? Math.max(1, Math.round((tick - flow.outsideSince) / 60_000))
+      : null,
+  );
   const exit = () => (onexit ? onexit() : history.length > 1 ? history.back() : window.close());
   const v = $derived(flow.view);
   const info = $derived(flow.info);
@@ -133,7 +144,7 @@
 {:else if flow.screen === "gone"}
   {#if v?.kind === "plan"}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{:else}<I10Gone onclose={exit} />{/if}
 {:else if flow.screen === "outside"}
-  <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} onclose={exit} />
+  <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} minutes={flow.outsideMin} onclose={exit} />
 {:else if flow.screen === "join"}
   <I0Join {host} bind:name error={flow.error} busy={flow.busy} onjoin={(n) => flow.join(n)} onclose={() => flow.notNow()} />
 {:else if info && v}
@@ -148,7 +159,7 @@
   {:else if flow.screen === "in"}
     <I4YoureIn view={flow.takenBack ? "taken-back" : flow.queued ? "queued" : "success"} have={flow.have} quorum={v.quorum} error={flow.error} canTakeBack={flow.me?.can_take_back ?? true} ondone={exit} ontakeback={() => flow.takeBack()} />
   {:else if flow.screen === "lit"}
-    <I6Lit view={v.ember_choice ? "smaller" : "lit"} {info} savedAt={flow.savedAt} smallerAt={flow.emberPlace.name} cant={flow.me?.answer === "cant_make_it"} error={flow.error} busy={flow.busy} onfind={find} onhere={() => flow.here()} oncant={() => flow.cantMakeIt()} onclose={exit} />
+    <I6Lit view={v.ember_choice ? "smaller" : "lit"} {info} {together} savedAt={flow.savedAt} smallerAt={flow.emberPlace.name} cant={flow.me?.answer === "cant_make_it"} error={flow.error} busy={flow.busy} onfind={find} onhere={() => flow.here()} oncant={() => flow.cantMakeIt()} onclose={exit} />
   {:else if flow.screen === "compass"}
     <I7Compass name={host} {status} {meters} {bearing} live {talking} savedAt={flow.savedAt} note={compassNote} onhere={() => flow.here()} ontalk={(on) => (talking = on)} onclose={leaveCompass} />
   {:else if flow.screen === "here"}

@@ -2,7 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import FlameMeter from "../components/FlameMeter.svelte";
+  import CountRing from "../components/CountRing.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
@@ -78,7 +78,7 @@
         {/if}
       </div>
     </div>
-    <FlameMeter state={view === "lit" ? "lit" : "kindling"} {have} {quorum} />
+    <CountRing {have} {quorum} lit={view === "lit"} />
     <InfoLines access={info.access} nature={info.nature} compact />
     {#if error}<p class="err" role="alert">{error}</p>{/if}
   {/if}

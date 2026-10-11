@@ -132,12 +132,12 @@
       "where": "H0"
     },
     "home.dry": {
-      "text": "{temp}°, dry for the next 2 hours",
+      "text": "{temp}° · dry for 2 hours",
       "kind": "label",
       "where": "H0"
     },
     "home.rain": {
-      "text": "{temp}°, rain likely in the next 2 hours",
+      "text": "{temp}° · rain likely in 2 hours",
       "kind": "label",
       "where": "H0"
     },
@@ -1284,6 +1284,11 @@
       "kind": "message",
       "where": "InfoLines"
     },
+    "access.unknown": {
+      "text": "Access unknown here",
+      "kind": "label",
+      "where": "I1, I6, I9, H3"
+    },
     "nature.sunset": {
       "text": "Sunset {time}",
       "kind": "message",
@@ -1346,6 +1351,17 @@
         "n": 1
       }
     },
+    "need.toLight": {
+      "text": "{n} more to light it",
+      "one": "1 more to light it",
+      "kind": "label",
+      "where": "I1"
+    },
+    "need.private": {
+      "text": "Nobody sees who.",
+      "kind": "hint",
+      "where": "I1"
+    },
     "need.enough": {
       "text": "Enough. Lighting now.",
       "kind": "status",
@@ -1405,6 +1421,11 @@
       "text": "It's lit.",
       "kind": "title",
       "where": "I6"
+    },
+    "lit.together": {
+      "text": "Outside together · {min} min",
+      "kind": "label",
+      "where": "I6, H6"
     },
     "lit.notice": {
       "text": "It's lit. {host} is at {spot}.",
@@ -1675,6 +1696,27 @@
       "kind": "title",
       "where": "I12 bot",
       "fixed": "PRD 8 (Gone after Lit)"
+    },
+    "outside.together": {
+      "text": "You were outside {min} min together",
+      "kind": "title",
+      "where": "I12",
+      "one": "You were outside 1 min together"
+    },
+    "outside.away": {
+      "text": "Phone away.",
+      "kind": "title",
+      "where": "I12"
+    },
+    "outside.awayBody": {
+      "text": "Look up. Flare will wait.",
+      "kind": "label",
+      "where": "I12"
+    },
+    "outside.awayCta": {
+      "text": "Put it away",
+      "kind": "button",
+      "where": "I12"
     },
     "outside.go": {
       "text": "Go. They're at {spot}.",

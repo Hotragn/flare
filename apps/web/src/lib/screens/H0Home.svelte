@@ -5,6 +5,7 @@
   import Button from "../components/Button.svelte";
   import Icon from "../components/Icon.svelte";
   import Flame from "../components/Flame.svelte";
+  import Scenery from "../components/Scenery.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Golden, Green } from "./flow/home.ts";
   let {
@@ -40,13 +41,14 @@
 </script>
 
 <Screen stage menu {onmenu} close={false} heading={headline}>
+  {#snippet backdropArt()}<Scenery />{/snippet}
   {#snippet hero()}
     <div class="hero">
       <Flame state="lit" size={96} />
       <p class="t-display">{headline}</p>
       {#if golden?.kind === "now"}<p class="sub">{t("home.goldenLeft", { min: golden.minutes })}</p>{/if}
       {#if weather}
-        <p class="sub"><Icon name={weather.rain_likely ? "warning" : "info"} size={20} />{weather.rain_likely ? t("home.rain", { temp: weather.temp_f }) : t("home.dry", { temp: weather.temp_f })}</p>
+        <p class="sub"><Icon name={weather.rain_likely ? "rain" : "sun"} size={20} />{weather.rain_likely ? t("home.rain", { temp: weather.temp_f }) : t("home.dry", { temp: weather.temp_f })}</p>
       {/if}
     </div>
   {/snippet}

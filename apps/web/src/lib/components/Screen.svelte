@@ -30,18 +30,21 @@
     backdrop = "",
     backdropAlt = "",
     hero,
+    backdropArt,
   }: {
     theme?: Theme; title?: string; heading?: string; sound?: boolean; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
     tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; overlay?: Snippet; wire?: boolean;
     /** 2026 direction: the photo is the screen. Full-bleed backdrop, content on a glass sheet. */
     stage?: boolean; backdrop?: string; backdropAlt?: string; hero?: Snippet;
+    /** Illustration behind the stage when there's no photo (Home uses the outdoor scenery). */
+    backdropArt?: Snippet;
   } = $props();
   const staged = $derived(stage || !!backdrop);
 </script>
 
 <div class="screen" class:grain class:dusk={tone === "dusk"} class:staged {...themeAttrs(staged ? "dark" : theme)} data-wire={wire || undefined}>
   {#if staged}
-    {#if backdrop}<img class="backdrop" src={backdrop} alt={backdropAlt} />{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
+    {#if backdrop}<img class="backdrop" src={backdrop} alt={backdropAlt} />{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
     <div class="scrim" aria-hidden="true"></div>
   {/if}
   <header class="bar">
@@ -104,6 +107,8 @@
   /* Stage: the photo is the screen (docs/design/09-2026-direction.md, rules 1, 6). */
   .staged { background: #0b0b0d; }
   .backdrop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+  .backdrop.art :global(svg), .backdrop.art :global(.scenery) { width: 100%; height: 100%; display: block; }
+  .backdrop.art :global(svg) { object-fit: cover; }
   .backdrop.warm { background: radial-gradient(120% 80% at 50% 30%, var(--c-maple-600) 0%, var(--c-ember-700) 45%, #120806 100%); }
   /* Top scrim for the bar buttons, bottom scrim behind the sheet: text stays at 4.5:1 on any photo. */
   .scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none;

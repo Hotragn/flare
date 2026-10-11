@@ -67,6 +67,13 @@ export class HostFlow {
   sending = $state(false);
   error = $state("");
   view = $state<GatheringView | null>(null);
+  /** When the host saw it light (server time, ms): the host is already at the spot. Phone only. */
+  outsideSince = $state<number | null>(null);
+  get outsideMin(): number | null {
+    const v = this.view;
+    if (!v || v.state !== "gone" || this.outsideSince === null) return null;
+    return Math.max(1, Math.round((Date.parse(v.state_since) - this.outsideSince) / 60_000));
+  }
   link = $state("");
   copied = $state(false);
   textYesUsed = $state(0);
@@ -517,8 +524,10 @@ export class HostFlow {
     const v = this.view;
     if (!v) return;
     if (v.state === "gone") this.screen = v.ended === "thanks_for_coming" ? "outside" : "gone";
-    else if (v.state === "lit" || (v.state === "ember" && v.need === 0)) this.screen = "lit";
-    else this.screen = "kindling";
+    else if (v.state === "lit" || (v.state === "ember" && v.need === 0)) {
+      this.outsideSince ??= Date.parse(v.state_since);
+      this.screen = "lit";
+    } else this.screen = "kindling";
   }
 
   /** "Pocket it": the host's live screen. */

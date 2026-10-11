@@ -47,6 +47,14 @@ type Pending = { rules: Rule[]; emberOnly: boolean };
 export class LinkFlow {
   screen = $state<LinkScreen>("loading");
   view = $state<GatheringView | null>(null);
+  /** When this person arrived (server time, ms), for "You were outside N min together". Phone only. */
+  outsideSince = $state<number | null>(null);
+  /** Minutes from arrival to Gone, or null (not arrived, or not over yet). */
+  get outsideMin(): number | null {
+    const v = this.view;
+    if (!v || v.state !== "gone" || this.outsideSince === null) return null;
+    return Math.max(1, Math.round((Date.parse(v.state_since) - this.outsideSince) / 60_000));
+  }
   sealed = $state<SealedGatheringT | null>(null);
   /** "Your group met here N times." with the newest Spark (BR-K-5); null until loaded or none. */
   met = $state<{ times: number; line: string } | null>(null);
@@ -545,6 +553,7 @@ export class LinkFlow {
       this.sparkTicket = r.value.spark_ticket ?? null;
     }
     this.hereCount = Math.max(1, this.view?.headcount ?? 1);
+    this.outsideSince ??= this.serverNow;
     this.me = this.me ? { ...this.me, arrived: true } : null;
     this.screen = "here";
   }

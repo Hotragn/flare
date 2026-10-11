@@ -8,6 +8,7 @@
   import { t } from "#lib/copy/index.ts";
   import type { InviteInfo, Theme } from "../components/parts";
   let {
+    together = null,
     view = "lit",
     theme = "sun",
     info,
@@ -21,6 +22,8 @@
     oncant,
     onclose,
   }: {
+    /** Minutes outside together once 2+ have arrived (2026 direction, B). */
+    together?: number | null;
     view?: "lit" | "offline" | "smaller";
     theme?: Theme;
     info: InviteInfo;
@@ -47,7 +50,8 @@
       <h1 class="t-display">{t("lit.headline")}</h1>
       <p class="t-sun">{info.hostLine}</p>
     {/if}
-    {#if info.walkMin !== null}<p class="t-muted">{t("invite.walk", { min: info.walkMin })}</p>{/if}
+    {#if together !== null}<p class="together">{t("lit.together", { min: together })}</p>
+    {:else if info.walkMin !== null}<p class="t-muted">{t("invite.walk", { min: info.walkMin })}</p>{/if}
     {#if cant}<p class="t-muted" role="status">{t("lit.cantDone")}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
   </div>
@@ -71,6 +75,7 @@
 </Screen>
 
 <style>
+  .together { margin: 0; font-weight: 700; color: var(--c-gold-400); }
   .center { text-align: left; align-items: flex-start; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }

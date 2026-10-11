@@ -138,7 +138,10 @@ try {
   check("the friend's Spark is saved after I'm here (BR-K-1)", saved);
   await host.getByRole("button", { name: "We're done" }).click({ timeout: 15_000 });
   await host.getByRole("button", { name: "End it" }).click();
-  await host.getByText("Thanks for coming.").first().waitFor({ timeout: 10_000 });
+  await host
+    .getByText(/Thanks for coming\.|You were outside \d+ min together/)
+    .first()
+    .waitFor({ timeout: 10_000 });
   await host.waitForTimeout(1500); // the Hot spots blob update runs after Gone (BR-K-6)
 
   // Flare 2 from the same spot: the invite shows the history line and the Spark.

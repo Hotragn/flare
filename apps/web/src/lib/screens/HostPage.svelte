@@ -177,7 +177,7 @@
 {:else if flow.screen === "lit"}
   <H6HostLit coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
-  <I12Outside view="end" sunset={flow.nature} onclose={exit} />
+  <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} onclose={exit} />
 {:else if flow.screen === "gone"}
   <I10Gone onclose={exit} />
 {:else if flow.screen === "plan-ask"}
