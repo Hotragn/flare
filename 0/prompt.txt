@@ -1634,3 +1634,17 @@ Then fix fresh-eyes round 4 when it reports, and recapture any screenshot that c
   ### 4. Score: 6/10
   I understood the idea in 5 seconds and could start a real Flare in about a minute. But the demo's own counts contradict each other (2 in, then "Smaller plan", then "3 of you are here"), and the condition step asks "Right?" with no way to answer. The real app also makes me type a place it could have filled in and puts extra intro screens before the camera. Together those cost more trust and time than a newcomer will give.
 </agent-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Approved. Yes, use the time until 8 PM on the leftovers, in this order:
+1. **The rotating compass arrow.** The founder's first complaint was the compass, so it has to feel right. Smooth rotation from the guide output, with a clear "facing" lock-in. Test it against both real iPhone streams.
+2. **One mute control,** not two.
+3. **"Use my words"** enabled while the draft is still writing.
+4. **Pre-fill the place** from the map pack.
+5. **Menu size.**
+6. **A desktop "best on your phone" note,** with a QR code to open it on a phone.
+
+Redeploy after 1 to 3, and again at the end. Keep the post and media in sync. Around 7:30 PM, run one last fresh-eyes round (round 5) so the post reports the final score honestly. Then stop and hold for the founder's review at 9.
+</cross-session-message>
