@@ -1,6 +1,6 @@
 # Integrations
 
-Every way a Flare reaches people outside the app. Owner: Integrations. Code in `apps/server/src/telegram/`, `apps/server/src/push/`, `apps/server/src/preview/`, `packages/shared/src/plaintext.ts`, `scripts/telegram-*.ts`, `scripts/deploy-render.ts`. Tests in `apps/server/test/integrations/` (82 tests) and `packages/shared/test/plaintext.test.ts` (16).
+Every way a Flare reaches people outside the app. Owner: Integrations. Code in `apps/server/src/telegram/`, `apps/server/src/push/`, `apps/server/src/preview/`, `packages/shared/src/plaintext.ts`, `scripts/telegram-*.ts`, `scripts/deploy-render.ts`. Tests in `apps/server/test/integrations/` (74 tests in 7 files) and `packages/shared/test/plaintext.test.ts` (16).
 
 | Doc | What it covers |
 | --- | --- |
