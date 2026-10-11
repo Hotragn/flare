@@ -6,6 +6,7 @@
 // Lives outside apps/hub/src because it spawns processes; src/ imports no child_process (ADR-0011).
 // Logs carry events and timings only: never photos, words, ids or secrets.
 import { type ChildProcess, spawn } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -109,6 +110,8 @@ async function health() {
       `ollama ${o.up ? "ok" : "DOWN"}`,
       `model ${o.loaded ? "loaded" : "not loaded"}`,
       `warm ${warmMs ?? "?"} ms`,
+      // Over about 10 (cores) the model slows past the 6 s budget (measured 2026-10-10).
+      `load ${os.loadavg()[0]?.toFixed(1)}`,
       `last job ${job}`,
     ].join(" | "),
   );

@@ -32,10 +32,10 @@ export async function chat(cfg: OllamaConfig, imageBase64: string | null, signal
 }
 
 /** One photo in, one guarded draft out. Retries once on an unusable answer (report 02). */
-export async function draftFromPhoto(cfg: OllamaConfig, jpeg: Uint8Array): Promise<Draft | null> {
+export async function draftFromPhoto(cfg: OllamaConfig, jpeg: Uint8Array, signal?: AbortSignal): Promise<Draft | null> {
   const b64 = Buffer.from(jpeg).toString("base64");
   for (let attempt = 0; attempt < 2; attempt++) {
-    const text = await chat(cfg, b64);
+    const text = await chat(cfg, b64, signal);
     const d = enforce(text);
     if (d) return d;
   }
@@ -66,9 +66,13 @@ export async function chatText(cfg: OllamaConfig, system: string, user: string, 
 }
 
 /** Ask line to four steps, guarded. Retries once on an unusable answer (as the photo task does). */
-export async function ladderFromAsk(cfg: OllamaConfig, job: LadderJobT): Promise<LadderStep[] | null> {
+export async function ladderFromAsk(
+  cfg: OllamaConfig,
+  job: LadderJobT,
+  signal?: AbortSignal,
+): Promise<LadderStep[] | null> {
   for (let attempt = 0; attempt < 2; attempt++) {
-    const text = await chatText(cfg, LADDER_SYSTEM_PROMPT, ladderUserPrompt(job));
+    const text = await chatText(cfg, LADDER_SYSTEM_PROMPT, ladderUserPrompt(job), signal);
     const d = enforceLadder(text, job.total_minutes);
     if (d) return d.steps;
   }

@@ -13,6 +13,8 @@ export type HubOptions = {
   onLog?: (e: Record<string, unknown>) => void;
   /** Drop the socket if the server sends nothing (not even a ping) for this long. Default 15 s (3 missed pings). */
   silenceMs?: number;
+  /** Per-job budget, matching the server's wait (asyncapi: 6 s photo, 8 s ladder). */
+  budgetMs?: { photo?: number; ladder?: number };
 };
 
 /** asyncapi `result`: draft for photo jobs, ladder for ladder jobs. */
@@ -62,18 +64,30 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     model: opts.ollama.model,
   });
 
-  const runPhoto = async (job: { id: string; bytes: number }, photo: Buffer) => {
+  // The server stops waiting after 6 s (photo) or 8 s (ladder) and answers with the template
+  // (BR-AI-1). Past that, the hub's answer is useless and only delays the next job behind it,
+  // so each job gets the rest of its budget, counted from when it arrived, and is dropped at 0.
+  const budget = { photo: opts.budgetMs?.photo ?? 6000, ladder: opts.budgetMs?.ladder ?? 8000 };
+  // Whole milliseconds: AbortSignal.timeout() rejects fractions.
+  const remaining = (arrived: number, kind: "photo" | "ladder") =>
+    Math.floor(budget[kind] - (performance.now() - arrived));
+  const isTimeout = (e: unknown) => ["TimeoutError", "AbortError"].includes((e as { name?: string }).name ?? "");
+
+  const runPhoto = async (job: { id: string; bytes: number }, photo: Buffer, arrived: number) => {
     const t = performance.now();
     let result: HubResult;
     try {
       if (photo.length !== job.bytes || photo[0] !== 0xff || photo[1] !== 0xd8)
         throw Object.assign(new Error("bad image"), { code: "bad_image" });
-      const d = await draftFromPhoto(opts.ollama, photo);
+      const left = remaining(arrived, "photo");
+      if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
+      const d = await draftFromPhoto(opts.ollama, photo, AbortSignal.timeout(left));
       result = d
         ? { ...base(job.id, t), ok: true, draft: { invite: d.invite, alt: d.alt } }
         : { ...base(job.id, t), ok: false, error: "unusable_answer" };
     } catch (e) {
-      const code = (e as { code?: string }).code === "bad_image" ? "bad_image" : "model_unavailable";
+      const code =
+        (e as { code?: string }).code === "bad_image" ? "bad_image" : isTimeout(e) ? "timeout" : "model_unavailable";
       result = { ...base(job.id, t), ok: false, error: code };
     } finally {
       photo.fill(0); // clear the photo bytes as soon as the job ends
@@ -81,7 +95,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     send(result, "photo-draft");
   };
 
-  const runLadder = async (raw: unknown) => {
+  const runLadder = async (raw: unknown, arrived: number) => {
     const t = performance.now();
     const job = LadderJob.safeParse(raw);
     const id = (raw as { id?: unknown }).id;
@@ -91,12 +105,14 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     }
     let result: HubResult;
     try {
-      const steps = await ladderFromAsk(opts.ollama, job.data);
+      const left = remaining(arrived, "ladder");
+      if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
+      const steps = await ladderFromAsk(opts.ollama, job.data, AbortSignal.timeout(left));
       result = steps
         ? { ...base(job.data.id, t), ok: true, ladder: steps }
         : { ...base(job.data.id, t), ok: false, error: "unusable_answer" };
-    } catch {
-      result = { ...base(job.data.id, t), ok: false, error: "model_unavailable" };
+    } catch (e) {
+      result = { ...base(job.data.id, t), ok: false, error: isTimeout(e) ? "timeout" : "model_unavailable" };
     }
     send(result, "ladder-draft");
   };
@@ -129,7 +145,8 @@ export function startHub(opts: HubOptions): { stop: () => void } {
           const h = JobHeader.safeParse(raw);
           if (h.success) waitingFor = { id: h.data.id, bytes: h.data.bytes };
         } else if (raw?.type === "job" && raw.kind === "ladder-draft") {
-          enqueue(() => runLadder(raw));
+          const arrived = performance.now();
+          enqueue(() => runLadder(raw, arrived));
         }
         return;
       }
@@ -137,7 +154,8 @@ export function startHub(opts: HubOptions): { stop: () => void } {
       const job = waitingFor;
       waitingFor = null;
       const photo = data as Buffer;
-      enqueue(() => runPhoto(job, photo));
+      const arrived = performance.now();
+      enqueue(() => runPhoto(job, photo, arrived));
     });
     ws.on("close", (code) => {
       say({ event: "closed", code });
