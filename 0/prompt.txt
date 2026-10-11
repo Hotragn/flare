@@ -1,0 +1,8 @@
+<task-notification>
+<task-id>a0a0da779b98dca12</task-id>
+<tool-use-id>toolu_016jQooYygJAo7vPKGoHEtmK</tool-use-id>
+<output-file><tmp>/904c52d9-f200-4552-8ce5-05e400952efa/tasks/a0a0da779b98dca12.output</output-file>
+<status>failed</status>
+<summary>Agent "Core engine specialist" failed: Agent terminated early due to an API error: You've hit your session limit · resets 8:50pm (America/Detroit) (error type rate_limit, HTTP 429, request id req_011CfuPfes1P6Pcg6FctzWzy, model sent to the API: claude-opus-5-5)</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+</task-notification>
