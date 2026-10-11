@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4MV1MJY0PACMFE9FMH01CSK",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/BUGLOG.md",
+    "docs/engineering/05-device-checklist.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1578,
+    "cache_creation_tokens": 3664956,
+    "cache_read_tokens": 408699373,
+    "output_tokens": 1007549,
+    "api_call_count": 773
+  }
+}

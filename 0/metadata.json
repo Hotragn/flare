@@ -1,0 +1,87 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4MV1MJY0PACMFE9FMH01CSK",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T06:40:17.902614Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/BUGLOG.md",
+    "docs/engineering/05-device-checklist.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "2851df7b62c6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 1578,
+    "cache_creation_tokens": 3664956,
+    "cache_read_tokens": 408699373,
+    "output_tokens": 1007549,
+    "api_call_count": 773
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "initial_attribution": {
+    "calculated_at": "2026-10-11T06:40:17.454158Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 103,
+    "human_modified": 6,
+    "human_removed": 0,
+    "total_committed": 103,
+    "total_lines_changed": 198,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 18,
+      "user_lines_removed": 5,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "apps/web/test/e2e/flow.ts": 13,
+        "docs/frontend/evidence/e2e-flow.txt": 5
+      },
+      "user_removed_per_file": {
+        "docs/frontend/evidence/e2e-flow.txt": 5
+      }
+    }
+  ]
+}
