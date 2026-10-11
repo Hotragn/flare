@@ -67,9 +67,10 @@ describe("host flow (FE2)", () => {
 
   it("SRS-CRE-6: the photo uploads sealed after the gathering", async () => {
     const { f } = await sent();
-    const put = f.outbox.sent.find((x) => x.method === "PUT" && x.path.endsWith("/photo"));
-    expect(put?.body).toBeInstanceOf(Uint8Array);
-    expect([...(put ? (put.body as Uint8Array) : new Uint8Array()).slice(0, 4)]).not.toEqual([0xff, 0xd8, 0xff, 0xd9]);
+    await settle();
+    const g = [...f.server.gatherings.values()][0];
+    expect(g?.has_photo).toBe(true);
+    expect([...(g?.photo ?? new Uint8Array()).slice(0, 4)]).not.toEqual([0xff, 0xd8, 0xff, 0xd9]); // sealed, not a JPEG
   });
 
   it("SRS-IF-6: the plain-text form fits 200 bytes and carries the reply code", async () => {

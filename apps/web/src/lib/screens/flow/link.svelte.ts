@@ -417,7 +417,7 @@ export class LinkFlow {
     const g = this.#group;
     if (!g) return;
     this.takenBack = true;
-    const r = await write<Me>(this.#d, "DELETE", `/gatherings/${this.#id}/me`, null);
+    const r = await write<Me>(this.#d, "DELETE", `/gatherings/${this.#id}/me`);
     if (!r.ok) {
       this.takenBack = false;
       this.error = t(errorKey(r.code));
@@ -563,7 +563,7 @@ export class LinkFlow {
 
   async fade(): Promise<boolean> {
     this.busy = true;
-    const r = await write<GatheringView>(this.#d, "POST", `/gatherings/${this.#id}/fade`, {});
+    const r = await write<GatheringView>(this.#d, "POST", `/gatherings/${this.#id}/fade`);
     this.busy = false;
     if (!r.ok) {
       this.error = t(errorKey(r.code as FailCode));

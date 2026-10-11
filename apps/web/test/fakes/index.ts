@@ -335,7 +335,7 @@ export function fakeServer(clock: () => number) {
         tier: hub ? "hub" : "rules",
         ms: 2100,
       });
-    return handle(init?.method ?? "GET", path, null, auth(hdrs));
+    return handle(init?.method ?? "GET", path, init?.body ?? null, auth(hdrs));
   };
 
   return {

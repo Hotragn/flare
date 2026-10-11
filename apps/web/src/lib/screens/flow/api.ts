@@ -103,9 +103,10 @@ export async function write<T>(
   d: Deps,
   method: ClientIcd.OutboxItem["method"],
   path: string,
-  body: unknown,
+  body?: unknown,
 ): Promise<WriteRes<T>> {
   try {
+    // No body (DELETE /me, fade, done, cancel): undefined, so the outbox sends none.
     const value = await d.outbox.send<T>({ method, path: BASE + path, body });
     return { ok: true, value, status: value === null ? 202 : 200 };
   } catch (e) {

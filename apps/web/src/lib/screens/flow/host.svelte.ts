@@ -10,7 +10,7 @@ import type { NoticeTextT, SealedGatheringT } from "@flare/shared/sealed";
 import { t } from "#lib/copy/index.ts";
 import { feedback } from "#lib/motion/feedback.ts";
 import type { Access } from "../../components/parts";
-import { BASE, bearer, getJson, write } from "./api.ts";
+import { BASE, bearer, codeOf, getJson, write } from "./api.ts";
 import type {
   CreateGathering,
   DraftResponse,
@@ -334,8 +334,19 @@ export class HostFlow {
     try {
       const sealed = await this.#d.crypto.seal(key, `p:${id}`, new Uint8Array(await jpeg.arrayBuffer()));
       const bytes = fromB64url(sealed);
-      const r = await write<unknown>(this.#d, "PUT", `/gatherings/${id}/photo`, bytes);
-      if (!r.ok) this.error = t(errorKey(r.code));
+      // Binary body: straight to fetch, since the outbox sends JSON (change request in handoff 07a).
+      const g = this.#group;
+      if (!g) return;
+      const send = () =>
+        this.#d.fetch(`${BASE}/gatherings/${id}/photo`, {
+          method: "PUT",
+          headers: { authorization: bearer(g), "idempotency-key": idem, "content-type": "application/octet-stream" },
+          body: bytes,
+        });
+      const idem = newToken();
+      let r = await send().catch(() => null);
+      if (!r || r.status >= 500) r = await send().catch(() => null); // one retry with the same key
+      if (r && !r.ok) this.error = t(errorKey(codeOf(r.status, await r.json().catch(() => null))));
     } catch {
       this.error = t("err.sealPhoto"); // the link still works without the photo (openapi createGathering)
     }
@@ -457,7 +468,7 @@ export class HostFlow {
     const v = this.view;
     if (!v) return;
     this.busy = true;
-    const r = await write<GatheringView>(this.#d, "POST", `/gatherings/${v.id}/${what}`, {});
+    const r = await write<GatheringView>(this.#d, "POST", `/gatherings/${v.id}/${what}`);
     this.busy = false;
     if (!r.ok) {
       this.error = t(errorKey(r.code));
