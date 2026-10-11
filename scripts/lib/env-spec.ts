@@ -108,7 +108,12 @@ export const SPEC: Rule[] = [
     apps: ["server"],
     required: false,
     why: "AI-path traces (ADR-0021); off when empty",
-    shape: url(["https"]),
+    shape: (v) =>
+      /^sntry[us]_/.test(v)
+        ? "this is a Sentry auth token, not a project DSN (https://key@host/id)"
+        : /^https:\/\/[A-Za-z0-9]+@[A-Za-z0-9.-]+\/\d+$/.test(v)
+          ? null
+          : "not a Sentry DSN (https://key@host/id)",
   },
   {
     key: "DO_MODEL_ACCESS_KEY",

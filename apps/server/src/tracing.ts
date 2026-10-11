@@ -40,6 +40,9 @@ export const scrubAttributes = (data: Record<string, unknown> | undefined): Reco
   return out;
 };
 
+/** A Sentry DSN is https://{public key}@{host}/{project id}; tokens (sntryu_, sntrys_) are not. */
+export const isDsn = (v: string): boolean => /^https:\/\/[A-Za-z0-9]+@[A-Za-z0-9.-]+\/\d+$/.test(v);
+
 let enabled = false;
 export const tracingEnabled = () => enabled;
 
@@ -48,7 +51,7 @@ type Options = Parameters<typeof Sentry.init>[0];
 /** Starts Sentry when SENTRY_DSN is set. Tests pass a transport to capture envelopes. */
 export function initTracing(env: NodeJS.ProcessEnv = process.env, extra: Partial<Options> = {}): boolean {
   const dsn = env.SENTRY_DSN;
-  if (!dsn) return false;
+  if (!dsn || !isDsn(dsn)) return false; // an auth token or a typo starts nothing, rather than failing at send
   Sentry.init({
     dsn,
     environment: env.SENTRY_ENVIRONMENT ?? (env.RENDER ? "production" : "development"),

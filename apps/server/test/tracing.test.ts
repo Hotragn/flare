@@ -4,7 +4,7 @@
 import { HUB_PROTOCOL } from "@flare/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import WebSocket from "ws";
-import { ALLOWED, flushTracing, initTracing, scrubAttributes } from "../src/tracing.ts";
+import { ALLOWED, flushTracing, initTracing, isDsn, scrubAttributes } from "../src/tracing.ts";
 import { fakeJpeg, SECRET, startServer } from "./helpers.ts";
 
 const sent: unknown[] = [];
@@ -73,6 +73,11 @@ const hubFor = (wsBase: string) =>
 const serialize = (x: unknown) => JSON.stringify(x, (_k, v) => (v instanceof Uint8Array ? `<${v.length} bytes>` : v));
 
 describe("Sentry agent tracing (ADR-0021)", () => {
+  it("starts only with a real DSN, never with an auth token", () => {
+    expect(isDsn("https://abc123@o0.ingest.sentry.io/42")).toBe(true);
+    expect(isDsn(`sntryu_${"a".repeat(64)}`)).toBe(false);
+    expect(initTracing({ SENTRY_DSN: `sntryu_${"a".repeat(64)}` })).toBe(false);
+  });
   it("scrubAttributes keeps only allow-listed short tokens", () => {
     expect(
       scrubAttributes({ "flare.tier": "hub", "http.url": "/api/v1/gatherings/x", "flare.error": "a b c" }),
