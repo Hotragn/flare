@@ -1031,6 +1031,24 @@
         "k": 3
       }
     },
+    "readback.chip.minStep": {
+      "text": "Step {k} or bigger",
+      "kind": "option",
+      "where": "I3",
+      "owner": "apps/web/src/lib/conditions",
+      "sample": {
+        "k": 1
+      }
+    },
+    "readback.many": {
+      "text": "Got it: {n} rules, listed below. Right?",
+      "kind": "message",
+      "where": "I3 bot, when the full read-back is over 12 words (SRS-COND-5)",
+      "owner": "apps/web/src/lib/conditions",
+      "sample": {
+        "n": 4
+      }
+    },
     "readback.chipsAria": {
       "text": "Rules that will be sent",
       "kind": "aria",

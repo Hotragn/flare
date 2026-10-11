@@ -23,6 +23,10 @@
     "apps/server/test/**/*.ts",
     "apps/hub/src/**/*.ts",
     "apps/hub/test/**/*.ts",
+    "apps/web/src/lib/ai/**/*.ts",
+    "apps/web/src/lib/conditions/**/*.ts",
+    "apps/web/src/lib/capabilities/**/*.ts",
+    "apps/web/test/**/*.ts",
     "scripts/**/*.ts"
   ]
 }
