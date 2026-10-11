@@ -1,26 +1,38 @@
-<!-- I0 Join a group: first open of a group link. No account, just a first name. -->
+<!-- I0 Join a group: first yes from a group link. No account, just a first name (SRS-ID-3, -4). -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import TextField from "../components/TextField.svelte";
   import Flame from "../components/Flame.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { people } from "../sample";
   import type { Theme } from "../components/parts";
-  let { view = "empty", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
-  let name = $state("");
-  $effect(() => { name = view === "typing" ? "Amor" : ""; });
+  let {
+    theme = "light",
+    host,
+    name = $bindable(""),
+    error = "",
+    busy = false,
+    onjoin,
+    onclose,
+  }: { theme?: Theme; host: string; name?: string; error?: string; busy?: boolean; onjoin?: (name: string) => void; onclose?: () => void } = $props();
+  let tried = $state(false);
+  const nameError = $derived(error || (tried && !name.trim() ? t("join.nameError") : ""));
+  function submit(e: SubmitEvent) {
+    e.preventDefault();
+    tried = true;
+    if (name.trim()) onjoin?.(name.trim());
+  }
 </script>
 
-<Screen {theme} {wire}>
-  <div class="intro">
+<Screen {theme} {onclose}>
+  <form id="join" class="intro" onsubmit={submit}>
     <Flame state="lit" size={84} />
-    <h1 class="t-title">{t("join.group", { host: people.host })}</h1>
+    <h1 class="t-title">{t("join.group", { host })}</h1>
     <p>{t("join.intro")}</p>
-  </div>
-  <TextField label={t("join.nameLabel")} bind:value={name} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} error={view === "error" ? t("join.nameError") : ""} max={24} />
+    <TextField label={t("join.nameLabel")} bind:value={name} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} error={nameError} max={24} />
+  </form>
   {#snippet actions()}
-    <Button>{t("join.cta")}</Button>
+    <Button type="submit" form="join" loading={busy}>{t("join.cta")}</Button>
   {/snippet}
 </Screen>
 

@@ -7,19 +7,24 @@
   import Button from "../components/Button.svelte";
   import Scenery from "../components/Scenery.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { flare } from "../sample";
   import type { Theme } from "../components/parts";
-  let { view = "end", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
+  let {
+    view = "end",
+    theme = "light",
+    spot = "",
+    sunset = "",
+    onclose,
+  }: { view?: "end" | "go"; theme?: Theme; spot?: string; sunset?: string; onclose?: () => void } = $props();
 </script>
 
-<Screen {theme} {wire} close={false} grain={false}>
-  <div class="scene wire-hide"><Scenery /></div>
+<Screen {theme} close={false} grain={false}>
+  <div class="scene"><Scenery /></div>
   <div class="msg">
-    <h1 class="t-display">{view === "go" ? t("outside.go", { spot: flare.spotShort }) : t("outside.thanks")}</h1>
-    <p class="t-muted">{t("outside.quiet", { sunset: flare.sunset })}</p>
+    <h1 class="t-display">{view === "go" && spot ? t("outside.go", { spot }) : t("outside.thanks")}</h1>
+    {#if sunset}<p class="t-muted">{t("outside.quiet", { sunset })}</p>{/if}
   </div>
   {#snippet actions()}
-    <Button variant="secondary">{t("gone.close")}</Button>
+    <Button variant="secondary" onclick={onclose}>{t("gone.close")}</Button>
   {/snippet}
 </Screen>
 

@@ -1,4 +1,4 @@
-<!-- I9 Ember (sun mode): it didn't catch, so it shrinks. One friend is enough. -->
+<!-- I9 Ember (sun mode): it didn't catch, so it shrinks to a bench close by. One friend is enough (BR-E-1 to -5). -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
@@ -6,24 +6,51 @@
   import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { flare, people } from "../sample";
-  import type { Theme } from "../components/parts";
-  let { view = "waiting", theme = "sun", wire = false, onyes }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void } = $props();
+  import type { InviteInfo, Theme } from "../components/parts";
+  let {
+    view = "waiting",
+    theme = "sun",
+    info,
+    bench,
+    meters = null,
+    have = 1,
+    answered = false,
+    error = "",
+    busy = false,
+    onyes,
+    onfind,
+    onclose,
+  }: {
+    view?: "waiting" | "lit";
+    theme?: Theme;
+    info: InviteInfo;
+    bench: string; // Ember place name ("the bench by the lot"); the spot itself when none qualified
+    meters?: number | null; // from the spot
+    have?: number;
+    answered?: boolean;
+    error?: string;
+    busy?: boolean;
+    onyes?: () => void;
+    onfind?: () => void;
+    onclose?: () => void;
+  } = $props();
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
-<Screen {theme} {wire} sound title={t("lit.title", { host: people.host })}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })}>
   <div class="center">
     <Hearth state={view === "lit" ? "lit" : "ember"} size={150} celebrate={view === "lit"} />
-    <h1 class="t-title">{view === "lit" ? t("lit.notice", { host: people.host, spot: flare.emberBench }) : t("ember.headline", { bench: flare.emberBench })}</h1>
-    <p class="t-muted">{t("ember.where", { Bench: flare.emberBenchCap, m: flare.emberMeters, spot: flare.emberFrom })}</p>
+    <h1 class="t-title">{view === "lit" ? t("lit.notice", { host: info.host, spot: bench }) : t("ember.headline", { bench })}</h1>
+    {#if meters !== null}<p class="t-muted">{t("ember.where", { Bench: cap(bench), m: meters, spot: info.spot })}</p>{/if}
+    {#if error}<p class="err" role="alert">{error}</p>{/if}
   </div>
-  {#if view !== "lit"}<FlameMeter state="ember" have={1} quorum={2} note={t("ember.meterNote")} />{/if}
-  <InfoLines bench={null} restroom={140} nature={flare.sunset} />
+  {#if view !== "lit"}<FlameMeter state="ember" {have} quorum={2} note={t("ember.meterNote")} />{/if}
+  <InfoLines access={info.access} nature={info.nature} />
   {#snippet actions()}
     {#if view === "lit"}
-      <Button icon="compass">{t("lit.find")}</Button>
-    {:else}
-      <Button icon="here" onclick={onyes}>{t("invite.yes")}</Button>
+      <Button icon="compass" onclick={onfind}>{t("lit.find")}</Button>
+    {:else if !answered}
+      <Button icon="here" haptic="tap" loading={busy} onclick={onyes}>{t("invite.yes")}</Button>
     {/if}
   {/snippet}
 </Screen>
@@ -31,4 +58,5 @@
 <style>
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
+  .err { font-weight: 700; }
 </style>

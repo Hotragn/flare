@@ -3,7 +3,7 @@
   import { t } from "#lib/copy/index.ts";
   import Icon from "./Icon.svelte";
   import type { Step } from "./parts";
-  let { steps, current = 0, editable = false, editing = -1 }: { steps: Step[]; current?: number; editable?: boolean; editing?: number } = $props();
+  let { steps, current = 0, editable = false, editing = -1, onedit }: { steps: Step[]; current?: number; editable?: boolean; editing?: number; onedit?: (index: number) => void } = $props();
 </script>
 
 <ol class="ladder" aria-label={t("ladder.aria")}>
@@ -12,10 +12,10 @@
       <span class="num" aria-hidden="true">{i + 1}</span>
       <div class="body">
         <span class="name">{s.name}</span>
-        <span class="t-small t-muted">{t("ladder.stepMeta", { place: s.place, min: s.minutes, access: s.access })}</span>
+        <span class="t-small t-muted">{s.access ? t("ladder.stepMeta", { place: s.place, min: s.minutes, access: s.access }) : t("ladder.stepMetaShort", { place: s.place, min: s.minutes })}</span>
         {#if s.afterSunset}<span class="t-small warn"><Icon name="sunset" size={18} />{t("ladder.afterSunset")}</span>{/if}
       </div>
-      {#if editable}<button class="edit" aria-label={t("ladder.editAria", { k: i + 1 })}><Icon name="edit" /></button>{/if}
+      {#if editable}<button class="edit" type="button" aria-label={t("ladder.editAria", { k: i + 1 })} onclick={() => onedit?.(i)}><Icon name="edit" /></button>{/if}
       {#if current === i + 1}<span class="visually-hidden">{t("ladder.current")}</span>{/if}
     </li>
   {/each}

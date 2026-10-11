@@ -169,6 +169,36 @@
       "kind": "button",
       "where": "every error"
     },
+    "err.fadeUsed": {
+      "text": "You already made this one smaller.",
+      "kind": "error",
+      "where": "P5 fade, code fade_used",
+      "owner": "frontend"
+    },
+    "err.fadeClosed": {
+      "text": "Too late to make it smaller now.",
+      "kind": "error",
+      "where": "P5 fade, code fade_window_closed",
+      "owner": "frontend"
+    },
+    "err.wrongState": {
+      "text": "This changed a moment ago. Look again.",
+      "kind": "error",
+      "where": "any write, codes wrong_state, already_lit, version_conflict",
+      "owner": "frontend"
+    },
+    "err.tooLarge": {
+      "text": "That photo is too big. Try another.",
+      "kind": "error",
+      "where": "H3 photo upload, code too_large",
+      "owner": "frontend"
+    },
+    "err.notMember": {
+      "text": "This phone isn't in this group yet.",
+      "kind": "error",
+      "where": "any member write, codes unauthorized, forbidden, unknown_member",
+      "owner": "frontend"
+    },
     "camera.heading": {
       "text": "Take a photo of where you are",
       "kind": "title",
@@ -1031,6 +1061,15 @@
         "k": 3
       }
     },
+    "readback.chip.minStep": {
+      "text": "Step {k} or bigger",
+      "kind": "label",
+      "where": "I3 chip for min_step (ADR-0016)",
+      "owner": "frontend",
+      "sample": {
+        "k": 2
+      }
+    },
     "readback.chipsAria": {
       "text": "Rules that will be sent",
       "kind": "aria",
@@ -1654,6 +1693,16 @@
         "place": "Pond path",
         "min": 15,
         "access": "Flat, no steps mapped"
+      }
+    },
+    "ladder.stepMetaShort": {
+      "text": "{place} · {min} min",
+      "kind": "label",
+      "where": "Ladder step line when no access line is known",
+      "owner": "frontend",
+      "sample": {
+        "place": "Ford Woods Park",
+        "min": 30
       }
     },
     "ladder.editTitle": {

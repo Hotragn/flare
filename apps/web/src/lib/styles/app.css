@@ -1,4 +1,5 @@
-@import "./tokens.css";
+/* Design tokens straight from design/system (ICD-13), never copied. */
+@import "../../../../../design/system/tokens.css";
 @import "@fontsource/fraunces/400.css";
 @import "@fontsource/fraunces/600.css";
 @import "@fontsource/atkinson-hyperlegible-next/400.css";

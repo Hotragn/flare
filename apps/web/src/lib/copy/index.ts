@@ -4,7 +4,8 @@
 //   variant("privacy.coords")           -> "A" or "B" (see deck meta.variants)
 // Keys are typed from deck.json, so a wrong key fails `npm run check`.
 // A missing template variable throws, so it shows up in the exports instead of on a phone.
-import deck from "./deck.json";
+// One deck for the whole repo (ICD-12): read straight from design/prototype, never copied.
+import deck from "../../../../../design/prototype/src/lib/copy/deck.json";
 
 export type CopyKey = keyof typeof deck.strings;
 export type Vars = Record<string, string | number>;

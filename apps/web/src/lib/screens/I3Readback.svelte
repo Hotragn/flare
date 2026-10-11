@@ -1,28 +1,46 @@
-<!-- I3 Read-back: the parsed rule in one sentence (≤ 12 words, SRS-COND-5). -->
+<!-- I3 Read-back: the parsed rules in one sentence (≤ 12 words, SRS-COND-5); only rules are sent (BR-C-10). -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Sheet from "../components/Sheet.svelte";
   import PhotoPrint from "../components/PhotoPrint.svelte";
-  import { t, readback } from "#lib/copy/index.ts";
-  import { flare, people } from "../sample";
-  import type { Theme } from "../components/parts";
-  let { view = "flare", theme = "light", wire = false, onyes }: { view?: string; theme?: Theme; wire?: boolean; onyes?: () => void } = $props();
-  const back = t("readback.rule.backBy", { time: "5 PM" });
-  const line = $derived(view === "plan" ? readback([t("readback.rule.maxStep", { k: 3 }), back]) : readback([t("readback.rule.with", { name: "Amor" }), back]));
+  import { t } from "#lib/copy/index.ts";
+  import type { InviteInfo, Theme } from "../components/parts";
+  let {
+    theme = "light",
+    info,
+    line,
+    chips = [],
+    busy = false,
+    sample = false,
+    onyes,
+    onfix,
+    onclose,
+  }: {
+    theme?: Theme;
+    info: InviteInfo;
+    line: string;
+    chips?: string[];
+    busy?: boolean;
+    sample?: boolean;
+    onyes?: () => void;
+    onfix?: () => void;
+    onclose?: () => void;
+  } = $props();
 </script>
 
-<Screen {theme} {wire} title={t("invite.title", { host: people.host })}>
-  <PhotoPrint scene={flare.scene} height={260} tilt={1.2} />
+<Screen {theme} {onclose} title={t("invite.title", { host: info.host })}>
+  <PhotoPrint scene={info.scene} src={info.photo} {sample} height={260} tilt={1.2} />
   {#snippet overlay()}
     <Sheet inline title={t("readback.title")}>
       <p class="t-title readback" aria-live="polite">{line}</p>
-      <ul class="chips" aria-label={t("readback.chipsAria")}>
-        {#if view === "plan"}<li>{t("readback.chip.maxStep", { k: 3 })}</li>{:else}<li>{t("readback.chip.with", { name: "Amor" })}</li>{/if}
-        <li>{t("readback.chip.backBy", { time: "5:00 PM" })}</li>
-      </ul>
-      <Button onclick={onyes}>{t("readback.yes")}</Button>
-      <Button variant="text">{t("readback.fix")}</Button>
+      {#if chips.length}
+        <ul class="chips" aria-label={t("readback.chipsAria")}>
+          {#each chips as c (c)}<li>{c}</li>{/each}
+        </ul>
+      {/if}
+      <Button haptic="tap" loading={busy} onclick={onyes}>{t("readback.yes")}</Button>
+      <Button variant="text" onclick={onfix}>{t("readback.fix")}</Button>
     </Sheet>
   {/snippet}
 </Screen>

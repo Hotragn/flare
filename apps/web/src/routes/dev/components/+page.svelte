@@ -13,7 +13,7 @@
   import NeedCount from "#lib/components/NeedCount.svelte";
   import Icon from "#lib/components/Icon.svelte";
   import { icons } from "#lib/brand.ts";
-  import { plan } from "#lib/sample.ts";
+  import { access, flare, plan } from "#lib/sample.ts";
   const themes = [["light", { "data-theme": "light" }], ["dark", { "data-theme": "dark" }], ["sun", { "data-sun": "" }]] as const;
   let q = $state("3");
   let v1 = $state("");
@@ -77,7 +77,7 @@
       <Choice label="Goes ahead when this many are in" bind:value={q} options={["2", "3", "4"].map((x) => ({ value: x, label: x }))} />
 
       <h3>NeedCount, InfoLines</h3>
-      <div class="col"><NeedCount have={1} quorum={3} /><NeedCount have={3} quorum={3} lit /><InfoLines /><InfoLines bench={null} water={60} steps nature="Sunset 6:57 PM" /></div>
+      <div class="col"><NeedCount have={1} quorum={3} /><NeedCount have={3} quorum={3} lit /><InfoLines access={access} nature={flare.sunset} /><InfoLines access={{ ...access, benches: { count: 0, nearest_m: null }, water: { count: 1, nearest_m: 60 }, steps_mapped: true }} nature={flare.sunset} /></div>
 
       <h3>Ladder</h3>
       <div class="col" style="max-width:380px"><Ladder steps={plan.steps} current={2} /><Ladder steps={plan.steps} editable editing={1} /></div>

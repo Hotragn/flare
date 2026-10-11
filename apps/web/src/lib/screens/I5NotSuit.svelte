@@ -1,4 +1,4 @@
-<!-- I5 This spot may not suit you. Private to this person; their yes moves to the Ember (SRS-ACC-3). -->
+<!-- I5 This spot may not suit you. Private to this person; only an Ember-only flag is sent (SRS-ACC-3, BR-A-3). -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
@@ -6,22 +6,38 @@
   import PhotoPrint from "../components/PhotoPrint.svelte";
   import Icon from "../components/Icon.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { flare, people } from "../sample";
-  import type { Theme } from "../components/parts";
-  let { view = "prompt", theme = "light", wire = false }: { view?: string; theme?: Theme; wire?: boolean } = $props();
+  import type { InviteInfo, Theme } from "../components/parts";
+  let {
+    theme = "light",
+    info,
+    reasons = [],
+    busy = false,
+    sample = false,
+    onyes,
+    onno,
+  }: {
+    theme?: Theme;
+    info: InviteInfo;
+    reasons?: { icon: string; text: string }[];
+    busy?: boolean;
+    sample?: boolean;
+    onyes?: () => void;
+    onno?: () => void;
+  } = $props();
 </script>
 
-<Screen {theme} {wire} title={t("invite.title", { host: people.host })}>
-  <PhotoPrint scene={flare.scene} height={260} tilt={1.2} />
+<Screen {theme} onclose={onno} title={t("invite.title", { host: info.host })}>
+  <PhotoPrint scene={info.scene} src={info.photo} {sample} height={260} tilt={1.2} />
   {#snippet overlay()}
     <Sheet inline title={t("notSuit.title")} description={t("notSuit.body")}>
-      <ul class="why">
-        <li><Icon name="steps" /><span>{t("notSuit.steps")}</span></li>
-        <li><Icon name="bench" /><span>{t("notSuit.bench", { m: 320 })}</span></li>
-      </ul>
+      {#if reasons.length}
+        <ul class="why">
+          {#each reasons as r (r.text)}<li><Icon name={r.icon} /><span>{r.text}</span></li>{/each}
+        </ul>
+      {/if}
       <p class="t-sun">{t("notSuit.ask")}</p>
-      <Button>{t("notSuit.yes")}</Button>
-      <Button variant="text">{t("notSuit.no")}</Button>
+      <Button loading={busy} onclick={onyes}>{t("notSuit.yes")}</Button>
+      <Button variant="text" onclick={onno}>{t("notSuit.no")}</Button>
     </Sheet>
   {/snippet}
 </Screen>

@@ -4,8 +4,8 @@
   import Icon from "./Icon.svelte";
   let {
     label, value = $bindable(""), placeholder = "", hint = "", error = "", mic = false, listening = false,
-    max = 0, multiline = false, id = "f" + Math.random().toString(36).slice(2, 8),
-  }: { label: string; value?: string; placeholder?: string; hint?: string; error?: string; mic?: boolean; listening?: boolean; max?: number; multiline?: boolean; id?: string } = $props();
+    max = 0, multiline = false, id = "f" + Math.random().toString(36).slice(2, 8), onmic,
+  }: { label: string; value?: string; placeholder?: string; hint?: string; error?: string; mic?: boolean; listening?: boolean; max?: number; multiline?: boolean; id?: string; onmic?: () => void } = $props();
 </script>
 
 <div class="field" class:has-error={!!error}>
@@ -17,7 +17,7 @@
       <input {id} bind:value {placeholder} maxlength={max || undefined} aria-invalid={!!error} aria-describedby="{id}-msg" autocomplete="off" />
     {/if}
     {#if mic}
-      <button class="mic" type="button" aria-label={listening ? t("cond.stopDictate") : t("cond.dictate")} aria-pressed={listening}><Icon name="mic" /></button>
+      <button class="mic" type="button" aria-label={listening ? t("cond.stopDictate") : t("cond.dictate")} aria-pressed={listening} onclick={onmic}><Icon name="mic" /></button>
     {/if}
   </div>
   <div class="msg t-small" id="{id}-msg" aria-live="polite">

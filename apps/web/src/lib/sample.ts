@@ -1,3 +1,4 @@
+// Story data for the component and screen catalog (/dev) only; app screens never import it.
 // Sample content for the design prototype. Names are our four testers' first
 // names (allowed by the founder). Places are real OpenStreetMap features near
 // Fairlane Town Center; distances are illustrative until the field test.
@@ -26,6 +27,14 @@ export const flare = {
   here: 3,
   savedAt: "2:14 PM",
   code: "K7Q2M",
+};
+
+/** Access line for the sample spot (catalog only). */
+export const access = {
+  benches: { count: 3, nearest_m: 40 },
+  restrooms: { count: 1, nearest_m: 180 },
+  water: { count: 0, nearest_m: null },
+  steps_mapped: false,
 };
 
 export const plan = {

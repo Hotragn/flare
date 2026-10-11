@@ -1,7 +1,6 @@
 // Motion core: tokens for JS, easing curves, and the reduced-motion check.
-// Durations and curves come from design/system/tokens.json (copied in by
-// scripts/sync-assets.mjs), so CSS and JS motion share one source.
-import { motion } from "#lib/styles/tokens.json";
+// Durations and curves come from design/system/tokens.json, so CSS and JS motion share one source.
+import { motion } from "../../../../../design/system/tokens.json";
 
 const tokens = { motion }; // named import, so only the motion part ships
 

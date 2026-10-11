@@ -9,10 +9,11 @@ export const ring = (cx: number, cy: number, r: number) =>
 export type FlameState = "kindling" | "lit" | "ember" | "gone";
 
 // Inline the brand UI icons (24 grid, 2 px stroke, currentColor).
-const raw = import.meta.glob("./styles/icons/*.svg", { query: "?raw", import: "default", eager: true }) as Record<
-  string,
-  string
->;
+const raw = import.meta.glob("../../../../brand/icons/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
 export const icons: Record<string, string> = Object.fromEntries(
   Object.entries(raw).map(([p, svg]) => [(p.split("/").pop() ?? p).replace(".svg", ""), svg]),
 );
