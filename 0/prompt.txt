@@ -1,0 +1,10 @@
+<task-notification>
+<task-id>adc444b72300e8c8d</task-id>
+<tool-use-id>toolu_01GwpibKd7Kxm7Xmjhv7bWki</tool-use-id>
+<output-file><tmp>/904c52d9-f200-4552-8ce5-05e400952efa/tasks/adc444b72300e8c8d.output</output-file>
+<status>failed</status>
+<summary>Agent "Frontend app specialist (restart)" failed: Agent terminated early due to an API error: You've hit your session limit · resets 1:50am (America/Detroit) (error type rate_limit, HTTP 429, request id req_011CfuakjyWCPZYrdmKSWGGd, model sent to the API: claude-opus-5-5)</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Now Sheet with a native dialog.</result>
+<worktree><worktreePath><project>/flare/.claude/worktrees/agent-adc444b72300e8c8d</worktreePath><worktreeBranch>worktree-agent-adc444b72300e8c8d</worktreeBranch></worktree>
+</task-notification>
