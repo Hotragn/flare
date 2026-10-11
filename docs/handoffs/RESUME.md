@@ -122,3 +122,11 @@ After that (lands Sunday afternoon and evening, before the post): rest-loop rout
 - Backend: DONE, merged. Handoff 06c-backend.md. ICR-BE-1 applied (LadderJob, JobResult.ladder, ToHubV11). Bugs BUG-038 to 040; integration found BUG-041, BUG-042 (engine tests). Next id BUG-043.
 - ML: DONE, merged. Handoff 06e-ml.md. Bugs BUG-043 to 045. Asks: ODAI warms with real photo prompt + image; WEB adds Gemma attribution. Next id BUG-046.
 - Integrations: DONE, merged and wired into main by the lead (apps/server/src/integrations.ts; wired.test.ts). Bugs BUG-046 to 049; next BUG-050. Founder must add TELEGRAM_WEBHOOK_SECRET and TELEGRAM_ALLOWED_CHAT_IDS to .env before setWebhook.
+
+## Integration point 1 DONE (Sun 2026-10-11 02:10 ET)
+All nine branches merged into main; specialists stopped (manager: no new subagents; the lead finishes the rest in this session).
+- CI: 641 tests (578 root + 37 flow + 26 site), contracts ok, diagrams ok, per-route JS budget: link page 133.6 KB, host app 112.1 KB (scripts/budget.ts now measures per route).
+- e2e-hello passes (3.3 s, hub) with one warm-up draft first. Hub photo latency at load 5: median 4.0 s, 4/5 within 6 s; the field Mac must run nothing but the hub (`npm run hub:field`).
+- Lead wiring: apps/server/src/integrations.ts (Telegram, push, preview into the server), wired.test.ts.
+Next (manager order): 2. finish the frontend field-test path (map pack and parser are on main now; check wire.ts picks them up; e2e against the real server), 3. merge/CI/e2e, 4. QA, a11y, security on the field-test path, 5. deploy prep for 9:30, 6. after the test: website Lighthouse (mobile / at 61), polish, remaining docs and handoffs 07a and 07c.
+Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, ladder.tpl.*): use ML's ladder.template.step*; CR-FE-2 binary outbox; website ICRs 3-5; maps ICRs 1-3; TELEGRAM_WEBHOOK_SECRET and TELEGRAM_ALLOWED_CHAT_IDS missing from .env (founder).

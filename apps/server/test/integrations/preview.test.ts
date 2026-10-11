@@ -1,6 +1,5 @@
 // SRS-CH-7, ADR-0017: what iMessage, WhatsApp and Telegram crawlers read from a /g/{id} link.
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { Hono } from "hono";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";

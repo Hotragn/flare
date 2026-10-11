@@ -59,6 +59,14 @@ async function main() {
     return h.hub === "connected" ? true : null;
   });
   console.log(`server and hub up in ${Math.round(performance.now() - t0)} ms`);
+  // One warm-up draft through the real path, as the field runbook does after starting the hub:
+  // the first image Ollama sees after a load pays a one-time cost that can pass the 6 s budget.
+  const warm = await fetch(`${BASE}/api/v1/drafts`, {
+    method: "POST",
+    headers: { "content-type": "image/jpeg" },
+    body: fs.readFileSync(PHOTO),
+  });
+  console.log(`warm-up draft: ${(await warm.json()).tier}`);
 
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
