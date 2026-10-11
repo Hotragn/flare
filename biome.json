@@ -13,6 +13,7 @@
       "!apps/web/build",
       "!**/*.svelte",
       "!apps/web/static/check/capability",
+      "!apps/web/static/check/guide.js",
       "!evals/reports",
       "!apps/web/static/maps"
     ]
