@@ -40,12 +40,15 @@ function resolve(urlPath: string): string | null {
 export type Served = { url: string; close: () => Promise<void> };
 
 /** `api` answers /api/v1/* so pages that call the server can be tested without one. */
-export function serve(port: number, api?: (p: string) => { status: number; body: unknown } | null): Promise<Served> {
+export function serve(
+  port: number,
+  api?: (p: string, method: string, headers: http.IncomingHttpHeaders) => { status: number; body: unknown } | null,
+): Promise<Served> {
   const fallback = ["200.html", "404.html"].map((f) => path.join(BUILD, f)).find((f) => fs.existsSync(f));
   const server = http.createServer((req, res) => {
     const p = req.url ?? "/";
     if (p.startsWith("/api/")) {
-      const out = api?.(p) ?? { status: 503, body: { code: "unavailable" } };
+      const out = api?.(p, req.method ?? "GET", req.headers) ?? { status: 503, body: { code: "unavailable" } };
       res.writeHead(out.status, { "content-type": "application/json" });
       res.end(JSON.stringify(out.body));
       return;
