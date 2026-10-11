@@ -2019,6 +2019,11 @@
         "n": 3
       }
     },
+    "ember.covered": {
+      "text": "{bench}, under cover",
+      "kind": "label",
+      "where": "Ember candidate name when rain is likely (automations)"
+    },
     "ember.headline": {
       "text": "Smaller plan: 15 min at {bench}.",
       "kind": "title",
@@ -3624,6 +3629,26 @@
       "kind": "push",
       "where": "push body after a fade",
       "fixed": "BR-P-7"
+    },
+    "host.lit.tell": {
+      "text": "Tell the chat",
+      "kind": "button",
+      "where": "H6 lit, Tell the chat (automations)"
+    },
+    "share.lit.title": {
+      "text": "It's on",
+      "kind": "title",
+      "where": "H6 lit, Tell the chat (automations)"
+    },
+    "share.lit.text": {
+      "text": "It is lit. Meet us at {spot}.",
+      "kind": "message",
+      "where": "H6 lit, Tell the chat (automations)"
+    },
+    "push.planSoon": {
+      "text": "{step} starts at {time}. Time to head out.",
+      "kind": "message",
+      "where": "push, 30 min before a Plan (automations)"
     },
     "push.gone": {
       "text": "Not this time.",

@@ -77,6 +77,7 @@
     homeAt = { lat: r.coords.lat, lon: r.coords.lon };
     const now = new Date();
     weather = await planWeather(homeAt, now, new Date(now.getTime() + 2 * 3_600_000)).catch(() => null);
+    flow.rainLikely = !!weather?.rain_likely;
   }
   function light() {
     home = false;
@@ -209,7 +210,7 @@
 {:else if flow.screen === "kindling"}
   <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} onclose={exit} />
 {:else if flow.screen === "lit"}
-  <H6HostLit coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
+  <H6HostLit ontell={() => void flow.shareLit()} coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
   <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} photo={flow.photo} onclose={exit} />
 {:else if flow.screen === "gone"}

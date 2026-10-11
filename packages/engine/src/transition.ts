@@ -146,6 +146,9 @@ function light(d: Draft, set: Id[], step: Step | null, emberSave: boolean): void
     plan.current_step = step;
     unschedule(d, "plan_deadline");
     schedule(d, "gone", litEndMs(g));
+    // Automations: a reminder 30 min before the start, when there is still time for one.
+    const remindAt = ms(plan.start_at) - PLAN_REMINDER_MS;
+    if (remindAt > d.nowMs) schedule(d, "plan_reminder", remindAt);
     d.effects.push({ type: "counter", name: "plans_lit_step", bucket: String(step) });
     if (emberSave) d.effects.push({ type: "counter", name: "plan_ember_saves" }); // BR-P-3
     d.effects.push({
@@ -160,6 +163,10 @@ function light(d: Draft, set: Id[], step: Step | null, emberSave: boolean): void
   d.effects.push({ type: "sse" });
 }
 
+/** Automations: how long before a lit Plan starts its reminder goes out. */
+export const PLAN_REMINDER_MS = 30 * MINUTE;
+const now0 = (d: Draft) => iso(d.nowMs);
+
 function end(d: Draft, ended: Ended, byTimer: JobKind | null): void {
   const g = d.g;
   const from = g.state;
@@ -172,7 +179,9 @@ function end(d: Draft, ended: Ended, byTimer: JobKind | null): void {
         ? g.ember_choice === null
           ? ["ember_pick", "gone"]
           : ["gone"]
-        : ["gone"];
+        : g.kind === "plan" && ms(g.plan?.start_at ?? now0(d)) - PLAN_REMINDER_MS > d.nowMs
+          ? ["gone", "plan_reminder"]
+          : ["gone"];
   for (const job of pending) if (job !== byTimer) unschedule(d, job);
   const now = iso(d.nowMs);
   if (from === "lit" && g.kind === "flare" && g.lit_at !== null) {
@@ -402,6 +411,12 @@ function timer(d: Draft, job: JobKind): void {
       return;
     case "plan_deadline":
       if (g.kind === "plan" && g.state === "kindling" && g.plan && d.nowMs >= ms(g.plan.deadline_at)) atDeadline(d);
+      return;
+    case "plan_reminder":
+      if (g.kind === "plan" && g.state === "lit" && g.plan?.current_step) {
+        d.effects.push({ type: "push", event: "plan_soon", to: "set", step: g.plan.current_step });
+        d.changed = true;
+      }
       return;
     case "delete":
       return; // F14: deletion is the backend's cascade; nothing changes here

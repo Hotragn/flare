@@ -16,6 +16,7 @@ describe("schema", () => {
       "0002_sweep_index.sql",
       "0003_engine_state.sql",
       "0004_telegram_photos.sql",
+      "0005_plan_reminder.sql",
     ]);
     expect(await migrate(db)).toEqual([]);
   });

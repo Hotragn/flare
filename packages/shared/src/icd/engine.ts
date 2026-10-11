@@ -11,7 +11,7 @@ export type Ended = "not_this_time" | "thanks_for_coming";
 /** Opaque place label inside one gathering (ADR-0009). */
 export type Label = "spot" | `c${number}` | `step:${1 | 2 | 3 | 4}`;
 export type Step = 1 | 2 | 3 | 4;
-export type JobKind = "ember" | "ember_pick" | "gone" | "plan_deadline" | "delete";
+export type JobKind = "ember" | "ember_pick" | "gone" | "plan_deadline" | "plan_reminder" | "delete";
 
 export type Rule =
   | { type: "with"; member_id: Id }
@@ -72,7 +72,15 @@ export type EngineEvent =
   | { type: "member_left"; member_id: Id }
   | { type: "timer"; job: JobKind };
 
-export type PushEvent = "lit" | "ember" | "plan_on" | "plan_ember" | "plan_smaller" | "still_coming" | "gone";
+export type PushEvent =
+  | "lit"
+  | "ember"
+  | "plan_on"
+  | "plan_ember"
+  | "plan_smaller"
+  | "still_coming"
+  | "plan_soon" // automations: 30 min before a lit Plan starts, to the people going
+  | "gone";
 
 export type Effect =
   | { type: "schedule"; job: JobKind; at: Iso }

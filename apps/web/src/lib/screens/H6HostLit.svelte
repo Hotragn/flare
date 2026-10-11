@@ -18,6 +18,7 @@
     error = "",
     busy = false,
     onplusone,
+    ontell,
     ondone,
     onclose,
   }: {
@@ -31,6 +32,8 @@
     error?: string;
     busy?: boolean;
     onplusone?: (who: { id: string } | "someone_else") => void;
+    /** Automations: tell the group chat it's on (share sheet, or copy). */
+    ontell?: () => void;
     ondone?: () => void;
     onclose?: () => void;
   } = $props();
@@ -53,6 +56,7 @@
   {#if error}<p class="err" role="alert">{error}</p>{/if}
   {#snippet actions()}
     <Button onclick={() => (sheet = "done")}>{t("host.lit.done")}</Button>
+    {#if ontell}<Button variant="text" icon="share" onclick={ontell}>{t("host.lit.tell")}</Button>{/if}
   {/snippet}
   {#snippet overlay()}
     {#if sheet === "plusone"}

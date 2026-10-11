@@ -11,7 +11,7 @@ export type PushPayload = {
   v: 1;
   g: string;
   kind: "flare" | "plan";
-  event: "lit" | "ember" | "plan_on" | "plan_ember" | "plan_smaller" | "still_coming" | "gone";
+  event: "lit" | "ember" | "plan_on" | "plan_ember" | "plan_smaller" | "still_coming" | "plan_soon" | "gone";
   label?: string;
   step?: number;
   at?: string;
@@ -21,7 +21,7 @@ export type PushPayload = {
 export type Notice = { title: string; body: string; tag: string; url: string };
 
 type CopyKey = keyof typeof copy;
-const EVENTS = new Set(["lit", "ember", "plan_on", "plan_ember", "plan_smaller", "still_coming", "gone"]);
+const EVENTS = new Set(["lit", "ember", "plan_on", "plan_ember", "plan_smaller", "still_coming", "plan_soon", "gone"]);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function t(key: CopyKey, vars: Record<string, string> = {}): string {
@@ -103,6 +103,8 @@ export function readable(n: NoticeTextT, p: PushPayload, timeZone?: string): { t
       return step ? { title, body: t("push.planSmaller", { step }) } : null;
     case "still_coming":
       return step ? { title, body: t("push.stillComing", { step }) } : null;
+    case "plan_soon":
+      return step && time ? { title, body: t("push.planSoon", { step, time }) } : null;
     case "gone":
       return { title, body: t("push.gone") };
   }

@@ -92,6 +92,7 @@ describe("P2 early light (BR-P-2)", () => {
     expect(effects(w.last)).toEqual([
       { type: "unschedule", job: "plan_deadline" },
       { type: "schedule", job: "gone", at: at(120 + 90 + 60) },
+      { type: "schedule", job: "plan_reminder", at: at(90) },
       { type: "counter", name: "plans_lit_step", bucket: "1" },
       { type: "push", event: "plan_on", to: "set", step: 1, label: "step:1" },
       { type: "telegram", action: "lit" },
@@ -204,6 +205,7 @@ describe("P4 to P6 at the deadline (E15-S3 AC2)", () => {
     expect(effects(w.last)).toEqual([
       { type: "unschedule", job: "plan_deadline" },
       { type: "schedule", job: "gone", at: at(120 + 20 + 60) },
+      { type: "schedule", job: "plan_reminder", at: at(90) },
       { type: "counter", name: "plans_lit_step", bucket: "4" },
       { type: "counter", name: "plan_ember_saves" },
       { type: "push", event: "plan_ember", to: "set", step: 4, label: "step:4" },
@@ -386,5 +388,37 @@ describe("P10 P11 ending", () => {
       [deadline, D],
     ]);
     expectError(engine.transition(w.g, w.answers, { type: "cancel", by: HOST }, at(70)), "wrong_state");
+  });
+});
+
+describe("Automations: a reminder 30 min before a lit Plan starts", () => {
+  const reminder = { type: "timer", job: "plan_reminder" } as const;
+  it("lighting at the deadline schedules plan_reminder at S - 30 min; the timer pushes plan_soon to the set", () => {
+    const w = run(plan(), [
+      [yes(1), at(5)],
+      [yes(2), at(6)],
+      [deadline, D],
+    ]);
+    expect(effects(w.last)).toContainEqual({ type: "schedule", job: "plan_reminder", at: at(90) });
+    const r = run(w.g, [[reminder, at(90)]], w.answers);
+    expect(effects(r.last)).toContainEqual({ type: "push", event: "plan_soon", to: "set", step: 1 });
+  });
+  it("no reminder when the Plan lights less than 30 min before it starts", () => {
+    const w = run(plan(), [
+      [yes(1), at(5)],
+      [yes(2), at(6)],
+      [deadline, at(95)],
+    ]);
+    expect(effects(w.last).some((e) => e.type === "schedule" && e.job === "plan_reminder")).toBe(false);
+  });
+  it("a stale reminder after the Plan ended does nothing", () => {
+    const w = run(plan(), [
+      [yes(1), at(5)],
+      [yes(2), at(6)],
+      [deadline, D],
+    ]);
+    const gone = { ...w.g, state: "gone" as const };
+    const r = engine.transition(gone, w.answers, reminder, at(90));
+    expect(r.ok && r.effects).toEqual([]);
   });
 });

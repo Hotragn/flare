@@ -373,7 +373,7 @@ components:
           kind: { type: string, enum: [flare, plan] }
           event:
             type: string
-            enum: [lit, ember, plan_on, plan_ember, plan_smaller, still_coming, gone]
+            enum: [lit, ember, plan_on, plan_ember, plan_smaller, still_coming, plan_soon, gone]
           label: { type: string, description: "Ember or step label, for bench or step names" }
           step: { type: integer, minimum: 1, maximum: 4 }
           at: { type: string, format: date-time, description: "Plan start, shown as {time} in the group time zone" }

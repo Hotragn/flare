@@ -9,6 +9,7 @@ import type { LatLon, MapPack, Place } from "@flare/shared/icd/map";
 import { encodePlain, encodePlainPlan } from "@flare/shared/plaintext";
 import type { NoticeTextT, SealedGatheringT } from "@flare/shared/sealed";
 import { t } from "#lib/copy/index.ts";
+import { places as packPlaces } from "#lib/map/pack.ts";
 import { feedback } from "#lib/motion/feedback.ts";
 import { recordLitAtPlace } from "#lib/places/hotspots.ts";
 import type { Access } from "../../components/parts";
@@ -50,6 +51,8 @@ const CLOUD_WAIT_MS = 40_000; // DigitalOcean answers in about 30 s; the server 
 export class HostFlow {
   screen = $state<HostScreen>("camera");
   photoBlob: Blob | null = null;
+  /** Automations: Home's 2-hour forecast says rain is likely (lib/map/weather.ts). */
+  rainLikely = false;
   photo = $state("");
   draft = $state<DraftView>("developing");
   words = $state("");
@@ -213,11 +216,19 @@ export class HostFlow {
       try {
         this.access = m.accessLine(this.#pack, at);
         this.nature = m.natureLine(this.#pack, at, new Date(this.serverNow), this.#d.tz);
-        this.#candidates = m.emberCandidates(this.#pack, at).map((p, i) => ({
-          label: `c${i + 1}` as Label,
-          place: p,
-          name: p.name ?? benchName(p, distanceM(at, p)),
-        }));
+        // Automations, weather-aware Ember: when rain is likely in the next 2 hours, covered
+        // seats go first (the engine picks the first one everyone passed) and say so.
+        const all = m.emberCandidates(this.#pack, at);
+        const covered = this.rainLikely ? coveredSeats(this.#pack, all) : new Set<string>();
+        const ordered = [...all.filter((p) => covered.has(p.osm_id)), ...all.filter((p) => !covered.has(p.osm_id))];
+        this.#candidates = ordered.map((p, i) => {
+          const name = p.name ?? benchName(p, distanceM(at, p));
+          return {
+            label: `c${i + 1}` as Label,
+            place: p,
+            name: covered.has(p.osm_id) ? t("ember.covered", { bench: name }) : name,
+          };
+        });
       } catch {
         this.access = null;
       }
@@ -456,6 +467,19 @@ export class HostFlow {
       else await this.copyText();
     } catch {
       // The host closed the share sheet: nothing to do.
+    }
+  }
+
+  /** Automations, "Tell the chat": once it's lit, one tap tells the group chat it's on and where.
+   * The same link as the invite; the count only, never who. */
+  async shareLit(): Promise<void> {
+    const spot = this.spot?.name ?? "";
+    const text = t("share.lit.text", { spot });
+    try {
+      if (navigator.share) await navigator.share({ title: t("share.lit.title"), text, url: this.link });
+      else await navigator.clipboard?.writeText(`${text} ${this.link}`);
+    } catch {
+      // The host closed the share sheet.
     }
   }
 
@@ -757,4 +781,16 @@ function rememberGroup(id: string): void {
   } catch {
     // Private mode: a new group each time, which still works.
   }
+}
+
+/** Seats with a roof: tagged covered or shelter, or within 25 m of a mapped shelter. */
+export function coveredSeats(pack: Parameters<typeof packPlaces>[0], seats: Place[]): Set<string> {
+  const shelters = packPlaces(pack).filter((p) => p.kind === "shelter");
+  return new Set(
+    seats
+      .filter(
+        (s) => s.tags.covered === "yes" || s.tags.shelter === "yes" || shelters.some((h) => distanceM(s, h) <= 25),
+      )
+      .map((s) => s.osm_id),
+  );
 }

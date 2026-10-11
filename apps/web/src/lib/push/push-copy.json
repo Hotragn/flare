@@ -10,5 +10,6 @@
   "push.stillComing": "Plan changed to {step}. Still coming?",
   "push.fallbackTitle": "Flare",
   "push.fallbackLit": "It's lit. Open Flare to see where.",
-  "push.fallbackChange": "Your Flare changed. Open it to see how."
+  "push.fallbackChange": "Your Flare changed. Open it to see how.",
+  "push.planSoon": "{step} starts at {time}. Time to head out."
 }

@@ -33,3 +33,4 @@ Format: Michael Nygard's ADR (status, context, decision, consequences), plus the
 | [0027](0027-elevenlabs-voice.md) | ElevenLabs: warm compass voice as 54 pre-recorded clips (no names, offline), and opt-in Voice Spark through Scribe (own voice, 10 s, no audio kept) | Accepted |
 | [0028](0028-voice-flares.md) | Voice Flares: say where you are, Gemma 4 on the hub writes the invite from the audio (WAV in Ollama images); hub only, no audio kept | Accepted |
 | [0029](0029-crew-atlas.md) | Crew Atlas drawn on the phone from the sealed Hot spots and the local map pack; no tiles, no request; facts only, no AI caption | Accepted |
+| [0030](0030-automations.md) | Automations: Plan reminder 30 min before (new job + push), weather-aware Ember (covered seats first, on the phone), Tell the chat; golden-hour push and weekly recap not built (server has no location or time zone) | Accepted |
