@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "about": "20 Wikimedia Commons photos picked in the lab (lab/data/photos/photos.json). Images are NOT copied into this repo; the harness reads them from lab/data/photos. License and author per item come from the lab manifest; see evals/datasheets/photos.md.",
+  "source_manifest": "lab/data/photos/photos.json",
+  "items": [
+    {
+      "id": "01",
+      "expect_any": ["shopping", "mall", "building", "entrance", "sign"],
+      "names_ok": ["Friends", "Shopping", "Long", "Lunches", "Fairlane"],
+      "people": false
+    },
+    {
+      "id": "02",
+      "expect_any": ["stone", "building", "tower", "brick"],
+      "names_ok": ["Fair", "Lane", "Ford"],
+      "people": false
+    },
+    { "id": "04", "expect_any": ["bench", "benches", "path", "leaves", "trees"], "names_ok": [], "people": true },
+    { "id": "05", "expect_any": ["picnic", "table", "grass", "trees", "park"], "names_ok": [], "people": false },
+    { "id": "06", "expect_any": ["play", "playground", "slide", "structure", "fort"], "names_ok": [], "people": false },
+    { "id": "07", "expect_any": ["basketball", "court", "hoop", "hoops"], "names_ok": [], "people": false },
+    { "id": "08", "expect_any": ["food truck", "truck", "taco", "tacos", "menu"], "names_ok": [], "people": false },
+    {
+      "id": "09",
+      "expect_any": ["market", "tables", "trees", "guitar", "music", "musician", "tent"],
+      "names_ok": [],
+      "people": true
+    },
+    { "id": "10", "expect_any": ["fountain"], "names_ok": [], "people": false },
+    { "id": "12", "expect_any": ["path", "trail", "trees", "forest"], "names_ok": ["Kiwanis"], "people": false },
+    { "id": "13", "expect_any": ["pier", "jetty", "dock", "water", "lake"], "names_ok": [], "people": false },
+    {
+      "id": "14",
+      "expect_any": ["flowers", "walkway", "boardwalk", "terrace", "cafe", "wooden"],
+      "names_ok": [],
+      "people": false
+    },
+    { "id": "15", "expect_any": ["fountain", "fountains", "lights", "night"], "names_ok": ["Canton"], "people": true },
+    {
+      "id": "16",
+      "expect_any": ["dog", "park", "fence", "sign"],
+      "names_ok": ["Sentral", "Scentral", "Bark", "Park"],
+      "people": false
+    },
+    { "id": "18", "expect_any": ["shelter", "bus", "glass", "bench"], "names_ok": [], "people": false },
+    { "id": "20", "expect_any": ["lawn", "grass", "picnic", "group", "house"], "names_ok": [], "people": true },
+    { "id": "21", "expect_any": ["cart", "shopping cart", "parking"], "names_ok": ["Target"], "people": false },
+    { "id": "22", "expect_any": ["path", "paths", "lawn", "trees", "campus"], "names_ok": [], "people": true },
+    { "id": "23", "expect_any": ["mural", "painted", "wall", "rain"], "names_ok": [], "people": false },
+    { "id": "24", "expect_any": ["skate", "ramp", "ramps", "concrete"], "names_ok": [], "people": false }
+  ]
+}

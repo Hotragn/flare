@@ -17,4 +17,7 @@ export const env = {
   version: str("RENDER_GIT_COMMIT", "dev").slice(0, 12),
   hubJobTimeoutMs: Number(str("HUB_JOB_TIMEOUT_MS", "6000")), // BR-AI-1: hub tier 6 s
   hubPingMs: Number(str("HUB_PING_MS", "5000")), // silent hub dropped after 2.5 pings (spike E1)
+  ladderTimeoutMs: Number(str("HUB_LADDER_TIMEOUT_MS", "8000")), // ADR-0007: ladder 8 s
+  vapidPublicKey: str("VAPID_PUBLIC_KEY") || null, // public by design; served by /config
+  telegramBotUsername: str("TELEGRAM_BOT_USERNAME") || null,
 };

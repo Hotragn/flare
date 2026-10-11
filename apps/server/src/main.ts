@@ -1,7 +1,10 @@
-// Flare server entry: HTTP (Hono) plus the hub relay WebSocket on /hub.
+// Flare server entry: HTTP (Hono), live updates (SSE), the scheduler and sweeper, and the hub
+// relay WebSocket on /hub.
+import { engine } from "@flare/engine";
 import { serve } from "@hono/node-server";
 import { WebSocketServer } from "ws";
-import { createApp } from "./app.ts";
+import { buildCtx, createApp } from "./app.ts";
+import { startScheduler } from "./core/scheduler.ts";
 import { type Db, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
@@ -15,7 +18,23 @@ if (env.databaseUrl) {
   log.info({ event: "db.migrated", applied: applied.length }, "migrations applied");
 }
 
-const app = createApp({ relay, db, version: env.version, webBuildDir: env.webBuildDir });
+const deps = {
+  relay,
+  db,
+  version: env.version,
+  webBuildDir: env.webBuildDir,
+  engine,
+  ladderTimeoutMs: env.ladderTimeoutMs,
+  config: {
+    publicBaseUrl: env.publicBaseUrl,
+    vapidPublicKey: env.vapidPublicKey,
+    telegramBotUsername: env.telegramBotUsername,
+  },
+};
+const ctx = buildCtx(deps);
+const app = createApp(deps, ctx);
+const scheduler = db && ctx.engine ? startScheduler(ctx) : null;
+
 const server = serve({ fetch: app.fetch, port: env.port }, (i) =>
   log.info({ event: "listen", port: i.port }, "flare server up"),
 );
@@ -33,6 +52,7 @@ server.on("upgrade", (req, socket, head) => {
 });
 
 const stop = async () => {
+  scheduler?.stop();
   relay.close();
   wss.close();
   server.close();

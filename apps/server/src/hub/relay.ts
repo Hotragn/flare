@@ -7,7 +7,9 @@ import { FromHub, HUB_PROTOCOL, type JobHeaderT, type JobResultT } from "@flare/
 import type { WebSocket } from "ws";
 import { log } from "../log.ts";
 
-type Pending = { resolve: (r: JobResultT | null) => void; timer: NodeJS.Timeout };
+/** A parsed hub result; `ladder` is validated by the shared schema (ICR-BE-1). */
+export type RelayResult = JobResultT;
+type Pending = { resolve: (r: RelayResult | null) => void; timer: NodeJS.Timeout };
 
 export function secretMatches(given: string | undefined, expected: string): boolean {
   if (!expected || !given) return false;
@@ -107,21 +109,45 @@ export class HubRelay {
   }
 
   /** Sends one photo to the hub. Resolves null on no hub, timeout or failure. */
-  draft(photo: Buffer): Promise<JobResultT | null> {
-    const ws = this.socket;
-    if (!ws || !this.ready) return Promise.resolve(null);
+  draft(photo: Buffer): Promise<RelayResult | null> {
     const id = randomUUID();
     const header: JobHeaderT = { type: "job", id, kind: "photo-draft", bytes: photo.length, mime: "image/jpeg" };
+    return this.send(id, JSON.stringify(header), photo, this.timeoutMs);
+  }
+
+  /**
+   * Sends a Plan ladder job (asyncapi ladderJob; text only, nothing stored). Resolves null on
+   * no hub, timeout (ADR-0007: 8 s) or failure.
+   */
+  ladder(
+    req: { ask: string; total_minutes: number; weather?: { rain_likely: boolean; temp_f: number } },
+    timeoutMs: number,
+  ): Promise<RelayResult | null> {
+    const id = randomUUID();
+    const job: Record<string, unknown> = {
+      type: "job",
+      id,
+      kind: "ladder-draft",
+      ask: req.ask,
+      total_minutes: req.total_minutes,
+    };
+    if (req.weather) job.weather = req.weather;
+    return this.send(id, JSON.stringify(job), null, timeoutMs);
+  }
+
+  private send(id: string, header: string, bytes: Buffer | null, timeoutMs: number): Promise<RelayResult | null> {
+    const ws = this.socket;
+    if (!ws || !this.ready) return Promise.resolve(null);
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        log.warn({ event: "hub.timeout", ms: this.timeoutMs }, "hub job timed out");
+        log.warn({ event: "hub.timeout", ms: timeoutMs }, "hub job timed out");
         resolve(null);
         this.probe(ws);
-      }, this.timeoutMs);
+      }, timeoutMs);
       this.pending.set(id, { resolve, timer });
-      ws.send(JSON.stringify(header));
-      ws.send(photo, { binary: true });
+      ws.send(header);
+      if (bytes) ws.send(bytes, { binary: true });
     });
   }
 

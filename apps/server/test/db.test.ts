@@ -11,7 +11,7 @@ const PER_GATHERING = ["photos", "responses", "jobs", "bot_messages", "live_loca
 
 describe("schema", () => {
   it("migrates once and is idempotent", async () => {
-    expect(await migrate(db)).toEqual(["0001_init.sql", "0002_sweep_index.sql"]);
+    expect(await migrate(db)).toEqual(["0001_init.sql", "0002_sweep_index.sql", "0003_engine_state.sql"]);
     expect(await migrate(db)).toEqual([]);
   });
   it("has no column that could hold a readable place or coordinate (ADR-0009)", async () => {
