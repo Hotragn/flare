@@ -266,6 +266,25 @@ try {
     );
   check("Crew shows the crew's story from counters", crewOk);
   check("Crew lists the place as a postcard", (await host.locator(".postcard").count()) > 0);
+  // Crew Atlas (ADR-0029): drawn on the phone from the map pack, with no request for it.
+  const atlas = await host
+    .getByRole("img", { name: /Map of (the place|\d+ places) your crew met/ })
+    .waitFor({ timeout: 10_000 })
+    .then(
+      () => true,
+      () => false,
+    );
+  const fact =
+    (await host
+      .locator(".atlas .facts li")
+      .first()
+      .textContent()
+      .catch(() => "")) ?? "";
+  check("Crew Atlas maps the place with its facts", atlas && /Met (once|\d+ times)/.test(fact), fact.trim());
+  await host
+    .locator(".atlas")
+    .screenshot({ path: path.join(OUT, "e2e-crew-atlas.png") })
+    .catch(() => {});
   await host.screenshot({ path: path.join(ROOT, "docs/design/redesign/after/crew.jpg"), type: "jpeg", quality: 78 });
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));

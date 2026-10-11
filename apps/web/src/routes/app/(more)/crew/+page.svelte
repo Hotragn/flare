@@ -129,6 +129,12 @@
     <Button variant="secondary" onclick={load}>{t("err.retry")}</Button>
   {:else}
     {#if statsLine}<p class="stats">{statsLine}</p>{/if}
+    {#if view.places.length}
+      <!-- ADR-0029: loaded on demand; drawn from the map pack on this phone. -->
+      {#await Promise.all([import("#lib/components/CrewAtlas.svelte"), import("#lib/map/index.ts")]) then [{ default: CrewAtlas }, { maps }]}
+        <CrewAtlas places={view.places} load={(a) => maps.load(a)} />
+      {/await}
+    {/if}
     <h2 class="t-heading">{t("crew.places")}</h2>
     {#if view.places.length}
       <ul class="cards">
