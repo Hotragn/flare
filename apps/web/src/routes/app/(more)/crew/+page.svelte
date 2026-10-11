@@ -14,8 +14,8 @@
   import Sheet from "#lib/components/Sheet.svelte";
   import TextField from "#lib/components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { ApiError, type Crew, hoursMinutes, loadCrew, loadHotspots, newestSpark, type HotspotEntryT } from "../more.ts";
-  import { openGroup } from "../wire.ts";
+  import { ApiError, type Crew, forgetGroup, hoursMinutes, loadCrew, loadHotspots, newestSpark, type HotspotEntryT } from "../more.ts";
+  import { idemKey, openGroup } from "../wire.ts";
   import { back } from "../back.ts";
 
   type View = { s: "loading" } | { s: "nogroup" } | { s: "error"; msg: string } | { s: "ready"; crew: Crew; places: HotspotEntryT[] };
@@ -26,6 +26,8 @@
   let name = $state("");
   let quorum = $state("2");
   let saved = $state("");
+  let fresh = $state<"" | "ask" | "working" | "done">("");
+  let opened: Awaited<ReturnType<typeof openGroup>> = null;
   const KEY = () => `flare.crew.${groupId}`;
 
   async function load() {
@@ -36,9 +38,12 @@
       return;
     }
     groupId = g.group.groupId;
+    opened = g;
     try {
       const local = JSON.parse(localStorage.getItem(KEY()) ?? "{}") as { name?: string; quorum?: string };
-      name = local.name ?? "";
+      // A crew started fresh carries the old name until it is renamed.
+      const carried = JSON.parse(localStorage.getItem("flare.crew.carry") ?? "{}") as { name?: string };
+      name = local.name ?? carried.name ?? "";
       quorum = local.quorum ?? "2";
     } catch {
       // private mode: defaults
@@ -71,6 +76,21 @@
       saved = "";
     }
   }
+  /** Start fresh without someone: leave this crew on this phone and the server (Forget's own
+   *  path), so the next Flare makes a new crew with a new key. The name and size carry over. */
+  async function startFresh() {
+    if (!opened) return;
+    fresh = "working";
+    try {
+      localStorage.setItem("flare.crew.carry", JSON.stringify({ name: name.trim().slice(0, 40) }));
+      await forgetGroup({ fetch, store: opened.store, idemKey }, opened.group);
+      localStorage.removeItem("flare.hostGroup");
+      fresh = "done";
+    } catch {
+      fresh = "ask";
+    }
+  }
+
   const week = $derived.by(() => {
     if (view.s !== "ready" || !view.crew.stats) return t("crew.weekNone");
     const min = view.crew.stats.outside_min_week;
@@ -145,6 +165,17 @@
           <a href="/app/needs/"><Icon name="bench" />{t("menu.needs")}</a>
           <a href={withG("/app/forget/")} class="danger"><Icon name="close" />{t("menu.forget")}</a>
         </nav>
+        {#if fresh === ""}
+          <Button variant="secondary" onclick={() => (fresh = "ask")}>{t("crew.fresh")}</Button>
+        {:else if fresh === "done"}
+          <p role="status">{t("crew.freshDone")}</p>
+          <Button onclick={() => location.assign("/app/")}>{t("crew.light")}</Button>
+        {:else}
+          <h3>{t("crew.freshTitle")}</h3>
+          <p>{t("crew.freshBody")}</p>
+          <Button variant="danger" loading={fresh === "working"} onclick={startFresh}>{t("crew.freshYes")}</Button>
+          <Button variant="text" onclick={() => (fresh = "")}>{t("crew.freshNo")}</Button>
+        {/if}
       </Sheet>
     {/if}
   {/snippet}

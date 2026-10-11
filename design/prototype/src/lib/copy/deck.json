@@ -384,6 +384,36 @@
       "kind": "hint",
       "where": "O8"
     },
+    "crew.fresh": {
+      "text": "Start fresh",
+      "kind": "button",
+      "where": "O8"
+    },
+    "crew.freshTitle": {
+      "text": "Start fresh without someone?",
+      "kind": "title",
+      "where": "O8"
+    },
+    "crew.freshBody": {
+      "text": "Your next Flare makes a new crew with a new key. Send that link only to the people you want. They keep anything they already saw. Your crew name and usual size come with you; Sparks and counts start over.",
+      "kind": "prose",
+      "where": "O8"
+    },
+    "crew.freshYes": {
+      "text": "Make new crew",
+      "kind": "button",
+      "where": "O8"
+    },
+    "crew.freshNo": {
+      "text": "Keep this crew",
+      "kind": "button",
+      "where": "O8"
+    },
+    "crew.freshDone": {
+      "text": "Done. Light a Flare to start the new crew.",
+      "kind": "status",
+      "where": "O8"
+    },
     "menu.crew": {
       "text": "Your crew",
       "kind": "label",
