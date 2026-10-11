@@ -1,0 +1,14 @@
+{
+  "push.flareTitle": "{host}'s Flare",
+  "push.planTitle": "{host}'s Plan",
+  "push.lit": "It's lit. {host} is at {spot}.",
+  "push.ember": "Smaller plan: 15 min at {bench}.",
+  "push.planOn": "It's on: {step} at {time}.",
+  "push.planEmber": "Smaller plan: {step} at {time}.",
+  "push.planSmaller": "Smaller plan: {step}.",
+  "push.gone": "Not this time.",
+  "push.stillComing": "Plan changed to {step}. Still coming?",
+  "push.fallbackTitle": "Flare",
+  "push.fallbackLit": "It's lit. Open Flare to see where.",
+  "push.fallbackChange": "Your Flare changed. Open it to see how."
+}
