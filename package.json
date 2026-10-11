@@ -25,6 +25,7 @@
     "dev:web": "npm run -w apps/web dev",
     "start": "node apps/server/src/main.ts",
     "hub": "node apps/hub/src/main.ts",
+    "hub:field": "node apps/hub/field/field.ts",
     "e2e:hello": "node scripts/e2e-hello.ts",
     "ci": "npm run secret-scan && npm run lint && npm run typecheck && npm test && npm run contracts && npm run build && npm run budget && npm run diagrams",
     "secret-scan": "node scripts/secret-scan.ts",
