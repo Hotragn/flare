@@ -1,5 +1,31 @@
 # Resume note
 
+## Now: Sun 2026-10-11, ~16:10 ET (read this first)
+- **Live:** https://flare-outside.onrender.com (Render free tier, auto-deploy off; `npm run deploy:render -- --yes`). The hub runs on this Mac against live (`FLARE_SERVER_URL=wss://flare-outside.onrender.com npm run hub`); restart it after hub code changes.
+- **Done today:**
+  - Gemini cloud tier (ADR-0026)
+  - ElevenLabs warm voice and Voice Spark (ADR-0027)
+  - Voice Flares (ADR-0028)
+  - Crew Atlas (ADR-0029)
+  - automations (ADR-0030)
+  - Sentry route performance and errors (ADR-0021 amended)
+  - website feature cards and Built with
+  - fresh-eyes rounds 1 to 3, all fixed
+  - page audit (axe 0 on 88 views, Lighthouse 100)
+  - Plan and Voice e2e
+  - media recapture (`scripts/capture-media.ts`)
+  - the post draft (`docs/post/draft.md`)
+- **Open for the founder:**
+  - fill the [FIELD]s in the post: quote, video, image uploads, Entire links, Sentry screenshot;
+  - make the repo public;
+  - fix DigitalOcean billing ([PENDING DO BILLING]);
+  - decide on Google billing (paid terms stop prompts being used to improve Google products);
+  - delete the stale untracked folders `apps/web/static/scenic/` and `scenery/*-640|1280*`.
+- **Queued:** zod → zod/mini (about 16 KB of JS headroom); the remaining fresh-eyes items (docs/research/fresh-eyes-2026-10-11.md); round 4 results.
+- **Backlog with status:** docs/engineering/07-sunday-backlog.md.
+
+## Older notes
+
 Updated: Sat 2026-10-10, before the usage-limit pause (reset 3:50 PM ET).
 
 ## Done (committed)
