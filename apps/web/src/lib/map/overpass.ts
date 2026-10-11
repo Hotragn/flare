@@ -62,7 +62,7 @@ out tags center;
   nwr(${r})["landuse"="forest"]["name"];
   way(${r})["waterway"~"^(river|stream|canal)$"]["name"];
   nwr(${r})["leisure"="park"]["name"];
-  way(${r})["highway"~"^(trunk|primary|secondary|tertiary|unclassified|residential|living_street|pedestrian|service|footway|path|cycleway|track)$"]["name"];
+  way(${r})["highway"~"^(trunk|primary|secondary|tertiary|unclassified|residential|living_street|pedestrian|footway|path|cycleway)$"]["name"];
 );
 out tags geom;`;
 }

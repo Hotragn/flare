@@ -58,3 +58,8 @@ export function angleDiff(a: number, b: number): number {
 export function round5(x: number): number {
   return Math.round(x * 1e5) / 1e5;
 }
+
+/** Round to 4 decimals (about 11 m). Street points only: they name a street, nothing more. */
+export function round4(x: number): number {
+  return Math.round(x * 1e4) / 1e4;
+}

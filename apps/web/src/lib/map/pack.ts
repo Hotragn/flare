@@ -1,7 +1,7 @@
 // Map pack v2 (ICD-6 MapPack): build from Overpass results, validate, and decode to places.
 // Format spec: docs/maps/02-pack-format.md.
 import type { Kind, LatLon, MapPack, Place } from "@flare/shared/icd/map";
-import { bearingDeg, destination, distanceM, round5 } from "./geo.ts";
+import { bearingDeg, destination, distanceM, round4, round5 } from "./geo.ts";
 import type { OverpassElement, OverpassGeom, OverpassResult } from "./overpass.ts";
 
 export const PACK_VERSION = 2;
@@ -68,12 +68,34 @@ export function pointKind(tags: Record<string, string>): Kind | null {
 /** Kind for a named feature sampled along its geometry (query 2, second part). */
 export function lineKind(tags: Record<string, string>): Kind | null {
   if (!tags.name) return null;
-  if (tags.natural === "water" || tags.waterway) return "water";
+  if (tags.natural === "water" || tags.waterway) return isNatureWater(tags) ? "water" : null;
   if (tags.natural === "wood" || tags.landuse === "forest") return "wood";
   if (tags.leisure === "park") return "park";
-  if (tags.highway) return "street";
+  if (tags.highway && STREET_CLASSES.has(tags.highway)) return "street";
   return null;
 }
+
+/** Sewer tanks and covered basins are tagged natural=water but are not nature (seen at Fairlane). */
+const NOT_NATURE = /\b(cso|tank|sewer|wastewater|retention|detention)\b/i;
+export function isNatureWater(tags: Record<string, string>): boolean {
+  if (tags.water === "wastewater" || tags.covered === "yes" || tags.landuse === "industrial") return false;
+  return !NOT_NATURE.test(tags.name ?? "");
+}
+
+/** Highway classes whose names we keep. Service roads and tracks are parking aisles and driveways here. */
+export const STREET_CLASSES = new Set([
+  "trunk",
+  "primary",
+  "secondary",
+  "tertiary",
+  "unclassified",
+  "residential",
+  "living_street",
+  "pedestrian",
+  "footway",
+  "path",
+  "cycleway",
+]);
 
 function elementPoint(e: OverpassElement): LatLon | null {
   if (e.lat !== undefined && e.lon !== undefined) return { lat: e.lat, lon: e.lon };
@@ -143,13 +165,33 @@ export function buildPack(input: BuildInput): MapPack {
   const inside = (p: LatLon) => distanceM(centre, p) <= input.radius_m;
   const items: Item[] = [];
   const seen = new Set<string>();
-  const add = (kind: Kind, p: LatLon, id: string, tags: Record<string, string> | 0) => {
-    const lat = round5(p.lat);
-    const lon = round5(p.lon);
+  const add = (kind: Kind, p: LatLon, id: string, tags: Record<string, string> | 0, round = round5) => {
+    const lat = round(p.lat);
+    const lon = round(p.lon);
     const key = `${CODE_OF[kind]}|${id}|${lat}|${lon}`;
-    if (seen.has(key)) return;
+    if (seen.has(key)) return false;
     seen.add(key);
     items.push([CODE_OF[kind], lat, lon, id, tags]);
+    return true;
+  };
+  // Street points: one per 25 m per name. A point is dropped when a kept point of the same
+  // name lies within half a step (dual carriageways, split ways, overlapping ends).
+  const streetGrid = new Map<string, LatLon[]>();
+  const cell = (p: LatLon) => [Math.floor(p.lat / 0.0003), Math.floor(p.lon / 0.0004)] as const;
+  const nearSameName = (name: string, p: LatLon) => {
+    const [i, j] = cell(p);
+    for (let di = -1; di <= 1; di++)
+      for (let dj = -1; dj <= 1; dj++)
+        for (const q of streetGrid.get(`${name}|${i + di}|${j + dj}`) ?? [])
+          if (distanceM(p, q) < STREET_STEP_M / 2) return true;
+    return false;
+  };
+  const keepStreet = (name: string, p: LatLon) => {
+    const [i, j] = cell(p);
+    const k = `${name}|${i}|${j}`;
+    const list = streetGrid.get(k) ?? [];
+    list.push(p);
+    streetGrid.set(k, list);
   };
 
   const pointFrom = (res: OverpassResult) => {
@@ -179,7 +221,11 @@ export function buildPack(input: BuildInput): MapPack {
     for (const line of lines(e)) {
       for (const p of samplePolyline(line, step)) {
         if (!inside(p)) continue;
-        add(kind, p, id, first ? t : 0);
+        if (kind === "street") {
+          const name = tags.name as string;
+          if (nearSameName(name, p)) continue;
+          if (add(kind, p, id, first ? t : 0, round4)) keepStreet(name, p);
+        } else if (!add(kind, p, id, first ? t : 0)) continue;
         first = false;
       }
     }
