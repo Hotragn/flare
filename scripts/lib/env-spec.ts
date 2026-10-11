@@ -93,7 +93,7 @@ export const SPEC: Rule[] = [
     key: "TELEGRAM_ALLOWED_CHAT_IDS",
     apps: ["bot"],
     required: false,
-    why: "Comma list; bot leaves other chats (SRS-TG)",
+    why: "Comma list; bot leaves other chats (SRS-CH-1). Expected empty until the device check reveals the chat id",
     shape: (v) => (v.split(",").every((s) => /^-?\d+$/.test(s.trim())) ? null : "not a comma list of chat ids"),
   },
   {

@@ -2,7 +2,10 @@
 // friend opens the link, says I'm in, and it lights. Real screens and real PWA modules; the API
 // is the in-memory fake (serve.ts). Five runs; reports host open to Send and link open to
 // "You're in." (FE2 target ≤ 15 s, FE3 target ≤ 10 s, both on desktop).
-// Usage: npm run build && node apps/web/test/e2e/flow.ts [runs]
+// Usage: npm run build && node apps/web/test/e2e/flow.ts [runs] [real]
+// With `real`, the API is the real Flare server (apps/server, real engine, Postgres in memory
+// via DATABASE_URL=pglite:memory, no hub: photo drafts take the typed/template tier).
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,7 +16,54 @@ const RUNS = Number(process.argv[2] ?? 5);
 const OUT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../docs/frontend/evidence");
 fs.mkdirSync(OUT, { recursive: true });
 
-const srv = await startServer(8862);
+const REAL = process.argv.includes("real");
+async function realServer(port: number) {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+  const env = { ...process.env, LOG_LEVEL: "warn" };
+  const server = spawn(process.execPath, ["apps/server/src/main.ts"], {
+    cwd: root,
+    env: { ...env, PORT: String(port), DATABASE_URL: "pglite:memory", PUBLIC_BASE_URL: `http://localhost:${port}` },
+    stdio: "ignore",
+  });
+  const url = `http://localhost:${port}`;
+  for (let i = 0; i < 80; i++) {
+    if (
+      await fetch(`${url}/api/v1/health`).then(
+        (r) => r.ok,
+        () => false,
+      )
+    )
+      break;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  // The real hub on this Mac (Ollama, gemma4:e4b-it-q4_K_M), dialling the server as in the field.
+  const hub = spawn(process.execPath, ["apps/hub/src/main.ts"], {
+    cwd: root,
+    env: { ...env, FLARE_SERVER_URL: `ws://localhost:${port}` },
+    stdio: "ignore",
+  });
+  for (let i = 0; i < 240; i++) {
+    const h = await fetch(`${url}/api/v1/health`).then(
+      (r) => r.json() as Promise<{ hub: string }>,
+      () => ({ hub: "" }),
+    );
+    if (h.hub === "connected") break;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  // One warm-up draft, as the field runbook does after starting the hub.
+  const jpeg = fs.readFileSync(path.join(root, "scripts/fixtures/pond-illustration.jpg"));
+  await fetch(`${url}/api/v1/drafts`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: jpeg }).catch(
+    () => null,
+  );
+  const close = () => {
+    hub.kill("SIGTERM");
+    server.kill("SIGTERM");
+  };
+  process.on("exit", close);
+  return { url, close };
+}
+const srv = REAL ? await realServer(8863) : await startServer(8862);
+console.log(`API: ${REAL ? "real server (apps/server, PGlite)" : "in-memory fake"}`);
 const browser = await chromium.launch({
   channel: "chrome",
   args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],

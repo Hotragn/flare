@@ -5,7 +5,7 @@ import { serve } from "@hono/node-server";
 import { WebSocketServer } from "ws";
 import { buildCtx, createApp } from "./app.ts";
 import { startScheduler } from "./core/scheduler.ts";
-import { type Db, migrate, pgDb } from "./db/db.ts";
+import { type Db, memoryDb, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { integrations } from "./integrations.ts";
@@ -14,7 +14,8 @@ import { log } from "./log.ts";
 const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
 let db: Db | null = null;
 if (env.databaseUrl) {
-  db = await pgDb(env.databaseUrl);
+  // `pglite:memory` runs a real Postgres in memory for local end-to-end runs; never in production.
+  db = env.databaseUrl === "pglite:memory" ? await memoryDb() : await pgDb(env.databaseUrl);
   const applied = await migrate(db);
   log.info({ event: "db.migrated", applied: applied.length }, "migrations applied");
 }
