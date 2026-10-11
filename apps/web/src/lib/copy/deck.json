@@ -2928,6 +2928,12 @@
       "kind": "prose",
       "where": "site W3"
     },
+    "site.how.gemma": {
+      "text": "Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms.",
+      "kind": "prose",
+      "where": "/how/",
+      "gradeNote": "Required license wording, quoted word for word from the Gemma Terms of Use (docs/ml/model-selection.md)."
+    },
     "site.privacy.title": {
       "text": "The privacy promise",
       "kind": "title",
