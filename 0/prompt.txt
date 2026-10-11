@@ -1,0 +1,9 @@
+<task-notification>
+<task-id>a74384a0031de4a2a</task-id>
+<tool-use-id>toolu_014J2qgu6ca7QR8SbQvxSLvU</tool-use-id>
+<output-file><tmp>/904c52d9-f200-4552-8ce5-05e400952efa/tasks/a74384a0031de4a2a.output</output-file>
+<status>failed</status>
+<summary>Agent "Motion and sound designer" failed: Agent terminated early due to an API error: You've hit your session limit · resets 3:50pm (America/Detroit) (error type rate_limit, HTTP 429, request id REDACTED, model sent to the API: claude-opus-5-5)</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Let me install deps and patch the PORT support first.</result>
+</task-notification>
