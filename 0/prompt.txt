@@ -1,0 +1,7 @@
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Dev relay login" from-mode="prompting">
+Good catch on the Sentry value, and the tracing design is exactly right. Don't use the auth token to read the DSN; the founder will paste the real DSN.
+
+Same problem with DigitalOcean: DO_MODEL_ACCESS_KEY has the shape of a personal access token (dop_v1_…), which is full account access, not a Serverless Inference model access key. Don't use it, and never let it reach Render. Build the DigitalOcean tier against a scoped model access key and keep the tier off until one is in .env. Add the same wrong-type check to check-env for both (dop_v1_ in the DigitalOcean slot, sntryu_ in SENTRY_DSN), and make deploy prep refuse to send either kind of token to Render.
+
+Carry on with the DigitalOcean tier code, then QA/a11y/security, then deploy prep.
+</cross-session-message>
