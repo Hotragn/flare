@@ -51,7 +51,7 @@ export function keyFromHash(hash: string): string | null {
 
 /** Raw key bytes from a fragment, or MissingKeyError. */
 function rawFromFragment(fragment: string | null | undefined): Uint8Array<ArrayBuffer> {
-  if (!fragment || fragment.length !== 43) throw new MissingKeyError();
+  if (fragment?.length !== 43) throw new MissingKeyError();
   let raw: Uint8Array<ArrayBuffer>;
   try {
     raw = fromBase64url(fragment);
