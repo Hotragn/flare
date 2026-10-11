@@ -255,3 +255,12 @@ Category bars:
 | About 540 Touch Grass entries | 813 by Sat 16:46 UTC. |
 
 Sunday timing: sunset in Dearborn on Oct 11 is about 6:57 PM EDT (NOAA algorithm at 42.31 N, 83.22 W). Sunrise is about 7:40 AM EDT.
+
+## Field update, Sun 2026-10-11 (for the writer)
+
+New Week 1 entries since 2 AM ET, as relayed by the manager session (not yet read in full by us):
+
+- **Benny's entry**, opening line "Going outside was never my problem. Saying hello was." (21 reactions at the time): social quests with strangers.
+- **Trailworthy:** an accessibility trail surveyor.
+
+How Flare differs, in one line each: friends you already have, not strangers; a private quorum (nobody sees who said no); plans that shrink to an Ember instead of failing; accessibility for your own crew (needs on your phone, seat-to-seat loops), not a public survey. Read both in full before quoting them, and cite title, author and URL.
