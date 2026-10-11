@@ -36,11 +36,12 @@ describe("PW2 store (IndexedDB flare v1)", () => {
     s1.close();
     const s2 = createStore(name);
     const g = await s2.group(GROUP);
-    expect(g?.memberId).toBe("m1");
-    expect(g?.token).toBe("tok");
-    expect(g?.key.extractable).toBe(false);
-    expect(await c.openJson(g?.key, aad.notice(GATH), sealed)).toEqual({ v: 1 });
-    expect(await c.placeHash(g?.key, "p")).toBe(await c.placeHash(key, "p"));
+    if (!g) throw new Error("group not saved");
+    expect(g.memberId).toBe("m1");
+    expect(g.token).toBe("tok");
+    expect(g.key.extractable).toBe(false);
+    expect(await c.openJson(g.key, aad.notice(GATH), sealed)).toEqual({ v: 1 });
+    expect(await c.placeHash(g.key, "p")).toBe(await c.placeHash(key, "p"));
     expect(await s2.fragment(GROUP)).toBe(fragment);
   });
 
