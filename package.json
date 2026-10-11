@@ -51,6 +51,7 @@
     "gen:guide": "node scripts/gen-guide.ts",
     "e2e:kit-a11y": "node apps/web/test/e2e/kit-a11y.ts",
     "e2e:demo": "node apps/web/test/e2e/demo.ts",
+    "e2e:plan": "node apps/web/test/e2e/plan.ts",
     "scenic": "node scripts/scenic.ts",
     "sim": "node tools/sim/run.ts",
     "sim:frames": "node tools/sim/frames.ts",

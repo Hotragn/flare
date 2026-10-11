@@ -15,6 +15,8 @@
     drafting = false,
     error = "",
     sending = false,
+    askName = false,
+    hostName = $bindable(""),
     onsend,
     onclose,
   }: {
@@ -25,6 +27,9 @@
     drafting?: boolean;
     error?: string;
     sending?: boolean;
+    /** No first name on this phone yet: ask here, as Send does (else the send can't go). */
+    askName?: boolean;
+    hostName?: string;
     onsend?: () => void;
     onclose?: () => void;
   } = $props();
@@ -56,9 +61,12 @@
     <Ladder {steps} editable {editing} onedit={edit} />
     <p class="t-small t-muted">{tier === "hub" ? t("ladder.madeHub") : t("ladder.madeRules")}</p>
   {/if}
+  {#if askName}
+    <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
+  {/if}
   {#if error}<p class="err" role="alert">{error}</p>{/if}
   {#snippet actions()}
-    <Button icon="share" loading={sending} onclick={onsend} disabled={drafting || !!error}>{t("send.cta")}</Button>
+    <Button icon="share" loading={sending} onclick={onsend} disabled={drafting || !!error || (askName && !hostName.trim())}>{t("send.cta")}</Button>
   {/snippet}
   {#snippet overlay()}
     {#if editing >= 0}

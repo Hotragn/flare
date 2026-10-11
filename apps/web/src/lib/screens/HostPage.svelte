@@ -220,7 +220,7 @@
   {/await}
 {:else if flow.screen === "plan-ladder"}
   {#await planScreens() then [, { default: P2Ladder }]}
-    <P2Ladder ask={flow.ask} bind:steps={flow.steps} tier={flow.ladderTier} drafting={flow.steps.length === 0} error={flow.ladderError() || flow.error} sending={flow.sending} onsend={send} onclose={exit} />
+    <P2Ladder ask={flow.ask} askName={flow.askName} bind:hostName={flow.hostName} bind:steps={flow.steps} tier={flow.ladderTier} drafting={flow.steps.length === 0} error={flow.ladderError() || flow.error} sending={flow.sending} onsend={send} onclose={exit} />
   {/await}
 {/if}
 
