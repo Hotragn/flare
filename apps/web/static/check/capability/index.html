@@ -77,6 +77,18 @@
 <section id="s-wake"><h2>Keep screen on <span class="st"></span></h2>
   <button type="button" data-run="wake">Test wake lock</button><pre></pre></section>
 
+<section id="s-icd8"><h2>Flare features (what the app will use) <span class="st"></span></h2>
+  <p class="small">Same checks as the app (ICD-8). Runs on load, no prompts.</p><pre></pre></section>
+
+<section id="s-resize"><h2>Photo resize for the AI draft <span class="st"></span></h2>
+  <p class="small">Makes a 12 MP test image, shrinks it to 768 px JPEG like the app does, 3 times.</p>
+  <button type="button" class="primary" data-run="resize">Run resize test</button><pre></pre></section>
+
+<section id="s-shader"><h2>Flame shader gate <span class="st"></span></h2>
+  <p class="small">60 frames of WebGL2. Pass is 50 fps or more (ADR-0003).</p>
+  <canvas id="shader-canvas" width="300" height="150" style="width:150px;height:75px;border-radius:8px"></canvas><br>
+  <button type="button" data-run="shader">Run shader gate</button><pre></pre></section>
+
 
 <div class="bar"><button type="button" class="primary" id="copy">Copy results</button><button type="button" id="send">Send to laptop</button></div>
 
@@ -319,6 +331,87 @@ T.wake = async () => {
 
 // The on-phone vision card was dropped on import: no on-device vision ships (ADR-0007, lab 09).
 
+// ---------- Flare features: mirrors apps/web/src/lib/capabilities detect() (ICD-8) ----------
+// Feature checks only; the user agent is shown in the Device card for the report, never used here.
+async function icd8() {
+  const t0 = performance.now();
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const input = document.createElement('input'); input.type = 'checkbox'; input.setAttribute('switch', '');
+  const DOE = window.DeviceOrientationEvent;
+  let shareFiles = false;
+  try { shareFiles = !!navigator.canShare?.({ files: [new File([new Uint8Array(1)], 'f.jpg', { type: 'image/jpeg' })] }); } catch { shareFiles = false; }
+  let persisted = null;
+  try { persisted = (await navigator.storage?.persisted?.()) ?? null; } catch { persisted = null; }
+  const c = {
+    secureContext: isSecureContext, standalone,
+    camera: navigator.mediaDevices?.getUserMedia ? 'live' : 'file-only',
+    offscreenCanvas: 'OffscreenCanvas' in window, geolocation: 'geolocation' in navigator,
+    orientation: typeof DOE === 'function' && typeof DOE.requestPermission === 'function' ? 'needs-permission' : typeof DOE === 'function' ? 'available' : 'none',
+    speech: 'speechSynthesis' in window, vibrate: typeof navigator.vibrate === 'function', switchHaptic: 'switch' in input,
+    webgl2: 'WebGL2RenderingContext' in window,
+    push: 'PushManager' in window && 'serviceWorker' in navigator ? 'available' : ('Notification' in window || ('serviceWorker' in navigator && !standalone)) ? 'needs-install' : 'none',
+    share: typeof navigator.share === 'function', shareFiles, serviceWorker: 'serviceWorker' in navigator, storagePersisted: persisted,
+  };
+  const ms = round(performance.now() - t0, 2);
+  const tiers = {
+    photo_draft: 'hub (our laptop) when online, else typed six words',
+    conditions: 'rules parser on this phone, always; nothing typed is sent',
+    ladder: 'hub when online, else the template ladder on this phone',
+    flame: c.webgl2 ? 'shader if the gate passes, else CSS' : 'CSS flame',
+    compass: c.orientation === 'none' ? 'map and distance only' : 'compass',
+  };
+  set('icd8', c.secureContext ? 'OK' : 'NO secure context', { ...c, detect_ms: ms, ...Object.fromEntries(Object.entries(tiers).map(([k, v]) => [`tier_${k}`, v])) });
+}
+
+T.resize = async () => {
+  set('resize', 'RUNNING', {});
+  try {
+    const src = document.createElement('canvas'); src.width = 4032; src.height = 3024;
+    const g = src.getContext('2d');
+    const grad = g.createLinearGradient(0, 0, 4032, 3024); grad.addColorStop(0, '#2b6'); grad.addColorStop(1, '#f62');
+    g.fillStyle = grad; g.fillRect(0, 0, 4032, 3024);
+    for (let i = 0; i < 400; i++) { g.fillStyle = `hsl(${i * 37 % 360} 60% 50%)`; g.fillRect((i * 97) % 4000, (i * 61) % 3000, 40, 40); }
+    const big = await new Promise((r) => src.toBlob(r, 'image/jpeg', 0.92));
+    const runs = [];
+    let out = null;
+    for (let i = 0; i < 3; i++) {
+      const t = performance.now();
+      const bmp = await createImageBitmap(big);
+      const s = Math.min(1, 768 / Math.max(bmp.width, bmp.height));
+      const w = Math.round(bmp.width * s), h = Math.round(bmp.height * s);
+      if ('OffscreenCanvas' in window) {
+        const oc = new OffscreenCanvas(w, h); oc.getContext('2d').drawImage(bmp, 0, 0, w, h);
+        out = await oc.convertToBlob({ type: 'image/jpeg', quality: 0.7 });
+      } else {
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h; cv.getContext('2d').drawImage(bmp, 0, 0, w, h);
+        out = await new Promise((r) => cv.toBlob(r, 'image/jpeg', 0.7));
+      }
+      bmp.close?.();
+      runs.push(round(performance.now() - t));
+    }
+    const sorted = [...runs].sort((a, b) => a - b);
+    set('resize', sorted[1] < 1000 ? 'OK' : 'SLOW', { source_kb: Math.round(big.size / 1024), output_kb: Math.round(out.size / 1024), runs_ms: runs.join(', '), median_ms: sorted[1], offscreen: 'OffscreenCanvas' in window });
+  } catch (e) { set('resize', 'FAIL', err(e)); }
+};
+
+T.shader = async () => {
+  const gl = $('#shader-canvas').getContext('webgl2');
+  if (!gl) return set('shader', 'NO WebGL2 (CSS flame)', {});
+  set('shader', 'RUNNING', {});
+  const times = []; let last = -1;
+  await new Promise((resolve) => {
+    const frame = (t) => {
+      gl.clearColor((t % 1000) / 1000, 0.3, 0.1, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+      if (last >= 0) times.push(t - last); last = t;
+      if (times.length >= 60) resolve(); else requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+  const s = [...times].sort((a, b) => a - b); const median = s[30];
+  const fps = round(1000 / median); const p95 = round(s[Math.floor(s.length * 0.95)]);
+  set('shader', fps >= 50 ? 'OK shader' : 'FAIL (CSS flame)', { median_fps: fps, p95_frame_ms: p95, frames: times.length });
+};
+
 document.querySelectorAll('[data-run]').forEach((b) => b.addEventListener('click', () => T[b.dataset.run]?.()));
 
 function report() {
@@ -335,8 +428,8 @@ $('#send').addEventListener('click', async () => {
   catch (e) { $('#send').textContent = 'No laptop server'; }
 });
 
-env(); gpu(); storage(); speechVoices(); share(); sw(); haptic();
-['compass', 'geo', 'camera', 'audio', 'wake'].forEach((k) => R[k] ?? set(k, 'TAP TO TEST', '', 'muted'));
+env(); gpu(); storage(); speechVoices(); share(); sw(); haptic(); icd8();
+['compass', 'geo', 'camera', 'audio', 'wake', 'resize', 'shader'].forEach((k) => R[k] ?? set(k, 'TAP TO TEST', '', 'muted'));
 </script>
 </body>
 </html>
