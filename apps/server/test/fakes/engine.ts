@@ -100,7 +100,14 @@ export const fakeEngine: Engine = {
         effects.push({ type: "schedule", job: "gone", at: at(g.created_at, 240 * MIN) });
         effects.push({ type: "push", event: "lit", to: "set" });
       }
-      effects.push({ type: "telegram", action: "lit" }, { type: "counter", name: "lit" });
+      effects.push(
+        { type: "telegram", action: "lit" },
+        {
+          type: "counter",
+          name: g.kind === "plan" ? "plans_lit_step" : "flares_lit",
+          bucket: g.kind === "plan" ? "1" : "",
+        },
+      );
     };
 
     switch (ev.type) {
