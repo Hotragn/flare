@@ -2874,22 +2874,23 @@
     },
     "site.home.readHow": {
       "text": "Read how a Flare works, step by step.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/ W2"
     },
     "site.home.readPrivacy": {
       "text": "Read the full privacy promise.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/ W4"
     },
     "site.home.readAccess": {
       "text": "Read the full accessibility statement.",
-      "kind": "website",
-      "where": "/ W5"
+      "kind": "prose",
+      "where": "/ W5",
+      "gradeNote": "A 6-word link. Accessibility is one 6-syllable word, and the word people search for."
     },
     "site.home.readRun": {
       "text": "Read the setup steps.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/ W6"
     },
     "site.shrink.title": {
@@ -3200,22 +3201,22 @@
     },
     "site.privacy.audit.live": {
       "text": "Live from our server, checked at {time}.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/privacy/ W4"
     },
     "site.privacy.audit.pass": {
       "text": "Passing: 0 leftover records in {n} stores.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/privacy/ W4"
     },
     "site.privacy.audit.fail": {
       "text": "{n} leftover records past their delete time. We publish this as it is.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/privacy/ W4"
     },
     "site.privacy.audit.down": {
       "text": "The live audit can't be reached. Try again later.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/privacy/ W4"
     },
     "site.privacy.audit.colStore": {
@@ -3373,32 +3374,32 @@
     },
     "site.run.needs": {
       "text": "You need Node 24.21 or later. For the photo AI, use a Mac or any machine with a GPU, running Ollama.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.s1": {
       "text": "Install it, set one secret, and start the server and web app.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.s2": {
       "text": "In a second terminal, on the machine with Ollama, start the AI hub.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.s3": {
       "text": "Open localhost:8787/hello/ and pick a photo. Six words come back in about 3.5 seconds.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.db": {
       "text": "Postgres is optional for local runs. The tests use an in-memory Postgres.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.run.license": {
       "text": "License: AGPL-3.0 or later. Map data © OpenStreetMap contributors, ODbL. Model: Gemma 4, under the Gemma terms of use.",
-      "kind": "website",
+      "kind": "prose",
       "where": "/run/ W6"
     },
     "site.foot.made": {
