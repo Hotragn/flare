@@ -1,0 +1,91 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4NP50YY10PYQS4KWGA2XG7P",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T14:34:01.309599Z",
+  "branch": "redesign",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "8ba43c61448c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 2584,
+    "cache_creation_tokens": 5024272,
+    "cache_read_tokens": 636330877,
+    "output_tokens": 1391625,
+    "api_call_count": 1269
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 7
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 92,
+      "user_lines_removed": 41,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "apps/web/src/lib/components/Screen.svelte": 48,
+        "apps/web/src/lib/screens/H3Send.svelte": 5,
+        "apps/web/src/lib/screens/H6HostLit.svelte": 4,
+        "apps/web/src/lib/screens/I1Invite.svelte": 8,
+        "apps/web/src/lib/screens/I6Lit.svelte": 4,
+        "apps/web/src/lib/screens/I7Compass.svelte": 1,
+        "apps/web/src/lib/screens/I9Ember.svelte": 4,
+        "apps/web/src/lib/styles/app.css": 6,
+        "design/system/tokens.css": 12
+      },
+      "user_removed_per_file": {
+        "apps/web/src/lib/components/Screen.svelte": 2,
+        "apps/web/src/lib/screens/H3Send.svelte": 10,
+        "apps/web/src/lib/screens/H6HostLit.svelte": 1,
+        "apps/web/src/lib/screens/I1Invite.svelte": 5,
+        "apps/web/src/lib/screens/I6Lit.svelte": 1,
+        "apps/web/src/lib/screens/I7Compass.svelte": 1,
+        "apps/web/src/lib/screens/I9Ember.svelte": 1,
+        "apps/web/src/lib/styles/app.css": 5,
+        "apps/web/src/routes/(site)/+layout.svelte": 5,
+        "design/system/tokens.css": 10
+      }
+    }
+  ]
+}
