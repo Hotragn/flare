@@ -42,10 +42,26 @@ export function encodePlainPlan({ code, ask, need, by }: PlainPlan): string {
   return fit(`PLAN ${code} `, ask, ` Need ${need} more. Reply IN ${code} by ${by}`);
 }
 
+/** Cuts to at most `max` bytes of UTF-8 on a code-point boundary (no cut mark). */
+export function capBytes(s: string, max: number): string {
+  const chars = [...s];
+  while (chars.length && byteLength(chars.join("")) > max) chars.pop();
+  return chars.join("");
+}
+
 /** The host name is short (40 bytes at most, enforced by the create form); the spot takes the cut. */
 export function encodePlainLit({ code, host, spot }: PlainLit): string {
   checkCode(code);
-  return fit(`LIT ${code} ${host.trim().slice(0, 40)} is at `, spot, ".");
+  const name = capBytes(host.trim().replace(/\s+/g, " "), 40).trimEnd();
+  return fit(`LIT ${code} ${name} is at `, spot, ".");
+}
+
+/** `{time}` for the forms (rule 4): "3:40PM" in the group time zone, no space. */
+export function plainTime(at: string | Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", hour12: true, timeZone })
+    .formatToParts(new Date(at))
+    .filter((p) => p.type !== "literal" || p.value === ":");
+  return parts.map((p) => (p.type === "dayPeriod" ? p.value.toUpperCase() : p.value)).join("");
 }
 
 /** Parses a reply like "IN K7Q2M" (case-insensitive, extra spaces allowed). Returns the code or null. */
