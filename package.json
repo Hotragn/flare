@@ -31,7 +31,10 @@
     "budget": "node scripts/budget.ts",
     "hooks": "git config core.hooksPath .githooks",
     "diagrams": "node scripts/check-diagrams.ts",
-    "device-check": "node scripts/device-check.ts"
+    "device-check": "node scripts/device-check.ts",
+    "telegram:webhook": "node scripts/telegram-webhook.ts",
+    "telegram:status": "node scripts/telegram-status.ts",
+    "deploy:render": "node scripts/deploy-render.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
