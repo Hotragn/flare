@@ -1689,25 +1689,25 @@
       "text": "Long walk",
       "kind": "label",
       "where": "Template ladder step 1 (server, ADR-0007)",
-      "owner": "apps/server/src/ai/ladder.ts"
+      "owner": "apps/server/src/routes/ai.ts"
     },
     "ladder.tmpl.2": {
       "text": "Short walk",
       "kind": "label",
       "where": "Template ladder step 2 (server, ADR-0007)",
-      "owner": "apps/server/src/ai/ladder.ts"
+      "owner": "apps/server/src/routes/ai.ts"
     },
     "ladder.tmpl.3": {
       "text": "Sit a while",
       "kind": "label",
       "where": "Template ladder step 3 (server, ADR-0007)",
-      "owner": "apps/server/src/ai/ladder.ts"
+      "owner": "apps/server/src/routes/ai.ts"
     },
     "ladder.tmpl.4": {
       "text": "Quick hello",
       "kind": "label",
       "where": "Template ladder step 4 (server, ADR-0007)",
-      "owner": "apps/server/src/ai/ladder.ts"
+      "owner": "apps/server/src/routes/ai.ts"
     },
     "planSent.title": {
       "text": "Plan sent.",

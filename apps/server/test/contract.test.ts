@@ -199,8 +199,9 @@ describe("createGathering", () => {
     expect((await h.call("POST", url, { as: g.host, body: late })).body.code).toBe("plan_times");
     const p2 = h.planBody();
     const steps = p2.plan.steps.map((s) => ({ ...s, minutes: 30 }));
+    // BR-P-4 ladder errors are the engine's bad_request (docs/engine/02-api.md).
     expect((await h.call("POST", url, { as: g.host, body: { ...p2, plan: { ...p2.plan, steps } } })).body.code).toBe(
-      "plan_times",
+      "bad_request",
     );
   });
   it("429 after 30 writes a minute from one member (SRS-SEC-5)", async () => {
@@ -376,10 +377,14 @@ describe("takeBack", () => {
 });
 
 describe("putMyChecks", () => {
-  it("204, 400, 401, 410", async () => {
+  it("204, 400, 401, 410, 422 unknown_member before any answer", async () => {
     const g = await h.group(2);
     const { id } = await h.flare(g.groupId, g.host);
     const b = g.members[1] as TestMember;
+    expect((await h.call("PUT", G(id, "/me/checks"), { as: b, body: { results: { spot: true } } })).body.code).toBe(
+      "unknown_member",
+    );
+    await h.call("PUT", G(id, "/me"), { as: b, body: { answer: "yes" } });
     expect(
       (await h.call("PUT", G(id, "/me/checks"), { as: b, body: { results: { c1: true, spot: false } } })).status,
     ).toBe(204);
@@ -437,6 +442,9 @@ describe("fade", () => {
     const p = h.planBody({ quorum: 2 });
     await h.call("POST", `/api/v1/groups/${g.groupId}/gatherings`, { as: g.host, body: p });
     await h.call("PUT", G(p.id, "/me"), { as: g.members[1], body: { answer: "yes" } });
+    h.clock.advance(60 * 60_000 + 1); // the deadline lights it (P4)
+    await h.tick();
+    expect((await h.call("GET", G(p.id))).body.state).toBe("lit");
     expect((await h.call("POST", G(p.id, "/fade"), { as: g.members[2] })).body.code).toBe("not_in_set");
   });
 });

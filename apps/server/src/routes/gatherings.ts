@@ -1,13 +1,15 @@
 // Flares and Plans (openapi tags gatherings, answers, arrival): create, view, live stream,
 // photo, your answer, checks, text yes, fade, arrivals, done, cancel, live location.
+
+import { createFlare, createPlan } from "@flare/engine";
 import { newCode } from "@flare/shared";
-import type { Answer, EngineEvent, Rule } from "@flare/shared/icd/engine";
+import type { Answer, EngineEvent, Label, PlanStep, Rule } from "@flare/shared/icd/engine";
 import type { Context, Hono } from "hono";
 import { streamSSE } from "hono/streaming";
 import type { Ctx } from "../core/deps.ts";
 import {
+  applyCounter,
   b64u,
-  bump,
   type GatheringRow,
   goneError,
   loadAnswers,
@@ -30,29 +32,13 @@ const MIN = 60_000;
 export const MAX_PHOTO_CT_BYTES = 1_500_000;
 export const KEEPALIVE_MS = 15_000;
 
-/** BR-P-1 and BR-P-4. Returns null when the Plan times and ladder are allowed. */
-export function planProblem(
-  plan: { start_at: string; deadline_at: string; steps: { step: number; minutes: number }[] },
-  now: Date,
-): string | null {
-  const S = Date.parse(plan.start_at);
-  const D = Date.parse(plan.deadline_at);
-  const t = now.getTime();
-  if (D < t + 10 * MIN) return "deadline at least 10 min away";
-  if (D > S - 10 * MIN) return "deadline at least 10 min before start";
-  if (S > t + 36 * 60 * MIN) return "start within 36 h";
-  const steps = [...plan.steps].sort((a, b) => a.step - b.step);
-  if (steps.map((s) => s.step).join() !== "1,2,3,4") return "steps 1 to 4";
-  for (let i = 1; i < steps.length; i++)
-    if ((steps[i]?.minutes ?? 0) >= (steps[i - 1]?.minutes ?? 0)) return "minutes strictly decreasing";
-  return null;
-}
+const CREATE_STATUS = { quorum_range: 422, plan_times: 422, group_full: 409, bad_request: 400 } as const;
 
 /** Your own view (openapi Me). Only ever about the caller. */
 export function meView(row: GatheringRow, answers: Answer[], memberId: string, now: Date) {
   const a = answers.find((x) => x.member_id === memberId);
   const isHost = row.host_member_id === memberId;
-  const answer = a?.status === "yes" || (isHost && !a) ? "yes" : a?.status === "cant_make_it" ? "cant_make_it" : "none";
+  const answer = isHost || a?.status === "yes" ? "yes" : a?.status === "cant_make_it" ? "cant_make_it" : "none";
   const lit = row.state === "lit" || (row.state === "gone" && row.lit_at !== null);
   const inSet = lit ? row.chosen_set.includes(memberId) : null;
   let canFade = false;
@@ -106,16 +92,10 @@ export function mountGatherings(app: Hono, ctx: Ctx, rl: RateLimiter): void {
     return write(c, ctx, rl, { member: m }, async () => {
       const b = await body(c, CreateGathering);
       const now = ctx.clock.now();
-      if (b.kind === "flare" && (b.quorum > 4 || b.plan)) {
-        if (b.plan) throw new ApiError(400, "bad_request", "A Flare has no plan");
-        throw new ApiError(422, "quorum_range", "Flare quorum is 2 to 4");
-      }
-      if (b.kind === "plan") {
-        if (!b.plan) throw new ApiError(400, "bad_request", "A Plan needs plan");
-        if (b.ember_candidates?.length) throw new ApiError(400, "bad_request", "Plans have no Ember");
-        const p = planProblem(b.plan, now);
-        if (p) throw new ApiError(422, "plan_times", p);
-      }
+      if (b.kind === "flare" && b.plan) throw new ApiError(400, "bad_request", "A Flare has no plan");
+      if (b.kind === "plan" && !b.plan) throw new ApiError(400, "bad_request", "A Plan needs plan");
+      if (b.kind === "plan" && b.ember_candidates?.length)
+        throw new ApiError(400, "bad_request", "Plans have no Ember");
       const created = await db.tx(async (q) => {
         const grp = (
           await q.query<{ channel: string }>("select channel from groups where id = $1 for update", [groupId])
@@ -125,10 +105,26 @@ export function mountGatherings(app: Hono, ctx: Ctx, rl: RateLimiter): void {
           throw new ApiError(400, "bad_request", "Readable post text is for Telegram groups only");
         if ((await q.query("select 1 from gatherings where id = $1", [b.id])).rows.length)
           throw new ApiError(409, "wrong_state", "That id is taken");
-        const expires =
+        const size =
+          (await q.query<{ n: number }>("select count(*)::int as n from members where group_id = $1", [groupId]))
+            .rows[0]?.n ?? 0;
+        // Rows F1 and P1 live in the engine (docs/engine/02-api.md section 2).
+        const common = { id: b.id, group_id: groupId, host: m.id, group_size: size, quorum: b.quorum };
+        const made =
           b.kind === "flare"
-            ? new Date(now.getTime() + 5 * 60 * MIN) // BR-D-2: t0 + 5 h
-            : new Date(Date.parse(b.plan?.start_at ?? "") + 24 * 60 * MIN); // S + 24 h
+            ? createFlare({ ...common, ember_candidates: (b.ember_candidates ?? []) as Label[] }, now.toISOString())
+            : createPlan(
+                {
+                  ...common,
+                  start_at: b.plan?.start_at ?? "",
+                  deadline_at: b.plan?.deadline_at ?? "",
+                  steps: (b.plan?.steps ?? []) as PlanStep[],
+                },
+                now.toISOString(),
+              );
+        if (!made.ok) throw new ApiError(CREATE_STATUS[made.error], made.error, "Not allowed");
+        const g = made.gathering;
+        const expires = new Date(made.expires_at);
         let code = "";
         for (let i = 0; i < 20 && !code; i++) {
           const c2 = newCode();
@@ -138,37 +134,37 @@ export function mountGatherings(app: Hono, ctx: Ctx, rl: RateLimiter): void {
         if (!code) throw new ApiError(409, "wrong_state", "No free short code");
         await q.query(
           `insert into gatherings (id, group_id, kind, state, short_code, host_member_id, quorum, tz, sealed,
-             notice_ct, telegram_plain, ember_candidates, plan_steps, current_step, created_at, state_since,
+             notice_ct, telegram_plain, ember_candidates, plan_steps, current_step, version, created_at, state_since,
              deadline_at, start_at, expires_at)
-           values ($1, $2, $3, 'kindling', $4, $5, $6, $7, $8, $9, $10, $11, $12, null, $13, $13, $14, $15, $16)`,
+           values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, null, $14, $15, $16, $17, $18, $19)`,
           [
-            b.id,
+            g.id,
             groupId,
-            b.kind,
+            g.kind,
+            g.state,
             code,
-            m.id,
-            b.quorum,
+            g.host,
+            g.quorum,
             b.tz,
             unb64u(b.sealed),
             unb64u(b.notice_ct),
             b.telegram ? JSON.stringify(b.telegram) : null,
-            b.kind === "flare" ? (b.ember_candidates ?? []) : [],
-            b.plan ? JSON.stringify([...b.plan.steps].sort((x, y) => x.step - y.step)) : null,
-            now,
-            b.plan ? new Date(b.plan.deadline_at) : null,
-            b.plan ? new Date(b.plan.start_at) : null,
+            g.ember_candidates,
+            g.plan ? JSON.stringify(g.plan.steps) : null,
+            g.version,
+            g.created_at,
+            g.state_since,
+            g.plan?.deadline_at ?? null,
+            g.plan?.start_at ?? null,
             expires,
           ],
         );
-        // The host counts as one yes (BR-Q-1).
-        await q.query(
-          "insert into responses (id, gathering_id, member_id, status, expires_at) values (gen_random_uuid(), $1, $2, 'yes', $3)",
-          [b.id, m.id, expires],
-        );
-        if (b.kind === "flare") await scheduleJob(q, b.id, "ember", new Date(now.getTime() + 30 * MIN), expires);
-        else await scheduleJob(q, b.id, "plan_deadline", new Date(b.plan?.deadline_at ?? ""), expires);
+        // The host is always in the set and is not an answer row (docs/engine/01-algorithm.md 6.1).
+        for (const e of made.effects) {
+          if (e.type === "schedule") await scheduleJob(q, g.id, e.job, e.at, expires);
+          else if (e.type === "counter") await applyCounter(q, groupId, e);
+        }
         await q.query("update groups set last_gathering_at = $2 where id = $1", [groupId, now]);
-        await bump(q, groupId, b.kind === "flare" ? "flares_created" : "plans_created");
         return loadRow(q, b.id);
       });
       if (!created) throw new ApiError(404, "not_found", "No such gathering");
@@ -310,6 +306,12 @@ export function mountGatherings(app: Hono, ctx: Ctx, rl: RateLimiter): void {
       const rules = b.rules as Rule[];
       for (const r of rules)
         if (r.type === "with" && r.member_id === m.id) throw new ApiError(422, "unknown_member", "Not yourself");
+      // SRS-RES-6: "Can't make it" only after Lit; before Lit the phone takes the yes back.
+      if (b.answer === "cant_make_it") {
+        const cur = await loadRow(needDb(ctx), row.id);
+        if (cur?.state === "gone") throw goneError(cur);
+        if (cur?.state !== "lit") throw new ApiError(409, "wrong_state", "Only after it's lit");
+      }
       let out = await runEvent(
         ctx,
         row.id,

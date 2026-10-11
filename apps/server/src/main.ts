@@ -1,7 +1,6 @@
 // Flare server entry: HTTP (Hono), live updates (SSE), the scheduler and sweeper, and the hub
 // relay WebSocket on /hub.
-
-import type { Engine } from "@flare/shared/icd/engine";
+import { engine } from "@flare/engine";
 import { serve } from "@hono/node-server";
 import { WebSocketServer } from "ws";
 import { buildCtx, createApp } from "./app.ts";
@@ -10,18 +9,6 @@ import { type Db, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { log } from "./log.ts";
-
-/** The real engine (packages/engine, ICD-1) once it is in the workspace; null until then. */
-async function loadEngine(): Promise<Engine | null> {
-  const name = "@flare/engine";
-  try {
-    const mod = (await import(name)) as { engine?: Engine };
-    return mod.engine ?? null;
-  } catch {
-    log.warn({ event: "engine.missing" }, "no @flare/engine; gathering writes answer 503");
-    return null;
-  }
-}
 
 const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
 let db: Db | null = null;
@@ -36,7 +23,7 @@ const deps = {
   db,
   version: env.version,
   webBuildDir: env.webBuildDir,
-  engine: (await loadEngine()) ?? undefined,
+  engine,
   ladderTimeoutMs: env.ladderTimeoutMs,
   config: {
     publicBaseUrl: env.publicBaseUrl,

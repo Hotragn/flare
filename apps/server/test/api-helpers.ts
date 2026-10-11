@@ -1,12 +1,13 @@
 // In-process API harness: PGlite with every migration, the fake engine, a hand-driven clock,
 // and app.request() (no network). Each call gets a fresh Idempotency-Key unless one is given.
 import { randomBytes, randomUUID } from "node:crypto";
+import { engine as realEngine } from "@flare/engine";
+import type { Engine } from "@flare/shared/icd/engine";
 import { buildCtx, createApp } from "../src/app.ts";
 import type { Ctx, EffectSink } from "../src/core/deps.ts";
 import { runDue } from "../src/core/scheduler.ts";
 import { type Db, memoryDb, migrate } from "../src/db/db.ts";
 import { HubRelay } from "../src/hub/relay.ts";
-import { fakeEngine } from "./fakes/engine.ts";
 
 export type TestMember = { id: string; token: string; name_ct: string };
 export const ct = (n = 24) => randomBytes(n).toString("base64url");
@@ -30,7 +31,7 @@ export class TestClock {
 
 export type Sent = { kind: "push" | "telegram" | "created"; what: string; to?: string[] };
 
-export async function harness(opts: { db?: Db; clock?: TestClock; failEffects?: boolean } = {}) {
+export async function harness(opts: { db?: Db; clock?: TestClock; failEffects?: boolean; engine?: Engine } = {}) {
   const db = opts.db ?? (await memoryDb());
   if (!opts.db) await migrate(db);
   const clock = opts.clock ?? new TestClock();
@@ -53,7 +54,7 @@ export async function harness(opts: { db?: Db; clock?: TestClock; failEffects?: 
       await boom();
     },
   };
-  const deps = { relay, db, version: "test", engine: fakeEngine, clock, effects, ladderTimeoutMs: 200 };
+  const deps = { relay, db, version: "test", engine: opts.engine ?? realEngine, clock, effects, ladderTimeoutMs: 200 };
   const ctx: Ctx = buildCtx(deps);
   const app = createApp(deps, ctx);
 

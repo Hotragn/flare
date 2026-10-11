@@ -250,11 +250,39 @@ export async function bump(q: Q, groupId: string, name: string, bucket = ""): Pr
   );
 }
 
-export async function addCounter(q: Q, groupId: string, name: string, by: number): Promise<void> {
+/** Value-carrying counters whose number rides in `bucket` (docs/engine/02-api.md section 3). */
+const VALUE_IN_BUCKET: Record<string, "add" | "max"> = {
+  headcount_sum: "add",
+  lit_minutes_sum: "add",
+  headcount_max: "max",
+};
+
+/**
+ * ICD-1 v1.1 counter effect: `by` and `op` when present; otherwise the engine's 1.0 form,
+ * where headcount_sum, lit_minutes_sum and headcount_max carry their number in `bucket`.
+ */
+export async function applyCounter(
+  q: Q,
+  groupId: string,
+  e: { name: string; bucket?: string; by?: number; op?: "add" | "max" },
+): Promise<void> {
+  let bucket = e.bucket ?? "";
+  let by = e.by ?? 1;
+  let op = e.op ?? "add";
+  const legacy = VALUE_IN_BUCKET[e.name];
+  if (legacy && e.by === undefined && /^\d+$/.test(bucket)) {
+    by = Number(bucket);
+    bucket = "";
+    op = legacy;
+  }
+  if (!Number.isFinite(by) || by < 0) return;
   await q.query(
-    `insert into counters (group_id, name, bucket, value) values ($1, $2, '', $3)
-     on conflict (group_id, name, bucket) do update set value = counters.value + excluded.value`,
-    [groupId, name, by],
+    op === "max"
+      ? `insert into counters (group_id, name, bucket, value) values ($1, $2, $3, $4)
+         on conflict (group_id, name, bucket) do update set value = greatest(counters.value, excluded.value)`
+      : `insert into counters (group_id, name, bucket, value) values ($1, $2, $3, $4)
+         on conflict (group_id, name, bucket) do update set value = counters.value + excluded.value`,
+    [groupId, e.name, bucket, Math.round(by)],
   );
 }
 
@@ -313,7 +341,7 @@ export async function runEvent(
       if (e.type === "schedule") await scheduleJob(q, gid, e.job, e.at, row.expires_at);
       else if (e.type === "unschedule")
         await q.query("delete from jobs where gathering_id = $1 and kind = $2", [gid, e.job]);
-      else if (e.type === "counter") await bump(q, row.group_id, e.name, e.bucket ?? "");
+      else if (e.type === "counter") await applyCounter(q, row.group_id, e);
       else if (e.type === "spark_ticket" && !ticket) {
         const t = randomBytes(16).toString("base64url");
         // Outlives the gathering: 24 h after its storage expiry at the latest (BR-K-1).
@@ -324,18 +352,6 @@ export async function runEvent(
         ]);
         ticket = t;
       }
-    }
-    if (goneNow && row.kind === "flare" && row.lit_at && res.gathering.headcount !== null) {
-      // KPI 1 and lit minutes, rolled into the group's counters at Gone (07-kpis.md).
-      const hc = res.gathering.headcount;
-      const mins = Math.max(0, Math.round((now.getTime() - row.lit_at.getTime()) / 60_000));
-      await addCounter(q, row.group_id, "headcount_sum", hc);
-      await addCounter(q, row.group_id, "lit_minutes_sum", mins);
-      await q.query(
-        `insert into counters (group_id, name, bucket, value) values ($1, 'headcount_max', '', $2)
-         on conflict (group_id, name, bucket) do update set value = greatest(counters.value, excluded.value)`,
-        [row.group_id, hc],
-      );
     }
     if (goneNow) {
       // BR-D-1: drop what nobody needs after Gone at once; the rest goes with the delete job.
