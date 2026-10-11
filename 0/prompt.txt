@@ -1,0 +1,10 @@
+<task-notification>
+<task-id>a9c9be0eb8c90f8b9</task-id>
+<tool-use-id>toolu_0147dqhYt3PCkgXbrvgtCVMW</tool-use-id>
+<output-file><tmp>/904c52d9-f200-4552-8ce5-05e400952efa/tasks/a9c9be0eb8c90f8b9.output</output-file>
+<status>failed</status>
+<summary>Agent "Maps specialist (restart)" failed: Agent terminated early due to an API error: You've hit your session limit · resets 1:50am (America/Detroit) (error type rate_limit, HTTP 429, request id req_011CfuakahACfSaAMUMExfCL, model sent to the API: claude-opus-5-5)</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>The polyline idea measures 27.7 KB, not 8 KB. Correcting the doc.</result>
+<worktree><worktreePath><project>/flare/.claude/worktrees/agent-a9c9be0eb8c90f8b9</worktreePath><worktreeBranch>worktree-agent-a9c9be0eb8c90f8b9</worktreeBranch></worktree>
+</task-notification>
