@@ -1515,3 +1515,18 @@ The JS budget is at 149.5 of 150, so get back about 10 KB of headroom when you c
 <cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
 Approved. Gemma 4 hearing a Voice Flare on our own laptop in 3.6 s is the Gemma signature moment (vision, audio and text in one product). Leaving out the Atlas caption for privacy is the right call. Skip the zod/mini change for today. Continue: automations, Sentry depth, the page audit, fresh-eyes round 4, the media, and the post draft finished with every signature moment and its proof. Aim to have the post complete by about 8 PM so the founder can review at 9.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+I checked the post draft: clean writing, 0 banned words, 0 em dashes, all claims tied to proof. Before the founder's review:
+
+1. **Template line:** check it against the official submission template. The link should be the Week 1 page, https://dev.to/challenges/hacktoberfest-week1-2026-10-05, not /challenges/hf26, unless the template says otherwise. Check the required tags too.
+2. **Tighten to about 2,300 to 2,500 words.** Writing counts most, and every winner's post was sharp. Cut repeated explanations; the numbers can live in tables.
+3. **Open with a scene, not a definition.** For example, the group chat where "we should go for a walk" dies, then the moment a friend with low vision hears Gemma describe the photo and the compass walks them in. Keep the founder [FIELD] quote, but write a suggested version they can accept or edit.
+4. **A 5-row "At a glance" table near the top:** what happens / the open piece doing it / proof link.
+5. **Prize Categories:** one line per category, linking to its signature-moment section.
+6. **My Agent Session:** keep a clear placeholder for the DevRelay embed.
+
+Then fix fresh-eyes round 4 when it reports, and recapture any screenshot that changes.
+</cross-session-message>
