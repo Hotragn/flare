@@ -69,7 +69,7 @@ describe("host flow (FE2)", () => {
     const { f } = await sent();
     const put = f.outbox.sent.find((x) => x.method === "PUT" && x.path.endsWith("/photo"));
     expect(put?.body).toBeInstanceOf(Uint8Array);
-    expect([...(put?.body as Uint8Array).slice(0, 4)]).not.toEqual([0xff, 0xd8, 0xff, 0xd9]);
+    expect([...(put ? (put.body as Uint8Array) : new Uint8Array()).slice(0, 4)]).not.toEqual([0xff, 0xd8, 0xff, 0xd9]);
   });
 
   it("SRS-IF-6: the plain-text form fits 200 bytes and carries the reply code", async () => {
@@ -136,6 +136,8 @@ describe("host flow (FE2)", () => {
     host.steps = host.steps.map((s, i) => (i === 2 ? { ...s, minutes: 15 } : s));
     expect(await host.send("plan")).toBe(true);
     const create = f.outbox.sent.find((x) => x.path.endsWith("/gatherings"));
-    expect((create?.body as { plan: { steps: unknown[] } }).plan.steps).toHaveLength(4);
+    expect(
+      (create ? (create.body as { plan: { steps: unknown[] } }) : { plan: { steps: [] } }).plan.steps,
+    ).toHaveLength(4);
   });
 });
