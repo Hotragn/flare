@@ -4,13 +4,14 @@
 // then sent with fetch. TTL 600 s; urgency high for lit and plan_on. A 404 or 410 from
 // the push service deletes the subscription. Logs counts only: never endpoints, member
 // ids or payloads.
+import type { Effect, PushEvent } from "@flare/shared/icd/engine";
 import webpush from "web-push";
 import type { Db } from "../db/db.ts";
 import { log } from "../log.ts";
 
-export type PushEvent = "lit" | "ember" | "plan_on" | "plan_ember" | "plan_smaller" | "still_coming" | "gone";
-/** The engine's push effect (ICD-1, packages/shared/src/icd/engine.ts). */
-export type PushEffect = { event: PushEvent; to: "set" | "all" | string[]; label?: string; step?: number };
+export type { PushEvent };
+/** The engine's push effect (ICD-1, packages/shared/src/icd/engine.ts), without its tag. */
+export type PushEffect = Omit<Extract<Effect, { type: "push" }>, "type">;
 
 /** asyncapi.yaml components.messages.pushNotice.payload */
 export type PushNotice = {

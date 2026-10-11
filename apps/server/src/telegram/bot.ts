@@ -2,6 +2,7 @@
 // - updates in: /start linking, taps, private chats, membership changes;
 // - posts out: the group post, coalesced count edits, Lit, Ember, Smaller, final and cleanup.
 // Logs carry fixed event names and counts only: never text, names, chat ids or user ids.
+import type { Effect } from "@flare/shared/icd/engine";
 import { log } from "../log.ts";
 import { type BotApi, BotApiError, type Keyboard, type SentMessage } from "./api.ts";
 import { t } from "./copy.ts";
@@ -9,6 +10,8 @@ import { emberLine, linkKeyboard, litLine, type PostView, renderPost, withQuery 
 import type { PostRow, TelegramStore } from "./store.ts";
 
 export type YesResult = "counted" | "already" | "closed";
+/** The engine's telegram effect actions (ICD-1). */
+export type TelegramAction = Extract<Effect, { type: "telegram" }>["action"];
 
 /** What the bot needs from the rest of the server (BE implements these at integration). */
 export type BotPorts = {
@@ -406,7 +409,7 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
     },
 
     /** Engine effect `{type: "telegram", action}`, run after commit by BE. */
-    effect(gid: string, action: "edit_count" | "lit" | "ember" | "smaller" | "final"): void {
+    effect(gid: string, action: TelegramAction): void {
       if (action === "edit_count") {
         scheduleCount(gid);
         return;
