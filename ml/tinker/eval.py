@@ -24,9 +24,10 @@ import common
 def sets() -> dict[str, list[dict]]:
     fx = json.loads((common.REPO / "docs/requirements/fixtures/conditions-60.json").read_text())
     cr = json.loads((common.REPO / "evals/datasets/conditions-cr-a1.json").read_text())
-    fresh = json.loads((common.HERE / "data/fresh_hard_40.json").read_text())
+    fresh = json.loads((common.REPO / "evals/datasets/conditions-fresh-40.json").read_text())
+    blind = json.loads((common.REPO / "evals/datasets/conditions-blind-40.json").read_text())
     return {"core_40": fx["core_40"], "hard_20": fx["hard_20"], "cr_a1_min_step": cr["min_step_4"],
-            "fresh_hard_40": fresh["items"]}
+            "fresh_hard_40": fresh["items"], "blind_40": blind["items"]}
 
 
 def bridge(mode: str, payload):
@@ -72,7 +73,8 @@ def model_answers(which: str, texts: list[str]) -> tuple[list, list[str], dict]:
 def main() -> None:
     which = sys.argv[1] if len(sys.argv) > 1 else ""
     if which not in ("rules", "base", "lora"):
-        raise SystemExit("usage: python eval.py rules|base|lora")
+        raise SystemExit("usage: python eval.py rules|base|lora [out-name]  (FLARE_RULES=<module> picks the parser)")
+    name = sys.argv[2] if len(sys.argv) > 2 else which
     data = sets()
     items = [(s, c) for s, cs in data.items() for c in cs]
     texts = [c["text"] for _, c in items]
@@ -89,10 +91,10 @@ def main() -> None:
             row["raw"] = raw[i]
         rows.append(row)
     score = {s: f"{sum(r['pass'] for r in rows if r['set'] == s)}/{len(cs)}" for s, cs in data.items()}
-    out = {"model": which, "base_model": common.BASE_MODEL, "score": score, "usage": usage, "items": rows}
+    out = {"model": name, "base_model": common.BASE_MODEL, "score": score, "usage": usage, "items": rows}
     common.OUT.mkdir(exist_ok=True)
-    (common.OUT / f"eval_{which}.json").write_text(json.dumps(out, indent=2) + "\n")
-    print(which, json.dumps(score), json.dumps(usage) if usage else "")
+    (common.OUT / f"eval_{name}.json").write_text(json.dumps(out, indent=2) + "\n")
+    print(name, json.dumps(score), json.dumps(usage) if usage else "")
 
 
 if __name__ == "__main__":

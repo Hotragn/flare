@@ -6,7 +6,7 @@ rules_bridge.ts as a cross-check; we report where it agrees and where the templa
 the parser can read. Those disagreements are the point of the LoRA, so they are kept.
 
 Held out, never trained on: core_40, hard_20 (conditions-60.json), the CR-A1 min_step_4 set and
-ml/tinker/data/fresh_hard_40.json. Any generated text equal to an eval text after normalising, or
+evals/datasets/conditions-fresh-40.json and conditions-blind-40.json (when present). Any generated text equal to an eval text after normalising, or
 with token Jaccard >= 0.6 against one, is dropped (counts in out/data_stats.json).
 
 Usage: python gen_data.py [--n 3000] [--seed 7]
@@ -257,9 +257,10 @@ def held_out_texts() -> list[str]:
     fx = json.loads((common.REPO / "docs/requirements/fixtures/conditions-60.json").read_text())
     cr = json.loads((common.REPO / "evals/datasets/conditions-cr-a1.json").read_text())
     texts = [c["text"] for c in fx["core_40"] + fx["hard_20"] + cr["min_step_4"]]
-    fresh = common.HERE / "data" / "fresh_hard_40.json"
-    if fresh.exists():
-        texts += [c["text"] for c in json.loads(fresh.read_text())["items"]]
+    for name in ("conditions-fresh-40.json", "conditions-blind-40.json"):
+        p = common.REPO / "evals" / "datasets" / name
+        if p.exists():
+            texts += [c["text"] for c in json.loads(p.read_text())["items"]]
     return texts
 
 

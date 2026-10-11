@@ -2,15 +2,16 @@
   "model": "base",
   "base_model": "Qwen/Qwen3.5-4B",
   "score": {
-    "core_40": "24/40",
+    "core_40": "23/40",
     "hard_20": "10/20",
     "cr_a1_min_step": "0/4",
-    "fresh_hard_40": "20/40"
+    "fresh_hard_40": "20/40",
+    "blind_40": "25/40"
   },
   "usage": {
-    "prefill_tokens": 24464,
-    "sample_tokens": 1690,
-    "wall_seconds": 10.1
+    "prefill_tokens": 33955,
+    "sample_tokens": 2317,
+    "wall_seconds": 13.9
   },
   "items": [
     {
@@ -272,11 +273,11 @@
       "got": [
         {
           "type": "back_by",
-          "value": "15:00"
+          "value": "03:00"
         }
       ],
-      "pass": true,
-      "raw": "[{\"type\": \"back_by\", \"value\": \"15:00\"}]"
+      "pass": false,
+      "raw": "[{\"type\":\"back_by\",\"value\":\"03:00\"}]"
     },
     {
       "set": "core_40",
@@ -793,7 +794,7 @@
         }
       ],
       "pass": true,
-      "raw": "[{\"type\": \"after\", \"value\": \"13:00\"}]"
+      "raw": "[{\"type\":\"after\",\"value\":\"13:00\"}]"
     },
     {
       "set": "hard_20",
@@ -1464,7 +1465,7 @@
         }
       ],
       "pass": true,
-      "raw": "[{\"type\": \"back_by\", \"value\": \"15:00\"}]"
+      "raw": "[{\"type\":\"back_by\",\"value\":\"15:00\"}]"
     },
     {
       "set": "fresh_hard_40",
@@ -1798,6 +1799,706 @@
       "got": null,
       "pass": true,
       "raw": "[\"type\":\"back_by\",\"value\":\"26\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "yeah if fuego's coming too",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ],
+      "got": null,
+      "pass": false,
+      "raw": "[\"type\":\"unparsed\",\"value\":\"unparsed\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "im down as long as Shilp is there",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ],
+      "got": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"with\",\"value\":\"Shilp\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "only going if ammo shows up lol",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Ammo"
+        }
+      ],
+      "got": "error:not_in_group",
+      "pass": false,
+      "raw": "[\"error:not_in_group\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "is Amor in? then me too",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "got": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"with\", \"value\": \"Amor\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "need Shilp there or I'm out",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ],
+      "got": null,
+      "pass": false,
+      "raw": "[\"type\": \"unparsed\", \"value\": \"unparsed\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "count me in if Ammo can make it",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Ammo"
+        }
+      ],
+      "got": null,
+      "pass": false,
+      "raw": "[\"type\":\"unparsed\",\"value\":\"unparsed\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "sure, as long as fuego and shilp both come",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        },
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ],
+      "got": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        },
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"with\",\"value\":\"Fuego\"},{\"type\":\"with\",\"value\":\"Shilp\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "wont go without amor tbh",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "got": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"with\",\"value\":\"Amor\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "cant leave the house till 2",
+      "expect": [
+        {
+          "type": "after",
+          "value": "14:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "02:00"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\":\"after\",\"value\":\"02:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "im free from 4 on",
+      "expect": [
+        {
+          "type": "after",
+          "value": "16:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "04:00"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"after\", \"value\": \"04:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "gotta finish laundry first so 3:15 at the earliest",
+      "expect": [
+        {
+          "type": "after",
+          "value": "15:15"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "15:15"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"after\",\"value\":\"15:15\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "anytime past 1:45 works",
+      "expect": [
+        {
+          "type": "after",
+          "value": "13:45"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "13:45"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"after\", \"value\": \"13:45\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "after 10am is good",
+      "expect": [
+        {
+          "type": "after",
+          "value": "10:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "10:00"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"after\", \"value\": \"10:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "start no earlier than 12:30 pls",
+      "expect": [
+        {
+          "type": "after",
+          "value": "12:30"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "12:30"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"after\", \"value\": \"12:30\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "in, but not till after 5",
+      "expect": [
+        {
+          "type": "after",
+          "value": "17:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "17:00"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"after\", \"value\": \"17:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "have to be home by 7 for my sister",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "19:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "19:00"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"back_by\",\"value\":\"19:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "need to be done by 3:45",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "15:45"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "15:45"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"back_by\", \"value\": \"15:45\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "gotta head back no later than 2:30",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "14:30"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "14:30"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"back_by\", \"value\": \"14:30\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "have a shift at 6 so back before then",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "18:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "06:00"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"back_by\", \"value\": \"06:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "home by 11am pls",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "11:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "11:00"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"back_by\",\"value\":\"11:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "must be back at my place by half past 5",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "17:30"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "17:30"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"back_by\", \"value\": \"17:30\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "back by 1 latest",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "13:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "back_by",
+          "value": "13:00"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"back_by\",\"value\":\"13:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "my knee's bad, 5 min walk tops",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 5
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 5
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"max_walk\",\"value\":5}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "dont wanna walk more than 25 mins",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 25
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 25
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"max_walk\",\"value\":25}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "keep it under 15 min on foot",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 15
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 15
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"max_walk\",\"value\":15}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "somewhere not far pls",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"max_walk\",\"value\":10}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "half hour walking max",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 30
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 30
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\": \"max_walk\", \"value\": 30}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "quick lap is my limit",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 3
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 3
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"max_walk\", \"value\": 3}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "just wanna say hi, nothing bigger",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 4
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\":\"max_walk\",\"value\":10}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "full walk only pls",
+      "expect": [
+        {
+          "type": "min_step",
+          "value": 1
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 1
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"max_walk\", \"value\": 1}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "park loop at minimum, not doing the tiny stuff",
+      "expect": [
+        {
+          "type": "min_step",
+          "value": 2
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 2
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"max_walk\", \"value\": 2}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "after 1 but back by 4",
+      "expect": [
+        {
+          "type": "after",
+          "value": "13:00"
+        },
+        {
+          "type": "back_by",
+          "value": "16:00"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "01:00"
+        },
+        {
+          "type": "back_by",
+          "value": "04:00"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\":\"after\",\"value\":\"01:00\"},{\"type\":\"back_by\",\"value\":\"04:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "if amor comes, 10 min walk max",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": "10"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\":\"max_walk\",\"value\":\"10\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "quick lap only and I need to be home by 5:30",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 3
+        },
+        {
+          "type": "back_by",
+          "value": "17:30"
+        }
+      ],
+      "got": [
+        {
+          "type": "max_walk",
+          "value": 10
+        },
+        {
+          "type": "back_by",
+          "value": "17:30"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\":\"max_walk\",\"value\":10},{\"type\":\"back_by\",\"value\":\"17:30\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "after 3 and only if Ammo's coming",
+      "expect": [
+        {
+          "type": "after",
+          "value": "15:00"
+        },
+        {
+          "type": "with",
+          "value": "Ammo"
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "03:00"
+        }
+      ],
+      "pass": false,
+      "raw": "[{\"type\": \"after\", \"value\": \"03:00\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "not before 11am, 20 min walk max",
+      "expect": [
+        {
+          "type": "after",
+          "value": "11:00"
+        },
+        {
+          "type": "max_walk",
+          "value": 20
+        }
+      ],
+      "got": [
+        {
+          "type": "after",
+          "value": "11:00"
+        },
+        {
+          "type": "max_walk",
+          "value": "20"
+        }
+      ],
+      "pass": true,
+      "raw": "[{\"type\":\"after\",\"value\":\"11:00\"},{\"type\":\"max_walk\",\"value\":\"20\"}]"
+    },
+    {
+      "set": "blind_40",
+      "text": "yesss lets go",
+      "expect": [],
+      "got": [],
+      "pass": true,
+      "raw": "[]"
+    },
+    {
+      "set": "blind_40",
+      "text": "in if jake's coming",
+      "expect": "error:not_in_group",
+      "got": "error:not_in_group",
+      "pass": true,
+      "raw": "[\"error:not_in_group\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "back by 4 or 5 depending",
+      "expect": null,
+      "got": null,
+      "pass": true,
+      "raw": "[\"type\":\"unparsed\",\"value\":\"unparsed\"]"
+    },
+    {
+      "set": "blind_40",
+      "text": "depends how i feel tbh",
+      "expect": null,
+      "got": null,
+      "pass": true,
+      "raw": "[\"unparsed\"]"
     }
   ]
 }

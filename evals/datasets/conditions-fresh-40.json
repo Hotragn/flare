@@ -1,0 +1,382 @@
+{
+  "version": 1,
+  "source": "Written 2026-10-11 by a separate agent from the conditions-60 rules, blind to the ml/tinker training templates. Same format and context as conditions-60.json (members Fuego, Amor, Shilp, Ammo; steps from conditions-cr-a1.json).",
+  "note": "Used to pick phrasing families for the rules parser after the Tinker LoRA run (docs/handoffs/11-tinker.md), so it is now a dev set for the parser, not a held-out one. Use conditions-blind-40.json for a held-out number. Items with 'debatable' carry a label a careful person might set differently.",
+  "group_members": ["Fuego", "Amor", "Shilp", "Ammo"],
+  "time_zone": "America/Detroit",
+  "items": [
+    {
+      "text": "yeah if fuego comes along",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ]
+    },
+    {
+      "text": "only going if Shilp's coming too",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ]
+    },
+    {
+      "text": "im down if ammo tags along",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Ammo"
+        }
+      ]
+    },
+    {
+      "text": "as long as Amor joins",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ]
+    },
+    {
+      "text": "cant go without shilp lol",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ]
+    },
+    {
+      "text": "sure, assuming Fuego's in",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ]
+    },
+    {
+      "text": "in if both fuego and shilp show",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        },
+        {
+          "type": "with",
+          "value": "Shilp"
+        }
+      ]
+    },
+    {
+      "text": "tell ammo to come and im there",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Ammo"
+        }
+      ]
+    },
+    {
+      "text": "free after 4",
+      "expect": [
+        {
+          "type": "after",
+          "value": "16:00"
+        }
+      ]
+    },
+    {
+      "text": "can't do anything til 3",
+      "expect": [
+        {
+          "type": "after",
+          "value": "15:00"
+        }
+      ],
+      "debatable": "'til' read as free from 3 (after)"
+    },
+    {
+      "text": "gotta finish laundry so 2:45 at the earliest",
+      "expect": [
+        {
+          "type": "after",
+          "value": "14:45"
+        }
+      ]
+    },
+    {
+      "text": "start after 11 pls",
+      "expect": [
+        {
+          "type": "after",
+          "value": "11:00"
+        }
+      ]
+    },
+    {
+      "text": "only once its past 1:30",
+      "expect": [
+        {
+          "type": "after",
+          "value": "13:30"
+        }
+      ]
+    },
+    {
+      "text": "im stuck at work until 5",
+      "expect": [
+        {
+          "type": "after",
+          "value": "17:00"
+        }
+      ],
+      "debatable": "'until' read as free from 5 (after), not a deadline"
+    },
+    {
+      "text": "sometime after midday works",
+      "expect": [
+        {
+          "type": "after",
+          "value": "12:00"
+        }
+      ]
+    },
+    {
+      "text": "have to be home by 7",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "19:00"
+        }
+      ]
+    },
+    {
+      "text": "need to be done by 4",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "16:00"
+        }
+      ]
+    },
+    {
+      "text": "my shift starts at 6 so i gotta be back before then",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "18:00"
+        }
+      ],
+      "debatable": "'before then' read as back_by the shift time"
+    },
+    {
+      "text": "curfew is 5:30 lol",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "17:30"
+        }
+      ],
+      "debatable": "curfew read as back_by"
+    },
+    {
+      "text": "have to wrap up by noon",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "12:00"
+        }
+      ]
+    },
+    {
+      "text": "got a thing at 3, need to be back for it",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "15:00"
+        }
+      ],
+      "debatable": "back_by the event time"
+    },
+    {
+      "text": "back no later than quarter to 5",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "16:45"
+        }
+      ]
+    },
+    {
+      "text": "my knee's bad, 15 mins walking tops",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "text": "20 min walk at most",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "text": "nothing far pls",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ],
+      "debatable": "leans on the 'not far' = max_walk 10 convention"
+    },
+    {
+      "text": "i can walk 25 minutes, no more",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "text": "half hour walk max",
+      "expect": [
+        {
+          "type": "max_walk",
+          "value": 30
+        }
+      ],
+      "debatable": "spelled-out duration"
+    },
+    {
+      "text": "just wanna say hi honestly",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "text": "a quick lap is all i've got in me",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "text": "nothing bigger than the park loop",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "text": "full walk only, i want the whole thing",
+      "expect": [
+        {
+          "type": "min_step",
+          "value": 1
+        }
+      ],
+      "debatable": "close to the CR-A1 'only the long one' pattern"
+    },
+    {
+      "text": "after 2 but only if amor's coming",
+      "expect": [
+        {
+          "type": "after",
+          "value": "14:00"
+        },
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ]
+    },
+    {
+      "text": "home by 5 and nothing more than a 10 min walk",
+      "expect": [
+        {
+          "type": "back_by",
+          "value": "17:00"
+        },
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "text": "with Ammo, not before 12:30",
+      "expect": [
+        {
+          "type": "with",
+          "value": "Ammo"
+        },
+        {
+          "type": "after",
+          "value": "12:30"
+        }
+      ]
+    },
+    {
+      "text": "quick lap, gotta leave by 4:15",
+      "expect": [
+        {
+          "type": "max_step",
+          "value": 3
+        },
+        {
+          "type": "back_by",
+          "value": "16:15"
+        }
+      ]
+    },
+    {
+      "text": "free from 3, home by 6",
+      "expect": [
+        {
+          "type": "after",
+          "value": "15:00"
+        },
+        {
+          "type": "back_by",
+          "value": "18:00"
+        }
+      ]
+    },
+    {
+      "text": "lemme check and get back to u",
+      "expect": null
+    },
+    {
+      "text": "sure thing",
+      "expect": []
+    },
+    {
+      "text": "if Priya comes im in",
+      "expect": "error:not_in_group"
+    },
+    {
+      "text": "back by 26",
+      "expect": null,
+      "debatable": "impossible hour read as unparsed (mirrors 'after 25')"
+    }
+  ]
+}

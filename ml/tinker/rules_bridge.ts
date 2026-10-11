@@ -4,10 +4,15 @@
 // The parse mode builds the same context and mapping as evals/harness/tasks/conditions.ts.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { parse } from "../../apps/web/src/lib/conditions/index.ts";
+import { pathToFileURL } from "node:url";
 import { same } from "../../evals/harness/tasks/conditions.ts";
 
 const REPO = join(import.meta.dirname, "..", "..");
+// FLARE_RULES=<path from repo root> runs another copy of the parser (used for the "rules before" column).
+const modPath = join(REPO, process.env.FLARE_RULES ?? "apps/web/src/lib/conditions/index.ts");
+const { parse } = (await import(
+  pathToFileURL(modPath).href
+)) as typeof import("../../apps/web/src/lib/conditions/index.ts");
 const TZ = "America/Detroit";
 const NOW = "2026-10-11T15:00:00.000Z";
 type Simple = { type: string; value: string | number }[] | string | null;
