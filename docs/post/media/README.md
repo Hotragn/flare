@@ -14,4 +14,4 @@ Real screenshots from the real app on the real stack (server, hub with Gemma 4 E
 | 06-friend-ember.jpg, 06-host-ember.jpg | 30 minutes without enough yeses: the smaller plan |
 | 07-telegram-card-kindling.png, 07-telegram-card-lit.png | The Telegram card, Kindling and Lit |
 
-Still to add: [FIELD] photos from the field test, and a screen recording (see the note in RESUME.md).
+Still to add: [FIELD] photos from the field test, and the iPhone screen recording from [shot-list.md](../shot-list.md).

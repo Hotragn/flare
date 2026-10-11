@@ -5,6 +5,8 @@
   import type { Access } from "./parts";
   let { access = null, nature = "", compact = false }: { access?: Access | null; nature?: string; compact?: boolean } = $props();
   const bench = $derived(access?.benches.nearest_m ?? null);
+  // The Ember bench is itself the nearest bench (BUG-065): say so instead of "Bench 0 m".
+  const HERE_M = 10;
   const restroom = $derived(access?.restrooms.nearest_m ?? null);
   const water = $derived(access?.water.nearest_m ?? null);
 </script>
@@ -12,7 +14,8 @@
 {#if access || nature}
   <ul class="lines" class:compact aria-label={t("access.aria")}>
     {#if access}
-      {#if bench !== null}<li><Icon name="bench" size={22} /><span>{t("access.bench", { m: bench })}</span></li>
+      {#if bench !== null && bench <= HERE_M}<li><Icon name="bench" size={22} /><span>{t("access.benchHere")}</span></li>
+      {:else if bench !== null}<li><Icon name="bench" size={22} /><span>{t("access.bench", { m: bench })}</span></li>
       {:else}<li><Icon name="bench" size={22} /><span>{t("access.noneNear")}</span></li>{/if}
       {#if restroom !== null}<li><Icon name="restroom" size={22} /><span>{t("access.restroom", { m: restroom })}</span></li>{/if}
       {#if water !== null}<li><Icon name="water" size={22} /><span>{t("access.water", { m: water })}</span></li>{/if}

@@ -1,6 +1,6 @@
-2026-10-11T10:54:53.997Z
+2026-10-11T13:05:17.310Z
 runs 5/5
-host open to Sent (ms): 5757, 4678, 2707, 3211, 2675; median 3211 (target 15000)
-link open to You're in (ms): 291, 313, 292, 271, 267; median 291 (target 10000)
+host open to Sent (ms): 4024, 2189, 2157, 2159, 2157; median 2159 (target 15000)
+link open to You're in (ms): 277, 256, 270, 266, 254; median 266 (target 10000)
 lit on both phones: 5/5
 page errors: 0

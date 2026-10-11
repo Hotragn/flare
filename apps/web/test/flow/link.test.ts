@@ -235,4 +235,25 @@ describe("link page (FE3)", () => {
     expect(flow.queued).toBe(true);
     expect(await f.outbox.size()).toBe(1);
   });
+
+  it("BUG-065: Ember's access line is about the Ember bench, never the old spot's", async () => {
+    const { f, s, flow } = await opened({ quorum: 3 });
+    expect(flow.info?.access?.benches.nearest_m).toBe(40); // the host's line for the spot
+    f.server.setState(s.id, "ember", { ember_choice: "c1" });
+    await settle();
+    await settle();
+    expect(flow.emberPlace.name).toBe("the bench by the lot");
+    expect(flow.info?.access).toBeNull(); // no map pack on this phone: say nothing rather than the spot's facts
+    await flow.loadPack("fairlane");
+    // The fake pack has no bench at c1 (like an older pack than the host's); the Ember bench counts.
+    expect(flow.info?.access?.benches).toEqual({ count: 2, nearest_m: 0 });
+    expect(flow.info?.access?.steps_mapped).toBe(true); // the rest is the pack's line at the bench
+  });
+  it("BUG-065: Ember at the spot itself keeps the host's access line", async () => {
+    const { f, s, flow } = await opened({ quorum: 3 });
+    f.server.setState(s.id, "ember", { ember_choice: "spot" });
+    await settle();
+    await settle();
+    expect(flow.info?.access?.benches.nearest_m).toBe(40);
+  });
 });

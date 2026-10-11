@@ -534,6 +534,8 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Fix:** The menu adds `?g=` when it knows the group; the pages fall back to this phone's own group (`store.groupIds()`).
 - **Proof:** sparks e2e opens Hot spots through the menu and finds the place.
 
-## BUG-065 (P2, open): Ember screen names a bench but says "No benches mapped within 200 m"
+## BUG-065 (P2, fixed): Ember's access line described the old spot, not the Ember bench
 
-Found Sun 07:45 ET while capturing post media. Ember on the friend's page reads "Smaller plan: 15 min at West Road." (a bench named by its street) while the access line says "No benches mapped within 200 m". The access line is likely measured from the original spot, not the Ember bench. Not fixed before the RC: runtime code is frozen for the field test. Screenshot: docs/post/media/06-friend-ember.jpg.
+Found Sun 07:45 ET while capturing post media. First read was wrong: the screenshot ("Smaller plan: 15 min at West Road." with "No benches mapped within 200 m") is correct. The host's spot there is itself named West Road (street fallback), the Fairlane pack has 0 Ember candidates within 400 m of it, so Ember stays at the spot (BR-E-4), and no bench is within 200 m.
+
+The real bug sits next to it: when Ember does move to a candidate bench, the friend's access line still came from the host's sealed line for the original spot. Fix (`apps/web/src/lib/screens/flow/link.svelte.ts` `#access`): at an Ember candidate the line is computed from this phone's map pack at the bench, and the bench itself counts as a seat 0 m away (BR-E-1), shown as "Bench right here", even when this phone's pack is older than the host's. With no pack loaded the line is hidden rather than wrong. Ember at the spot keeps the host's line. Tests: 2 in apps/web/test/flow/link.test.ts. Re-run: e2e:field 27/27, flow.ts real 5/5.

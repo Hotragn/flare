@@ -174,3 +174,8 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Not done: screen recording. Playwright video needs its ffmpeg binary (npx playwright install ffmpeg, a download that needs a yes), or record on an iPhone during the field test.
 - Logged BUG-065 (P2): Ember screen access line vs Ember bench.
 - Holding the rest of the window for the device check, rc-1 and the deploy.
+
+## Status Sun ~08:05 ET
+- BUG-065 fixed (small, tested): Ember's access line follows the Ember bench. The screenshot case was correct (Ember at the spot, named West Road). e2e:field 27/27, flow.ts real 5/5 on the final build. Media recaptured.
+- Video: the founder records on the iPhone during the field test, per docs/post/shot-list.md (8 shots, about 10 s each, portrait).
+- STOPPED again: holding the window for the device check, rc-1 and the deploy.

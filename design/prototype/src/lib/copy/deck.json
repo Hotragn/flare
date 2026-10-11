@@ -1174,6 +1174,11 @@
         "m": 40
       }
     },
+    "access.benchHere": {
+      "text": "Bench right here",
+      "kind": "label",
+      "where": "I1, I6, I9"
+    },
     "access.restroom": {
       "text": "Restroom {m} m",
       "kind": "message",

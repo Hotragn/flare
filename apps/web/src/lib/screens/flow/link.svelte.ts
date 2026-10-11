@@ -116,7 +116,7 @@ export class LinkFlow {
       spot: s.spot.name,
       hostLine: s.host_line,
       walkMin: this.walkMin,
-      access: (s.access ?? null) as Access | null,
+      access: this.#access(),
       nature: s.nature_line ?? "",
       met: this.met,
     };
@@ -125,6 +125,24 @@ export class LinkFlow {
     const v = this.view;
     return v ? Math.max(0, v.quorum - v.need) : 0;
   }
+  /**
+   * The access line for where people are going (BUG-065). The host sealed it for the spot; once
+   * Ember picks a bench it is about that bench, from this phone's map pack, or not shown.
+   */
+  #access(): Access | null {
+    const s = this.sealed;
+    if (!s) return null;
+    const label = this.view?.ember_choice;
+    const c = label && label !== "spot" ? s.candidates?.[label] : undefined;
+    if (!c) return (s.access ?? null) as Access | null;
+    const m = this.#d.maps;
+    if (!m || !this.#pack) return null;
+    const a = m.accessLine(this.#pack, c) as Access;
+    // An Ember place is a usable seat by definition (BR-E-1), even when this phone's map pack is
+    // older than the host's and doesn't have it.
+    return { ...a, benches: { count: Math.max(1, a.benches.count), nearest_m: 0 } };
+  }
+
   /** The Ember place name, or the spot when no bench qualified (BR-E-4). */
   get emberPlace(): { name: string; meters: number | null } {
     const s = this.sealed;
