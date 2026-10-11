@@ -2,9 +2,13 @@
 // Ported from the lab spike (lab/spikes/common/validate.mjs, report 02): prompt v2 gave
 // 20/20 parsed answers on gemma4:e4b-it-q4_K_M and enforce() made 20/20 usable.
 
-const FACE = /\b(faces?|facial|smil(e|es|ing)|grin(s|ning)?|eyes|expressions?|beards?|mustaches?|frown(s|ing)?)\b/i;
-const IDENTITY =
-  /\b(man|men|woman|women|boys?|girls?|guys?|lady|ladies|gentlem[ae]n|he|she|his|her|hers|him|male|female|elderly|teen(ager)?s?|young (man|woman|people)|old (man|woman)|blonde?|brunette|caucasian|asian|black (man|woman|people)|white (man|woman|people)|hispanic|latin[oa]|african|ethnic\w*|bald)\b/i;
+import { z } from "zod";
+import { clipWords, countWords, extractJson, hasPersonWords, type PromptSpec } from "./prompts/guard.ts";
+
+export { countWords, extractJson };
+
+/** Prompt version. Any change to SYSTEM_PROMPT bumps it and needs a new evals/reports/photo run. */
+export const PHOTO_PROMPT_VERSION = 2;
 
 export const SYSTEM_PROMPT = [
   "You write invites for Flare, an app that gets close friends to meet up outside, right now.",
@@ -23,23 +27,20 @@ export const USER_PROMPT = "Here is the photo. Reply with the JSON.";
 /** Template used when the hub is unreachable or the answer can't be used (FR-AI-1 rules tier). */
 export const TEMPLATE_INVITE = "Outside right now. Come?";
 
-export const countWords = (s: string): number =>
-  (s.trim().match(/[^\s]+/g) ?? []).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+/** Raw answer shape before the guard. Extra keys are ignored. */
+export const PhotoAnswer = z.object({ invite: z.string(), alt: z.string() });
 
-export function extractJson(text: string): unknown {
-  const t = text.trim();
-  try {
-    return JSON.parse(t);
-  } catch {
-    const m = t.match(/\{[\s\S]*\}/);
-    if (!m) return null;
-    try {
-      return JSON.parse(m[0]);
-    } catch {
-      return null;
-    }
-  }
-}
+/** Guarded draft shape the hub returns and the server re-checks (asyncapi result.draft). */
+export const PhotoDraft = z.object({
+  invite: z
+    .string()
+    .min(1)
+    .refine((s) => countWords(s) <= 6, "invite over 6 words"),
+  alt: z
+    .string()
+    .min(1)
+    .refine((s) => countWords(s) <= 20, "alt over 20 words"),
+});
 
 export type Draft = { invite: string; alt: string; repaired: string[] };
 
@@ -49,24 +50,22 @@ export type Draft = { invite: string; alt: string; repaired: string[] };
  * describes faces or identity. Returns null when the answer can't be used.
  */
 export function enforce(text: string): Draft | null {
-  const obj = extractJson(text) as { invite?: unknown; alt?: unknown } | null;
-  if (!obj || typeof obj.invite !== "string" || typeof obj.alt !== "string") return null;
+  const parsed = PhotoAnswer.safeParse(extractJson(text));
+  if (!parsed.success) return null;
   const repaired: string[] = [];
-  const clip = (s: string, n: number, key: string) => {
-    const w = s
-      .replace(/[#\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-    if (w.length > n) repaired.push(`${key}:clipped ${w.length}->${n}`);
-    return w
-      .slice(0, n)
-      .join(" ")
-      .replace(/[,;:-]+$/, "");
-  };
-  const invite = clip(obj.invite, 6, "invite").replace(/[.]+$/, "");
-  const alt = clip(obj.alt, 20, "alt");
+  const invite = clipWords(parsed.data.invite, 6, "invite", repaired).replace(/[.]+$/, "");
+  const alt = clipWords(parsed.data.alt, 20, "alt", repaired);
   if (!invite || !alt) return null;
-  if (FACE.test(`${invite} ${alt}`) || IDENTITY.test(`${invite} ${alt}`)) return null;
+  if (hasPersonWords(`${invite} ${alt}`)) return null;
   return { invite, alt, repaired };
 }
+
+/** The photo prompt as a versioned spec for the hub (ODAI calls it; budget from BR-AI-1). */
+export const PHOTO_PROMPT: PromptSpec & { user: string } = {
+  id: "photo-invite",
+  version: PHOTO_PROMPT_VERSION,
+  system: SYSTEM_PROMPT,
+  user: USER_PROMPT,
+  budgetMs: 6000,
+  numPredict: 128,
+};
