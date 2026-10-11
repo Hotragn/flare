@@ -29,8 +29,20 @@ export class BotApiError extends Error {
 
 export interface BotApi {
   call<T = unknown>(method: string, params: Record<string, unknown>): Promise<T>;
-  sendPhoto(chatId: number, photo: Buffer, caption: string, keyboard?: Keyboard): Promise<SentMessage>;
+  sendPhoto(chatId: number, photo: Buffer, caption: string, keyboard?: Keyboard, mime?: Mime): Promise<SentMessage>;
+  /** Replaces a photo post's image and caption (editMessageMedia), for the branded card. */
+  editPhoto(
+    chatId: number,
+    messageId: number,
+    photo: Buffer,
+    caption: string,
+    keyboard: Keyboard,
+    mime?: Mime,
+  ): Promise<unknown>;
 }
+
+export type Mime = "image/jpeg" | "image/png";
+const fileName = (mime: Mime) => (mime === "image/png" ? "flare.png" : "flare.jpg");
 
 export type BotApiOptions = { token: string; baseUrl?: string; timeoutMs?: number };
 
@@ -72,13 +84,22 @@ export function createBotApi({
 
   return {
     call: (method, params) => send(method, JSON.stringify(params), { "content-type": "application/json" }),
-    sendPhoto(chatId, photo, caption, keyboard) {
+    sendPhoto(chatId, photo, caption, keyboard, mime = "image/jpeg") {
       const form = new FormData();
       form.set("chat_id", String(chatId));
       form.set("caption", caption);
       if (keyboard) form.set("reply_markup", JSON.stringify(keyboard));
-      form.set("photo", new Blob([new Uint8Array(photo)], { type: "image/jpeg" }), "flare.jpg");
+      form.set("photo", new Blob([new Uint8Array(photo)], { type: mime }), fileName(mime));
       return send<SentMessage>("sendPhoto", form, {});
+    },
+    editPhoto(chatId, messageId, photo, caption, keyboard, mime = "image/png") {
+      const form = new FormData();
+      form.set("chat_id", String(chatId));
+      form.set("message_id", String(messageId));
+      form.set("media", JSON.stringify({ type: "photo", media: "attach://card", caption }));
+      form.set("reply_markup", JSON.stringify(keyboard));
+      form.set("card", new Blob([new Uint8Array(photo)], { type: mime }), fileName(mime));
+      return send("editMessageMedia", form, {});
     },
   };
 }

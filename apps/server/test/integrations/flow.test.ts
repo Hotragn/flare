@@ -58,18 +58,11 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.update(groupMsg(`/start@${BOT} ${token}`));
     expect(await store.groupChat(w.groupId)).toBe(CHAT);
 
-    // 2. Host creates a Flare (BE inserts the row) and hands over the photo.
+    // 2. Host creates a Flare (BE inserts the row): the branded card goes out at once (ADR-0023).
     gid = await w.gathering();
     w.bot.created(gid);
-    const jpeg = Buffer.alloc(2048, 3);
-    jpeg.set([0xff, 0xd8, 0xff], 0);
-    const put = await w.app.request(`/api/v1/gatherings/${gid}/telegram-photo`, {
-      method: "PUT",
-      headers: { ...w.auth(w.hostId), "content-type": "image/jpeg", "idempotency-key": "flow-photo" },
-      body: new Uint8Array(jpeg),
-    });
-    expect(put.status).toBe(204);
     await w.bot.idle();
+    expect(w.tg.of("sendPhoto")[0]?.photoType).toBe("image/png");
     expect(String(w.tg.of("sendPhoto")[0]?.params.caption)).toContain("Need 2 more.");
 
     // 4. A Telegram friend taps I'm in: the post edits to Need 1 more.
@@ -77,7 +70,9 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.update(tap(4242, `y:${gid}`));
     await wait(10);
     await w.bot.idle();
-    expect(String(w.tg.of("editMessageCaption").at(-1)?.params.caption)).toContain("Need 1 more.");
+    const edit = w.tg.of("editMessageMedia").at(-1);
+    expect(String((edit?.params.media as { caption?: string } | undefined)?.caption)).toContain("Need 1 more.");
+    expect(edit?.photoType).toBe("image/png"); // the card is redrawn with the count
     const preview = await (
       await w.app.request(`/g/${gid}`, { headers: { "user-agent": "facebookexternalhit/1.1 Facebot Twitterbot/1.0" } })
     ).text();
@@ -100,7 +95,9 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.bot.idle();
 
     // 6. Lit: post edited, chat notified, the Telegram friend gets a private Find them.
-    expect(w.tg.of("editMessageCaption").at(-1)?.params.caption).toBe("It's lit. Sam is at Fairlane pond bench.");
+    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string }).caption).toBe(
+      "It's lit. Sam is at Fairlane pond bench.",
+    );
     const lit = w.tg.of("sendMessage").filter((s) => s.params.text === "It's lit. Sam is at Fairlane pond bench.");
     expect(lit.map((s) => s.params.chat_id)).toEqual([CHAT, 4242]);
 
@@ -108,7 +105,9 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.setState(gid, "gone", ", ended = 'thanks_for_coming'");
     w.bot.effect(gid, "final");
     await w.bot.idle();
-    expect(w.tg.of("editMessageCaption").at(-1)?.params.caption).toBe("Thanks for coming.");
+    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string }).caption).toBe(
+      "Thanks for coming.",
+    );
     await w.db.query("delete from gatherings where id = $1", [gid]);
     await wait(60);
     await w.bot.idle();

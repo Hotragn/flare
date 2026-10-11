@@ -37,6 +37,9 @@ export const BOT_KEYS = [
   "outside.thanks",
   "push.ember",
   "push.planOn",
+  "need.more",
+  "need.lit",
+  "app.name",
 ] as const;
 export type BotKey = (typeof BOT_KEYS)[number];
 

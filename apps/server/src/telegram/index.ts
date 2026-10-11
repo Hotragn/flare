@@ -97,6 +97,24 @@ export function mountTelegram(app: Hono, deps: TelegramDeps): Bot {
     });
   });
 
+  // ADR-0023: "Show photos in this Telegram group". Any member reads it; any member may change
+  // it (the setting screen says what turning it on means). Off by default.
+  app.get("/api/v1/groups/:groupId/telegram-settings", async (c) => {
+    const who = await deps.member(c.req.header("authorization"));
+    if (!who || who.groupId !== c.req.param("groupId")) return err(c, 401, "unauthorized", "Not a member");
+    return c.json((await store.settings(who.groupId)) ?? { show_photos: false });
+  });
+  app.put("/api/v1/groups/:groupId/telegram-settings", async (c) => {
+    const who = await deps.member(c.req.header("authorization"));
+    if (!who || who.groupId !== c.req.param("groupId")) return err(c, 401, "unauthorized", "Not a member");
+    const body = (await c.req.json().catch(() => null)) as { show_photos?: unknown } | null;
+    if (!body || Object.keys(body).length !== 1 || typeof body.show_photos !== "boolean")
+      return err(c, 400, "bad_request", "Send {show_photos: boolean}");
+    await store.setPhotos(who.groupId, body.show_photos);
+    log.info({ event: "tg.photos", on: body.show_photos }, "telegram photo setting");
+    return c.json({ show_photos: body.show_photos });
+  });
+
   app.post("/api/v1/gatherings/:gatheringId/telegram-bind", async (c) => {
     const who = await deps.member(c.req.header("authorization"));
     if (!who) return err(c, 401, "unauthorized", "Not a member");
@@ -126,6 +144,8 @@ export function mountTelegram(app: Hono, deps: TelegramDeps): Bot {
       const row = await store.post(gid);
       if (!row || row.host_member_id !== who.memberId) return err(c, 403, "not_host", "Host only");
       if (!row.plain || row.chat_id === null) return err(c, 409, "wrong_state", "Not a Telegram group");
+      // ADR-0023: the real photo only when the group turned it on; else the card is the post.
+      if (!row.photos_on) return err(c, 409, "wrong_state", "Photos are off for this group");
       if (Date.now() - new Date(row.created_at).getTime() > PHOTO_WINDOW_MS)
         return err(c, 409, "wrong_state", "Photo window closed");
       const posted = await bot.photo(gid, buf);
@@ -146,4 +166,6 @@ export function mountTelegramOff(app: Hono): void {
   app.post("/api/v1/groups/:groupId/telegram-link", off);
   app.post("/api/v1/gatherings/:gatheringId/telegram-bind", off);
   app.put("/api/v1/gatherings/:gatheringId/telegram-photo", off);
+  app.get("/api/v1/groups/:groupId/telegram-settings", off);
+  app.put("/api/v1/groups/:groupId/telegram-settings", off);
 }

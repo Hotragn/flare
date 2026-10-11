@@ -19,13 +19,13 @@ The handler answers 200 within 1 s and does the Telegram calls after the respons
 3. The bot gets the `message`. If the chat id is allow-listed and the token is live (15 min, single use), it sets `groups.telegram_chat_id` and `groups.channel = 'telegram'`, and replies `bot.start.hello`, `bot.start.what`.
 4. If the chat is not allow-listed, the bot calls `leaveChat`, logs `{event: "tg.refused", reason: "not_allow_listed"}` with no chat title or content, and does nothing else (SRS-CH-1). The same happens on `my_chat_member` for any unlisted chat.
 
-Before step 1 the app shows the disclosure: Telegram will see what Flare posts there (the photo, the six words, the place, the host's first name and the count).
+Before step 1 the app shows the disclosure: Telegram will see what Flare posts there (the card or, if the group turns photos on, the photo; the six words, the place, the host's first name and the count).
 
 ## 3. Posting a gathering
 
 At `createGathering` for a Telegram group, the phone sends `telegram: {host, invite, place, link}` in plain text. The server keeps it in `gatherings.telegram_plain` until Gone (deleted with the row), and:
 
-1. When the phone sends `PUT /gatherings/{id}/telegram-photo` (the same 768 px JPEG it sent for the draft), `sendPhoto` to the chat from memory, caption:
+1. The post is a photo with this caption (ADR-0023). By default the photo is the **branded card**: a 1200x800 PNG rendered in memory (`apps/server/src/telegram/card.ts`) with the flame for the state, the six words, the place label and the count line; no names and no real photo. It goes out right away. Only when the group turned on "Show photos in this Telegram group" (`PUT /groups/{id}/telegram-settings`, off by default) does the bot wait up to 15 s for `PUT /gatherings/{id}/telegram-photo` (the same 768 px JPEG it sent for the draft) and send that instead, from memory. With photos off, `telegram-photo` answers 409 and nothing is uploaded. Caption:
    ```
    {invite}
    {host} · {place}
@@ -38,7 +38,9 @@ At `createGathering` for a Telegram group, the phone sends `telegram: {host, inv
    - `[Open in Flare]` URL button: `{link}?via=tg` (the fragment carries the key, which is why ADR-0013 discloses it)
 2. Saves `(chat_id, message_id)` in `bot_messages`.
 
-No photo arrives: the post goes out as `sendMessage` with the same text and keyboard. The photo for Telegram is never stored on the server.
+Photos on and no photo arrives within 15 s: the card goes out. If the card cannot be rendered, the post goes out as `sendMessage` with the same text and keyboard. The photo for Telegram is never stored on the server.
+
+Edits (section 5) on a card post use `editMessageMedia` with a newly rendered card, so the image follows Kindling, Lit, Ember and the final line; a real-photo post edits only its caption. Every post is deleted at Gone (section 6).
 
 ## 4. Taps
 

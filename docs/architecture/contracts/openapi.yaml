@@ -877,6 +877,46 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "503": { $ref: "#/components/responses/Unavailable" }
 
+  /api/v1/groups/{groupId}/telegram-settings:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    get:
+      tags: [telegram]
+      operationId: getTelegramSettings
+      summary: Whether this group shows real photos in its Telegram posts (ADR-0023)
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TelegramSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+    put:
+      tags: [telegram]
+      operationId: setTelegramSettings
+      summary: Turn "Show photos in this Telegram group" on or off (ADR-0023)
+      description: |
+        Off by default: the bot posts the branded card. On: the host's phone may send the Flare's
+        photo with `telegram-photo`; the server uploads it from memory, keeps nothing, and the
+        bot deletes the post at Gone. Telegram keeps a copy until the post is deleted.
+      security: [{ member: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TelegramSettings" }
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TelegramSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+
   /api/v1/gatherings/{gatheringId}/telegram-bind:
     parameters:
       - $ref: "#/components/parameters/GatheringId"
@@ -1518,6 +1558,12 @@ components:
         last_member: { type: boolean, description: "true when the group and everything in it was deleted" }
         sparks_deleted: { type: integer }
 
+    TelegramSettings:
+      type: object
+      additionalProperties: false
+      required: [show_photos]
+      properties:
+        show_photos: { type: boolean, description: "Off by default (ADR-0023)" }
     TagsDraftResponse:
       type: object
       additionalProperties: false

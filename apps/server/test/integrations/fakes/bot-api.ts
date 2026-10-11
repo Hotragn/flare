@@ -3,7 +3,7 @@
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 
-export type Call = { method: string; params: Record<string, unknown>; photoBytes?: number };
+export type Call = { method: string; params: Record<string, unknown>; photoBytes?: number; photoType?: string };
 type Failure = { code: number; description: string; times: number };
 
 export async function startFakeBotApi() {
@@ -20,18 +20,23 @@ export async function startFakeBotApi() {
     const method = (req.url ?? "").split("/").pop() ?? "";
     let params: Record<string, unknown> = {};
     let photoBytes: number | undefined;
+    let photoType: string | undefined;
     const type = req.headers["content-type"] ?? "";
     if (type.startsWith("application/json")) params = JSON.parse(raw.toString("utf8"));
     else if (type.startsWith("multipart/form-data")) {
       const form = await new Response(raw, { headers: { "content-type": type } }).formData();
       for (const [k, v] of form.entries()) {
         // multipart turns \n into \r\n on the wire (WHATWG form data); Telegram shows both as a line break.
-        if (typeof v === "string") params[k] = k === "reply_markup" ? JSON.parse(v) : v.replace(/\r\n/g, "\n");
-        else photoBytes = v.size;
+        if (typeof v === "string")
+          params[k] = k === "reply_markup" || k === "media" ? JSON.parse(v) : v.replace(/\r\n/g, "\n");
+        else {
+          photoBytes = v.size;
+          photoType = v.type;
+        }
       }
       if (params.chat_id !== undefined) params.chat_id = Number(params.chat_id);
     }
-    calls.push({ method, params, photoBytes });
+    calls.push({ method, params, photoBytes, photoType });
     const reply = (code: number, body: unknown) => {
       res.writeHead(code, { "content-type": "application/json" });
       res.end(JSON.stringify(body));

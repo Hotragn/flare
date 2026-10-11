@@ -5,8 +5,9 @@
 import type { Effect } from "@flare/shared/icd/engine";
 import { log } from "../log.ts";
 import { type BotApi, BotApiError, type Keyboard, type SentMessage } from "./api.ts";
+import { renderCard } from "./card.ts";
 import { t } from "./copy.ts";
-import { emberLine, linkKeyboard, litLine, type PostView, renderPost, withQuery } from "./render.ts";
+import { cardView, emberLine, linkKeyboard, litLine, type PostView, renderPost, withQuery } from "./render.ts";
 import type { PostRow, TelegramStore } from "./store.ts";
 
 export type YesResult = "counted" | "already" | "closed";
@@ -84,7 +85,7 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
     log.warn({ event: "tg.error", code }, "telegram step failed");
   };
 
-  const photoKind = new Map<string, "photo" | "text">();
+  const photoKind = new Map<string, "photo" | "card" | "text">();
   const photoTimers = new Map<string, NodeJS.Timeout>();
   const lastEdit = new Map<string, number>();
   const editTimers = new Map<string, NodeJS.Timeout>();
@@ -242,29 +243,48 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
 
   // ---------- posts out ----------
 
+  /**
+   * The group post. Default: the branded card (ADR-0023). With the group's photo opt-in and
+   * the host's photo: the real photo. A card that fails to render falls back to text.
+   */
   async function postNow(gid: string, photo: Buffer | null): Promise<boolean> {
     const row = await store.post(gid);
     if (!row?.plain || row.chat_id === null || row.state !== "kindling") return false;
     if ((await store.messages(gid)).length > 0) return false; // posted already
-    const { text, keyboard } = renderPost(row, await ports.view(gid));
-    const sent = photo
-      ? await withRateRetry(() => api.sendPhoto(row.chat_id as number, photo, text, keyboard ?? undefined))
-      : await send(row.chat_id, text, keyboard);
-    photoKind.set(gid, photo ? "photo" : "text");
+    const view = await ports.view(gid);
+    const { text, keyboard } = renderPost(row, view);
+    const real = photo && row.photos_on ? photo : null;
+    const card = real ? null : await renderCard(cardView(row, view)).catch(() => null);
+    const chat = row.chat_id;
+    const sent = real
+      ? await withRateRetry(() => api.sendPhoto(chat, real, text, keyboard ?? undefined))
+      : card
+        ? await withRateRetry(() => api.sendPhoto(chat, card, text, keyboard ?? undefined, "image/png"))
+        : await send(chat, text, keyboard);
+    photoKind.set(gid, real ? "photo" : card ? "card" : "text");
     await store.addMessage(gid, row.chat_id, sent.message_id);
     lastEdit.set(gid, Date.now());
-    log.info({ event: "tg.posted", with_photo: Boolean(photo) }, "telegram post");
+    log.info({ event: "tg.posted", with_photo: Boolean(real), card: Boolean(card) }, "telegram post");
     return true;
   }
 
-  async function edit(gid: string, chatId: number, messageId: number, text: string, keyboard: Keyboard | null) {
+  async function edit(
+    gid: string,
+    chatId: number,
+    messageId: number,
+    text: string,
+    keyboard: Keyboard | null,
+    card: (() => Promise<Buffer>) | null,
+  ) {
     const markup = keyboard ?? { inline_keyboard: [] };
     const base = { chat_id: chatId, message_id: messageId, reply_markup: markup };
     const caption = () => api.call("editMessageCaption", { ...base, caption: text });
     const plain = () => api.call("editMessageText", { ...base, text, link_preview_options: { is_disabled: true } });
     const kind = photoKind.get(gid);
+    // The card shows the state, so it is redrawn with the caption; a real photo keeps its image.
+    const media = async () => api.editPhoto(chatId, messageId, await (card as () => Promise<Buffer>)(), text, markup);
     try {
-      await withRateRetry(kind === "text" ? plain : caption);
+      await withRateRetry(kind === "text" ? plain : kind === "card" && card ? media : caption);
     } catch (e) {
       if (e instanceof BotApiError && e.notModified) return;
       // After a restart the kind is unknown: a text post refuses caption edits with a 400.
@@ -288,7 +308,8 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
     if (!post) return row;
     const view = row.state === "gone" ? null : await ports.view(gid);
     const { text, keyboard } = renderPost(row, view, smaller.has(gid));
-    await edit(gid, post.chat_id, post.message_id, text, keyboard);
+    const card = () => renderCard(cardView(row, view, smaller.has(gid)));
+    await edit(gid, post.chat_id, post.message_id, text, keyboard, card);
     lastEdit.set(gid, Date.now());
     return row;
   }
@@ -373,6 +394,18 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
     later(wait, () => void track(cleanup(gid, left, attempt + 1)));
   }
 
+  function waitForPhoto(gid: string) {
+    photoTimers.set(
+      gid,
+      later(photoWaitMs, () => {
+        photoTimers.delete(gid);
+        void serial(gid, async () => {
+          await postNow(gid, null);
+        });
+      }),
+    );
+  }
+
   return {
     /** Webhook entry: work runs after the HTTP response (telegram.md 1). */
     enqueue(u: Update): void {
@@ -381,17 +414,16 @@ export function createBot(api: BotApi, store: TelegramStore, ports: BotPorts, co
     },
     handle,
 
-    /** Call after createGathering commits for a Telegram group: posts text if no photo comes. */
+    /**
+     * Call after createGathering commits for a Telegram group. Photos off (the default): the
+     * card goes out now. Photos on: wait for the host's photo, then the card if none comes.
+     */
     created(gid: string): void {
-      photoTimers.set(
-        gid,
-        later(photoWaitMs, () => {
-          photoTimers.delete(gid);
-          void serial(gid, async () => {
-            await postNow(gid, null);
-          });
-        }),
-      );
+      void serial(gid, async () => {
+        const row = await store.post(gid);
+        if (row && !row.photos_on) await postNow(gid, null);
+        else waitForPhoto(gid);
+      });
     },
 
     /** The host's photo (telegram-photo). False when the post already went out. */

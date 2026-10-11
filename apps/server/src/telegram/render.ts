@@ -1,6 +1,7 @@
 // What a gathering's group post says, by state (contracts/telegram.md 3 and 5).
 // Pure functions: same row and count in, same text and keyboard out.
 import type { Keyboard } from "./api.ts";
+import type { CardView } from "./card.ts";
 import { t } from "./copy.ts";
 import type { PostRow, TelegramPlain } from "./store.ts";
 
@@ -77,4 +78,38 @@ export function emberLine(row: PostRow): string {
   if (row.kind === "plan") return t("bot.post.smaller", { step: stepName(row, plain, row.current_step) });
   const bench = (row.ember_choice && plain.ember_places?.[row.ember_choice]) || plain.place;
   return t("push.ember", { bench });
+}
+
+/**
+ * The branded card for the state now (ADR-0023): the six words, the place label the caption
+ * already shows, and the count line. No host or member names; no photo.
+ */
+export function cardView(row: PostRow, view: PostView | null, smaller = false): CardView {
+  const plain = row.plain as TelegramPlain;
+  const brand = t("app.name");
+  if (row.state === "gone") {
+    const status = row.ended === "thanks_for_coming" ? t("outside.thanks") : t("gone.title");
+    return { state: "gone", invite: plain.invite, place: plain.place, status, brand };
+  }
+  if (row.state === "lit") {
+    const place = row.kind === "plan" ? stepName(row, plain, row.current_step) : plain.place;
+    return { state: "lit", invite: plain.invite, place, status: t("need.lit"), brand };
+  }
+  if (row.state === "ember") {
+    const place = row.ember_choice ? (plain.ember_places?.[row.ember_choice] ?? plain.place) : plain.place;
+    return { state: "ember", invite: plain.invite, place, status: t("bot.post.ember"), brand };
+  }
+  const need = Math.max(1, view?.need ?? 1);
+  const status = smaller
+    ? t("bot.post.smaller", { step: stepName(row, plain, row.current_step) })
+    : t("need.more", { n: need });
+  // Kindling grows as the count nears quorum, like the app's flame (need 3 → 0.25, 1 → 0.75).
+  return {
+    state: "kindling",
+    invite: plain.invite,
+    place: plain.place,
+    status,
+    progress: 1 / (need + 1) + 0.25,
+    brand,
+  };
 }

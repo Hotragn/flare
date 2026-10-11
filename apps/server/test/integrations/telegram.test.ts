@@ -18,6 +18,8 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Button = { text: string; callback_data?: string; url?: string };
 const keyboard = (params: Record<string, unknown> | undefined): Button[][] =>
   (params?.reply_markup as { inline_keyboard?: Button[][] } | undefined)?.inline_keyboard ?? [];
+/** The caption of an editMessageMedia call (the branded card's edits, ADR-0023). */
+const cap = (p?: Record<string, unknown>) => String((p?.media as { caption?: string } | undefined)?.caption ?? "");
 const lastText = (method = "sendMessage") => {
   const c = w.tg.of(method).at(-1)?.params;
   return String(c?.text ?? c?.caption ?? "");
@@ -148,10 +150,34 @@ describe("linking a chat (telegram.md 2)", () => {
   });
 });
 
+describe("Show photos in this Telegram group (ADR-0023)", () => {
+  const url = () => `/api/v1/groups/${w.groupId}/telegram-settings`;
+  it("is off by default; a member turns it on and off", async () => {
+    const get = await w.app.request(url(), { headers: w.auth(w.hostId) });
+    expect(await get.json()).toEqual({ show_photos: false });
+    const put = (body: unknown) =>
+      w.app.request(url(), {
+        method: "PUT",
+        headers: { ...w.auth(w.hostId), "content-type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    expect(await (await put({ show_photos: true })).json()).toEqual({ show_photos: true });
+    expect(await telegramStore(w.db).settings(w.groupId)).toEqual({ show_photos: true });
+    await put({ show_photos: false });
+    expect(await telegramStore(w.db).settings(w.groupId)).toEqual({ show_photos: false });
+    expect((await put({ show_photos: "yes" })).status).toBe(400);
+    expect((await put({ show_photos: true, extra: 1 })).status).toBe(400);
+  });
+  it("refuses non-members (401)", async () => {
+    expect((await w.app.request(url())).status).toBe(401);
+  });
+});
+
 describe("posting (telegram.md 3, SRS-CH-2)", () => {
   beforeEach(() => w.linkChat());
 
   it("SRS-CH-2: photo post with caption, count, time and three buttons; callback data under 64 bytes", async () => {
+    await telegramStore(w.db).setPhotos(w.groupId, true); // the group opted in (ADR-0023)
     const gid = await w.gathering();
     w.bot.created(gid);
     const jpeg = Buffer.alloc(4000, 7);
@@ -165,6 +191,7 @@ describe("posting (telegram.md 3, SRS-CH-2)", () => {
     await w.bot.idle();
     const call = w.tg.of("sendPhoto")[0];
     expect(call?.photoBytes).toBe(4000);
+    expect(call?.photoType).toBe("image/jpeg");
     expect(call?.params.caption).toBe(
       "Bench by the pond, sun out\nSam · Fairlane pond bench\nNeed 2 more. Nobody sees who.\nOpen until 2:44 PM.",
     );
@@ -178,13 +205,42 @@ describe("posting (telegram.md 3, SRS-CH-2)", () => {
     expect(w.tg.of("sendMessage")).toHaveLength(0);
     expect((await w.db.query("select * from photos")).rows).toHaveLength(0);
   });
-  it("no photo: posts the same text with sendMessage after the wait", async () => {
+  it("ADR-0023 default: the branded card goes out at once, same caption and buttons, no wait", async () => {
     const gid = await w.gathering();
     w.bot.created(gid);
+    await w.bot.idle();
+    const call = w.tg.of("sendPhoto")[0];
+    expect(call?.photoType).toBe("image/png");
+    expect(call?.photoBytes).toBeGreaterThan(10_000);
+    expect(String(call?.params.caption)).toContain("Need 2 more. Nobody sees who.");
+    expect(keyboard(call?.params).map((r) => r[0]?.text)).toEqual(["I'm in", "Add a condition", "Open in Flare"]);
+    expect(w.tg.of("sendMessage")).toHaveLength(0);
+    expect((await telegramStore(w.db).messages(gid)).length).toBe(1);
+  });
+  it("ADR-0023: photos are off by default; the host's photo is refused and never uploaded", async () => {
+    expect(await telegramStore(w.db).settings(w.groupId)).toEqual({ show_photos: false });
+    const gid = await w.gathering();
+    const jpeg = Buffer.alloc(4000, 7);
+    jpeg.set([0xff, 0xd8, 0xff], 0);
+    const res = await w.app.request(`/api/v1/gatherings/${gid}/telegram-photo`, {
+      method: "PUT",
+      headers: { ...w.auth(w.hostId), "content-type": "image/jpeg" },
+      body: new Uint8Array(jpeg),
+    });
+    expect(res.status).toBe(409);
+    expect(((await res.json()) as { message: string }).message).toBe("Photos are off for this group");
+    await w.bot.idle();
+    expect(w.tg.calls.some((c) => c.photoBytes === 4000)).toBe(false);
+  });
+  it("photos on but no photo arrives: the card goes out after the wait", async () => {
+    await telegramStore(w.db).setPhotos(w.groupId, true);
+    const gid = await w.gathering();
+    w.bot.created(gid);
+    await w.bot.idle();
+    expect(w.tg.of("sendPhoto")).toHaveLength(0);
     await wait(80);
     await w.bot.idle();
-    expect(lastText()).toContain("Need 2 more. Nobody sees who.");
-    expect((await telegramStore(w.db).messages(gid)).length).toBe(1);
+    expect(w.tg.of("sendPhoto")[0]?.photoType).toBe("image/png");
   });
   it("photo after the text post went out: 409, and only the host may send it (403)", async () => {
     const gid = await w.gathering();
@@ -221,12 +277,12 @@ describe("posting (telegram.md 3, SRS-CH-2)", () => {
     w.bot.created(gid);
     await wait(80);
     await w.bot.idle();
-    expect(lastText()).toContain("1. Ford Woods loop, 90 min\n2. Pond lap, 45 min");
+    expect(lastText("sendPhoto")).toContain("1. Ford Woods loop, 90 min\n2. Pond lap, 45 min");
   });
   it("resume() posts gatherings that never got their post (restart)", async () => {
     await w.gathering();
     expect(await w.bot.resume()).toBe(1);
-    expect(w.tg.of("sendMessage")).toHaveLength(1);
+    expect(w.tg.of("sendPhoto")).toHaveLength(1);
     expect(await w.bot.resume()).toBe(0);
   });
 });
@@ -393,10 +449,10 @@ describe("updates to the post (telegram.md 5)", () => {
     await w.bot.resume();
     for (let i = 0; i < 10; i++) w.bot.effect(gid, "edit_count");
     await wait(30);
-    expect(w.tg.of("editMessageText")).toHaveLength(0);
+    expect(w.tg.of("editMessageMedia")).toHaveLength(0);
     await wait(600);
     await w.bot.idle();
-    expect(w.tg.of("editMessageText")).toHaveLength(1);
+    expect(w.tg.of("editMessageMedia")).toHaveLength(1);
   });
   it("edits the count with the same keyboard; 'message is not modified' is ignored", async () => {
     await w.close();
@@ -408,10 +464,10 @@ describe("updates to the post (telegram.md 5)", () => {
     w.bot.effect(gid, "edit_count");
     await wait(20);
     await w.bot.idle();
-    const e = w.tg.of("editMessageText").at(-1)?.params;
-    expect(e?.text).toContain("Need 1 more. Nobody sees who.");
+    const e = w.tg.of("editMessageMedia").at(-1)?.params;
+    expect(cap(e)).toContain("Need 1 more. Nobody sees who.");
     expect(keyboard(e)).toHaveLength(3);
-    w.tg.fail("editMessageText", 400, "Bad Request: message is not modified");
+    w.tg.fail("editMessageMedia", 400, "Bad Request: message is not modified");
     const warn = vi.spyOn(log, "warn");
     w.bot.effect(gid, "edit_count");
     await wait(20);
@@ -426,8 +482,8 @@ describe("updates to the post (telegram.md 5)", () => {
     w.tg.reset();
     w.bot.effect(gid, "lit");
     await w.bot.idle();
-    const edit = w.tg.of("editMessageText")[0]?.params;
-    expect(edit?.text).toBe("It's lit. Sam is at Fairlane pond bench.");
+    const edit = w.tg.of("editMessageMedia")[0]?.params;
+    expect(cap(edit)).toBe("It's lit. Sam is at Fairlane pond bench.");
     const rows = keyboard(edit);
     expect(rows.map((r) => r[0]?.text)).toEqual(["Open in Flare"]);
     const sends = w.tg.of("sendMessage");
@@ -440,7 +496,7 @@ describe("updates to the post (telegram.md 5)", () => {
     await w.setState(gid, "ember", ", ember_choice = 'c1'");
     w.bot.effect(gid, "ember");
     await w.bot.idle();
-    expect(w.tg.of("editMessageText")[0]?.params.text).toBe(
+    expect(cap(w.tg.of("editMessageMedia")[0]?.params)).toBe(
       "Bench by the pond, sun out\nSam · Maple bench\nNeed 1 more.\nOpen until 2:44 PM.",
     );
     expect(lastText()).toBe("Smaller plan: 15 min at Maple bench.");
@@ -451,7 +507,7 @@ describe("updates to the post (telegram.md 5)", () => {
     await w.db.query("update gatherings set current_step = 2 where id = $1", [pid]);
     w.bot.effect(pid, "smaller");
     await w.bot.idle();
-    expect(String(w.tg.of("editMessageText").at(-1)?.params.text)).toContain("Smaller plan: Pond lap.");
+    expect(cap(w.tg.of("editMessageMedia").at(-1)?.params)).toContain("Smaller plan: Pond lap.");
   });
   it("Plan lit: It's on: {step} at {time}", async () => {
     const pid = await w.gathering({ kind: "plan" });
@@ -478,7 +534,7 @@ describe("cleanup at Gone (telegram.md 6, BR-D-3, SRS-CH-4)", () => {
     await w.setState(gid, "gone", ", ended = 'not_this_time'");
     w.bot.effect(gid, "final");
     await w.bot.idle();
-    expect(w.tg.of("editMessageText")[0]?.params.text).toBe("Not this time.");
+    expect(cap(w.tg.of("editMessageMedia")[0]?.params)).toBe("Not this time.");
     expect(await telegramStore(w.db).messages(gid)).toHaveLength(0);
     await wait(60);
     await w.bot.idle();
@@ -490,7 +546,7 @@ describe("cleanup at Gone (telegram.md 6, BR-D-3, SRS-CH-4)", () => {
     await w.setState(gid, "gone", ", ended = 'thanks_for_coming'");
     w.bot.effect(gid, "final");
     await w.bot.idle();
-    expect(w.tg.of("editMessageText")[0]?.params.text).toBe("Thanks for coming.");
+    expect(cap(w.tg.of("editMessageMedia")[0]?.params)).toBe("Thanks for coming.");
   });
   it("deletes even after the sweeper removed the gathering row", async () => {
     await w.setState(gid, "gone", ", ended = 'not_this_time'");

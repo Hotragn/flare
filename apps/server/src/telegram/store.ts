@@ -37,6 +37,8 @@ export type PostRow = {
   host_member_id: string;
   plain: TelegramPlain | null;
   chat_id: number | null;
+  /** groups.telegram_photos: the group allows the real photo in its Telegram post. */
+  photos_on: boolean;
 };
 
 export type BotMessage = { chat_id: number; message_id: number };
@@ -98,14 +100,29 @@ export function telegramStore(db: Db) {
       const r = await db.query<PostRow & { chat_id: unknown; plain: unknown }>(
         `select g.id, g.group_id, g.kind, g.state, g.tz, g.ended, g.ember_choice, g.current_step,
                 g.plan_steps, g.start_at, g.created_at, g.expires_at, g.host_member_id,
-                g.telegram_plain as plain, gr.telegram_chat_id as chat_id
+                g.telegram_plain as plain, gr.telegram_chat_id as chat_id, gr.telegram_photos as photos_on
          from gatherings g join groups gr on gr.id = g.group_id where g.id = $1`,
         [gatheringId],
       );
       const row = r.rows[0];
       if (!row) return null;
       const plain = typeof row.plain === "string" ? (JSON.parse(row.plain) as TelegramPlain) : row.plain;
-      return { ...row, plain: (plain as TelegramPlain | null) ?? null, chat_id: num(row.chat_id) };
+      return {
+        ...row,
+        plain: (plain as TelegramPlain | null) ?? null,
+        chat_id: num(row.chat_id),
+        photos_on: row.photos_on === true,
+      };
+    },
+
+    /** The group's Telegram settings (null when the group does not exist). */
+    async settings(groupId: string): Promise<{ show_photos: boolean } | null> {
+      const r = await db.query<{ p: boolean }>("select telegram_photos as p from groups where id = $1", [groupId]);
+      const row = r.rows[0];
+      return row ? { show_photos: row.p === true } : null;
+    },
+    async setPhotos(groupId: string, on: boolean): Promise<void> {
+      await db.query("update groups set telegram_photos = $2 where id = $1", [groupId, on]);
     },
 
     /** The member the bot uses for a Telegram user in a group; made on first tap. */
