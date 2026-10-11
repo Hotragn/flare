@@ -28,6 +28,10 @@ The origin in canonical and OG tags is `https://flare-outside.onrender.com` (ope
 
 ## Decisions
 
+- **100 in all four categories (Sun 2026-10-11).** Median of 3 runs on 5 pages, mobile and desktop: 100 everywhere; 26 of 30 mobile runs scored 100, 4 scored 99. What moved mobile performance from 96 to 98 up to 100, with the look and motion unchanged:
+  - No `modulepreload` links on website pages, and the boot script imports SvelteKit after the first frame (`apps/web/src/hooks.server.ts`). Before, about 100 KB of JS requests started before the first paint, and the mobile simulation counted all of them. Hydration now follows one frame later; the server's CSP hashes the edited inline script.
+  - Paper grain as a 128 px WebP tile, 10 KB instead of 45 KB, cut from the same noise (before and after screenshots match).
+  - `/ai/` is an app page kept out of search on purpose (robots.txt), so it is not in this run.
 - **CSS flames on the site.** With WebGL flames, Lighthouse mobile scored 59 on `/`: 2,640 ms of blocking time from shaders running in software. The CSS renderer has the same shape and motion (docs/design/motion.md section 2). The flag is cleared when the visitor leaves for the app.
 - **Inline CSS** (`inlineStyleThreshold: 16384` in apps/web/vite.config.ts): 6 render-blocking stylesheets cost about 300 ms each on simulated 4G. CSP allows inline styles (`style-src 'self' 'unsafe-inline'`).
 - **WebP paper grain**: 45 KB instead of 121 KB; it was the LCP element on `/how/`.
@@ -39,7 +43,7 @@ The origin in canonical and OG tags is `https://flare-outside.onrender.com` (ope
 | Command | What it proves |
 | --- | --- |
 | `npx vitest run --config apps/web/test/site/vitest.config.ts` | 26 tests: audit fails soft, the 5 pages have titles and descriptions, sitemap matches, JSON-LD, plus the FE6 tests |
-| `npm run build && node scripts/lighthouse.ts` | Lighthouse 13.5.0 on 5 pages, mobile and desktop; fails below 95. Reports in [lighthouse/](lighthouse/), numbers in [lighthouse/summary.json](lighthouse/summary.json) |
+| `npm run build && node scripts/lighthouse.ts` | Lighthouse 13.5.0 on 5 pages, mobile and desktop, 3 runs each (median kept, every run listed); fails below 100. Reports in [lighthouse/](lighthouse/), numbers in [lighthouse/summary.json](lighthouse/summary.json) |
 | `node apps/web/test/site/a11y.ts --out docs/website/evidence/a11y.json` | axe-core 4.14.0 and 44 px targets on every built page (FE7) |
 | `node apps/web/test/site/shots.ts docs/website/screens` | Full-page screenshots at 390 and 1440 px; fails on sideways scroll |
 

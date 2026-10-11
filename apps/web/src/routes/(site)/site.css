@@ -455,7 +455,10 @@
   }
 }
 
-/* Paper grain as WebP on the website: 45 KB instead of 121 KB (Lighthouse image delivery). */
+/* Paper grain as WebP on the website: a 128 px tile cut from the same 256 px noise, 10 KB
+   instead of 121 KB (PNG) or 45 KB (256 px WebP). The noise has no structure, so the smaller
+   tile repeats without a visible seam; it keeps the grain off the first paint's budget. */
 .site .grain::after {
-  background-image: url("/site/paper-grain-ui-256.webp");
+  background-image: url("/site/paper-grain-ui-128.webp");
+  background-size: 128px;
 }

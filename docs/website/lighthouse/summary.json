@@ -1,25 +1,37 @@
 {
-  "at": "2026-10-11T05:58:47.009Z",
+  "at": "2026-10-11T07:46:46.873Z",
   "lighthouse": "13.5.0",
   "chrome": "154.0.8037.99",
-  "min": 95,
-  "lowest": 61,
+  "runs": 3,
+  "pick": "median performance",
+  "min": 100,
+  "lowest": 100,
   "rows": [
     {
       "page": "/",
       "form": "mobile",
-      "performance": 61,
+      "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     },
     {
       "page": "/how/",
       "form": "mobile",
-      "performance": 98,
+      "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        99,
+        100,
+        100
+      ]
     },
     {
       "page": "/privacy/",
@@ -27,23 +39,38 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        99,
+        100,
+        100
+      ]
     },
     {
       "page": "/accessibility/",
       "form": "mobile",
-      "performance": 99,
+      "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        99,
+        100,
+        100
+      ]
     },
     {
       "page": "/run/",
       "form": "mobile",
-      "performance": 99,
+      "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        99,
+        100,
+        100
+      ]
     },
     {
       "page": "/",
@@ -51,7 +78,12 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     },
     {
       "page": "/how/",
@@ -59,7 +91,12 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     },
     {
       "page": "/privacy/",
@@ -67,7 +104,12 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     },
     {
       "page": "/accessibility/",
@@ -75,7 +117,12 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     },
     {
       "page": "/run/",
@@ -83,7 +130,12 @@
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
-      "seo": 100
+      "seo": 100,
+      "runs": [
+        100,
+        100,
+        100
+      ]
     }
   ]
 }
