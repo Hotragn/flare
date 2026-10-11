@@ -480,3 +480,21 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - Cause: the preference score ran a full-pack `near()` scan on every third node of every candidate.
 - Fix: precompute preferred graph nodes once per request through a node grid; skip full scoring when the length term alone can't beat the best.
 - Proof: same request 257 to 697 ms (docs/maps/05-rest-loops.md table).
+
+## BUG-056: Accessibility findings on the imported capability page
+
+- **Date:** 2026-10-11
+- **Area:** Device-check kit (`/check/capability/`, imported from lab spike 04)
+- **Symptom:** axe: color contrast (6 nodes), an unlabelled control, no main landmark, content outside regions; the file input and the switch are under 44 px.
+- **Cause:** The lab page was built as a quick tool, before the design system.
+- **Fix:** Not fixed: an internal tool the team uses for 15 minutes Sunday, not a product page. The other kit pages were fixed (dark contrast, focusable results box, 44 px checkbox).
+- **Proof:** a11y pass: 0 serious or critical findings outside `/check/` over 64 page views.
+
+## BUG-057: PWA offline test expected the old home heading
+
+- **Date:** 2026-10-11
+- **Area:** PWA e2e (integration)
+- **Symptom:** "app shell loads offline" failed with h1 "If enough friends say yes, it's on." though the page loaded offline in 31 ms.
+- **Cause:** `/` became the website's home at integration (url-map.md); the test still expected the old app h1 "Flare".
+- **Fix:** The check now passes when any h1 renders offline.
+- **Proof:** `npm run e2e:pwa`: ALL PASS.

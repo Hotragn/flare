@@ -12,8 +12,8 @@
     --bg: #16233a;
     --surface: #1b2a41;
     --text: #f6f1e7;
-    --muted: #a9bcd2;
-    --accent: #e2622a;
+    --muted: #c4d2e1;
+    --accent: #f08a5d;
     --on-accent: #211a16;
   }
 }
@@ -77,8 +77,8 @@ button:disabled {
   min-height: 44px;
 }
 .row input {
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
 }
 .dial {
   width: 180px;
@@ -103,6 +103,11 @@ pre {
 }
 a {
   color: var(--accent);
+}
+@media (prefers-color-scheme: dark) {
+  a {
+    color: #f7cb72;
+  }
 }
 ol li {
   margin: 6px 0;

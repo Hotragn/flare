@@ -70,6 +70,16 @@ const browser = await chromium.launch({
 });
 const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true };
 const results: { host: number; friend: number; lit: boolean }[] = [];
+let cspChecked = 0;
+/** SRS-SEC-6: any CSP violation on the real pages fails the run (the server sends the policy). */
+function watchCsp(page: import("playwright-core").Page, who: string) {
+  page.on("console", (m) => {
+    if (m.type() === "error" && /Content Security Policy|CSP/i.test(m.text())) fails.push(`${who}: ${m.text()}`);
+  });
+  page.on("response", (r) => {
+    if (r.request().resourceType() === "document" && r.headers()["content-security-policy"]) cspChecked++;
+  });
+}
 const fails: string[] = [];
 
 for (let run = 1; run <= RUNS; run++) {
@@ -80,6 +90,7 @@ for (let run = 1; run <= RUNS; run++) {
   });
   const host = await hostCtx.newPage();
   host.on("pageerror", (e) => fails.push(`host run ${run}: ${e.message}`));
+  watchCsp(host, `host run ${run}`);
   const t0 = Date.now();
   await host.goto(`${srv.url}/app/`);
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
@@ -136,6 +147,7 @@ for (let run = 1; run <= RUNS; run++) {
   });
   const friend = await friendCtx.newPage();
   friend.on("pageerror", (e) => fails.push(`friend run ${run}: ${e.message}`));
+  watchCsp(friend, `friend run ${run}`);
   const t1 = Date.now();
   await friend.goto(srv.url + link);
   await friend.getByRole("button", { name: "I'm in" }).click({ timeout: 10_000 });
@@ -193,6 +205,7 @@ for (let run = 1; run <= RUNS; run++) {
 }
 
 await browser.close();
+if (REAL) console.info(`documents served with a CSP header: ${cspChecked}`);
 srv.close();
 const med = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
 const hostMed = med(results.map((r) => r.host));

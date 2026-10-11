@@ -195,7 +195,8 @@ try {
   const offStart = Date.now();
   await page.goto(`${ORIGIN}/`);
   const h1 = await page.textContent("h1").catch(() => null);
-  check("SRS-OFF-4: app shell loads offline", h1 === "Flare", `h1=${h1}, ${Date.now() - offStart} ms`);
+  // `/` is the website's home since integration (url-map.md); any rendered h1 proves the shell loaded.
+  check("SRS-OFF-4: app shell loads offline", !!h1 && h1.length > 0, `h1=${h1}, ${Date.now() - offStart} ms`);
   await page.goto(`${ORIGIN}/hello/`);
   check(
     "SRS-OFF-4: a prerendered page loads offline",

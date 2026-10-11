@@ -1,11 +1,15 @@
 {
-  "at": "2026-10-11T05:56:28.097Z",
+  "at": "2026-10-11T06:38:57.291Z",
   "pages": [
     "/",
     "/accessibility/",
+    "/ai/",
+    "/app/",
     "/app/forget/",
     "/app/hotspots/",
     "/app/needs/",
+    "/dev/components/",
+    "/g/11111111-1111-4111-8111-111111111111/",
     "/hello/",
     "/how/",
     "/privacy/",
@@ -14,7 +18,7 @@
     "/check/compass.html",
     "/check/"
   ],
-  "checked": 48,
+  "checked": 64,
   "findings": [
     {
       "page": "/check/capability/",
@@ -22,7 +26,7 @@
       "width": 390,
       "id": "color-contrast",
       "impact": "serious",
-      "nodes": 5,
+      "nodes": 6,
       "help": "Elements must meet minimum color contrast ratio thresholds"
     },
     {
@@ -49,17 +53,8 @@
       "width": 390,
       "id": "region",
       "impact": "moderate",
-      "nodes": 23,
+      "nodes": 29,
       "help": "All page content should be contained by landmarks"
-    },
-    {
-      "page": "/check/compass.html",
-      "scheme": "light",
-      "width": 390,
-      "id": "scrollable-region-focusable",
-      "impact": "serious",
-      "nodes": 1,
-      "help": "Scrollable region must have keyboard access"
     },
     {
       "page": "/check/capability/",
@@ -67,7 +62,7 @@
       "width": 390,
       "id": "color-contrast",
       "impact": "serious",
-      "nodes": 5,
+      "nodes": 6,
       "help": "Elements must meet minimum color contrast ratio thresholds"
     },
     {
@@ -94,26 +89,8 @@
       "width": 390,
       "id": "region",
       "impact": "moderate",
-      "nodes": 23,
+      "nodes": 29,
       "help": "All page content should be contained by landmarks"
-    },
-    {
-      "page": "/check/compass.html",
-      "scheme": "dark",
-      "width": 390,
-      "id": "scrollable-region-focusable",
-      "impact": "serious",
-      "nodes": 1,
-      "help": "Scrollable region must have keyboard access"
-    },
-    {
-      "page": "/check/",
-      "scheme": "dark",
-      "width": 390,
-      "id": "color-contrast",
-      "impact": "serious",
-      "nodes": 4,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
     },
     {
       "page": "/check/capability/",
@@ -121,7 +98,7 @@
       "width": 1280,
       "id": "color-contrast",
       "impact": "serious",
-      "nodes": 5,
+      "nodes": 6,
       "help": "Elements must meet minimum color contrast ratio thresholds"
     },
     {
@@ -148,17 +125,8 @@
       "width": 1280,
       "id": "region",
       "impact": "moderate",
-      "nodes": 23,
+      "nodes": 29,
       "help": "All page content should be contained by landmarks"
-    },
-    {
-      "page": "/check/compass.html",
-      "scheme": "light",
-      "width": 1280,
-      "id": "scrollable-region-focusable",
-      "impact": "serious",
-      "nodes": 1,
-      "help": "Scrollable region must have keyboard access"
     },
     {
       "page": "/check/capability/",
@@ -166,7 +134,7 @@
       "width": 1280,
       "id": "color-contrast",
       "impact": "serious",
-      "nodes": 5,
+      "nodes": 6,
       "help": "Elements must meet minimum color contrast ratio thresholds"
     },
     {
@@ -193,26 +161,8 @@
       "width": 1280,
       "id": "region",
       "impact": "moderate",
-      "nodes": 23,
+      "nodes": 29,
       "help": "All page content should be contained by landmarks"
-    },
-    {
-      "page": "/check/compass.html",
-      "scheme": "dark",
-      "width": 1280,
-      "id": "scrollable-region-focusable",
-      "impact": "serious",
-      "nodes": 1,
-      "help": "Scrollable region must have keyboard access"
-    },
-    {
-      "page": "/check/",
-      "scheme": "dark",
-      "width": 1280,
-      "id": "color-contrast",
-      "impact": "serious",
-      "nodes": 4,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
     }
   ],
   "small_targets": [
@@ -227,12 +177,6 @@
       "selector": "input#switch",
       "w": 13,
       "h": 13
-    },
-    {
-      "page": "/check/compass.html",
-      "selector": "input#speak",
-      "w": 24,
-      "h": 24
     }
   ],
   "blocking": 0,

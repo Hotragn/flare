@@ -4,7 +4,7 @@ For Sun 2026-10-11, 08:30 ET, all four iPhones at once (13, 16 Pro Max, 17 Pro, 
 
 ## 0. Laptop setup (one person, 5 min, before the phones)
 
-1. Mac on the same Wi-Fi the phones will use. Plugged in.
+1. Mac on the same Wi-Fi the phones will use, plugged in, every other app closed. It runs only the hub (`npm run hub:field`) and this kit: Gemma misses the 6 s photo budget when the Mac is busy (load above about 10).
 2. Terminal 1, from the repo root:
    ```bash
    caffeinate -dims &
