@@ -18,6 +18,7 @@ There is no phone model tier. Every in-browser model the lab tried was too big f
 | --- | --- |
 | `apps/web/src/lib/conditions/rules.ts` | Rules parser (lab 07 port, two general rules, `min_step`). Text to raw rules. |
 | `apps/web/src/lib/conditions/index.ts` | ICD-7 `parse()` and `readBack()`: names to member ids, local times to UTC, read-back ≤ 12 words, chips. |
+| `apps/web/src/lib/conditions/rest.ts` | OD5 rest-loop request parser (SRS-REST-1) and its read-back. |
 | `apps/web/src/lib/conditions/time.ts` | Group time zone to UTC and back, DST safe, no library. |
 | `apps/web/src/lib/ai/tier.ts` | Tier selection: `draftPhoto()`, `callHub()`, timeouts, fallback reasons, last-tier store. |
 | `apps/web/src/lib/ai/typed.ts` | OD4 typed fallback: six-word check, template line, map-pack chips. |
