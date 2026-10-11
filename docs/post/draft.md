@@ -55,7 +55,7 @@ I haven't run a group meetup with it yet, so I won't claim one. [FIELD: replace 
 | The full loop | Chrome at iPhone size against the real server, the real Gemma 4 hub and Postgres | 10 end-to-end suites pass, including the field run (27/27), Plans, Voice Flares, Sparks, Telegram and offline |
 | Real phones | A device-check page on an iPhone 16 Pro Max and an iPhone 13, covering the compass, haptics and sound | 3 bugs found and fixed (below) |
 | A simulated Saturday | 48 made-up friends in 4 groups against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif), labelled Simulation) | 11 of 12 lit; median 14.75 min to Lit for Flares; 1 of 2 Embers saved a plan; all 12 deleted after, audit pass |
-| Strangers | A tester with no context on the live site, 4 rounds | 5, 6, 5 and 6 out of 10; what each round found was fixed and redeployed |
+| Strangers | A tester with no context on the live site, 5 rounds | 5, 6, 5, 6 and 6 out of 10. What each round found was fixed and redeployed, including the last round's findings after its score |
 | Accessibility | axe on 22 pages × 2 widths × light and dark | 0 findings; every target 44 px or more |
 
 ## Code

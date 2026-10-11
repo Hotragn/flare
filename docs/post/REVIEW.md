@@ -9,7 +9,7 @@
 - axe finds 0 issues on 88 page views.
 - Smoke passes on live.
 - check-env: every setting is set, and no secret value is in the repo or the web build (12 values checked in 1,335 tracked files and 374 build files).
-- Fresh-eyes testers scored 5, 6, 5, 6 and [round 5]. The post states the final score.
+- Fresh-eyes testers scored 5, 6, 5, 6 and 6 (five rounds, a new tester with no context each time). The post states this. Round 5's fixes shipped after its score, so they have no score of their own.
 
 ## 1. Decisions only you can make
 
