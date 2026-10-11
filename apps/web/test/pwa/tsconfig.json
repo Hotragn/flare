@@ -1,0 +1,16 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2024", "dom", "dom.iterable", "webworker"],
+    "types": ["node"]
+  },
+  "include": [
+    "./**/*.ts",
+    "../../src/lib/crypto/**/*.ts",
+    "../../src/lib/store/**/*.ts",
+    "../../src/lib/outbox/**/*.ts",
+    "../../src/lib/live/**/*.ts",
+    "../../src/lib/permissions/**/*.ts",
+    "../../src/lib/push/**/*.ts"
+  ]
+}
