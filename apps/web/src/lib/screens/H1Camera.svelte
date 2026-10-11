@@ -16,12 +16,15 @@
     onpick,
     onallow,
     onmenu,
+    onvoice,
   }: {
     view?: "live" | "permission" | "denied" | "loading";
     theme?: Theme;
     stream?: MediaStream | null;
     sample?: boolean;
     onshoot?: (video: HTMLVideoElement | null) => void;
+    /** Voice Flare (ADR-0028): the hub's draft from what the host said. */
+    onvoice?: (d: { invite: string; alt: string }) => void;
     onpick?: (file: File) => void;
     onallow?: () => void;
     onmenu?: () => void;
@@ -59,6 +62,10 @@
       <div class="shutter-row">
         <button class="shutter" aria-label={t("camera.shutter")} disabled={view !== "live"} onclick={() => (stream ? onshoot?.(video) : input?.click())}><span></span></button>
       </div>
+    {/if}
+    {#if onvoice && typeof MediaRecorder !== "undefined"}
+      <!-- Loaded on demand, so the camera screen stays inside the JS budget. -->
+      {#await import("../components/SayFlare.svelte") then { default: SayFlare }}<SayFlare ondraft={onvoice} />{/await}
     {/if}
   {/snippet}
   {#snippet overlay()}

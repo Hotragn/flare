@@ -23,6 +23,7 @@
     "site.privacy.l.sentry",
     "site.privacy.l.cloud",
     "site.privacy.l.voice",
+    "site.privacy.l.voiceFlare",
     "site.privacy.l.sleep",
     "site.privacy.l.push",
   ];

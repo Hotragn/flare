@@ -107,7 +107,7 @@ export type SpanHandle = { set(attrs: Attrs): void };
 const noop: SpanHandle = { set() {} };
 
 /** An AI job as a Sentry `invoke_agent` span. Runs fn directly when tracing is off. */
-export function aiJob<T>(job: "photo" | "ladder" | "tags", fn: (span: SpanHandle) => Promise<T>): Promise<T> {
+export function aiJob<T>(job: "photo" | "ladder" | "tags" | "voice", fn: (span: SpanHandle) => Promise<T>): Promise<T> {
   if (!enabled) return fn(noop);
   return Sentry.startSpan(
     {

@@ -799,6 +799,34 @@ paths:
         "415": { $ref: "#/components/responses/UnsupportedMedia" }
         "429": { $ref: "#/components/responses/TooMany" }
 
+  /api/v1/drafts/voice:
+    post:
+      tags: [ai]
+      operationId: draftFromVoice
+      summary: Voice Flare, the invite and the place line from what the host says, on our laptop (ADR-0028)
+      description: |
+        Up to 10 s of the host saying where they are and what they want to do, as 16 kHz mono
+        WAV. The server relays it to the hub in memory (8 s budget), where Gemma 4 listens and
+        writes the same `{invite, alt}` a photo gets; `enforce()` runs again here. No cloud
+        tier. The buffer is zero-filled on every path and nothing is stored; the words heard
+        are never returned. Hub absent, slow or unusable: the template (`tier: rules`) and the
+        phone asks the host to type. Increments `tier_ran.voice.{tier}`.
+      requestBody:
+        required: true
+        content:
+          audio/wav:
+            schema: { type: string, contentMediaType: audio/wav, maxLength: 400000 }
+      responses:
+        "200":
+          description: Draft
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DraftResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMedia" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
   /api/v1/drafts/ladder:
     post:
       tags: [ai]

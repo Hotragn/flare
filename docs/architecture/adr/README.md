@@ -31,3 +31,4 @@ Format: Michael Nygard's ADR (status, context, decision, consequences), plus the
 | [0025](0025-mastra-plan-agent.md) | Plan ladder as a Mastra agent with local tools, through the existing relay job, behind `LADDER_AGENT=1` | Proposed |
 | [0026](0026-google-ai-studio-cloud-tier.md) | Google AI Studio (Gemma 4 26B A4B, thinking minimal) after DigitalOcean; 1 h skip on 401/402/403; one daily cap | Accepted |
 | [0027](0027-elevenlabs-voice.md) | ElevenLabs: warm compass voice as 54 pre-recorded clips (no names, offline), and opt-in Voice Spark through Scribe (own voice, 10 s, no audio kept) | Accepted |
+| [0028](0028-voice-flares.md) | Voice Flares: say where you are, Gemma 4 on the hub writes the invite from the audio (WAV in Ollama images); hub only, no audio kept | Accepted |

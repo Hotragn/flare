@@ -58,6 +58,8 @@ channels:
       photoBytes: { $ref: "#/components/messages/photoBytes" }
       ladderJob: { $ref: "#/components/messages/ladderJob" }
       tagsJob: { $ref: "#/components/messages/tagsJob" }
+      voiceJob: { $ref: "#/components/messages/voiceJob" }
+      voiceBytes: { $ref: "#/components/messages/voiceBytes" }
       result: { $ref: "#/components/messages/result" }
       ping: { $ref: "#/components/messages/ping" }
       pong: { $ref: "#/components/messages/pong" }
@@ -124,6 +126,13 @@ operations:
     messages:
       - $ref: "#/channels/hub/messages/tagsJob"
       - $ref: "#/channels/hub/messages/photoBytes"
+  serverSendsVoiceJob:
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    summary: "ADR-0028: server sends what a host said (header, then one WAV frame; 8 s)"
+    messages:
+      - $ref: "#/channels/hub/messages/voiceJob"
+      - $ref: "#/channels/hub/messages/voiceBytes"
   hubSendsResult:
     security:
       - $ref: "#/components/securitySchemes/hubSecret"
@@ -242,6 +251,29 @@ components:
           bytes: { type: integer, minimum: 1, maximum: 2000000 }
           mime: { const: image/jpeg }
 
+    voiceJob:
+      name: job
+      title: Voice job header (ADR-0028)
+      contentType: application/json
+      description: The next binary frame is 16 kHz mono 16-bit WAV, at most 12 s, of the host saying where they are. The hub uses voice prompt v1 and enforce(), and answers with result.draft. The audio stays in memory and is zero-filled after the job.
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, kind, bytes, mime]
+        properties:
+          type: { const: job }
+          id: { type: string, format: uuid }
+          kind: { const: voice-draft }
+          bytes: { type: integer, minimum: 1, maximum: 400000 }
+          mime: { const: audio/wav }
+
+    voiceBytes:
+      name: voiceBytes
+      title: WAV frame (ADR-0028)
+      contentType: application/octet-stream
+      description: One binary frame, exactly `bytes` long, starting with RIFF....WAVE.
+      payload: { type: string, format: binary }
+
     result:
       name: result
       contentType: application/json
@@ -278,7 +310,7 @@ components:
             additionalProperties: { type: string }
           error:
             type: string
-            enum: [model_unavailable, unusable_answer, timeout, bad_image]
+            enum: [model_unavailable, unusable_answer, timeout, bad_image, bad_audio]
           ms: { type: integer, minimum: 0 }
           model: { type: string }
 

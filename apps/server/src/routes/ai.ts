@@ -7,6 +7,7 @@ import {
   enforceLadder,
   enforceOsmTags,
   MAX_PHOTO_BYTES,
+  MAX_VOICE_WAV_BYTES,
   TagsDraftResponse,
   type TagsDraftResponseT,
   TEMPLATE_INVITE,
@@ -160,6 +161,57 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
     });
     count("tier_ran.ladder", out.tier);
     return c.json(out);
+  });
+
+  // ADR-0028: Voice Flare. The host says where they are and what they want to do (up to 10 s,
+  // 16 kHz mono WAV); Gemma 4 on our laptop writes the invite and the place line from the audio.
+  // Hub only: no cloud tier for voices. The audio is zero-filled on every path; nothing is
+  // stored, and the words are never sent back, only the guarded draft.
+  app.post("/api/v1/drafts/voice", async (c) => {
+    limitWrite(rl, { anon: clientIp(c) });
+    if (c.req.header("content-type") !== "audio/wav") throw new ApiError(415, "not_audio", "Send audio/wav");
+    if (Number(c.req.header("content-length") ?? "0") > MAX_VOICE_WAV_BYTES)
+      throw new ApiError(413, "too_large", "10 seconds at most");
+    const buf = Buffer.from(await c.req.arrayBuffer());
+    try {
+      if (buf.length === 0 || buf.length > MAX_VOICE_WAV_BYTES)
+        throw new ApiError(413, "too_large", "10 seconds at most");
+      if (buf.subarray(0, 4).toString("latin1") !== "RIFF" || buf.subarray(8, 12).toString("latin1") !== "WAVE")
+        throw new ApiError(400, "not_audio", "Not a WAV file");
+      const out = await aiJob("voice", async (job) => {
+        const t = performance.now();
+        const present = ctx.relay.status === "connected";
+        const r = await hubChat(HUB_MODEL, async (chat) => {
+          const res = (await ctx.relay.voice?.(buf, ctx.ladderTimeoutMs)) ?? null; // 8 s, like the ladder
+          chat.set({ "flare.ok": !!res?.ok, ...(res?.model ? { "gen_ai.response.model": res.model } : {}) });
+          if (res?.error) chat.set({ "flare.error": res.error });
+          return res;
+        });
+        const guarded =
+          r?.ok && r.draft
+            ? guardSpan("enforce", (g) => {
+                const v = enforce(JSON.stringify(r.draft));
+                g.set({ "flare.valid": !!v });
+                return v;
+              })
+            : null;
+        const fallback = !present ? "hub_absent" : !r ? "timeout" : !r.ok ? "hub_error" : "invalid";
+        const ms = Math.round(performance.now() - t);
+        const res: DraftResponseT = guarded
+          ? { invite: guarded.invite, alt: guarded.alt, tier: "hub", ms }
+          : { invite: TEMPLATE_INVITE, alt: "", tier: "rules", ms };
+        job.set({
+          "flare.tier": res.tier,
+          "flare.ok": res.tier === "hub",
+          ...(guarded ? {} : { "flare.fallback": fallback }),
+        });
+        return res;
+      });
+      count("tier_ran.voice", out.tier);
+      return c.json(DraftResponse.parse(out));
+    } finally {
+      buf.fill(0);
+    }
   });
 
   // ICR-ML5: Fix the map. The hub drafts OSM tags; the guard runs again here; a person reviews

@@ -231,6 +231,17 @@ export class HostFlow {
     if (n) this.spot = { name: n, key: n, lat: this.spot?.lat ?? 0, lon: this.spot?.lon ?? 0 };
   }
 
+  /** Voice Flare (ADR-0028): the hub's draft from what the host said, with no photo. The
+   * invite shows over the outdoor scenery; the host checks the place on Send. */
+  useVoice(d: { invite: string; alt: string }): void {
+    this.photoBlob = null;
+    if (this.photo) URL.revokeObjectURL(this.photo);
+    this.photo = "";
+    this.alt = d.alt;
+    this.tier = "hub";
+    this.useWords(d.invite);
+  }
+
   useWords(words: string): void {
     this.words = words;
     const host = this.hostName || storedName();

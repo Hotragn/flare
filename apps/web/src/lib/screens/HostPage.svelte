@@ -199,7 +199,7 @@
 {:else if home && flow.screen === "camera"}
   <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
-  <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} />
+  <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} onvoice={(d) => { stopCamera(); flow.useVoice(d); }} />
 {:else if flow.screen === "develop"}
   <H2Develop view={flow.draft} photo={flow.photo} scene={flow.alt} spot={flow.spot?.name ?? ""} words={flow.words} tier={flow.tier} cloud={flow.cloudOptIn} onaskcloud={() => flow.askCloud()} chips={flow.chips} bind:own askLocation={flow.askLocation} bind:typedSpot onuse={(w) => flow.useWords(w)} onwrite={() => (flow.draft = "hub-unreachable")} onallowlocation={locate} onskiplocation={() => flow.typeSpot(typedSpot)} />
 {:else if flow.screen === "send"}

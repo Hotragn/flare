@@ -54,7 +54,7 @@
 </script>
 
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}
-  stage backdrop={photo} backdropAlt={scene}>
+  stage backdrop={photo} backdropAlt={scene} fallbackArt>
   {#snippet hero()}<p class="t-invite words">{words}</p>{/snippet}
   <Tip id="send" text="tip.send" />
   {#if askName}

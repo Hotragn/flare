@@ -728,6 +728,21 @@ describe("getGroupStats", () => {
   });
 });
 
+describe("draftFromVoice", () => {
+  it("200 template with no hub (ADR-0028), 400 not a WAV, 413, 415", async () => {
+    const wav = Buffer.alloc(200);
+    wav.write("RIFF", 0, "latin1");
+    wav.write("WAVE", 8, "latin1");
+    const r = await h.call("POST", "/api/v1/drafts/voice", { raw: wav, type: "audio/wav", key: null });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ tier: "rules", alt: "" });
+    const bad = (raw: Buffer, type = "audio/wav") => h.call("POST", "/api/v1/drafts/voice", { raw, type, key: null });
+    expect((await bad(Buffer.alloc(200))).status).toBe(400);
+    expect((await bad(Buffer.alloc(400_001))).status).toBe(413);
+    expect((await bad(wav, "audio/webm")).status).toBe(415);
+  });
+});
+
 describe("transcribeSpark", () => {
   it("503 when this server has no ElevenLabs key (ADR-0027); the full path is in voice.test.ts", async () => {
     const r = await h.call("POST", "/api/v1/voice/spark", { raw: Buffer.alloc(100, 1), type: "audio/webm", key: null });

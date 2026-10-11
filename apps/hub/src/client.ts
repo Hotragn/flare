@@ -3,7 +3,14 @@
 // with exponential backoff. Imports no filesystem module: photos never touch disk.
 import { HUB_PROTOCOL, type JobResultT, type LadderJobT, ToHubV11 } from "@flare/shared";
 import WebSocket from "ws";
-import { draftFromPhoto, isModelReady, ladderFromAsk, type OllamaConfig, tagsFromPhoto } from "./ollama.ts";
+import {
+  draftFromPhoto,
+  draftFromVoice,
+  isModelReady,
+  ladderFromAsk,
+  type OllamaConfig,
+  tagsFromPhoto,
+} from "./ollama.ts";
 
 export type HubOptions = {
   serverUrl: string;
@@ -13,7 +20,7 @@ export type HubOptions = {
   /** Drop the socket if the server sends nothing (not even a ping) for this long. Default 15 s (3 missed pings). */
   silenceMs?: number;
   /** Per-job budget, matching the server's wait (asyncapi: 6 s photo, 8 s ladder, 8 s tags). */
-  budgetMs?: { photo?: number; ladder?: number; tags?: number };
+  budgetMs?: { photo?: number; ladder?: number; tags?: number; voice?: number };
 };
 
 /** asyncapi `result` (shared JobResult, ICR-BE-1): draft for photo jobs, ladder for ladder jobs. */
@@ -37,7 +44,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     }
   }, 1000);
   watchdog.unref();
-  let waitingFor: { id: string; bytes: number; kind: "photo-draft" | "tags-draft" } | null = null;
+  let waitingFor: { id: string; bytes: number; kind: "photo-draft" | "tags-draft" | "voice-draft" } | null = null;
   // One model call at a time: Ollama is shared on this Mac, and order keeps results simple.
   let queue: Promise<void> = Promise.resolve();
   const enqueue = (fn: () => Promise<void>) => {
@@ -61,9 +68,10 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     photo: opts.budgetMs?.photo ?? 6000,
     ladder: opts.budgetMs?.ladder ?? 8000,
     tags: opts.budgetMs?.tags ?? 8000,
+    voice: opts.budgetMs?.voice ?? 8000,
   };
   // Whole milliseconds: AbortSignal.timeout() rejects fractions.
-  const remaining = (arrived: number, kind: "photo" | "ladder" | "tags") =>
+  const remaining = (arrived: number, kind: "photo" | "ladder" | "tags" | "voice") =>
     Math.floor(budget[kind] - (performance.now() - arrived));
   const isTimeout = (e: unknown) => ["TimeoutError", "AbortError"].includes((e as { name?: string }).name ?? "");
 
@@ -71,13 +79,22 @@ export function startHub(opts: HubOptions): { stop: () => void } {
   const runPhoto = async (job: NonNullable<typeof waitingFor>, photo: Buffer, arrived: number) => {
     const t = performance.now();
     const tags = job.kind === "tags-draft";
+    const voice = job.kind === "voice-draft"; // ADR-0028: the frame is WAV audio, not a JPEG
     let result: HubResult;
     try {
-      if (photo.length !== job.bytes || photo[0] !== 0xff || photo[1] !== 0xd8)
+      if (voice) {
+        if (photo.length !== job.bytes || photo.subarray(0, 4).toString("latin1") !== "RIFF")
+          throw Object.assign(new Error("bad audio"), { code: "bad_audio" });
+      } else if (photo.length !== job.bytes || photo[0] !== 0xff || photo[1] !== 0xd8)
         throw Object.assign(new Error("bad image"), { code: "bad_image" });
-      const left = remaining(arrived, tags ? "tags" : "photo");
+      const left = remaining(arrived, voice ? "voice" : tags ? "tags" : "photo");
       if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
-      if (tags) {
+      if (voice) {
+        const d = await draftFromVoice(opts.ollama, photo, AbortSignal.timeout(left));
+        result = d
+          ? { ...base(job.id, t), ok: true, draft: { invite: d.invite, alt: d.alt } }
+          : { ...base(job.id, t), ok: false, error: "unusable_answer" };
+      } else if (tags) {
         const d = await tagsFromPhoto(opts.ollama, photo, AbortSignal.timeout(left));
         result = d
           ? { ...base(job.id, t), ok: true, tags: d }
@@ -89,8 +106,8 @@ export function startHub(opts: HubOptions): { stop: () => void } {
           : { ...base(job.id, t), ok: false, error: "unusable_answer" };
       }
     } catch (e) {
-      const code =
-        (e as { code?: string }).code === "bad_image" ? "bad_image" : isTimeout(e) ? "timeout" : "model_unavailable";
+      const c = (e as { code?: string }).code;
+      const code = c === "bad_image" || c === "bad_audio" ? c : isTimeout(e) ? "timeout" : "model_unavailable";
       result = { ...base(job.id, t), ok: false, error: code };
     } finally {
       photo.fill(0); // clear the photo bytes as soon as the job ends
@@ -146,7 +163,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
         }
         const msg = m.data;
         if (msg.type === "ping") ws?.send(JSON.stringify({ type: "pong", t: msg.t }));
-        else if (msg.kind === "photo-draft" || msg.kind === "tags-draft")
+        else if (msg.kind === "photo-draft" || msg.kind === "tags-draft" || msg.kind === "voice-draft")
           waitingFor = { id: msg.id, bytes: msg.bytes, kind: msg.kind };
         else {
           const arrived = performance.now();

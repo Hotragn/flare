@@ -2064,6 +2064,26 @@
       "kind": "error",
       "where": "I11 Voice Spark (ADR-0027)"
     },
+    "voiceFlare.cta": {
+      "text": "Say it instead",
+      "kind": "button",
+      "where": "H1 camera, Voice Flare (ADR-0028)"
+    },
+    "voiceFlare.note": {
+      "text": "Or say it: where you are and what to do.",
+      "kind": "hint",
+      "where": "H1 camera, Voice Flare (ADR-0028)"
+    },
+    "voiceFlare.working": {
+      "text": "Writing your invite\u2026",
+      "kind": "status",
+      "where": "H1 camera, Voice Flare (ADR-0028)"
+    },
+    "voiceFlare.fail": {
+      "text": "Didn't catch a place. Take a photo or try again.",
+      "kind": "error",
+      "where": "H1 camera, Voice Flare (ADR-0028)"
+    },
     "spark.save": {
       "text": "Save it",
       "kind": "button",
@@ -4994,6 +5014,11 @@
       "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it. Say it for a Spark sends up to 10 seconds of your own voice to ElevenLabs once, only after you tap. We keep no audio. ElevenLabs may keep it under its own terms. We never record anyone else or a conversation.",
       "kind": "prose",
       "where": "site W4 (ADR-0027)"
+    },
+    "site.privacy.l.voiceFlare": {
+      "text": "You can say your Flare instead of taking a photo. Up to 10 seconds of your voice goes to our laptop once, over the encrypted link. Gemma 4 writes the invite from it. Nothing is kept, and the words it heard never come back.",
+      "kind": "prose",
+      "where": "site W4 (ADR-0028)"
     },
     "site.privacy.l.sleep": {
       "text": "Our server runs on a free plan that sleeps when nobody uses it. A Flare that ends while it sleeps is deleted the moment it wakes, not within 5 minutes.",

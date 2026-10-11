@@ -6,4 +6,5 @@ export * from "./plaintext.ts";
 export * from "./prompts/ladder.ts";
 export * from "./prompts/osm-tags.ts";
 export * from "./prompts/rest-loop.ts";
+export * from "./prompts/voice.ts";
 export * from "./sealed.ts";

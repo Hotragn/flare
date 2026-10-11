@@ -122,6 +122,13 @@ export class HubRelay {
     return this.send(id, JSON.stringify(header), photo, timeoutMs);
   }
 
+  /** ADR-0028: what the host said, as 16 kHz mono WAV, for an invite draft (asyncapi voiceJob, 8 s). */
+  voice(wav: Buffer, timeoutMs: number): Promise<RelayResult | null> {
+    const id = randomUUID();
+    const header = { type: "job", id, kind: "voice-draft", bytes: wav.length, mime: "audio/wav" };
+    return this.send(id, JSON.stringify(header), wav, timeoutMs);
+  }
+
   /**
    * Sends a Plan ladder job (asyncapi ladderJob; text only, nothing stored). Resolves null on
    * no hub, timeout (ADR-0007: 8 s) or failure.

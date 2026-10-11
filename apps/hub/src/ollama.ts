@@ -14,6 +14,8 @@ import {
   OSM_PROMPT,
   SYSTEM_PROMPT,
   USER_PROMPT,
+  VOICE_SYSTEM_PROMPT,
+  VOICE_USER_PROMPT,
 } from "@flare/shared";
 import { WARM_IMAGE_BASE64 } from "./warm-image.ts";
 
@@ -68,6 +70,24 @@ export async function draftFromPhoto(cfg: OllamaConfig, jpeg: Uint8Array, signal
     if (d) return d;
   }
   return null;
+}
+
+/**
+ * Voice Flare (ADR-0028): what the host said, as WAV, to the same guarded draft as a photo.
+ * Gemma 4 takes audio through Ollama's `images` field (checked on Ollama 0.40.2). No retry: at
+ * temperature 0 a second try gives the same answer, and the host can type instead.
+ */
+export async function draftFromVoice(cfg: OllamaConfig, wav: Uint8Array, signal?: AbortSignal): Promise<Draft | null> {
+  const text = await post(
+    cfg,
+    [
+      { role: "system", content: VOICE_SYSTEM_PROMPT },
+      { role: "user", content: VOICE_USER_PROMPT, images: [Buffer.from(wav).toString("base64")] },
+    ],
+    128,
+    signal,
+  );
+  return enforce(text);
 }
 
 /** Ask line to four steps with ML's ladder prompt v2 and enforceLadder(). No retry by default (ADR-0025). */
