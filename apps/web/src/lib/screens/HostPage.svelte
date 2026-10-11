@@ -62,7 +62,15 @@
   }
 
   async function shoot(video: HTMLVideoElement | null) {
-    if (!video || !video.videoWidth) return;
+    if (!video) return;
+    // A tap in the first frames, before the stream has a size, waits for it (up to 3 s) instead of doing nothing.
+    if (!video.videoWidth)
+      await new Promise<void>((r) => {
+        const done = () => r();
+        video.addEventListener("loadeddata", done, { once: true });
+        setTimeout(done, 3000);
+      });
+    if (!video.videoWidth) return;
     const c = document.createElement("canvas");
     c.width = video.videoWidth;
     c.height = video.videoHeight;
@@ -84,6 +92,7 @@
   }
 
   async function send() {
+    if (!flow.spot?.name && typedSpot.trim()) flow.typeSpot(typedSpot);
     const ok = await flow.send(kind);
     if (ok) void flow.share(); // the share sheet opens on its own (H4); still inside the tap's activation on most browsers
   }
@@ -125,7 +134,7 @@
 {:else if flow.screen === "develop"}
   <H2Develop view={flow.draft} photo={flow.photo} scene={flow.alt} spot={flow.spot?.name ?? ""} words={flow.words} tier={flow.tier} chips={flow.chips} bind:own askLocation={flow.askLocation} bind:typedSpot onuse={(w) => flow.useWords(w)} onwrite={() => (flow.draft = "hub-unreachable")} onallowlocation={locate} onskiplocation={() => flow.typeSpot(typedSpot)} />
 {:else if flow.screen === "send"}
-  <H3Send view={flow.sending ? "sending" : flow.error ? "error" : "ready"} photo={flow.photo} scene={flow.alt} words={flow.words} spot={flow.spot?.name ?? ""} bind:quorum={flow.quorum} bind:hostLine={flow.hostLine} bind:hostName={flow.hostName} askName={flow.askName} access={flow.access} nature={flow.nature} error={flow.error} onsend={send} onclose={exit} />
+  <H3Send view={flow.sending ? "sending" : flow.error ? "error" : "ready"} photo={flow.photo} scene={flow.alt} words={flow.words} spot={flow.spot?.name ?? ""} bind:quorum={flow.quorum} bind:hostLine={flow.hostLine} bind:hostName={flow.hostName} askName={flow.askName} askSpot={!flow.spot?.name} bind:typedSpot access={flow.access} nature={flow.nature} error={flow.error} onsend={send} onclose={exit} />
 {:else if flow.screen === "sent"}
   <H4Sent kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
 {:else if flow.screen === "kindling"}

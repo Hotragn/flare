@@ -33,16 +33,22 @@ for (let run = 1; run <= RUNS; run++) {
   const t0 = Date.now();
   await host.goto(`${srv.url}/app/`);
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
-  await host.getByRole("button", { name: "Use these" }).click({ timeout: 15_000 });
-  if (
-    await host
-      .getByLabel("Where are you?")
-      .isVisible()
-      .catch(() => false)
-  ) {
-    await host.getByLabel("Where are you?").fill("Ford Woods Park, by the pond");
+  // With no map pack wired (MAP's module), the location gives no name: type it in the sheet.
+  await host
+    .getByRole("button", { name: /Use these|Use mine/ })
+    .waitFor({ timeout: 15_000 })
+    .catch(async (e) => {
+      await host.screenshot({ path: path.join(OUT, "e2e-fail.png") });
+      throw e;
+    });
+  const sheetWhere = host.getByLabel("Where are you?");
+  if (await sheetWhere.isVisible().catch(() => false)) {
+    await sheetWhere.fill("Ford Woods Park, by the pond");
     await host.getByRole("button", { name: "Not now" }).click();
   }
+  await host.getByRole("button", { name: "Use these" }).click({ timeout: 15_000 });
+  const where = host.getByLabel("Where are you?");
+  if (await where.isVisible().catch(() => false)) await where.fill("Ford Woods Park, by the pond");
   const name = host.getByLabel("Your first name");
   if (await name.isVisible().catch(() => false)) await name.fill("Fuego");
   await host.getByRole("button", { name: "Send it" }).click();

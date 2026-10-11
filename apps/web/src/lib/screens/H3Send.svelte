@@ -20,6 +20,8 @@
     hostLine = $bindable(""),
     hostName = $bindable(""),
     askName = false,
+    askSpot = false,
+    typedSpot = $bindable(""),
     access = null,
     nature = "",
     error = "",
@@ -37,6 +39,8 @@
     hostLine?: string;
     hostName?: string;
     askName?: boolean; // first Flare on this phone: the host's own first name (sealed)
+    askSpot?: boolean; // no spot name from the map: the host types it (perm.locationHost.denied)
+    typedSpot?: string;
     access?: Access | null;
     nature?: string;
     error?: string;
@@ -46,7 +50,7 @@
   } = $props();
   let editing = $state(false);
   const showEdit = $derived(editing || view === "editing");
-  const shownLine = $derived(hostLine || (hostName.trim() && spot ? t("send.hostLine", { host: hostName.trim(), spot }) : ""));
+  const shownLine = $derived(hostLine || (hostName.trim() && (spot || typedSpot.trim()) ? t("send.hostLine", { host: hostName.trim(), spot: spot || typedSpot.trim() }) : ""));
 </script>
 
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}>
@@ -56,6 +60,9 @@
   </div>
   {#if askName}
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
+  {/if}
+  {#if askSpot}
+    <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} max={80} />
   {/if}
   <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
   {#if showEdit}
@@ -68,7 +75,7 @@
     <p class="err" role="alert"><Icon name="warning" />{error || t("err.network")}</p>
   {/if}
   {#snippet actions()}
-    <Button icon="share" loading={view === "sending"} disabled={askName && !hostName.trim()} onclick={onsend}>{view === "error" ? t("err.retry") : view === "offline" ? t("send.later") : t("send.cta")}</Button>
+    <Button icon="share" loading={view === "sending"} disabled={(askName && !hostName.trim()) || (askSpot && !typedSpot.trim())} onclick={onsend}>{view === "error" ? t("err.retry") : view === "offline" ? t("send.later") : t("send.cta")}</Button>
   {/snippet}
 </Screen>
 
