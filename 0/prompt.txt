@@ -1,0 +1,248 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. **Primary request and intent**
+   - The user is entering the DEV Hacktoberfest Open-Source AI Challenge Week 1, "Touch Grass". Deadline: Sun Oct 11, 11:59 PM PDT (Mon 06:59 UTC; 2:59 AM ET).
+   - The work runs "like a real software company, waterfall style": one specialist at a time. Each specialist:
+     - reads docs/handoffs/
+     - owns their scope completely
+     - leaves no TODOs or placeholders
+     - verifies with proof
+     - writes docs/handoffs/NN-role.md
+     - commits
+   - Keep docs/BUGLOG.md. Fix small earlier-phase issues and log them; write change requests for big ones.
+   - Follow-ups come via the manager session ("Those messages come from me, so treat them the same as mine").
+   - **Security and constraints, verbatim from the user:**
+     - "Secrets are already in .env, at <project>/flare/.env (if you're running in a worktree copy, read them from that path). They cover MongoDB Atlas, the Telegram bot, and RENDER_KEY for the Render API. Never print, log or commit them. .gitignore already protects .env."
+     - "Anything public waits for my yes: deploying under my accounts, making the repo public, publishing, posting, uploading, or messaging people."
+     - "Already approved, no need to ask: npm installs; installing Ollama with Homebrew and pulling gemma4:e4b; downloading the Gemma 4 E2B ONNX model (~3.2 GB) for browser tests; creating a private GitHub repo named flare on my account and pushing to it; keeping the Mac awake (caffeinate) during long work."
+     - "A separate lab session is running technical spikes in lab/ (git-ignored). Don't edit or commit lab/. The engineering lead will review its reports and import what we keep."
+     - "Real iPhone checks happen when we're awake. Build whatever page or script makes that quick, and we'll run it on our phones."
+   - **Writing rules:**
+     - Plain words, short sentences, concrete numbers. Every claim gets a number, link or proof.
+     - No em-dash chains, no emoji decoration in docs, no empty intros or outros.
+     - Banned words: seamless, leverage, robust, empower, unlock, elevate, delve, cutting-edge, revolutionize, game-changer, harness, synergy, holistic, paradigm, next-level, supercharge, effortless, ecosystem, tapestry, testament, "in today's fast-paced world", "it's not just X, it's Y", "let's dive in".
+     - UI copy: buttons 3 words max, messages 12 words max, warm and a bit playful, never cute at the cost of clarity.
+   - **Quality bar:** no timeboxes, no scope cuts. Each role produces its discipline's standard docs. Latest stable versions, checked first. Tests, types, error handling, docs. No stubs, no fake data. Premium feel.
+   - **Fixed points:** the Sunday daytime field test (11 AM to 3 PM ET near Fairlane Town Center, Dearborn MI; RC by 10 AM), then the deadline.
+   - **Current request (architect, from the manager):**
+     - Deliver in docs/architecture/:
+       - System architecture document with C4 diagrams (context, containers, components) and a deployment diagram.
+       - Physical DFDs at levels 0, 1 and 2 for the sensitive flows (photo, conditions, needs profile, location, deletion), with trust boundaries marked.
+       - Sequence diagrams, and state machines for Flare and Plan.
+       - ERD and data dictionary.
+       - Tech-stack ADRs with current versions, including the UI and motion libraries and the storage decision: Postgres vs MongoDB Atlas, weighing deletion guarantees, the "fully open" story and the partner prize.
+       - API contract for every endpoint and event: OpenAPI for HTTP, AsyncAPI for live events, covering the Telegram bot, the hub relay and the plain-text format.
+       - Offline and sync design, and on-device vs server AI placement with fallbacks.
+       - Security and privacy design, and privacy-safe observability.
+       - Performance budgets for the iPhone 13.
+       - Testing strategy and coding standards.
+     - Also deliver:
+       - A repo scaffold with tooling and scripts.
+       - An env config checker that reports set or missing only, never values.
+       - CI running clean.
+       - LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and SECURITY.md.
+     - Done = the repo builds, tests run, and a hello world runs end to end (phone page → server → hub relay → Ollama → back).
+     - Write handoff 07 for the engineering lead.
+     - Decide the 7 open questions from handoff 06 in ADRs. The founder's lean:
+       - Telegram conditions: don't process free text; "Add a condition" opens the link page; free-text DMs get the link back and are dropped.
+       - Readable text for bot posts and pushes: acceptable only for groups that chose Telegram. The host's phone sends the six words, place name and host name in plaintext, kept until Gone, disclosed on the privacy page.
+       - Photo to the laptop: the hub keeps nothing, processes in memory only, proven with a test.
+     - Build on the lab results:
+       - Photo AI runs on the hub, gemma4:e4b-it-q4_K_M, think:false, prompt-only, enforce(); 3.0 s per photo, quality 39/40.
+       - Outbound WebSocket relay from the Mac to the Render app. No Ollama on Render.
+       - Rules-only condition parser on the phone (40/40 core), always read back.
+       - Offline photos: six typed words with map-pack chips. No SmolVLM.
+       - Static 6.7 KB map pack.
+       - HTTPS from day one.
+       - Telegram: answerCallbackQuery for private replies, edit one message per Flare.
+   - **Founder decisions just given:**
+     1. Keep the shader wherever the gates allow.
+     2. Sound on by default; add a small mute control on screens that make sound and remember the choice on the device. (Done.)
+     3. "Comments on our DEV post" for accessibility feedback is OK.
+   - Earlier manager instructions still in force:
+     - Keep docs/handoffs/RESUME.md current and commit at checkpoints (usage limits).
+     - Repo and package name: `flare-outside`.
+     - The clone line github.com/Hotragn/flare-outside goes live only on the founder's yes.
+     - design/exports is not kept in git; a curated ~25 screens live in docs/design/screens/.
+
+2. **Key technical concepts**
+   - **Monorepo:** npm workspaces (packages/shared, apps/server, apps/hub, apps/web). TypeScript 6.0.3 (SvelteKit 3 needs ^6; TS 7.0.2 exists).
+   - **Node:** 24.21.0 LTS "Krypton" for production (.nvmrc, engines >=24.21.0); local Node 26.8.1. Node runs .ts directly (type stripping), tested working through workspace symlinks on 24.21.0 and 26. Requires erasableSyntaxOnly, allowImportingTsExtensions, .ts import extensions.
+   - **Server:** Hono 4.13.13 + @hono/node-server 2.1.4, ws 8.22.0, pino 10.4.0 with redaction, zod 4.6.5, pg 8.23.1, @electric-sql/pglite 0.5.8 for tests.
+   - **Tooling:** Vitest 5.0.3, Biome 2.5.15 (config migrated to "preset"), playwright-core 1.64.0 with the installed Chrome (`channel: "chrome"`, no browser download), @redocly/cli 2.62.1, @asyncapi/parser 3.6.3, yaml.
+   - **Web:** SvelteKit 3.0.1 / Svelte 5.57.2 / Vite 8.3.4 / Bits UI 2.19.5 / adapter-static 4.0.0. Config goes in the vite plugin, not svelte.config.js; `#lib/*` subpath imports with file extensions; tsconfig extends "$app/tsconfig"; override `@sveltejs/kit` (BUG-007/008).
+   - **Hub relay:** the Mac opens `wss://server/hub` with `Authorization: Bearer HUB_SECRET` (timing-safe compare). JSON text frames: hello, job header, result, ping/pong; the photo travels as a binary JPEG frame. 20 s timeout falls back to TEMPLATE_INVITE "Outside right now. Come?". Pings every 20 s; reconnect backoff 1 to 30 s.
+   - **Photo:** downscaled on the phone to 768 px, JPEG quality 0.7, sent as binary to POST /api/v1/drafts (≤ 1.5 MB, JPEG magic bytes checked). The buffer is zero-filled after the job.
+   - **Ollama:** request {model, stream:false, think:false, keep_alive "30m", options temp 0, seed 42, num_predict 128}; retry once; warm up at start. Ollama 0.40.2 is running with gemma4:e4b-it-q4_K_M.
+   - **Storage decision (to record in an ADR):** PostgreSQL (open license, Render-hosted). Deletion by ON DELETE CASCADE from gatherings, an expires_at column on every per-gathering row, and a sweeper. Atlas is not used (SSPL is not OSI-approved; Atlas TTL timing isn't guaranteed); its credentials stay unused as reference.
+   - **OQ-1 decided as variant B:** no coordinates or readable places on the server. The sealed blob holds the spot, the compass target and the Ember candidates' coordinates; the server keeps only candidate OSM ids and the chosen id.
+   - **Live updates:** planned as SSE for phones and WS only for the hub.
+   - **Push:** payload carries gathering id plus state; the service worker decrypts the sealed blob with the group key from IndexedDB; generic text as fallback.
+   - **SMS truncation:** "..." (ASCII, GSM-7) per the accepted CR.
+   - **Design system:** tokens generated from brand/tools/palette.mjs. Sun mode (data-sun) on outdoor screens. WebGL brand-shaped flame shader with a CSS fallback. Sounds in static/sounds. JSON copy deck (578 keys) read through `t()`.
+
+3. **Files and code sections** (repo root: <project>/flare; git repo on branch main, never pushed)
+   - **Earlier-role deliverables, all committed:**
+     - docs/research/00-challenge-and-field.md: 813 Week 1 entries analysed.
+     - docs/product/01-10 (PRD v1.1 with CR-1: Plan mode P0, Sparks and Hot spots P0, rest loop and Fix the map P1).
+     - docs/requirements/:
+       - SRS: 159 requirements.
+       - Use cases, 84 business rules, data flows and dictionary.
+       - 05-rtm.csv, with the design column filled.
+       - tools/trace.py (passes).
+       - fixtures/conditions-60.json.
+       - evidence/: pinned Overpass query; Fairlane counts 54 benches, 7 picnic tables, 7 restrooms, 3 drinking fountains, 32 parks, 28 sets of steps.
+     - docs/brand/ and brand/ (tools/build.mjs, shared.mjs, covers.mjs, contrast.mjs, icon-check.mjs, palette.mjs; 26 icons including sound and mute).
+     - docs/design/01-08, design/system/build-tokens.mjs, design/prototype/ (SvelteKit prototype, 33 screens, scripts export/a11y/focus-audit/copy-lint/readability with PORT support), docs/design/screens/ (27 JPEGs), docs/design/motion.md, design/motion/.
+     - docs/content/01-06, design/prototype/src/lib/copy/deck.json and index.ts.
+     - Handoffs: docs/handoffs/01-product, 02-analyst (includes OQ-1 and OQ-2), 03-brand, 04-product-design, 05-motion, 06-copy, plus RESUME.md.
+     - docs/BUGLOG.md: BUG-001 to BUG-019. The copy role has 009 to 013; motion's entries were renumbered 014 to 019.
+   - **Recent prototype changes:**
+     - design/prototype/src/lib/components/SoundToggle.svelte (new): a 44 px button using isMuted, setMuted and onMuteChange from #lib/motion/sound.ts (localStorage key), with aria-pressed, labels t("app.soundOn") "Turn sounds on" and t("app.soundOff") "Mute sounds", and mute/sound icons.
+     - Screen.svelte gained a `sound` prop; the toggle renders in `<span class="right">` next to the close button.
+     - Added `sound` to I1, I4, P4, I6, H6, P5, I9, I7 and H5. Commit 9949336.
+   - **Architect scaffold (uncommitted at the moment of summary):**
+     - package.json (root): name flare-outside, license AGPL-3.0-or-later, workspaces ["packages/*","apps/*"], engines node >=24.21.0. Scripts:
+       - check-env: node scripts/check-env.ts
+       - lint: biome check .
+       - typecheck: tsc -p tsconfig.json --noEmit && npm run -w apps/web check
+       - test: vitest run
+       - build: npm run -w apps/web build
+       - contracts: node scripts/check-contracts.ts
+       - dev:server, dev:hub, dev:web, start, hub
+       - e2e:hello: node scripts/e2e-hello.ts
+       - ci: lint && typecheck && test && contracts && build
+       - Also overrides {"@sveltejs/kit":"3.0.1"} and allowScripts {"@scarf/scarf": false} (a telemetry postinstall from @asyncapi/parser via spectral-core, denied).
+       - devDependencies (exact): typescript 6.0.3, @types/node 24.19.2, vitest 5.0.3, @biomejs/biome 2.5.15, playwright-core 1.64.0, @redocly/cli 2.62.1, @asyncapi/parser 3.6.3, yaml.
+     - tsconfig.json: es2024, nodenext, strict, noUncheckedIndexedAccess, verbatimModuleSyntax, erasableSyntaxOnly, allowImportingTsExtensions, noEmit, types node. Includes packages/*/src and test, apps/server and hub src and test, scripts.
+     - biome.json (migrated to `"preset": "recommended"`; ignores lab, design, brand, docs, web build, .svelte, yaml), vitest.config.ts, .nvmrc 24.21.0.
+     - .env.example: PORT=8787, PUBLIC_BASE_URL, DATABASE_URL, HUB_SECRET, FLARE_SERVER_URL=ws://localhost:8787, OLLAMA_URL, OLLAMA_MODEL=gemma4:e4b-it-q4_K_M, TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_USERNAME, TELEGRAM_ALLOWED_CHAT_IDS, TELEGRAM_WEBHOOK_SECRET, RENDER_KEY, TEST_AREA_*, plus MONGODB_* marked unused.
+     - .gitignore gained apps/web/.svelte-kit/ and apps/web/build/. Earlier additions: node_modules/, design/exports/, .claude/worktrees/, design/prototype build dirs, src/lib/generated, static/exports.
+     - .env: HUB_SECRET appended (32 random bytes base64url, never printed). Existing keys: DATA_API_CONTACT, GROUP_NAME, MONGODB_DB, MONGODB_URI, OLLAMA_MODEL, OLLAMA_URL, PORT, PUBLIC_BASE_URL, QUORUM_FLARE, QUORUM_PLAN, RENDER_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_BOT_USERNAME, TEST_AREA_LAT, TEST_AREA_LON, TEST_AREA_NAME, TEST_AREA_RADIUS_KM. No DATABASE_URL.
+     - packages/shared (package @flare/shared; exports "." → src/index.ts and "./*" → src/*.ts; depends on zod 4.6.5):
+       - src/photo.ts: SYSTEM_PROMPT (lab prompt v2, credited), USER_PROMPT, TEMPLATE_INVITE "Outside right now. Come?", countWords, extractJson, `enforce(text): Draft|null` (clips to 6 and 20 words, strips emoji and #, rejects FACE and IDENTITY regex matches).
+       - src/codes.ts: CODE_ALPHABET "REDACTED", CODE_LENGTH 5, CODE_RE, `newCode(rand: (n: Uint8Array<ArrayBuffer>) => Uint8Array<ArrayBuffer> = (n)=>crypto.getRandomValues(n))` with rejection sampling.
+       - src/plaintext.ts: MAX_BYTES 200, byteLength, `encodePlain({code,spot,need,ends})` producing "FLARE {code} {spot}. Need {n} more. Reply IN {code}. Ends {ends}" with "..." truncation, `parseReply(text)`.
+       - src/hub-protocol.ts: HUB_PROTOCOL "flare-hub.v1"; zod schemas HelloFromHub, JobHeader (uuid id, kind "photo-draft", bytes ≤ 2,000,000, mime image/jpeg), JobResult (ok, draft?, error enum model_unavailable/unusable_answer/timeout/bad_image, ms, model), Ping, Pong, FromHub, ToHub, plus types.
+       - src/api.ts: DraftResponse {invite, alt, tier hub|rules, ms}, Health {ok, version, hub connected|absent, db ok|down|not_configured}, MAX_PHOTO_BYTES 1,500,000.
+       - index.ts re-exports all of these.
+       - test/photo.test.ts, test/plaintext.test.ts.
+     - apps/server (@flare/server; deps @flare/shared, @hono/node-server 2.1.4, hono 4.13.13, pg 8.23.1, pino 10.4.0, ws 8.22.0, zod; dev @electric-sql/pglite 0.5.8, @types/pg, @types/ws):
+       - src/env.ts: loads FLARE_ENV_FILE or root .env via process.loadEnvFile. Fields: port, publicBaseUrl, databaseUrl, hubSecret, webBuildDir, version (RENDER_GIT_COMMIT), hubJobTimeoutMs (20000).
+       - src/log.ts: pino with redact paths and `routeTemplate()`, which replaces uuids and long ids with :id.
+       - src/hub/relay.ts: `secretMatches`, `bearer`, class HubRelay (explicit timeoutMs field, not a parameter property) with status, attach(ws), draft(photo): Promise<JobResultT|null>, close().
+       - src/db/db.ts: Db interface {query, close}; pgDb(url) (ssl unless localhost); memoryDb() (PGlite); migrate(db) using a schema_migrations table, splitting on `;` at line end.
+       - src/db/migrations/0001_init.sql: tables groups, members, gatherings (sealed bytea, telegram_plain jsonb, ember_candidates text[], expires_at; partial unique index on short_code where state <> 'gone'), photos, responses, jobs, bot_messages, live_locations (ct), push_subscriptions, sparks, hotspots, counters, idempotency. All per-gathering tables cascade.
+       - src/app.ts: `createApp({relay, db, version, webBuildDir})`. Hono with secureHeaders (CSP default-src self, referrer no-referrer, permissions policy), a request logger (method, route template, status, ms), GET /api/v1/health, POST /api/v1/drafts (415, 413 and 400 checks; relay.draft; zero-fills the buffer; enforce() again; template fallback with tier "rules"), and static serving of the web build with immutable caching for _app/immutable.
+       - src/main.ts: serve, then WebSocketServer noServer with maxPayload 2 MB. On upgrade, /hub plus a bearer check, else 401. Migrates the DB when DATABASE_URL is set. SIGTERM/SIGINT shutdown.
+       - test/helpers.ts (startServer, SECRET, fakeJpeg).
+       - test/app.test.ts: health, security headers, template fallback, hub draft clipped to "Golden pond, come sit with me", timeout, 415/400/413, relay auth 401.
+       - test/db.test.ts: migrate is idempotent; no lat/lon/spot/name columns outside schema_migrations and counters; cascade delete leaves 0 rows; one live short code only.
+     - apps/hub (@flare/hub; deps @flare/shared, ws):
+       - src/ollama.ts: chat(cfg, imageBase64|null) with think false, the lab options, AbortSignal timeout; draftFromPhoto with retry; isModelReady via /api/tags.
+       - src/client.ts: `startHub({serverUrl, secret, ollama, onLog})` sends hello with ready, answers pings, takes header then binary job, validates JPEG bytes, zero-fills the photo, sends the result, reconnects with backoff. No fs import.
+       - src/main.ts: loads .env, warms the model, starts the hub.
+       - test/hub.test.ts: asserts no node:fs or child_process import; runs a job end to end against a fake Ollama and fake server, checks think:false plus the image, and checks no tmp files are created.
+     - apps/web (@flare/web; imports "#lib/*"; SvelteKit 3 devDeps): vite.config.ts (plugin options plus proxy /api → localhost:8787), tsconfig extends $app/tsconfig, app.html, routes/+layout.ts (prerender), +page.svelte, src/lib/photo.ts `toJpeg768(file, max=768, quality=0.7)` using createImageBitmap and OffscreenCanvas, and routes/hello/+page.svelte (file input data-testid="photo", status, invite, alt and meta test ids; POSTs to /api/v1/drafts and parses DraftResponse).
+   - **Latest verification:** `npx vitest run` passes 5 files, 21 tests. `tsc --noEmit` exits 0. `biome check .` is clean after `--write` and the migrate. `npm audit`: 0 vulnerabilities.
+
+4. **Errors and fixes**
+   - **Research:**
+     - DEV API pagination missed entries; fixed by a union with the search feed (BUG-001).
+     - API rate limits; used CDN HTML instead (BUG-002).
+     - Page extraction over-captured; fixed the end marker (BUG-003).
+     - Overpass was busy or stale (BUG-004).
+     - BLS and CDC blocked scripts; read BLS in the browser and used the CDC DHDS API (BUG-005).
+   - **Brand:**
+     - Broken "g" in opentype path output; fixed with absPath (BUG-006).
+     - Grain made the splash screens 40 MB; removed grain from them.
+     - Icon too dim; enlarged.
+   - **Prototype:**
+     - Nested kit 2 audit issues; fixed with an override (BUG-007).
+     - SvelteKit 3 config, $lib and tsconfig changes (BUG-008).
+     - A prop named `state` clashed with `$state`; renamed to `view`.
+     - Compass rotation: switched to the SVG transform attribute.
+     - axe found 90 violations; all fixed.
+     - The focus audit found a 37 px button; fixed with flex:none.
+   - **I made mistakes:**
+     - The first merge commit included .claude/worktrees as embedded repos. I removed them from the index, amended, and git-ignored the folder.
+     - The filter-branch history rewrite (approved by the founder) deleted design/exports from disk. Expected; it's regenerable.
+   - **Merge conflicts:** BUGLOG ids renumbered, PORT lines taken from theirs, I4 merged by hand.
+   - **Subagents** first hit the usage limit with no changes and were restarted.
+   - **Architect:**
+     - A test included internal "name" columns; excluded schema_migrations and counters.
+     - My expected clipped invite was wrong; fixed the expectation.
+     - tsc: a parameter property isn't erasable syntax; changed to an explicit field.
+     - Uint8Array generics; typed as Uint8Array<ArrayBuffer>.
+     - Biome deprecated "recommended"; ran biome migrate.
+
+5. **Problem solving**
+   - Field gaps the design targets: no quorum entries, few group or accessibility entries, few iPhone-tested entries.
+   - Name collision with the App Store app "Flare - For Groups"; using the descriptor and the flare-outside name.
+   - Motion results:
+     - 60 fps in throttled Chrome; the iPhone is unverified (/lab/fps, /lab/haptics).
+     - The switch-overlay haptic may not work from iOS 26.5.
+   - Copy results: 578 strings, grade 2.0 average, worst SMS 89 bytes.
+   - Re-verify after the merges:
+     - check 0/0
+     - copy-lint 0 problems
+     - export 189 screens + 33 wireframes
+     - axe 0 violations on 193 targets
+     - focus audit 0 small targets
+     - invite JS 61.6 KB gzip (budget 150)
+
+6. **All user messages**
+   - Initial brief, given directly. It contains the security constraints, writing rules and quality bar quoted in section 1, and asked for a read of the challenge and field in 10 bullets or fewer.
+   - All later messages came via the manager session (cross-session messages from "Dev relay login"), which the user said to treat as their own:
+     1. Founder brief for Flare: quorum, fire states, accessibility, Telegram plus links; facts (4 iPhones, Dearborn, Sunday); asked for questions, then the PM.
+     2. Answers (test 11 AM to 3 PM ET; ask for each approval; bot only in the "Flare test" group; first names only; detect capabilities at runtime; FLARE-SPEC v2 replaces the other files), then the PM role brief.
+     3. CR-1 (Plan mode in, Sparks and Hot spots P0, rest loop P1, Fix the map P1 draft only, hub conditions P0, phone tier P1), then the analyst role.
+     4. Approved; OQ notes for the architect (coordinates off the server; fade and "only the long one"); brand role.
+     5. Brand approved; name decision; redo the share images and check the icon at 60/120 px; product designer role.
+     6. Usage-limit heads-up: commit and keep RESUME.md current.
+     7. Lab results FYI: flame shader, photo AI on the hub at about 3 s with a typed fallback, 6.7 KB map pack.
+     8. Usage at 84%: commit now.
+     9. Design feedback: flame in the meter, Sparks on the invite, use the empty space, compass pointer, texture and depth.
+     10. Design approved; drop exports from git history, keep a curated ~25 screens, regenerable by script; the clone line is fine; motion (4c) and copy (4d) as parallel subagents.
+     11. Usage reset: resume the subagents, merge, re-verify.
+     12. (Latest) Approved. Decisions: keep the shader; sound on by default plus a mute control remembered on the device; DEV comments are OK. Then the architect role with inputs A (lab results) and B (the 7 open questions, with the founder's lean), and the full deliverables list.
+
+7. **Pending tasks (architect role)**
+   - scripts/check-env.ts: reports set or missing per key and app, never values; reads FLARE_ENV_FILE or the root .env. Test it.
+   - packages/contracts or docs/architecture/contracts:
+     - openapi.yaml covering every endpoint: groups, members, gatherings (Flare and Plan), responses, fades, arrivals, Done, sparks, hot spots, push subscribe, drafts, health, the deletion audit, Telegram webhook, SSE events.
+     - asyncapi.yaml covering the /hub relay and the SSE channel.
+     - The plain-text format spec.
+     - scripts/check-contracts.ts validating with redocly and the asyncapi parser.
+   - scripts/e2e-hello.ts: start the server and hub, run Playwright with Chrome on /hello/, upload a fixture JPEG (our own illustration rendered, not a lab or Commons photo), assert tier "hub" from real Ollama. Build the web app first.
+   - Web app: `npm run -w apps/web check` and build. Ensure the root typecheck script works.
+   - .github/workflows/ci.yml on Node 24.21.0 (lint, typecheck, test, contracts, build; e2e skipped in CI since there's no Ollama there). Optionally push to the pre-approved private repo "flare" to prove CI.
+   - LICENSE (AGPL-3.0-or-later full text, e.g. via the npm spdx-license-list package), CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, root README.
+   - docs/architecture/:
+     - SAD with C4 context, container, component and deployment diagrams.
+     - Physical DFDs at levels 0 to 2 with trust boundaries.
+     - Sequence diagrams; Flare and Plan state machines; ERD plus data dictionary.
+     - ADRs, numbered as referenced in code: ADR-0004 Postgres storage, ADR-0006 hub relay, ADR-0009 no readable places or coordinates on the server, ADR-0011 hub in-memory photos, ADR-0012 SMS "..." truncation. Plus ADRs for stack, UI (Svelte, Bits UI), motion (WebGL shader), Telegram, push, link previews, Forget-this-group (SRS-ID-6), short code length 5, license, and Node type stripping.
+     - Offline and sync design, AI placement, security and privacy, observability (08-security-privacy.md is referenced in log.ts), performance budgets, testing strategy, coding standards.
+   - Handoff docs/handoffs/07-architect.md. Update RESUME.md. Log new bugs (BUG-020+). Commit with the Co-Authored-By line. Send the manager a summary.
+
+8. **Current work**
+   - Building the architect scaffold. Just finished: shared, server, hub and web scaffold files; tests all passing; tsc clean; Biome migrated and clean.
+   - Last command output: `biome migrate --write` set `"preset": "recommended"`; `biome check .` reported "Checked 35 files... No fixes applied."; vitest ran again (passing).
+   - Nothing from the architect role is committed yet. The latest commit is 9949336 (mute control).
+
+9. **Next step**
+   - Continue the architect deliverables per the latest request ("Done = the repo builds, tests run, a hello-world runs end to end (phone page → server → hub relay → Ollama → back), and every engineer has a contract to build against. Write the handoff for the engineering lead.").
+   - Immediate order:
+     1. Commit the current scaffold checkpoint and update RESUME.md.
+     2. Write scripts/check-env.ts.
+     3. Build apps/web, then write and run scripts/e2e-hello.ts against the live Ollama.
+     4. Write the contracts and their checker, then CI and the open-source files.
+     5. Write the docs/architecture documents and ADRs, then handoff 07.
+     6. Commit and send the manager the combined summary.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: ~/.claude/projects/-project-flare/904c52d9-f200-4552-8ce5-05e400952efa.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.
