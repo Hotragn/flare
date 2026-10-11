@@ -13,9 +13,20 @@ export const BOT = "FairlaneFlareBot";
 
 export type World = Awaited<ReturnType<typeof makeWorld>>;
 
+// One PGlite per test file (start-up is the slow part); each world empties it first.
+let shared: Promise<Db> | null = null;
+const sharedDb = () => {
+  shared ??= memoryDb().then(async (db) => {
+    await migrate(db);
+    return db;
+  });
+  return shared;
+};
+
 export async function makeWorld(opts: { editEveryMs?: number; photoWaitMs?: number } = {}) {
-  const db: Db = await memoryDb();
-  await migrate(db);
+  const db: Db = await sharedDb();
+  await db.query("delete from groups");
+  await db.query("delete from idempotency");
   const tg: FakeBotApi = await startFakeBotApi();
   const groupId = randomUUID();
   const hostId = randomUUID();
@@ -149,7 +160,6 @@ export async function makeWorld(opts: { editEveryMs?: number; photoWaitMs?: numb
       bot.close();
       await bot.idle();
       await tg.close();
-      await db.close();
     },
   };
 }
