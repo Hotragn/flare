@@ -78,7 +78,7 @@ try {
       .isVisible({ timeout: 5_000 })
       .catch(() => false),
   );
-  await page.getByRole("button", { name: "Pocket it" }).click();
+  await page.getByRole("button", { name: "Back to you" }).click();
   await page.getByText(/One more yes: 2 in/).waitFor({ timeout: 10_000 });
   check("a yes never shows a name", !(await page.getByText(/(Amor|Benny|Kai) said yes/).count()));
   await shot("2-kindling");
@@ -103,7 +103,7 @@ try {
   await shot("4-compass");
   await page.getByRole("button", { name: "I'm here" }).click();
   await page.getByText("You made it.").waitFor({ timeout: 10_000 });
-  await page.getByRole("button", { name: "Pocket it" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByLabel("Your Spark").fill("The light on the water at 5");
   await shot("5-spark");
   await page.getByRole("button", { name: "Save it" }).click();

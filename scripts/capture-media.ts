@@ -92,7 +92,7 @@ async function hostSends(host: Page, quorum: string, prefix: string | null): Pro
   await host.getByRole("button", { name: "Light a Flare" }).click({ timeout: 15_000 });
   await host.getByRole("button", { name: "Pick a photo" }).waitFor({ timeout: 15_000 });
   await host.locator('input[type="file"]').first().setInputFiles(photo);
-  const use = host.getByRole("button", { name: "Use these" });
+  const use = host.getByRole("button", { name: "Use this" });
   await use.waitFor({ timeout: 20_000 });
   const where = host.getByLabel("Where are you?");
   if (await where.isVisible().catch(() => false)) {

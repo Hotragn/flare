@@ -102,7 +102,7 @@ for (let run = 1; run <= RUNS; run++) {
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
   // With no map pack wired (MAP's module), the location gives no name: type it in the sheet.
   await host
-    .getByRole("button", { name: /Use these|Use my words/ })
+    .getByRole("button", { name: /Use this|Use my words/ })
     .waitFor({ timeout: 15_000 })
     .catch(async (e) => {
       await host.screenshot({ path: path.join(OUT, "e2e-fail.png") });
@@ -113,7 +113,7 @@ for (let run = 1; run <= RUNS; run++) {
     await sheetWhere.fill("Ford Woods Park, by the pond");
     await host.getByRole("button", { name: "Not now" }).click();
   }
-  await host.getByRole("button", { name: "Use these" }).click({ timeout: 15_000 });
+  await host.getByRole("button", { name: "Use this" }).click({ timeout: 15_000 });
   const where = host.getByLabel("Where are you?");
   if (await where.isVisible().catch(() => false)) await where.fill("Ford Woods Park, by the pond");
   const name = host.getByLabel("Your first name");

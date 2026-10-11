@@ -14,6 +14,7 @@
     quorum = 2,
     error = "",
     canTakeBack = true,
+    doneLabel = "",
     ondone,
     ontakeback,
   }: {
@@ -23,6 +24,8 @@
     quorum?: number;
     error?: string;
     canTakeBack?: boolean;
+    /** The demo says where Done goes ("Back to you"). */
+    doneLabel?: string;
     ondone?: () => void;
     ontakeback?: () => void;
   } = $props();
@@ -43,7 +46,7 @@
     {#if error}<p class="err" role="alert">{error}</p>{/if}
   </div>
   {#snippet actions()}
-    <Button onclick={ondone}>{t("sent.pocket")}</Button>
+    <Button onclick={ondone}>{doneLabel || t("sent.pocket")}</Button>
     {#if view !== "taken-back" && canTakeBack}<Button variant="text" onclick={ontakeback}>{t("in.takeBack")}</Button>{/if}
   {/snippet}
 </Screen>

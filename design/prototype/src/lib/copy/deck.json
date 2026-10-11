@@ -231,6 +231,31 @@
       "kind": "status",
       "where": "demo, after the friend's view (fresh-eyes round 3)"
     },
+    "demo.youHost": {
+      "text": "You: {host}, the host",
+      "kind": "status",
+      "where": "demo (fresh-eyes round 5)"
+    },
+    "demo.youFriend": {
+      "text": "You: Amor, a friend",
+      "kind": "status",
+      "where": "demo (fresh-eyes round 5)"
+    },
+    "demo.coachLit": {
+      "text": "Not enough said yes, so it shrank. Tap Find them.",
+      "kind": "hint",
+      "where": "demo (fresh-eyes round 5)"
+    },
+    "demo.coachFind": {
+      "text": "It points to the bench. Tap I'm here when you arrive.",
+      "kind": "hint",
+      "where": "demo (fresh-eyes round 5)"
+    },
+    "demo.next": {
+      "text": "Next",
+      "kind": "button",
+      "where": "demo (fresh-eyes round 5)"
+    },
     "demo.shrinkHint": {
       "text": "Not enough yet. Skip ahead to see it shrink.",
       "kind": "hint",
@@ -823,7 +848,7 @@
       "owner": "apps/web/src/lib/ai"
     },
     "develop.use": {
-      "text": "Use these",
+      "text": "Use this",
       "kind": "button",
       "where": "H2"
     },
@@ -1623,7 +1648,7 @@
       "where": "InfoLines"
     },
     "access.unknown": {
-      "text": "Access unknown here",
+      "text": "No bench or restroom info here",
       "kind": "label",
       "where": "I1, I6, I9, H3"
     },
@@ -3979,7 +4004,7 @@
       "where": "site"
     },
     "site.nav.run": {
-      "text": "Run it",
+      "text": "Host your own",
       "kind": "button",
       "where": "site"
     },
@@ -4301,7 +4326,7 @@
       "where": "site W2"
     },
     "site.how.s2.body": {
-      "text": "Each yes grows the flame. Everyone sees the count, never the names. Add a condition like “only if Amor comes”.",
+      "text": "Each yes grows the flame. Everyone sees the count, never the names. Add a condition like “only if Sam comes”.",
       "kind": "prose",
       "where": "site W2"
     },

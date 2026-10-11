@@ -5,7 +5,7 @@
   import Hearth from "../components/Hearth.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
-  let { theme = "sun", here = 1, ondone }: { theme?: Theme; here?: number; ondone?: () => void } = $props();
+  let { theme = "sun", here = 1, doneLabel = "", ondone }: { theme?: Theme; here?: number; doneLabel?: string; ondone?: () => void } = $props();
 </script>
 
 <Screen {theme} close={false}>
@@ -15,7 +15,7 @@
     {#if here > 1}<p class="t-sun">{t("here.count", { n: here })}</p>{/if}
   </div>
   {#snippet actions()}
-    <Button onclick={ondone}>{t("sent.pocket")}</Button>
+    <Button onclick={ondone}>{doneLabel || t("sent.pocket")}</Button>
   {/snippet}
 </Screen>
 

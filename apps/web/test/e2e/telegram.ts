@@ -94,13 +94,13 @@ async function sendFlare(page: Page): Promise<string> {
   await page.goto(`${URL0}/app/`);
   await page.getByRole("button", { name: "Light a Flare" }).click({ timeout: 15_000 }); // H0 Home first
   await page.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
-  await page.getByRole("button", { name: /Use these|Use my words/ }).waitFor({ timeout: 15_000 });
+  await page.getByRole("button", { name: /Use this|Use my words/ }).waitFor({ timeout: 15_000 });
   const where = page.getByLabel("Where are you?");
   if (await where.isVisible().catch(() => false)) {
     await where.fill("Ford Woods Park, by the pond");
     await page.getByRole("button", { name: "Not now" }).click();
   }
-  const use = page.getByRole("button", { name: "Use these" });
+  const use = page.getByRole("button", { name: "Use this" });
   if (
     await use.waitFor({ timeout: 15_000 }).then(
       () => true,

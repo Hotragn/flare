@@ -171,6 +171,8 @@
   <!-- The demo's own notes sit in a labelled landmark of their own (axe: region). -->
   <aside class="notes" aria-label={t("demo.badge")}>
     <p class="badge" role="status">{t("demo.badge")}</p>
+    <!-- Whose screen this is, all the way through (fresh-eyes round 5). -->
+    {#if step !== "send" && step !== "done"}<p class="who">{["friend", "condition", "readback", "friendIn"].includes(step) ? t("demo.youFriend") : t("demo.youHost", { host: me })}</p>{/if}
     {#if toast}<p class="toast" role="status">{toast}</p>{/if}
   </aside>
 
@@ -199,15 +201,17 @@
     <I3Readback {info} line={condLine} chips={condRead.split(", ").filter(Boolean)} onyes={amorYes} onfix={() => (step = "condition")} onclose={() => (step = "friend")} />
   {:else if step === "friendIn"}
     <aside class="notes" aria-label={condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}><p class="role" role="status">{condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}</p></aside>
-    <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
+    <I4YoureIn doneLabel={t("demo.backToYou")} have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
   {:else if step === "lit"}
+    {#if demo.g?.ember_choice}<aside class="notes" aria-label={t("demo.coachLit")}><p class="role coach-low" role="status">{t("demo.coachLit")}</p></aside>{/if}
     <div class="layer">
       <I6Lit view={demo.g?.ember_choice ? "smaller" : "lit"} {info} smallerAt={bench} onfind={compass} onhere={here} onclose={leave} />
     </div>
   {:else if step === "compass"}
+    <aside class="notes" aria-label={t("demo.coachFind")}><p class="role coach-low" role="status">{t("demo.coachFind")}</p></aside>
     <I7Compass name={bench.charAt(0).toUpperCase() + bench.slice(1)} status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={150} {bearing} onhere={here} onclose={() => (step = "lit")} />
   {:else if step === "here"}
-    <I8Here here={demo.have()} ondone={() => (step = "spark")} />
+    <I8Here doneLabel={t("demo.next")} here={demo.have()} ondone={() => (step = "spark")} />
   {:else if step === "spark"}
     <I11Spark onsave={(l) => { sparkLine = l; outside(); }} onskip={outside} />
   {:else if step === "outside"}
@@ -237,14 +241,16 @@
   .demo.coach :global(.actions) { visibility: hidden; }
   .layer { position: absolute; inset: 0; }
   .notes { display: contents; }
+  .who { position: fixed; top: calc(env(safe-area-inset-top, 0) + 52px); left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 30; margin: 0; padding: 6px 12px; border-radius: 999px; background: rgb(0 0 0 / 0.55); color: #fff; font-weight: 700; font-size: 0.8125rem; }
+  .coach-low { top: auto !important; bottom: calc(env(safe-area-inset-bottom, 0) + 150px); }
   .badge { position: fixed; top: calc(env(safe-area-inset-top, 0) + 14px); left: 50%; transform: translateX(-50%); z-index: 30; white-space: nowrap; margin: 0;
     padding: 6px 14px; border-radius: 999px; background: #fff; color: #111; font-weight: 700; font-size: 0.875rem; box-shadow: 0 2px 10px rgb(0 0 0 / 0.25); }
-  .toast { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0;
+  .toast { position: fixed; top: calc(env(safe-area-inset-top, 0) + 92px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0;
     padding: 10px 18px; border-radius: 999px; background: var(--c-gold-400); color: #111; font-weight: 700; }
   .control { position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; border-radius: 28px 28px 0 0 !important; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0)) !important; display: flex; flex-direction: column; gap: 8px; align-items: stretch;
     padding: 14px; border-radius: 20px; background: rgb(255 255 255 / 0.94); color: #111; box-shadow: 0 8px 30px rgb(0 0 0 / 0.3); }
   .control p { margin: 0; font-weight: 600; }
-  .role { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0; width: max-content; max-width: calc(100% - 32px); text-align: center;
+  .role { position: fixed; top: calc(env(safe-area-inset-top, 0) + 92px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0; width: max-content; max-width: calc(100% - 32px); text-align: center;
     padding: 8px 16px; border-radius: 999px; background: #111; color: #fff; font-weight: 700; font-size: 0.9375rem; }
   .done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
   .done h1 { margin: 0; }
