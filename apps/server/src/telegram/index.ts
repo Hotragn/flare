@@ -44,6 +44,17 @@ export const parseChatIds = (v: string | undefined): Set<number> =>
       .map(Number),
   );
 
+/** Bot settings from env, or null when the bot is not configured (BE then skips mountTelegram). */
+export function telegramEnv(
+  env: NodeJS.ProcessEnv = process.env,
+): Pick<TelegramDeps, "token" | "webhookSecret" | "botUsername" | "allowedChatIds"> | null {
+  const token = env.TELEGRAM_BOT_TOKEN ?? "";
+  const webhookSecret = env.TELEGRAM_WEBHOOK_SECRET ?? "";
+  const botUsername = env.TELEGRAM_BOT_USERNAME ?? "";
+  if (!/^\d+:[\w-]{30,}$/.test(token) || !/^[A-Za-z0-9_-]{16,256}$/.test(webhookSecret) || !botUsername) return null;
+  return { token, webhookSecret, botUsername, allowedChatIds: parseChatIds(env.TELEGRAM_ALLOWED_CHAT_IDS) };
+}
+
 const err = (c: Context, status: 400 | 401 | 403 | 404 | 409 | 410 | 413 | 415 | 422, code: string, message: string) =>
   c.json({ code, message }, status);
 
