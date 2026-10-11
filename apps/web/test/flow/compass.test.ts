@@ -1,5 +1,7 @@
 // Compass math, sensor order and speech cadence (FE4). Spike E3 decided the order.
+
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { createGuide } from "../../src/lib/compass/guide.ts";
 import { speechDue } from "../../src/lib/motion/speech.ts";
 import { bearingDeg, distanceM, relative, roundMeters, startSensors } from "../../src/lib/screens/flow/compass.ts";
 
@@ -69,13 +71,14 @@ describe("compass (FE4)", () => {
     vi.stubGlobal("navigator", {});
     const seen: (number | null)[] = [];
     const stop = startSensors(
-      (r) => seen.push(r.heading),
+      createGuide({ lat: 42.32, lon: -83.21 }),
+      (s) => seen.push(s.heading),
       () => {},
     );
     await Promise.resolve();
     await Promise.resolve();
     target.dispatchEvent(Object.assign(new Event("deviceorientation"), { webkitCompassHeading: 270 }));
-    expect(seen).toEqual([270]);
+    expect(seen).toEqual([270]); // the first reading is taken as is; later ones are smoothed
     stop();
   });
 
