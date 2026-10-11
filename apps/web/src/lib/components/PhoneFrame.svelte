@@ -7,6 +7,8 @@
 <div class="phone">{@render children()}</div>
 
 <style>
-  .phone { height: 100vh; height: 100dvh; max-width: var(--l-max-width, 480px); margin: 0 auto; overflow: hidden; background: var(--bg); }
+  /* translateZ makes this the box that position: fixed screens fill, so on a desktop the
+     onboarding, demo and sheets stay in the phone-width column too (fresh-eyes #19). */
+  .phone { position: relative; transform: translateZ(0); height: 100vh; height: 100dvh; max-width: var(--l-max-width, 480px); margin: 0 auto; overflow: hidden; background: var(--bg); }
   :global(html:has(.phone)), :global(body:has(.phone)) { background: var(--bg); overscroll-behavior: none; }
 </style>

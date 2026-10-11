@@ -55,6 +55,17 @@
       // private mode: shown again next time
     }
   };
+  // Fresh-eyes #1: once the flow moves past the camera, onboarding is done and never shows behind Send.
+  $effect(() => {
+    if (onboarding && (flow.screen !== "camera" || !home)) finishOnboarding();
+  });
+  // Back from the demo, a page restored from the back/forward cache can bring old layers with
+  // it; start clean instead.
+  onMount(() => {
+    const restored = (e: PageTransitionEvent) => e.persisted && location.reload();
+    addEventListener("pageshow", restored);
+    return () => removeEventListener("pageshow", restored);
+  });
   let homeAt = $state<LatLon | null>(null);
   let homePack = $state<MapPack | null>(null);
   let weather = $state<{ temp_f: number; rain_likely: boolean } | null>(null);
@@ -181,7 +192,7 @@
   const exit = () => location.assign("/app/");
 </script>
 
-{#if onboarding && flow.screen === "camera"}
+{#if onboarding && home && flow.screen === "camera"}
   <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
 {:else if home && flow.screen === "camera"}
   <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />

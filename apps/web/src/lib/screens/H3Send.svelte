@@ -67,7 +67,11 @@
   {#if showEdit}
     <TextField label={t("send.hostLineLabel")} bind:value={hostLine} hint={t("send.hostLineHint")} max={80} />
   {:else}
-    <p class="hostline"><span>{shownLine}</span><button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => (editing = true)}><Icon name="edit" /></button></p>
+    <!-- Fresh-eyes #12: a labelled row with its value and a visible Edit, never a lone pencil. -->
+    <div class="hostline">
+      <div><p class="lbl t-small">{t("send.hostLineLabel")}</p><p class="val">{shownLine || t("send.hostLineEmpty")}</p></div>
+      <button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => (editing = true)}><Icon name="edit" size={18} /><span>{t("send.edit")}</span></button>
+    </div>
   {/if}
   <InfoLines {access} {nature} />
   {#if view === "error" || error}
@@ -80,7 +84,10 @@
 
 <style>
   .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
-  .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 4px 0; font-weight: 600; }
-  .edit { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; color: var(--text); }
+  .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; }
+  .hostline p { margin: 0; }
+  .lbl { font-weight: 700; opacity: 0.85; }
+  .val { font-weight: 600; }
+  .edit { min-height: 44px; flex: none; display: inline-flex; gap: 6px; align-items: center; padding: 0 14px; border: 1.5px solid currentColor; border-radius: 999px; background: transparent; color: var(--text); font-weight: 700; }
   .err { display: flex; gap: 8px; align-items: center; margin: 0; padding: 12px 14px; border-radius: var(--r-md); border: 2px solid var(--c-ember-700); font-weight: 700; }
 </style>

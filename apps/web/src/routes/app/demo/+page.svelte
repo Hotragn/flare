@@ -9,11 +9,18 @@
   import I6Lit from "#lib/screens/I6Lit.svelte";
   import I7Compass from "#lib/screens/I7Compass.svelte";
   import I11Spark from "#lib/screens/I11Spark.svelte";
+  import I1Invite from "#lib/screens/I1Invite.svelte";
+  import I2Condition from "#lib/screens/I2Condition.svelte";
+  import I4YoureIn from "#lib/screens/I4YoureIn.svelte";
+  import I8Here from "#lib/screens/I8Here.svelte";
+  import Screen from "#lib/components/Screen.svelte";
+  import Flame from "#lib/components/Flame.svelte";
   import I12Outside from "#lib/screens/I12Outside.svelte";
   import { DEMO_BENCHES, DEMO_FRIENDS, DEMO_SCENE, DEMO_SPOT, DEMO_WORDS, DemoEngine } from "#lib/demo/demo.svelte.ts";
   import type { InviteInfo } from "#lib/components/parts.ts";
 
-  type Step = "send" | "kindling" | "lit" | "compass" | "spark" | "outside";
+  // You are the host. For one beat you become Amor, a friend (fresh-eyes #4), then come back.
+  type Step = "send" | "kindling" | "friend" | "condition" | "friendIn" | "lit" | "compass" | "here" | "spark" | "outside" | "done";
   const demo = new DemoEngine();
   let step = $state<Step>("send");
   let quorum = $state("4");
@@ -21,23 +28,38 @@
   let bearing = $state(40);
   let litAt = 0;
   let sparkLine = $state("");
+  let condition = $state("");
+  let amorIn = $state(false);
+  // Friends see the host by first name. In the demo the host is you (fresh-eyes #3).
+  let me = $state("Fuego");
+  $effect(() => {
+    try {
+      me = localStorage.getItem("flare.name")?.trim() || "Fuego";
+    } catch {}
+  });
   const timers: ReturnType<typeof setTimeout>[] = [];
   const later = (ms: number, fn: () => void) => timers.push(setTimeout(fn, ms));
   onDestroy(() => timers.forEach(clearTimeout));
 
-  const say = (name: string) => {
-    toast = t("demo.said", { name });
+  // Fresh-eyes #2: the demo keeps the promise it shows: a count, never a name.
+  const say = () => {
+    toast = t("demo.said", { n: demo.have() });
     later(2200, () => (toast = ""));
   };
   function send() {
     demo.start(Number(quorum));
     step = "kindling";
-    // Amor answers first; with 4 needed it stays Kindling until you skip ahead.
-    later(1800, () => {
-      demo.yes(DEMO_FRIENDS[0].id);
-      say(DEMO_FRIENDS[0].name);
-      if (demo.g?.state === "lit") toLit();
-    });
+  }
+  // Amor's yes, given by you on Amor's screen. With 4 needed it stays Kindling until you skip ahead.
+  function amorYes() {
+    demo.yes(DEMO_FRIENDS[0].id);
+    amorIn = true;
+    step = "friendIn";
+  }
+  function backToYou() {
+    step = "kindling";
+    later(400, say);
+    if (demo.g?.state === "lit") toLit();
   }
   function skip() {
     demo.advance(30 * 60_000 + 1000); // the real 30-minute Ember rule
@@ -45,9 +67,10 @@
     demo.event({ type: "checks", member_id: DEMO_FRIENDS[0].id, results: { c1: true, c2: true } });
     later(1500, () => {
       demo.yes(DEMO_FRIENDS[1].id);
-      say(DEMO_FRIENDS[1].name);
       demo.advance(61_000);
+      // Straight to "It's lit": no "0 more" beat in between (fresh-eyes #8).
       if (demo.g?.state === "lit") toLit();
+      else say();
     });
   }
   function toLit() {
@@ -65,57 +88,88 @@
   }
   function here() {
     demo.event({ type: "arrival", by: DEMO_FRIENDS[0].id, who: { for: "self" }, recorded_at: new Date(demo.now).toISOString() });
-    step = "spark";
+    step = "here"; // the meetup itself, before the reflection (fresh-eyes #9)
   }
   function outside() {
-    demo.advance(34 * 60_000); // 34 demo minutes outside, then the host ends it
+    demo.advance(15 * 60_000); // the 15-minute smaller plan, then the host ends it (fresh-eyes #8)
     demo.event({ type: "done", by: "00000000-0000-4000-8000-0000000000a0" });
     step = "outside";
   }
 
-  const bench = $derived(demo.g?.ember_choice ? (DEMO_BENCHES[demo.g.ember_choice] ?? DEMO_SPOT) : DEMO_SPOT);
+  // Once it is an Ember, name the bench it will pick from the start, so the place never changes
+  // under you a second later (fresh-eyes #8). Both benches check out, so the engine takes c1.
+  const bench = $derived(
+    demo.g?.ember_choice
+      ? (DEMO_BENCHES[demo.g.ember_choice] ?? DEMO_SPOT)
+      : demo.g?.state === "ember"
+        ? (DEMO_BENCHES.c1 as string)
+        : DEMO_SPOT,
+  );
   const info: InviteInfo = $derived({
-    host: "Fuego",
+    host: me,
     words: DEMO_WORDS,
     scene: DEMO_SCENE,
     photo: "/demo/pond.jpg",
     spot: bench,
-    hostLine: `Fuego is waiting at ${bench}.`,
+    hostLine: t("demo.youWait", { spot: bench }),
     walkMin: 6,
     access: { benches: { count: 2, nearest_m: 0 }, restrooms: { count: 1, nearest_m: 180 }, water: { count: 0, nearest_m: null }, steps_mapped: false },
     nature: "",
     met: null,
   } as InviteInfo);
-  const minutes = $derived(litAt ? Math.round((demo.now - litAt) / 60_000) : 34);
+  const minutes = $derived(litAt ? Math.round((demo.now - litAt) / 60_000) : 15);
+  // Opened straight from a link there is no page to go back to (fresh-eyes #9).
+  const leave = () => (history.length > 1 ? history.back() : (location.href = "/"));
 </script>
 
 <svelte:head><title>{t("demo.badge")}</title></svelte:head>
 
-<div class="demo" class:coach={step === "kindling" && !!demo.g && (demo.g.state === "ember" || demo.have() > 1)}>
+<div class="demo" class:coach={step === "kindling" && !!demo.g && demo.g.state !== "lit"}>
   <p class="badge" role="status">{t("demo.badge")}</p>
   {#if toast}<p class="toast" role="status">{toast}</p>{/if}
 
   {#if step === "send"}
-    <H3Send words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={() => history.back()} />
+    <H3Send words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
   {:else if step === "kindling"}
     <div class="layer">
-      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={0} hostLine={`Fuego is waiting at ${DEMO_SPOT}.`} onclose={() => history.back()} />
-      {#if demo.g?.state === "kindling" && demo.have() > 1}
+      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={0} hostLine={t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />
+      {#if demo.g?.state === "kindling" && !amorIn}
+        <div class="control"><p>{t("demo.friendCoach")}</p><Button onclick={() => (step = "friend")}>{t("demo.asFriend")}</Button></div>
+      {:else if demo.g?.state === "kindling" && demo.have() > 1}
         <div class="control"><p>{t("demo.shrinkHint")}</p><Button onclick={skip}>{t("demo.skip")}</Button></div>
       {:else if demo.g?.state === "ember"}
         <div class="control"><p>{t("ember.headline", { bench })}</p></div>
       {/if}
     </div>
+  {:else if step === "friend"}
+    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <I1Invite info={{ ...info, spot: DEMO_SPOT, hostLine: "" }} have={demo.have()} quorum={demo.g?.quorum ?? 4} onyes={amorYes} oncondition={() => (step = "condition")} onclose={() => (step = "kindling")} />
+  {:else if step === "condition"}
+    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <I2Condition {info} bind:text={condition} oncheck={amorYes} onclose={() => (step = "friend")} />
+  {:else if step === "friendIn"}
+    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
   {:else if step === "lit"}
     <div class="layer">
-      <I6Lit view={demo.g?.ember_choice ? "smaller" : "lit"} {info} smallerAt={bench} onfind={compass} onhere={here} onclose={() => history.back()} />
+      <I6Lit view={demo.g?.ember_choice ? "smaller" : "lit"} {info} smallerAt={bench} onfind={compass} onhere={here} onclose={leave} />
     </div>
   {:else if step === "compass"}
-    <I7Compass name="Fuego" status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={120} {bearing} onhere={here} onclose={() => (step = "lit")} />
+    <I7Compass name={bench} status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={120} {bearing} onhere={here} onclose={() => (step = "lit")} />
+  {:else if step === "here"}
+    <I8Here here={3} ondone={() => (step = "spark")} />
   {:else if step === "spark"}
     <I11Spark onsave={(l) => { sparkLine = l; outside(); }} onskip={outside} />
+  {:else if step === "outside"}
+    <I12Outside view="end" {minutes} photo="/demo/pond.jpg" people={[me === "Fuego" ? t("demo.you") : me, "Amor", "Benny"]} spark={sparkLine} onclose={() => (step = "done")} />
   {:else}
-    <I12Outside view="end" {minutes} photo="/demo/pond.jpg" people={["Fuego", "Amor", "Benny"]} spark={sparkLine} onclose={() => (step = "send")} />
+    <Screen theme="dark" close={false} heading={t("demo.done")}>
+      <div class="done"><Flame state="lit" size={110} /><h1 class="t-display">{t("demo.done")}</h1></div>
+      {#snippet actions()}
+        <Button onclick={() => (location.href = "/app/")}>{t("demo.real")}</Button>
+        <Button variant="text" onclick={() => location.reload()}>{t("demo.again")}</Button>
+      {/snippet}
+    </Screen>
   {/if}
 </div>
 
@@ -133,4 +187,8 @@
   .control { position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; border-radius: 28px 28px 0 0 !important; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0)) !important; display: flex; flex-direction: column; gap: 8px; align-items: stretch;
     padding: 14px; border-radius: 20px; background: rgb(255 255 255 / 0.94); color: #111; box-shadow: 0 8px 30px rgb(0 0 0 / 0.3); }
   .control p { margin: 0; font-weight: 600; }
+  .role { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0; white-space: nowrap;
+    padding: 8px 16px; border-radius: 999px; background: #111; color: #fff; font-weight: 700; font-size: 0.9375rem; }
+  .done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
+  .done h1 { margin: 0; }
 </style>

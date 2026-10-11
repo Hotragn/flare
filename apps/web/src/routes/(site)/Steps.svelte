@@ -12,7 +12,7 @@
 <svelte:element this={heading} class="t-title">{t("site.how.title")}</svelte:element>
 <ol class="steps">
   <li>
-    <div class="art" aria-hidden="true"><PhotoPrint scene={flare.scene} height={200} tilt={-2} /></div>
+    <div class="art print-art" aria-hidden="true"><PhotoPrint scene={flare.scene} height={200} tilt={-2} sample /></div>
     <svelte:element this={sub} class="t-heading"><span class="n" aria-hidden="true">1</span> {t("site.how.s1.title")}</svelte:element>
     <p>{t("site.how.s1.body")}</p>
   </li>

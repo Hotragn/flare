@@ -1,6 +1,8 @@
-// The Try-it demo, played end to end in Chrome on the built app (backlog #4): send, a friend
-// answers, skip 30 min to the Ember, a second yes lights it at a bench, Find them as Amor,
-// I'm here, a Spark, the after-outing summary, Phone away. No API call may carry anything.
+// The Try-it demo, played end to end in Chrome on the built app (backlog #4, fresh-eyes fixes):
+// send as the host; become Amor for one beat and say I'm in; back to you, a count and no name;
+// skip 30 min to the Ember, a second yes lights it at one bench; Find them; You made it; a
+// Spark; the after-outing summary with the plan's minutes; Phone away; the end screen.
+// No API call may carry anything, and no friend's name may appear next to a yes.
 // Usage: npm run build && node apps/web/test/e2e/demo.ts
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -48,10 +50,19 @@ try {
   );
   await shot("1-send");
   await page.getByRole("button", { name: "Send it" }).click();
-  await page.getByText("Amor said yes.").waitFor({ timeout: 10_000 });
+  await page.getByRole("button", { name: "Be Amor" }).click();
+  await page.getByText("You're Amor now, a friend.").waitFor({ timeout: 10_000 });
+  check(
+    "friend side: Add a condition is offered",
+    await page.getByRole("button", { name: "Add a condition" }).isVisible(),
+  );
+  await shot("2a-friend");
+  await page.getByRole("button", { name: "I'm in" }).click();
+  await page.getByRole("button", { name: "Pocket it" }).click();
+  await page.getByText("One more yes. 2 in.").waitFor({ timeout: 10_000 });
+  check("a yes never shows a name", !(await page.getByText(/(Amor|Benny|Kai) said yes/).count()));
   await shot("2-kindling");
   await page.getByRole("button", { name: "Skip 30 min" }).click();
-  await page.getByText("Benny said yes.").waitFor({ timeout: 10_000 });
   const lit = await page
     .getByText(/Smaller plan: 15 min at the (bench by the willow|picnic table on the hill)/)
     .first()
@@ -64,17 +75,19 @@ try {
   await shot("3-ember-lit");
   await page.getByRole("button", { name: "Find them" }).click();
   await page
-    .getByText(/Fuego is straight ahead|Fuego, 120 meters/)
+    .getByText(/the bench by the willow is straight ahead|the bench by the willow, 120 meters/i)
     .first()
     .waitFor({ timeout: 10_000 });
   await page.waitForTimeout(2500);
   await shot("4-compass");
   await page.getByRole("button", { name: "I'm here" }).click();
+  await page.getByText("You made it.").waitFor({ timeout: 10_000 });
+  await page.getByRole("button", { name: "Pocket it" }).click();
   await page.getByLabel("Your Spark").fill("The light on the water at 5");
   await shot("5-spark");
   await page.getByRole("button", { name: "Save it" }).click();
   const summary = await page
-    .getByText(/You were outside \d+ min together/)
+    .getByText("You were outside 15 min together")
     .first()
     .waitFor({ timeout: 10_000 })
     .then(
@@ -86,6 +99,9 @@ try {
   await page.getByRole("button", { name: "Put it away" }).click();
   check("then Phone away", await page.getByText("Phone away.").first().isVisible());
   await shot("7-away");
+  await page.getByRole("button", { name: "Close" }).click();
+  check("ends on Light a Flare", await page.getByRole("button", { name: "Light a Flare" }).isVisible());
+  await shot("8-done");
   check("no API calls at all", api.length === 0, api.join(", "));
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));

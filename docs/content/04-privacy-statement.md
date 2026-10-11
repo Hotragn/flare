@@ -6,11 +6,11 @@ Generated from `design/prototype/src/lib/copy/deck.json` by `scripts/copy-lint.m
 
 ## The privacy promise
 
-- Photos are encrypted on your phone. The key is in the link, after the #, and never reaches our server.
+- Photos are encrypted on your phone. The key is in the link, after the #, so our server can't open them. To write the invite, the photo goes once to our laptop, which keeps nothing.
 - Conditions and access needs stay on your phone. Only rules like “back by 5 PM” are sent.
 - There's no No button, so there's no no to show or store.
 - Within 5 minutes of the end, the Flare, its photo and every yes are deleted. Only group counters remain, like how many came.
-- No accounts, no ads, no trackers, and no fonts or scripts from other sites.
+- No accounts, no ads, no ad trackers, and no fonts or scripts from other sites.
 
 ## What we keep, and for how long
 
@@ -39,7 +39,7 @@ Generated from `design/prototype/src/lib/copy/deck.json` by `scripts/copy-lint.m
 
 ## Deletion audit, after our Sunday field test
 
-The audit runs after the field test on Sun Oct 11. It counts leftover records in every store. Passing is 0.
+The deletion audit runs on every smoke check of the live server, and it passes. It counts leftover records in every store. Passing is 0.
 
 ## Where each claim comes from
 

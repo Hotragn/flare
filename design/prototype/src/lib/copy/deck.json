@@ -187,9 +187,34 @@
       "where": "demo"
     },
     "demo.said": {
-      "text": "{name} said yes.",
+      "text": "One more yes. {n} in.",
       "kind": "status",
       "where": "demo"
+    },
+    "demo.youWait": {
+      "text": "You're waiting at {spot}.",
+      "kind": "status",
+      "where": "demo, host line"
+    },
+    "demo.you": {
+      "text": "You",
+      "kind": "label",
+      "where": "demo, after-outing avatars"
+    },
+    "demo.friendCoach": {
+      "text": "See what your friends get.",
+      "kind": "hint",
+      "where": "demo, kindling coach (fresh-eyes #4)"
+    },
+    "demo.friendBanner": {
+      "text": "You're Amor now, a friend.",
+      "kind": "status",
+      "where": "demo, friend side (fresh-eyes #4)"
+    },
+    "demo.backToYou": {
+      "text": "Back to you",
+      "kind": "button",
+      "where": "demo, friend side (fresh-eyes #4)"
     },
     "demo.shrinkHint": {
       "text": "Not enough yet. Skip ahead to see it shrink.",
@@ -217,7 +242,7 @@
       "where": "onboarding"
     },
     "onb.1.body": {
-      "text": "Gemma writes six words. Your friends get a link.",
+      "text": "An AI model, Gemma, writes a short invite. Friends get a link.",
       "kind": "label",
       "where": "onboarding"
     },
@@ -276,6 +301,21 @@
       "kind": "button",
       "where": "onboarding"
     },
+    "onb.pasteLabel": {
+      "text": "Paste your friend's link",
+      "kind": "label",
+      "where": "H00 start, Got a link (fresh-eyes #6)"
+    },
+    "onb.open": {
+      "text": "Open it",
+      "kind": "button",
+      "where": "H00 start, Got a link (fresh-eyes #6)"
+    },
+    "onb.badLink": {
+      "text": "That isn't a Flare link.",
+      "kind": "message",
+      "where": "H00 start, Got a link (fresh-eyes #6)"
+    },
     "onb.linkHelp": {
       "text": "Open the link your friend sent. It brings you here.",
       "kind": "hint",
@@ -302,7 +342,7 @@
       "where": "I7"
     },
     "tip.send": {
-      "text": "It lights only when this many can come.",
+      "text": "It goes ahead only if this many say yes.",
       "kind": "hint",
       "where": "H3"
     },
@@ -528,7 +568,7 @@
       "where": "H1"
     },
     "camera.denied.howto": {
-      "text": "To turn it on, open Settings, then Safari, then Camera.",
+      "text": "To turn it on, allow the camera in your browser settings.",
       "kind": "hint",
       "where": "H1"
     },
@@ -588,7 +628,7 @@
       "where": "H3"
     },
     "perm.locationHost.placeholder": {
-      "text": "By the pond in Ford Woods Park",
+      "text": "e.g. the bench by the pond",
       "kind": "placeholder",
       "where": "H3"
     },
@@ -718,7 +758,7 @@
       "where": "H2"
     },
     "develop.editHint": {
-      "text": "Edit anything.",
+      "text": "Photo not kept. Edit anything.",
       "kind": "hint",
       "where": "H2"
     },
@@ -788,7 +828,7 @@
       "where": "H3"
     },
     "send.quorumLabel": {
-      "text": "How many, you included",
+      "text": "How many people, counting you?",
       "kind": "label",
       "where": "H3 P1"
     },
@@ -801,6 +841,16 @@
       "text": "Friends see this when it's lit.",
       "kind": "hint",
       "where": "H3"
+    },
+    "send.hostLineEmpty": {
+      "text": "Not set yet",
+      "kind": "label",
+      "where": "H3 where-you'll-be row (fresh-eyes #12)"
+    },
+    "send.edit": {
+      "text": "Edit",
+      "kind": "button",
+      "where": "H3 where-you'll-be row (fresh-eyes #12)"
     },
     "send.hostLineEdit": {
       "text": "Edit where you'll be",
@@ -1642,7 +1692,7 @@
       "owner": "motion:FlameMeter"
     },
     "need.detail": {
-      "text": "{n} in, {q} to go ahead. Nobody sees who.",
+      "text": "{n} of {q} needed. Nobody sees who.",
       "kind": "hint",
       "where": "FlameMeter",
       "owner": "motion:FlameMeter",
@@ -1751,7 +1801,7 @@
       "fixed": "SRS-CMP-5"
     },
     "compass.stop": {
-      "text": "Stop talking",
+      "text": "Mute voice",
       "kind": "button",
       "where": "I7"
     },
@@ -3723,7 +3773,7 @@
       "where": "/run/ head"
     },
     "og.run.desc": {
-      "text": "Flare is open source. Run the app and the Gemma 4 model on your own laptop with Ollama.",
+      "text": "Flare is open source. Host your own copy, with the Gemma 4 model on a laptop with Ollama.",
       "kind": "og-desc",
       "where": "/run/ head"
     },
@@ -3912,7 +3962,7 @@
       "where": "site W4"
     },
     "site.privacy.p1": {
-      "text": "Photos are encrypted on your phone. The key is in the link, after the #, and never reaches our server.",
+      "text": "Photos are encrypted on your phone. The key is in the link, after the #, so our server can't open them. To write the invite, the photo goes once to our laptop, which keeps nothing.",
       "kind": "prose",
       "where": "site W4"
     },
@@ -3933,7 +3983,7 @@
       "fixed": "BR-D-1, BR-D-4"
     },
     "site.privacy.p5": {
-      "text": "No accounts, no ads, no trackers, and no fonts or scripts from other sites.",
+      "text": "No accounts, no ads, no ad trackers, and no fonts or scripts from other sites.",
       "kind": "prose",
       "where": "site W4",
       "fixed": "SRS-PRIV-7"
@@ -4167,7 +4217,7 @@
       "where": "site W4"
     },
     "site.privacy.audit1": {
-      "text": "The audit runs after the field test on Sun Oct 11.",
+      "text": "The deletion audit runs on every smoke check of the live server, and it passes.",
       "kind": "prose",
       "where": "site W4 audit block"
     },
@@ -4282,7 +4332,7 @@
       "where": "site W5"
     },
     "site.access.g1": {
-      "text": "VoiceOver and the largest text size get tested on 4 real iPhones on Sun Oct 11. Until then, those results are not in.",
+      "text": "Automated checks find 0 issues with screen readers and large text. A VoiceOver test on real iPhones is still to come.",
       "kind": "prose",
       "where": "site W5"
     },
@@ -4341,7 +4391,7 @@
       "where": "site W6"
     },
     "site.run.body": {
-      "text": "Flare is open source. The AI is the open-weight Gemma 4 model, run with Ollama on your own laptop, so no closed API sees your photos.",
+      "text": "You don't need to install anything to use Flare. It is open source, so anyone can host a copy: the AI is the open Gemma 4 model, run with Ollama on a laptop.",
       "kind": "prose",
       "where": "site W6"
     },

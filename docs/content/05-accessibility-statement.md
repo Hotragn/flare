@@ -22,7 +22,7 @@ Proof: design/exports/a11y-report.json (axe-core), docs/design/07-annex-focus-or
 
 ## Known gaps
 
-- VoiceOver and the largest text size get tested on 4 real iPhones on Sun Oct 11. Until then, those results are not in.
+- Automated checks find 0 issues with screen readers and large text. A VoiceOver test on real iPhones is still to come.
 - Map data can be wrong or missing. “No steps mapped” means none are in OpenStreetMap, not that the path has none.
 - iPhone browsers can't vibrate, so the compass plays a short tone when you face your friend.
 - Photo descriptions are written by an AI model and can miss things.
