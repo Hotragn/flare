@@ -13,9 +13,13 @@
   (`npx -w apps/web svelte-kit sync` once, then `npx vitest run --config apps/web/test/pwa/vitest.config.ts`;
   types: `npx tsc -p apps/web/test/pwa/tsconfig.json --noEmit`).
 
+- PW5 service worker (SvelteKit 3: `$app/manifest` + `$app/env`, `$service-worker` is removed), push notice
+  builder without zod (SW 6.3 KB gz; with zod it was 31 KB), cache plan, manifest, icons, splash.
+- PW6 permissions, install, push subscribe, update helpers, Telegram bind. 54 unit tests.
+
 ## In progress
-- PW5 service worker: precache, update prompt, push handler opening notice_ct.
+- PW7 + e2e in Chrome: apps/web/test/pwa/e2e/offline.ts (harness built with vite, fake API serving the build).
 
 ## Next step
-Write apps/web/src/lib/push/notice.ts (pure: payload -> title/body using push-copy.json) and
-apps/web/src/service-worker.ts; then permissions (PW6), manifest/icons/splash, e2e in Chrome, docs, handoff.
+Write the e2e script, run it, write docs/pwa/test-report.md; add copy keys (app.updateReady, app.updateReload,
+app.outboxDropped, install.*) to the deck and run copy-lint; docs/pwa/README.md; handoff 07b; npm run ci.
