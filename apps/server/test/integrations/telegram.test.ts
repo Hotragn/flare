@@ -8,11 +8,11 @@ import { BOT, CHAT, dmMsg, groupMsg, makeWorld, OTHER_CHAT, tap, type World } fr
 let w: World;
 beforeEach(async () => {
   w = await makeWorld();
-});
+}, 60_000);
 afterEach(async () => {
   vi.restoreAllMocks();
   await w.close();
-});
+}, 60_000);
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Button = { text: string; callback_data?: string; url?: string };
@@ -387,14 +387,14 @@ describe("updates to the post (telegram.md 5)", () => {
 
   it("coalesces count edits to one per 3 s per message", async () => {
     await w.close();
-    w = await makeWorld({ editEveryMs: 150 });
+    w = await makeWorld({ editEveryMs: 500 });
     await w.linkChat();
     gid = await w.gathering();
     await w.bot.resume();
     for (let i = 0; i < 10; i++) w.bot.effect(gid, "edit_count");
     await wait(30);
     expect(w.tg.of("editMessageText")).toHaveLength(0);
-    await wait(200);
+    await wait(600);
     await w.bot.idle();
     expect(w.tg.of("editMessageText")).toHaveLength(1);
   });

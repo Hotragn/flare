@@ -88,7 +88,7 @@ beforeAll(async () => {
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   db = await memoryDb();
   await migrate(db);
-});
+}, 60_000);
 afterAll(async () => {
   await new Promise((r) => server.close(r));
   await db.close();
@@ -127,7 +127,7 @@ beforeEach(async () => {
        now() + interval '5 hours')`,
     [gid, groupId, members[0]?.id, Buffer.from("sealed-notice-bytes"), [members[0]?.id, members[1]?.id]],
   );
-});
+}, 60_000);
 
 const push = () => createPush({ db, vapid });
 

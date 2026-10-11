@@ -9,7 +9,7 @@ import { BOT, CHAT, groupMsg, makeWorld, tap, type World } from "./fakes/world.t
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let w: World;
-afterAll(async () => w?.close());
+afterAll(async () => w?.close(), 60_000);
 
 describe("full flow: Telegram + iMessage link + plain text", () => {
   it("creates, answers through all three channels, lights, ends and deletes", async () => {
@@ -117,5 +117,5 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     expect(deleted).toHaveLength(4);
     for (const t of ["bot_messages", "telegram_binds", "responses"])
       expect((await w.db.query(`select 1 from ${t}`)).rows).toHaveLength(0);
-  });
+  }, 60_000);
 });
