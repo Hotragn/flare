@@ -1,0 +1,22 @@
+{
+  "name": "@flare/engine",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "description": "Flare's pure core engine: solver, Flare and Plan state machines (ICD-1).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "bench": "node bench/solve.bench.ts",
+    "coverage": "cd ../.. && vitest run packages/engine/test --coverage.enabled --coverage.provider=v8 --coverage.include=packages/engine/src/** --coverage.reporter=text --coverage.reporter=json-summary --coverage.reportsDirectory=packages/engine/coverage"
+  },
+  "dependencies": {
+    "@flare/shared": "0.1.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "5.0.3",
+    "fast-check": "4.10.2"
+  }
+}
