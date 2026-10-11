@@ -1,0 +1,413 @@
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Dev relay login" from-mode="prompting">
+Good catch on the Sentry value, and the tracing design is exactly right. Don't use the auth token to read the DSN; the founder will paste the real DSN.
+
+Same problem with DigitalOcean: DO_MODEL_ACCESS_KEY has the shape of a personal access token (dop_v1_…), which is full account access, not a Serverless Inference model access key. Don't use it, and never let it reach Render. Build the DigitalOcean tier against a scoped model access key and keep the tier off until one is in .env. Add the same wrong-type check to check-env for both (dop_v1_ in the DigitalOcean slot, sntryu_ in SENTRY_DSN), and make deploy prep refuse to send either kind of token to Render.
+
+Carry on with the DigitalOcean tier code, then QA/a11y/security, then deploy prep.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Thanks for the straight disclosure about the four calls. It's logged for the founder, who's already set to revoke that token. The design is right: hub first, DigitalOcean only when the hub is absent, the photo only on an explicit tap, a daily cap, and the token guards. 20 to 27 s is slow but still beats a dead end when the Mac is offline, and the post can say so honestly. Approved. Go ahead with QA, a11y and security on the field-test path, then deploy prep.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Strong work, and thanks for owning the two red CI runs. One change: don't idle. This window resets at 6:50 AM whatever we do, so unused usage now is lost. Use it on the field test.
+
+1. **Coverage check.** Take the field-test runs we'll do Sunday and mark each one built + e2e on the real stack, or not:
+   - a Plan ("Fairlane walk at 11?") with a deadline, conditions and a fade
+   - a lazy Flare through Telegram
+   - a Flare through an iMessage link
+   - the plain-text reply
+   - an ambitious Flare that shrinks to Ember
+   - airplane mode after Lit, plus the outbox
+   - the low-vision compass walk with VoiceOver
+   - the needs profile and access line
+   - Sparks and "met here N times"
+   - Hot spots
+   - the rest-loop print card
+   - the deletion audit at T+62
+2. **Close every P0 gap** you find, in that order, with real-stack e2e for each. Plan mode and Sparks matter most, because the day starts with a Plan and the post needs Sparks.
+3. **Then** write the 07a and 07c handoffs, and chain Entire's hooks if it's enabled by then.
+
+Keep committing often, and keep RESUME.md current for the 6:50 reset.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder update: both keys are fixed, and Entire is enabled.
+- **SENTRY_DSN** checks out as a DSN.
+- **DO_MODEL_ACCESS_KEY** is no longer a dop_v1_ token, so it should be the scoped model access key. Run one check with a non-personal fixture (the ladder for "Fairlane walk at 11?"), confirm the token guard passes, and confirm the deploy plan now sends it to Render with the cloud tier on.
+- **Entire:** the founder ran `entire enable`. .claude/settings.json now has Entire hooks and .entire/ exists.
+  - Chain Entire's git hooks into .githooks so both the secret scan and Entire run.
+  - Add the SRS-SEC-7 scrub for session logs before anything is pushed publicly.
+  - Check whether your next commit carries an Entire checkpoint. If hooks only load in a new session, tell me, and we'll decide whether that's worth a restart.
+
+Then carry on with the field-test coverage check and the gaps.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder confirmed, with a screenshot of the DigitalOcean console, that they created a Model Access Key named "flare-server" scoped to 1 model. That's the right kind of key. Its value starts with doo_v1_, but DigitalOcean's docs don't state the model-key format (https://docs.digitalocean.com/products/inference/how-to/model-access-keys/), so the prefix guard may be wrong. Check it by behavior, never printing the value:
+1. **Scope check:** GET https://api.digitalocean.com/v2/account with the key. A scoped model key should be refused (401 or 403). If it returns 200, it's an account token: stop, keep the tier off and tell me.
+2. If it's refused, make **one ladder fixture call** ("Fairlane walk at 11?") at inference.do-ai.run to confirm it works.
+3. If both pass, update the token guard to classify by this scope check, not by prefix. Record the result in ADR-0022, and let the deploy plan send it to Render with the cloud tier on.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Small process fix: four CI runs went red tonight on things a local check would have caught. Two were lint errors (a console call, and aria-label/tabindex on the check page), plus the engine property-test bug, and the run after that. Add `npm run lint` and the fast unit tests to the pre-push chain, next to the secret and session scans, so red builds never reach GitHub. Keep it under about 30 seconds.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Great coverage pass. The behavior-based key check is the right fix, and finding BUG-058 to 060 (Sparks never wrote Hot spots) before the field test is exactly why we ran it. Approved.
+
+Order: `/app/loop/` with a real-stack e2e, then `/app/fix-map/` (draft and export only). Both are in scope for the product. If fix-map isn't done by rc-1, hide its menu entry for the RC so nothing 404s, and finish it this afternoon. Keep RESUME.md current for the 6:50 reset.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Usage is at 79%. The limit will likely stop us in about 30 minutes, and it resets at 6:50 AM ET. Commit at each step and keep RESUME.md exact (the next step for /app/loop/ and fix-map), then keep going.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Approved. 15/15 on e2e:loop, and an honest "no loop here, try 400 m" at Ford Woods is the right behavior. We'll demo the rest loop at Village Green and mention Ford Woods in the post.
+
+Next: the ML5 photo-to-tag drafting job on the hub. It's the AI-essential half of Fix the map. Do it in this window if there's room, else it's first after the field test. Same rules as the other hub jobs: versioned prompt, enforce(), human review of every tag, and an eval set. Then rest until the 6:50 reset; integration point 3 is at 8:00 as planned.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Two founder updates:
+1. **Lighthouse target is 100**, not 95. That's all four categories (performance, accessibility, best practices, SEO) on every website page, mobile and desktop, with the reports saved as proof. Do it now, before ML5. ML5 moves to first after the field test. Keep the motion and design intact: fix by the budget (images, fonts, preload, render-blocking, layout shift), not by stripping polish.
+2. **The live Telegram test is running now** from lab/ (tg.mjs morning). Don't touch the bot, its webhook or getUpdates until I say it's finished, about 60 minutes max. I'll pass you the chat ID result for TELEGRAM_ALLOWED_CHAT_IDS.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The live Telegram test in "Flare test" passed:
+- post with buttons, count edits, notify post
+- deleteMessage and deleteMessages
+- deep link /start with a private reply
+- a tap on "I'm in" got answerCallbackQuery ok, plus an ephemeral "Only you can see this" message (ephemeral works on this bot)
+- the founder also tapped "Not now"
+
+TELEGRAM_ALLOWED_CHAT_IDS=[chat-id] is now in .env. The lab script stops polling and deletes the webhook when its window ends (about 3:46). Leave the bot alone until then; after that, setWebhook still waits for the founder's YES at deploy. The raw log is lab/spikes/03-telegram/results/api-log.jsonl (read-only) if you want the exact behaviors for the integrations docs.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder decision for Telegram posts. Do it after the deploy, before the post:
+
+1. **Branded card by default.** The bot's Flare post uses sendPhoto with a generated card instead of a text-only message:
+   - the current flame state art, the six words, the place label, and "Need N more"
+   - the same buttons as the caption keyboard
+   - regenerated or edited as the state changes (Kindling → Lit → Ember), and deleted at Gone like every bot post
+   - nothing personal in the image, and no real photo
+2. **Real photo, opt-in per group.** A group setting, "Show photos in this Telegram group," off by default.
+   - When it's on, the host's phone sends the decrypted photo for that Flare to the server only for the Telegram post. The server uploads it with sendPhoto, keeps nothing, and the bot deletes the post at Gone.
+   - Disclose it clearly: in the setting itself ("Telegram keeps a copy until the post is deleted; everyone in the group sees it"), on the privacy page, and in an ADR.
+   - Groups using links only are unaffected.
+
+Tests: card render and edit-on-state, opt-in off by default, photo never stored server-side, deleted at Gone. Use the fake Bot API, then one live check in "Flare test".
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The Telegram lab script has finished and cleaned up: deleteWebhook ok, webhook none, 0 pending. The bot is free. The "Not now" tap didn't reach the script before its window closed. Only the "I'm in" callback was captured, answered privately, with the ephemeral message. Add one live "Not now" tap to the 8:30 device check.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Lighthouse 100 everywhere with the look intact is exactly it. Using the median of 3 with every run listed is the honest way to report it. Approved. Keep /ai/ out of search; it's an app page. ML5 resumes after the field test from your report's next steps; the drop-the-invented-amenity guard plus human review is the right safety net. See you at integration point 3.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Good morning. It's 6:50 and the usage window has reset; it runs to 11:50 AM, which covers the device check, the deploy and the start of the field test. Let's not wait for 8:00:
+
+1. **Integration point 3 now.** Merge main, full CI, e2e:hello, e2e:field, e2e:sparks, e2e:loop, e2e:pwa, flow.ts real, plus the smoke test locally. Report status in one line per area.
+2. **Then the Telegram branded card plus the photo opt-in** (as specified), with their tests and one live check in "Flare test". The bot is free now. That way the field test uses the real Telegram look.
+3. **Have the device-check kit ready to start the moment the founder is up:** `npm run device-check` steps, the LAN or HTTPS address, and the results table.
+4. **Then stop and save the rest of the window** for iPhone fixes, the deploy and the field test. Don't start post-test work yet.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Good catch. Build 1 to 3 before the deploy. Telegram is P0: two of our four testers use it, and it's half of the "links and Telegram" edge.
+
+Order:
+1. Finish the server card if it's close.
+2. Then the phone path: "Post in Telegram" with the disclosure, telegram-link plus the startgroup link, the `telegram` object on create (including ember and step names), and the photo opt-in toggle that PUTs the 768 px JPEG.
+3. Real-stack e2e on the fake Bot API, then one live check in "Flare test" (chat [chat-id], already allowed).
+
+Field-test setup: we'll reuse "Flare test" as the field group. The founder adds the second Telegram user to it, so no new chat ID is needed. Target the RC by about 9:30. If the live check slips past 9:15, tell me and we'll deploy links-first, then ship Telegram in a fast follow-up deploy before 11.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder isn't up yet, and the window resets at 11:50 anyway, so use about 25% of it now on work that can't break the RC. Stop when the window reaches about 55% and hold the rest for the device check and the deploy.
+
+1. **README a stranger can run:** what it is, a 3-step quick start (local server, hub, phone), env setup through check-env, and links to the docs index.
+2. **docs/README.md index** across product, requirements, design, architecture, engineering, QA and handoffs.
+3. **DEV post skeleton** in docs/post/draft.md. Use the challenge template sections, plus "What I got wrong" and "What I didn't do," which last round's winners used. Write every part that doesn't depend on the field test, in the same plain voice. Mark field-result spots clearly as [FIELD: …] so they're easy to fill tonight. Disclose that a manager session sent many of the prompts.
+4. **Real screenshots and a short screen recording** of the key moments from the real app (send, lit, compass, Ember, Spark, Telegram card), into docs/post/media/, compressed.
+
+Don't touch main's runtime code during this.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Good set: 0 broken links, 19 clear [FIELD] spots, and the honest call on Render.
+- **Video:** skip the ffmpeg download. The founder will screen-record on an iPhone during the field test, which is more authentic. Add a shot list for that recording to docs/post/ (which moments, about 10 s each, portrait).
+- **BUG-065:** please fix it before rc-1 even though runtime is frozen. The Ember screen saying "West Road" bench while the access line says "No benches mapped within 200 m" will show up in the Ember run and in our screenshots. Keep the change small and add a test. Then re-run e2e:field and flow.ts real, and stop again.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The device check has started. I'm running `npm run device-check` (https://10.0.0.196:8443/check/, returns 200) and the lab Telegram listener (`tg.mjs morning --minutes 20 --taps 5`) from the manager session. Don't touch the bot until it finishes. Results will land in device-results/ and lab/spikes/03-telegram/results/. Stand by to fix anything the iPhones turn up. I'll send you the results as they come in.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Device check, iPhone 16 Pro Max, iOS 26.6.1 (results in device-results/results.jsonl). Founder feedback, in priority order:
+
+**1. Compass: the founder says it's wrong in real use.** After "Mark this spot" the guidance points the wrong way, gets confused when they walk away or move the phone quickly, and says it can't detect the spot. The raw data looks fine (webkitCompassHeading, about 14° accuracy, 20 to 50 events/s, best GPS fix 2.5 to 3 m), so the problem is in our logic. Fix it properly:
+- circular smoothing of heading
+- account for screen orientation and tilt
+- use GPS course over ground when walking (≥1 m/s) and the compass when standing
+- only update bearing when distance > 2× accuracy, and keep the last good bearing when fixes drop out
+- hysteresis on "facing"
+- a clear "hold flat / move in a figure 8" hint when accuracy is poor
+Replay the recorded event streams as a test. Same fix in the app's Find them screen, not just the check page.
+
+**2. Haptics:** some worked and some didn't (switch test: not felt). Make sure every haptic moment also has the tone and the visual cue, and record which path worked on iOS 26.6.1.
+
+**3. Kit pages:** card text colors were unreadable (BUG-056). Fix the contrast.
+
+**4. The founder is not happy with the product UI: "looks like a 2015 app."** I agree after seeing the real screens: form-like (a first-name field on the send screen), the photo is a small framed thumbnail, lots of small text lines, a serif and paper look that reads dated.
+
+Run a design review roundtable: the product designer, the motion designer, and the personas Steve Jobs, Brian Chesky and Evan Spiegel, plus a senior iOS 26 designer who knows the Liquid Glass era. Their output is a 2026 direction that anyone can understand at a glance:
+- **The photo is the screen.** Full-bleed and immersive, with content on a translucent, legible sheet over it (iOS 26 material language, done tastefully, with contrast checked).
+- **One big action per screen.** Ask the name once at first run, not on every send.
+- **Much less text.** Icons plus 3 to 5 words.
+- **System font (SF via system-ui)** for a native feel, with an accessible size scale. Keep Fraunces only for the six words if the review agrees, or drop it.
+- **Bold, alive flame and state transitions,** gesture-friendly bottom sheets, and modern components.
+
+Write the direction (before and after mockups for invite, send, lit, compass, Ember, Spark), then implement it across the app and the website. Keep a11y (axe 0, 44 px targets), the JS budget and Lighthouse 100, then recapture docs/post/media.
+
+Pending a founder decision: moving hosting to DigitalOcean. Don't start that yet.
+
+Order: compass, then haptics and kit contrast, then the redesign. Keep committing; the window resets at 11:50.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+New device data in device-results/results.jsonl (14:08 to 14:13Z), with both phones on the new compass page and raw streams included:
+- **iPhone 13** (390x844, Safari reports Version/27.0): compass OK at 55 events/s on the capability page, GPS best 5 m, camera OK, 26 local voices, switch haptic not felt. **On the new compass page it shows eventsPerSecond 0** and two figure-8 hints. Please check whether the iPhone 13 run got heading events at all. It may be a permission or listener issue on that Safari.
+- **16 Pro Max:** nearCount 49, facingTicks 1. It looks like it stayed in "close" for most of the run; check against the stream whether that's right or the 2× accuracy gate is too wide.
+Replay both streams as tests and fix what they show.
+
+**Telegram:** the founder and another person tried the bot after the lab listener had ended. Nothing listens until the deploy sets the webhook, so that's expected, but make sure the device-check doc says so.
+
+**Hosting decision:** no paid hosting. Skip the DigitalOcean App Platform move. Deploy to the **Render free tier** (free web service plus free Postgres), not Starter. Add a keep-warm ping during the field test, and handle the cold start gracefully in the UI. Update the runbook and the deploy script. Keep DigitalOcean Serverless Inference as the cloud tier (pay per token, capped at 60 calls a day).
+
+Order stays: compass fixes, then haptics and kit contrast, then the redesign.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Two more founder requirements. Fold them into the redesign; they're P0 for the post.
+
+**A. A Crew space: one home for your people, with full management.**
+- **See your people:** each member's name and initial (no profiles), and who is *out now*. "Out now" means only people who are Lit or arrived in an active Flare: no tracking, no location outside a Flare.
+- **The crew's story:** Hot spots, recent Sparks, and crew stats built only from the existing counters, for example "4 outings · 3 h 10 min outside together · 2 Embers saved". Add an "outside minutes" counter (arrival to Gone, summed per crew) if it fits the privacy model, with an ADR note.
+- **Management:**
+  - invite (link and QR), rename the crew, set the default quorum
+  - Telegram connection and the photo opt-in
+  - remove a member: the crew creator can, and it rotates the group key so removed members lose access
+  - leave the crew, and Forget this crew (deletes everything)
+- **Never show** who said no, or anyone's answers.
+
+**B. Touch Grass has to be the main thing, not a feature.** The founder feels the app reads like a coordination tool. Make the home screen about going outside *now*:
+- "Golden hour in 47 min" from sunset, plus today's weather window
+- the nearest green spot from the map pack, with its one-thing-worth-noticing line
+- the crew's outside time this week
+- one big "Light a Flare" action, with "Plan for later" second
+
+After an outing:
+- "You were outside 52 min together"
+- the Spark prompt
+- then a calm "Phone away" screen
+
+Every flow should end pointing outside.
+
+Field note: new entries since 2 AM include "Going outside was never my problem. Saying hello was." (Benny, 21 reactions, social quests with strangers) and Trailworthy (an accessibility trail surveyor). Our difference stays clear: friends you already have, a private quorum, plans that shrink, accessibility for your own crew. Note it in the research doc for the writer.
+
+Order unchanged: compass, then haptics and kit contrast, then the redesign, now including A and B. Report back with before and after screenshots.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Agreed: do (1) compass, then (2) Render free tier deploy prep. The device-data diagnosis is solid.
+
+One change to (3) and (4): the group test at 11 may not happen. The founder might only manage a shorter test later today, solo or with one friend. So after the deploy, go straight into the redesign with A and B. Whatever real test the founder does this afternoon should run on the new UI if it's ready, so the post media comes from the real app. I'll confirm the test time and get the deploy YES from the founder now.
+
+Add "keep at least 30 m apart for the compass to point" to the field-test notes and the Find them screen copy.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder decisions, just now:
+1. **YES to the Render free-tier deploy, and YES to the Telegram setWebhook.** I'm asking the founder to grant the Render GitHub app access to Hotragn/flare now. Once that's done, run `npm run deploy:render -- --yes`, then the smoke test twice, then setWebhook, then one live tap in "Flare test". Report the URL and the smoke results.
+2. **The field test is now optional.** The founder wants to focus on building what wins. So the post must not claim an outdoor group test unless one actually happens. Plan the post around:
+   - the automated real-stack runs
+   - the real iPhone device checks (16 Pro Max and 13)
+   - the live Telegram checks
+   - the deletion audit
+
+   Leave a clearly marked spot for a real outing if the founder does one later.
+3. After the deploy: the redesign with A and B, full speed. It's now the biggest lever for winning.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder is granting Render GitHub access now; I'll ping you to re-run the deploy. Separately, the founder wants all of the following built, and fast. They're right that an agent should move quicker than human estimates. Plan:
+
+Run **two narrow subagents in parallel** with your redesign. Each touches only new, isolated code, gets a tight brief (no doc read-through, code within 10 min, commit every 20 min), and has its own handoff:
+
+**S1. "Virtual Fairlane" simulation** (tools/sim/, a new page at /sim/)
+- 30 to 60 simulated friends on the real Fairlane OSM pack, walking real footways at realistic speeds.
+- Personality types: lazy (yes only if 2+ are in), conditional ("only if Amor"), needs-a-bench, low-vision (follows the compass and spoken guidance), the planner who sends a Plan.
+- They create and answer Flares and Plans through the **real server API and engine**: Embers, fades, Sparks, deletion.
+- An animated map replay (MapLibre or deck.gl, open tiles with OSM attribution), plus a stats panel: headcount, light rate, Ember save rate, time to Lit, deletion audit = 0.
+- Deterministic seed, and an exportable GIF/MP4 frame sequence for the post.
+- Labeled **"Simulation"** on screen and in the docs.
+
+**S2. Mastra Plan agent** (apps/server, behind the existing ladder route)
+- The Plan ladder becomes a Mastra agent with real tools (sunset, weather window, nearby places from the pack, step templates), running on the hub Gemma, with DigitalOcean as the cloud tier.
+- Same output contract and guards, plus an eval against the current ladder. Sentry spans stay allow-listed.
+
+**You, after the redesign core (A + B):**
+- **Voice Flares:** hold to speak, Gemma 4 audio on the hub writes the invite and scene, the transcript never stored, an accessibility-first flow.
+- **Crew Atlas:** Gemma turns the crew's outings, Sparks and Hot spots into a private living map of "your places" ("Pond: 4 outings, best at golden hour"). Encrypted like Sparks; facts only from data, never invented.
+
+**Optional S3 (Tinker fine-tune)** only if the founder claims Tinker credits. I'll tell you.
+
+Keep the deployed build stable on main, use feature branches, and merge at green.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+I reviewed the redesign shots (home, invite, lit). Big step up: the full-bleed photo, the sheet, the big words, and the Lit screen all work. Six fixes:
+
+1. **Home time format:** it says "Golden hour in 437 min". Use "7 h 17 min", and "in 45 min" under an hour.
+2. **Home is empty above the fold.** Most of the screen is a gradient. Fill it with the outside, not UI:
+   - the nearest green spot as a hero card, using the area's illustrative art or the crew's last Flare photo if one exists
+   - the Crew strip (initials, "2 out now")
+   - one line of the crew's week ("3 h 10 min outside together")
+3. **Weather:** use a rain or sun icon, not a warning triangle. Rain isn't an alarm. Example: "63° · rain until 1 PM".
+4. **Access lines are negative and wordy.** "No benches mapped… No steps mapped… Week 3 of fall" reads like a list of failures.
+   - Show compact chips only for what's known ("Bench 40 m", "Restroom 180 m", "Step-free").
+   - Show one quiet "Access unknown here" when nothing is mapped.
+   - Keep the season line only if it's a real "notice this" fact.
+5. **Count on the invite:** make it visual. Put a ring of dots, or a ring around the flame, that fills per yes, and keep one short line ("1 more to light it"). Drop "1 in, 2 to go ahead. Nobody sees who." to a tiny hint, or show it once.
+6. **Lit screen:** good. Add a subtle "outside together" timer once two or more have arrived, as a lead-in to the after-outing summary.
+
+Then carry on with the after-outing flow, Crew (A), the checks and the merge.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+**Render GitHub access is granted. Deploy now:** deploy:render --yes, smoke ×2, setWebhook, one live tap in "Flare test". Report the URL. The founder already said YES to all of it.
+
+The founder is going to sleep, and you and I will finish. New founder asks, folded into the redesign:
+
+1. **Dashboard = the Crew space.** Make it the crew's home: people, out now, the week outside, Hot spots, recent Sparks, the Crew Atlas, and management. Flare is the action you take from it. Make sure the IA is clear.
+
+2. **Real scenic visuals.** Use openly licensed nature photography: Michigan/Fairlane-area scenes (Rouge River, Ford Woods, fall trees), plus iconic places (Grand Canyon, forests, beaches, mountains, lakes).
+   - Use: slow crossfades with a gentle Ken Burns effect on the home hero, onboarding, empty states and the website, so the app makes people want to step out.
+   - Licensing: CC0, Public Domain or Unsplash/Pexels license only. Download only those, record source, author and license in a credits file, and add them to the NOTICE/SBOM.
+   - Performance: AVIF/WebP at a few sizes, lazy-loaded, off the critical path. Keep Lighthouse 100 and the JS budget. With reduced motion, use a still image.
+   - Readability: text on photos keeps WCAG contrast through the scrim.
+
+3. **Sentry, more fully:**
+   - Make the Mastra agent runs proper Agent Tracing: one span per agent run, per tool call (sunset, weather, places) and per model call, with tier, model, latency and outcome only.
+   - Add server error monitoring and performance for the app routes.
+   - Same allow-list and scrub test. Phones still load no Sentry (ADR-0021).
+
+4. **Page audit.** List every page the product needs and make sure each exists and works: home, light a Flare, invite, lit / find them, Ember, after-outing, Plan (create / answer / result), crew dashboard + manage, Crew Atlas, rest loop, fix the map, needs profile / settings, AI on this phone, privacy, accessibility, the website pages, /sim/. No dead ends, and every flow ends pointing outside.
+
+Priority: deploy, then the redesign fixes I sent, then the after-outing flow, then the crew dashboard and visuals, then Sentry, then Voice Flares and the Atlas, then merge S1/S2 at green, then the page audit, Lighthouse and axe, then recapture the post media. Commit often, keep RESUME.md current, and report to me at each milestone.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder direction for every tool we use: each one needs a **signature moment**. When judges see it, they should feel "that's the best use of this tool I've seen; nobody else would think to use it this way." Build each moment so it really works in the app, and give the post one short story plus proof for each. Proposed moments; improve them if you have better:
+
+1. **Gemma 4: "My friend who can't see the photo still got invited, and found us."** Gemma looks at the host's photo and speaks it to a low-vision friend ("A wooden bench under a red maple, the pond on your left"). Then the talking compass walks them in. Voice Flares extend it: Gemma *hears* "come to the pond, bring cider" and writes the invite. Proof: the eval numbers plus the VoiceOver walkthrough.
+
+2. **DigitalOcean: "A crew with no laptop at all can still use Flare."** When there's no hub, DigitalOcean serves open Gemma 4 31B, capped at 60 calls a day, costing cents. Also: "the Mac hub dropped mid-Flare and DigitalOcean took over" with no failed invite. Proof: a real trace of the handoff plus the cost math.
+
+3. **Sentry Agent Tracing: "We can debug the agent without ever seeing our friends' lives."** Real traces of the Mastra agent's tools and Gemma calls (timing, tier, outcome) that contain zero words people said. Show one trace next to the scrub test that proves it. Bonus: the trace that caught the hub drop and the fallback.
+
+4. **Mastra: "An agent whose job is to never let a plan die."** The Plan agent uses sunset, weather and nearby places to build the ladder, from the long walk down to 20 minutes on the porch. When someone fades, it steps down instead of cancelling. Proof: the eval against the old ladder, plus one real agent trace.
+
+5. **Entire: "You can see which AI teammate wrote every line."** Map Entire checkpoints to our roles, for example the accessibility specialist's commit that fixed VoiceOver, so the agent-built process is inspectable. Proof: links to real checkpoints (after the scrub, before going public).
+
+6. **The simulation: "A Saturday in Fairlane, played by 50 friends."** The emotional demo GIF for the post, labeled "Simulation".
+
+Write these as a "signature moments" checklist in docs/post/, track each one to working code and proof, and make the post's prize section use them. Keep the existing priority order; this shapes how each feature is finished, not more scope.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Two more founder points. They shape how the crew dashboard and first run are finished.
+
+1. **The crew dashboard should look creative, not like an admin page.** Ideas:
+   - members as small flame avatars that glow when someone is out now
+   - a "week outside" ribbon or rings
+   - Hot spots and Sparks as postcard-style cards over real scenic photos
+   - the Crew Atlas as an illustrated mini-map of your places
+   - smooth transitions between them
+   Management (invite, rename, quorum, Telegram, remove, leave, forget) sits behind one tidy "Manage crew" sheet, so the dashboard stays a joy to look at.
+
+2. **Anyone who finds us on DEV must understand Flare and use it in under a minute, with no help.**
+   - **Onboarding:** 3 swipeable cards over scenic photos (what Flare is, how the private yes works, that it deletes itself), then your name once, then make or join a crew.
+   - **A "Try it" demo mode on the website and the app's first run:** a judge alone can play a Flare with 3 friendly demo friends who answer on a test clock. They see it light, find them, shrink to an Ember, leave a Spark. Clearly marked as demo, with no real data.
+   - **First-time tips** at each new screen: one line, dismissible, shown once.
+   - **Plain words everywhere,** and an empty state for every screen that says what to do next.
+
+Put the demo mode and onboarding right after the after-outing flow. They matter for judging, because judges will open the live link alone.
+</cross-session-message>
