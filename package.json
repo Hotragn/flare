@@ -51,13 +51,17 @@
     "gen:guide": "node scripts/gen-guide.ts",
     "e2e:kit-a11y": "node apps/web/test/e2e/kit-a11y.ts",
     "e2e:demo": "node apps/web/test/e2e/demo.ts",
-    "scenic": "node scripts/scenic.ts"
+    "scenic": "node scripts/scenic.ts",
+    "sim": "node tools/sim/run.ts",
+    "sim:frames": "node tools/sim/frames.ts",
+    "sim:gif": "node tools/sim/gif.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
     "@biomejs/biome": "2.5.15",
     "@redocly/cli": "2.62.1",
     "@types/node": "24.19.2",
+    "gifenc": "1.0.3",
     "mermaid": "12.1.0",
     "playwright-core": "1.64.0",
     "sharp": "0.35.4",

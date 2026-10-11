@@ -1,0 +1,2 @@
+# Exported frames (npm run sim:frames) are 30 MB a set: regenerate them, do not commit.
+seed-*/

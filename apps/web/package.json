@@ -18,6 +18,7 @@
     "@fontsource/atkinson-hyperlegible-next": "5.3.0",
     "@fontsource/fraunces": "5.3.0",
     "idb": "8.0.4",
+    "maplibre-gl": "6.11.2",
     "zod": "4.6.5"
   },
   "devDependencies": {
@@ -26,8 +27,8 @@
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "axe-core": "4.14.0",
     "bits-ui": "2.19.5",
-    "lighthouse": "13.5.0",
     "fake-indexeddb": "6.2.5",
+    "lighthouse": "13.5.0",
     "svelte": "5.57.2",
     "svelte-check": "4.7.6",
     "typescript": "6.0.3",
