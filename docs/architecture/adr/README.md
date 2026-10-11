@@ -26,3 +26,4 @@ Format: Michael Nygard's ADR (status, context, decision, consequences), plus the
 | [0020](0020-observability.md) | Structured logs with redaction, counters, no third-party telemetry | Accepted |
 | [0021](0021-sentry-agent-tracing.md) | Sentry Agent Tracing for the AI path, server side, allow-listed attributes | Accepted |
 | [0022](0022-digitalocean-cloud-tier.md) | DigitalOcean Serverless Inference cloud tier: ladders when the hub is absent, photos only by the host's opt-in | Accepted |
+| [0023](0023-telegram-card-and-photo-opt-in.md) | Telegram posts show a branded card; real photos only when the group turns them on | Accepted |

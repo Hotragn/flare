@@ -238,3 +238,46 @@ export async function saveNeeds(store: Pick<Store, "saveNeeds">, f: NeedsForm): 
   await store.saveNeeds(n);
   return n;
 }
+
+// ---------- O7 Post in Telegram (ADR-0013, ADR-0023) ----------
+
+export type TelegramState = { connected: boolean; showPhotos: boolean; available: boolean };
+
+/** Whether the group posts to Telegram, and its photo setting. 503: the bot is not set up. */
+export async function loadTelegram(deps: { fetch: Fetch }, group: GroupRecord): Promise<TelegramState> {
+  const base = `/api/v1/groups/${encodeURIComponent(group.groupId)}`;
+  const headers = { authorization: bearer(group) };
+  const [g, s] = await Promise.all([
+    call(deps.fetch, base, { headers, cache: "no-store" }),
+    call(deps.fetch, `${base}/telegram-settings`, { headers, cache: "no-store" }),
+  ]);
+  if (!g.ok) throw failure(g.status);
+  const channel = ((await g.json()) as { channel?: string }).channel;
+  if (s.status === 503) return { connected: false, showPhotos: false, available: false };
+  if (!s.ok) throw failure(s.status);
+  const showPhotos = ((await s.json()) as { show_photos?: unknown }).show_photos === true;
+  return { connected: channel === "telegram", showPhotos, available: true };
+}
+
+/** The one-time t.me link that adds the bot to a chat and connects it to this group. */
+export async function telegramLink(deps: { fetch: Fetch }, group: GroupRecord): Promise<string> {
+  const res = await call(deps.fetch, `/api/v1/groups/${encodeURIComponent(group.groupId)}/telegram-link`, {
+    method: "POST",
+    headers: { authorization: bearer(group), "idempotency-key": crypto.randomUUID() },
+  });
+  if (!res.ok) throw failure(res.status);
+  const url = ((await res.json()) as { url?: unknown }).url;
+  if (typeof url !== "string" || !url.startsWith("https://t.me/")) throw new ApiError("server");
+  return url;
+}
+
+/** "Show photos in this Telegram group" on or off. */
+export async function saveTelegramPhotos(deps: { fetch: Fetch }, group: GroupRecord, on: boolean): Promise<boolean> {
+  const res = await call(deps.fetch, `/api/v1/groups/${encodeURIComponent(group.groupId)}/telegram-settings`, {
+    method: "PUT",
+    headers: { authorization: bearer(group), "content-type": "application/json" },
+    body: JSON.stringify({ show_photos: on }),
+  });
+  if (!res.ok) throw failure(res.status);
+  return ((await res.json()) as { show_photos?: unknown }).show_photos === true;
+}

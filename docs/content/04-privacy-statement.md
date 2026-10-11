@@ -28,7 +28,7 @@ Generated from `design/prototype/src/lib/copy/deck.json` by `scripts/copy-lint.m
 
 ## Limits we're honest about
 
-- Telegram sees what Flare posts there: the photo, the six words, the spot, the host's first name and the count. The post carries the Flare's link, so Telegram could open it too. Our server keeps that post until the Flare ends. The bot never reads your messages.
+- Telegram sees what Flare posts there: a Flare card, the six words, the spot, the host's first name and the count. If your group turns photos on, Telegram also gets the photo and keeps a copy until the post is deleted. The post carries the Flare's link, so Telegram could open it too. The bot never reads your messages.
 - In a small group, people can sometimes guess who said yes, or who made a plan smaller. With 2 or 3 people, the count alone can give it away.
 - Text and satellite messages are outside our control. Your carrier and Apple carry them, and we can't delete them.
 - Anyone with the group link can read that group's invites, Sparks and Hot spots. Share it only with the group.

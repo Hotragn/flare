@@ -1980,6 +1980,16 @@
       "kind": "hint",
       "where": "O0"
     },
+    "menu.tg": {
+      "text": "Post in Telegram",
+      "kind": "label",
+      "where": "O0"
+    },
+    "menu.tgSub": {
+      "text": "The bot posts each Flare in your group chat",
+      "kind": "hint",
+      "where": "O0"
+    },
     "menu.map": {
       "text": "Fix the map",
       "kind": "title",
@@ -3698,7 +3708,7 @@
       "where": "site W4"
     },
     "site.privacy.l.telegram": {
-      "text": "Telegram sees what Flare posts there: the photo, the six words, the spot, the host's first name and the count. The post carries the Flare's link, so Telegram could open it too. Our server keeps that post until the Flare ends. The bot never reads your messages.",
+      "text": "Telegram sees what Flare posts there: a Flare card, the six words, the spot, the host's first name and the count. If your group turns photos on, Telegram also gets the photo and keeps a copy until the post is deleted. The post carries the Flare's link, so Telegram could open it too. The bot never reads your messages.",
       "kind": "prose",
       "where": "site W4",
       "fixed": "FR-PRIV-7"
@@ -4095,6 +4105,77 @@
       "kind": "label",
       "where": "H6 +1 list for a member the bot made (openapi Member.name_ct null)",
       "owner": "frontend"
+    },
+    "tg.title": {
+      "text": "Post in Telegram",
+      "kind": "title",
+      "where": "O7"
+    },
+    "tg.what": {
+      "text": "Flare's bot posts each Flare in one Telegram group. Yeses stay private.",
+      "kind": "prose",
+      "where": "O7"
+    },
+    "tg.sees": {
+      "text": "Telegram sees what Flare posts there: a Flare card, the six words, the spot, the host's first name and the count. The post carries the Flare's link.",
+      "kind": "prose",
+      "where": "O7"
+    },
+    "tg.add": {
+      "text": "Add the bot",
+      "kind": "button",
+      "where": "O7"
+    },
+    "tg.steps": {
+      "text": "In Telegram, pick your group, then tap Start.",
+      "kind": "hint",
+      "where": "O7"
+    },
+    "tg.connected": {
+      "text": "Connected. New Flares post in your Telegram group.",
+      "kind": "status",
+      "where": "O7"
+    },
+    "tg.notYet": {
+      "text": "Not connected yet.",
+      "kind": "status",
+      "where": "O7"
+    },
+    "tg.photos": {
+      "text": "Show photos in this Telegram group",
+      "kind": "label",
+      "where": "O7"
+    },
+    "tg.photosNote": {
+      "text": "Telegram keeps a copy until the post is deleted; everyone in the group sees it.",
+      "kind": "prose",
+      "where": "O7",
+      "gradeNote": "The founder's exact disclosure for the photo setting (ADR-0023); kept word for word."
+    },
+    "tg.photosOffNote": {
+      "text": "Off: the post shows a Flare card, not your photo.",
+      "kind": "hint",
+      "where": "O7"
+    },
+    "tg.on": {
+      "text": "On",
+      "kind": "label",
+      "where": "O7"
+    },
+    "tg.off": {
+      "text": "Off",
+      "kind": "label",
+      "where": "O7"
+    },
+    "tg.saved": {
+      "text": "Saved.",
+      "kind": "status",
+      "where": "O7"
+    },
+    "tg.unavailable": {
+      "text": "Telegram isn't set up on this server yet.",
+      "kind": "message",
+      "where": "O7"
     },
     "site.privacy.l.sentry": {
       "text": "Our server sends Sentry timings for AI jobs: which tier ran, how long, and whether it worked. Never your photo, words, names, places or ids. Your phone talks to no tracker.",

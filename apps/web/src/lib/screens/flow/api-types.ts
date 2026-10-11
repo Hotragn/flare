@@ -94,7 +94,18 @@ export type CreateGathering = {
   notice_ct: string;
   ember_candidates?: Label[];
   plan?: { start_at: Iso; deadline_at: Iso; steps: PlanStepWire[] };
+  /** Telegram groups only: the bot's readable post text (ADR-0013, contracts/telegram.md 3). */
+  telegram?: TelegramPlain;
 };
+export type TelegramPlain = {
+  host: string;
+  invite: string;
+  place: string;
+  link: string;
+  ember_places?: Partial<Record<Label, string>>;
+  step_names?: Partial<Record<Label, string>>;
+};
+export type TelegramSettings = { show_photos: boolean };
 
 export type ArrivalBody = { for: "self" | "member" | "someone_else"; member_id?: string; recorded_at: Iso };
 export type ArrivalResult = { gathering: GatheringView; counted: boolean; spark_ticket?: string | null };

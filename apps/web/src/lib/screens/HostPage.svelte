@@ -119,6 +119,7 @@
   const items: [string, CopyKey, CopyKey, string][] = [
     ["plan", "menu.plan", "menu.planSub", "#plan"],
     ["hotspots", "menu.hot", "menu.hotSub", "/app/hotspots/"],
+    ["share", "menu.tg", "menu.tgSub", "/app/telegram/"],
     ["bench", "menu.needs", "menu.needsSub", "/app/needs/"],
     ["card", "menu.loop", "menu.loopSub", "/app/loop/"],
     ["mapfix", "menu.map", "menu.mapSub", "/app/fix-map/"],
@@ -126,9 +127,9 @@
     ["spark", "menu.ai", "menu.aiSub", "/ai/"],
     ["close", "menu.forget", "menu.forgetSub", "/app/forget/"],
   ];
-  /** Group pages take the group id as `?g=` (Hot spots, Forget). */
-  const withGroup = (href: string) =>
-    flow.groupId && (href === "/app/hotspots/" || href === "/app/forget/") ? `${href}?g=${flow.groupId}` : href;
+  /** Group pages take the group id as `?g=` (Hot spots, Post in Telegram, Forget). */
+  const GROUP_PAGES = new Set(["/app/hotspots/", "/app/telegram/", "/app/forget/"]);
+  const withGroup = (href: string) => (flow.groupId && GROUP_PAGES.has(href) ? `${href}?g=${flow.groupId}` : href);
   const exit = () => location.assign("/app/");
 </script>
 

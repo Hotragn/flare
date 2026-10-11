@@ -17,9 +17,11 @@ import type {
   CreateGathering,
   DraftResponse,
   GatheringView,
+  Group,
   LadderResponse,
   Member,
   PlanStepWire,
+  TelegramSettings,
 } from "./api-types.ts";
 import { distanceM } from "./compass.ts";
 import type { Deps } from "./deps.ts";
@@ -287,6 +289,10 @@ export class HostFlow {
           ? { steps: Object.fromEntries(this.steps.map((s, i) => [`step:${i + 1}`, s.name.slice(0, 40)])) }
           : {}),
       };
+      // A Telegram group gets readable post text for the bot (ADR-0013; disclosed when the
+      // group was connected). Link groups send nothing readable.
+      const tg = await this.#telegramFor(group);
+      const link = `${globalThis.location?.origin ?? ""}/g/${id}/#k=${this.#fragment}`;
       const body: CreateGathering = {
         id,
         kind,
@@ -312,6 +318,18 @@ export class HostFlow {
               },
             }
           : {}),
+        ...(tg
+          ? {
+              telegram: {
+                host: host.slice(0, 40),
+                invite: sealed.invite,
+                place: spot.name.slice(0, 120),
+                link,
+                ...(notice.benches ? { ember_places: notice.benches } : {}),
+                ...(notice.steps ? { step_names: notice.steps } : {}),
+              },
+            }
+          : {}),
       };
       const r = await write<GatheringView>(d, "POST", `/groups/${group.groupId}/gatherings`, body);
       if (!r.ok) {
@@ -319,9 +337,11 @@ export class HostFlow {
         return false;
       }
       await d.store.rememberGathering(id, group.groupId);
-      this.link = `${globalThis.location?.origin ?? ""}/g/${id}/#k=${this.#fragment}`;
+      this.link = link;
       this.view = r.value ?? null;
       if (this.photoBlob && kind === "flare") void this.#uploadPhoto(id, key, this.photoBlob);
+      // ADR-0023: the real photo goes to Telegram only when the group turned photos on.
+      if (tg?.show_photos && this.photoBlob && kind === "flare") void this.#telegramPhoto(id, this.photoBlob);
       this.screen = "sent";
       this.#follow(id);
       return true;
@@ -355,6 +375,27 @@ export class HostFlow {
     this.#group = g;
     this.#fragment = fragment;
     return g;
+  }
+
+  /** The group's Telegram settings when it posts to Telegram; null for a link group. */
+  async #telegramFor(g: ClientIcd.GroupRecord): Promise<TelegramSettings | null> {
+    const grp = await getJson<Group>(this.#d, `/groups/${g.groupId}`, bearer(g));
+    if (!grp.ok || grp.value?.channel !== "telegram") return null;
+    const s = await getJson<TelegramSettings>(this.#d, `/groups/${g.groupId}/telegram-settings`, bearer(g));
+    return { show_photos: s.ok && s.value?.show_photos === true };
+  }
+
+  /** The 768 px JPEG for the Telegram post only; the server uploads it and keeps nothing. */
+  async #telegramPhoto(id: string, jpeg: Blob): Promise<void> {
+    const g = this.#group;
+    if (!g) return;
+    await this.#d
+      .fetch(`${BASE}/gatherings/${id}/telegram-photo`, {
+        method: "PUT",
+        headers: { authorization: bearer(g), "idempotency-key": newToken(), "content-type": "image/jpeg" },
+        body: jpeg,
+      })
+      .catch(() => null); // no photo: the card goes out after the wait
   }
 
   async #uploadPhoto(id: string, key: CryptoKey, jpeg: Blob): Promise<void> {
