@@ -31,8 +31,8 @@ function app(env: NodeJS.ProcessEnv, f: typeof fetch) {
   const deps = { relay, db: null, version: "t", voice: voiceTier(env, f) };
   return createApp(deps, buildCtx(deps));
 }
-const audio = (n = 2000) => new Uint8Array(n).fill(7);
-const post = (a: ReturnType<typeof createApp>, body: Uint8Array, type = "audio/webm") =>
+const audio = (n = 2000): Uint8Array<ArrayBuffer> => new Uint8Array(new ArrayBuffer(n)).fill(7);
+const post = (a: ReturnType<typeof createApp>, body: Uint8Array<ArrayBuffer>, type = "audio/webm") =>
   a.request("/api/v1/voice/spark", { method: "POST", headers: { "content-type": type }, body });
 
 describe("Voice Spark (ADR-0027)", () => {
