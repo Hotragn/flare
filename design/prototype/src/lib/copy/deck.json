@@ -1501,6 +1501,24 @@
       "kind": "hint",
       "where": "I9"
     },
+    "place.benchNear": {
+      "text": "the bench {m} m away",
+      "kind": "fragment",
+      "where": "Ember place name for an unnamed bench (BR-E-1), sealed on the host's phone",
+      "owner": "frontend",
+      "sample": {
+        "m": 80
+      }
+    },
+    "place.tableNear": {
+      "text": "the picnic table {m} m away",
+      "kind": "fragment",
+      "where": "Ember place name for an unnamed picnic table (BR-E-1)",
+      "owner": "frontend",
+      "sample": {
+        "m": 120
+      }
+    },
     "spark.prompt": {
       "text": "One line about today?",
       "kind": "title",
