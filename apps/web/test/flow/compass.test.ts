@@ -89,5 +89,8 @@ describe("compass (FE4)", () => {
     expect(speechDue(a, { ...a, bearing: -25, at: 10_000 })).toBe(true);
     expect(speechDue(a, { ...a, meters: 200, at: 10_000 })).toBe(true);
     expect(speechDue(a, { ...a, at: 60_000 })).toBe(true);
+    // Inside GPS error a halving is not news (device check: "close" said 49 times).
+    const near = { text: "Fuego is close. Look around.", bearing: 0, meters: 4, at: 0 };
+    expect(speechDue(near, { ...near, meters: 1, at: 5_000 })).toBe(false);
   });
 });
