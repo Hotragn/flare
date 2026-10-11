@@ -1,14 +1,14 @@
 {
-  "at": "2026-10-11T01:29:02.945Z",
+  "at": "2026-10-11T05:58:47.009Z",
   "lighthouse": "13.5.0",
   "chrome": "154.0.8037.99",
   "min": 95,
-  "lowest": 98,
+  "lowest": 61,
   "rows": [
     {
       "page": "/",
       "form": "mobile",
-      "performance": 98,
+      "performance": 61,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
@@ -24,7 +24,7 @@
     {
       "page": "/privacy/",
       "form": "mobile",
-      "performance": 98,
+      "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
@@ -32,7 +32,7 @@
     {
       "page": "/accessibility/",
       "form": "mobile",
-      "performance": 98,
+      "performance": 99,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
