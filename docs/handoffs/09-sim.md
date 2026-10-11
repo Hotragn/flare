@@ -1,7 +1,7 @@
 # 09 Virtual Fairlane (a simulation)
 
 Branch `sim`. New code only: `tools/sim/`, `apps/web/src/lib/sim/`, `apps/web/src/routes/sim/`,
-`apps/web/static/sim/`. Changed files: root `package.json` (two scripts), `apps/web/package.json`
+`apps/web/static/sim/`. Changed files: root `package.json` (three scripts, `gifenc` devDependency), `apps/web/package.json`
 (`maplibre-gl` 6.11.2, exact, released 2026-09-24) and `package-lock.json`. No server, engine or
 existing screen changed.
 
@@ -68,8 +68,22 @@ npm run sim:frames                    # 60 frames, 600 px; --seed, --frames, --w
 npm run dev:web                       # then open http://localhost:5180/sim/
 ```
 
-GIF (ffmpeg is not installed here):
-`ffmpeg -framerate 10 -i docs/post/media/sim/seed-42/frame-%03d.png -vf "split[a][b];[a]palettegen[p];[b][p]paletteuse" sim.gif`
+```sh
+npm run sim:gif                       # after sim:frames; --seed, --seconds (default 15), --poster <frame>
+```
+
+`tools/sim/gif.ts` makes the post GIF without ffmpeg. Chrome (Playwright) decodes the PNG
+frames and `gifenc` 1.0.3 (devDependency, exact version, 2021) encodes them. It uses one
+255-colour palette for all frames. After the first frame, pixels that didn't change are
+transparent, so the map is stored once. Committed outputs, seed 42:
+
+| File | Size |
+|---|---|
+| `docs/post/media/sim/fairlane-sim-42.gif` (60 frames, 600 × 600, 16.25 s loop, the last frame holds 1.5 s) | 491 KB |
+| `docs/post/media/sim/fairlane-sim-42-poster.png` (frame 40, 2:29 into the run, 3 Lit) | 537 KB |
+
+The "Simulation" label, the clock, the state counts and "© OpenStreetMap contributors" are
+part of every frame. The raw frames stay ignored.
 
 `npm run sim` exits 1 if the audit fails, rows are left, or any gathering isn't deleted.
 
