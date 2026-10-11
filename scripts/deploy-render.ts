@@ -8,6 +8,7 @@
 //        npm run deploy:render -- --yes   (creates or updates on Render)
 
 import { execFileSync } from "node:child_process";
+import { applyEnvAliases } from "../packages/shared/src/env-aliases.ts";
 import { accountToken, doKeyIsScoped } from "../packages/shared/src/token-guard.ts";
 import { hasYes, loadVars, type Vars } from "./telegram-lib.ts";
 
@@ -27,6 +28,7 @@ export const WEB_KEYS = [
   "VAPID_SUBJECT",
   "SENTRY_DSN",
   "DO_MODEL_ACCESS_KEY",
+  "GEMINI_API_KEY", // ADR-0026: Gemma 4 on Google AI Studio after DigitalOcean
 ];
 const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 
@@ -224,7 +226,7 @@ export async function deploy(
 }
 
 if (import.meta.main) {
-  const vars = loadVars();
+  const vars = applyEnvAliases(loadVars()) as Vars;
   const plan = deployPlan(vars, repoUrl());
   console.log(formatPlan(plan));
   if (!hasYes(process.argv.slice(2))) {
