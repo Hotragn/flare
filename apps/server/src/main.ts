@@ -26,8 +26,20 @@ if (env.databaseUrl) {
 }
 
 const ints = integrations(process.env, env.webBuildDir);
+// End-to-end test clock (scripts/e2e-field.ts): only with FLARE_E2E_CLOCK=1 AND an in-memory
+// database, so it can never be switched on against real data. POST /__e2e/clock {advance_ms}.
+const e2eClock = process.env.FLARE_E2E_CLOCK === "1" && env.databaseUrl === "pglite:memory";
+let clockOffset = 0;
+const e2eMount = (app: import("hono").Hono) => {
+  app.post("/__e2e/clock", async (c) => {
+    const b = (await c.req.json()) as { advance_ms?: number };
+    clockOffset += Math.max(0, Number(b.advance_ms ?? 0));
+    return c.json({ now: new Date(Date.now() + clockOffset).toISOString() });
+  });
+};
 const deps = {
-  mounts: [ints.mount],
+  mounts: e2eClock ? [e2eMount, ints.mount] : [ints.mount],
+  ...(e2eClock ? { clock: { now: () => new Date(Date.now() + clockOffset) } } : {}),
   cloud: cloudTier(),
   relay,
   db,

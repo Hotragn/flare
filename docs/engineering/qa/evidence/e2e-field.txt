@@ -1,0 +1,29 @@
+PASS plan: created with 4 steps: 201
+PASS plan: conditions saved as rules only
+PASS plan: stays Kindling until the deadline (BR-P-2): kindling
+PASS plan: lights at the deadline at the step with the most people: lit step 4
+PASS plan: a member sees only their own place in the set
+PASS plan: a fade at step 4 is recorded and stays at step 4 (BR-P-6): 200
+PASS plan: one fade per person (BR-P-5): fade_used
+PASS plan: Gone after S + step + 60 min: 410
+PASS plan 1b: the condition picks step 2, the biggest step all three can do: step 2
+PASS plan 1b: I'm fading makes it one step smaller, nobody removed: step 3
+PASS ember: Kindling with need 2 at quorum 4
+PASS ember: at 30 min it shrinks to Ember with quorum 2 (BR-F-3): ember q2
+PASS ember: the nearest bench that passed every check is chosen (c2): c2
+PASS ember: host + one yes lights the Ember: lit
+PASS text: a wrong code is refused: code_mismatch
+PASS text: the reply code counts as one anonymous yes: need 1
+PASS sparks: lit with host + one yes
+PASS sparks: I'm here counts and hands back a Spark ticket
+PASS sparks: Done ends it as Thanks for coming: thanks_for_coming
+PASS sparks: a Spark is saved after Done with the ticket: 201
+PASS sparks: one Spark per ticket: 403 not_arrived
+PASS sparks: the group reads the newest Spark at that place (met here): 1
+PASS hot spots: the sealed blob is saved: 200 
+PASS hot spots: a stale version is refused (merge by max, BR-K-6): 412
+PASS deletion: at T+62 the gathering is gone from storage: 404
+PASS deletion: audit passes, 0 expired per-gathering rows (BR-D-7): []
+PASS sparks survive Gone (BR-D-4)
+
+field e2e (real server, real engine, Postgres in memory): 27 passed, 0 failed

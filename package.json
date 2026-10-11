@@ -43,7 +43,8 @@
     "telegram:status": "node scripts/telegram-status.ts",
     "deploy:render": "node scripts/deploy-render.ts",
     "smoke": "node scripts/smoke.ts",
-    "scan-sessions": "node scripts/scan-sessions.ts"
+    "scan-sessions": "node scripts/scan-sessions.ts",
+    "e2e:field": "node scripts/e2e-field.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
