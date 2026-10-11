@@ -1,25 +1,26 @@
-// HTTP app (docs/architecture/contracts/openapi.yaml). This scaffold implements the
-// endpoints the end-to-end hello world needs: health and photo drafts. The rest of the
-// contract is built by engineering against the same spec.
+// HTTP app (docs/architecture/contracts/openapi.yaml). Every route in the contract except the
+// Telegram ones and the /g/{id} preview, which INT mounts through `deps.mounts`.
+// Composition: docs/backend/01-service-design.md.
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import {
-  DraftResponse,
-  type DraftResponseT,
-  enforce,
-  type HealthT,
-  MAX_PHOTO_BYTES,
-  TEMPLATE_INVITE,
-} from "@flare/shared";
 import { type Context, Hono } from "hono";
 import { secureHeaders } from "hono/secure-headers";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import type { Db } from "./db/db.ts";
-import type { HubRelay } from "./hub/relay.ts";
+import { type Deps as BaseDeps, type Ctx, systemClock } from "./core/deps.ts";
+import { EventBus } from "./core/events.ts";
+import { ApiError } from "./http/errors.ts";
+import { RateLimiter } from "./http/middleware.ts";
 import { log, routeTemplate } from "./log.ts";
+import { mountAi } from "./routes/ai.ts";
+import { mountGatherings } from "./routes/gatherings.ts";
+import { mountGroups } from "./routes/groups.ts";
+import { mountPlaces } from "./routes/places.ts";
+import { mountSystem } from "./routes/system.ts";
 
-export type Deps = { relay: HubRelay; db: Db | null; version: string; webBuildDir?: string };
+/** INT's mountTelegram / mountPreview have this shape (url-map.md). */
+export type Mount = (app: Hono, ctx: Ctx) => void;
+export type Deps = BaseDeps & { mounts?: Mount[]; rateLimiter?: RateLimiter };
 
 const TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -37,8 +38,32 @@ const TYPES: Record<string, string> = {
   ".txt": "text/plain",
 };
 
-export function createApp({ relay, db, version, webBuildDir }: Deps): Hono {
+/** Resolves optional deps into the context every route and INT module gets. */
+export function buildCtx(d: BaseDeps): Ctx {
+  return {
+    relay: d.relay,
+    db: d.db,
+    engine: d.engine ?? null,
+    events: d.events ?? new EventBus(),
+    clock: d.clock ?? systemClock,
+    config: {
+      version: d.version,
+      publicBaseUrl: d.config?.publicBaseUrl ?? "http://localhost:8787",
+      vapidPublicKey: d.config?.vapidPublicKey ?? null,
+      telegramBotUsername: d.config?.telegramBotUsername ?? null,
+    },
+    effects: d.effects ?? {},
+    ladderTimeoutMs: d.ladderTimeoutMs ?? 8000,
+  };
+}
+
+/** SPA routes served from 200.html (url-map.md). */
+export const isSpaPath = (p: string) => p === "/app" || p.startsWith("/app/") || p.startsWith("/g/");
+
+export function createApp(deps: Deps, ctx: Ctx = buildCtx(deps)): Hono {
+  const { webBuildDir } = deps;
   const app = new Hono();
+  const rl = deps.rateLimiter ?? new RateLimiter(() => ctx.clock.now().getTime());
 
   app.use(
     secureHeaders({
@@ -69,34 +94,27 @@ export function createApp({ relay, db, version, webBuildDir }: Deps): Hono {
     );
   });
 
-  app.get("/api/v1/health", async (c) => {
-    let dbState: HealthT["db"] = "not_configured";
-    if (db)
-      dbState = await db.query("select 1").then(
-        () => "ok" as const,
-        () => "down" as const,
-      );
-    const body: HealthT = { ok: true, version, hub: relay.status, db: dbState };
-    return c.json(body);
-  });
-
-  app.post("/api/v1/drafts", async (c) => {
-    if (c.req.header("content-type") !== "image/jpeg") return apiError(c, 415, "not_jpeg", "Send image/jpeg");
-    const buf = Buffer.from(await c.req.arrayBuffer());
-    try {
-      if (buf.length === 0 || buf.length > MAX_PHOTO_BYTES) return apiError(c, 413, "too_large", "1.5 MB at most");
-      if (buf[0] !== 0xff || buf[1] !== 0xd8 || buf[2] !== 0xff) return apiError(c, 400, "not_jpeg", "Not a JPEG");
-      const t = performance.now();
-      const r = await relay.draft(buf);
-      const guarded = r?.ok && r.draft ? enforce(JSON.stringify(r.draft)) : null;
-      const body: DraftResponseT = guarded
-        ? { invite: guarded.invite, alt: guarded.alt, tier: "hub", ms: Math.round(performance.now() - t) }
-        : { invite: TEMPLATE_INVITE, alt: "", tier: "rules", ms: Math.round(performance.now() - t) };
-      return c.json(DraftResponse.parse(body));
-    } finally {
-      buf.fill(0); // drop the photo bytes on every path; nothing is stored (ADR-0011)
+  app.onError((err, c) => {
+    if (err instanceof ApiError) {
+      for (const [k, v] of Object.entries(err.headers)) c.header(k, v);
+      return c.json({ ...err.extra, code: err.code, message: err.message }, err.status);
     }
+    // Never log the error text: it can hold SQL parameters. The class name is enough to grep.
+    log.error({ event: "error", r: routeTemplate(c.req.path), kind: err.name }, "unhandled error");
+    return c.json({ code: "bad_request", message: "Something went wrong" }, 500);
   });
+  app.notFound((c) =>
+    c.req.path.startsWith("/api/")
+      ? c.json({ code: "not_found", message: "No such route" }, 404)
+      : c.text("Not found", 404),
+  );
+
+  mountSystem(app, ctx, rl);
+  mountGroups(app, ctx, rl);
+  mountGatherings(app, ctx, rl);
+  mountPlaces(app, ctx, rl);
+  mountAi(app, ctx, rl);
+  for (const m of deps.mounts ?? []) m(app, ctx);
 
   if (webBuildDir && fs.existsSync(webBuildDir)) {
     const root = path.resolve(webBuildDir);
@@ -106,7 +124,9 @@ export function createApp({ relay, db, version, webBuildDir }: Deps): Hono {
       if (file !== root && !file.startsWith(root + path.sep)) return c.notFound();
       if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
       let status: 200 | 404 = 200;
-      if (!fs.existsSync(file)) {
+      if (!fs.existsSync(file) && isSpaPath(rel) && fs.existsSync(path.join(root, "200.html")))
+        file = path.join(root, "200.html"); // SPA shell for /app/* and /g/* (url-map.md)
+      else if (!fs.existsSync(file)) {
         file = path.join(root, "404.html");
         status = 404;
       }

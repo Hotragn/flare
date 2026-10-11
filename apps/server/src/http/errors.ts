@@ -34,11 +34,20 @@ export class ApiError extends Error {
   readonly status: ContentfulStatusCode;
   readonly code: ErrorCode;
   readonly headers: Record<string, string>;
-  constructor(status: ContentfulStatusCode, code: ErrorCode, message: string, headers: Record<string, string> = {}) {
+  /** Extra body fields allowed by the contract (for example `ended` on 410). */
+  readonly extra: Record<string, unknown>;
+  constructor(
+    status: ContentfulStatusCode,
+    code: ErrorCode,
+    message: string,
+    headers: Record<string, string> = {},
+    extra: Record<string, unknown> = {},
+  ) {
     super(message);
     this.status = status;
     this.code = code;
     this.headers = headers;
+    this.extra = extra;
   }
 }
 

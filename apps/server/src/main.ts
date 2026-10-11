@@ -1,11 +1,27 @@
-// Flare server entry: HTTP (Hono) plus the hub relay WebSocket on /hub.
+// Flare server entry: HTTP (Hono), live updates (SSE), the scheduler and sweeper, and the hub
+// relay WebSocket on /hub.
+
+import type { Engine } from "@flare/shared/icd/engine";
 import { serve } from "@hono/node-server";
 import { WebSocketServer } from "ws";
-import { createApp } from "./app.ts";
+import { buildCtx, createApp } from "./app.ts";
+import { startScheduler } from "./core/scheduler.ts";
 import { type Db, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { log } from "./log.ts";
+
+/** The real engine (packages/engine, ICD-1) once it is in the workspace; null until then. */
+async function loadEngine(): Promise<Engine | null> {
+  const name = "@flare/engine";
+  try {
+    const mod = (await import(name)) as { engine?: Engine };
+    return mod.engine ?? null;
+  } catch {
+    log.warn({ event: "engine.missing" }, "no @flare/engine; gathering writes answer 503");
+    return null;
+  }
+}
 
 const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
 let db: Db | null = null;
@@ -15,7 +31,23 @@ if (env.databaseUrl) {
   log.info({ event: "db.migrated", applied: applied.length }, "migrations applied");
 }
 
-const app = createApp({ relay, db, version: env.version, webBuildDir: env.webBuildDir });
+const deps = {
+  relay,
+  db,
+  version: env.version,
+  webBuildDir: env.webBuildDir,
+  engine: (await loadEngine()) ?? undefined,
+  ladderTimeoutMs: env.ladderTimeoutMs,
+  config: {
+    publicBaseUrl: env.publicBaseUrl,
+    vapidPublicKey: env.vapidPublicKey,
+    telegramBotUsername: env.telegramBotUsername,
+  },
+};
+const ctx = buildCtx(deps);
+const app = createApp(deps, ctx);
+const scheduler = db && ctx.engine ? startScheduler(ctx) : null;
+
 const server = serve({ fetch: app.fetch, port: env.port }, (i) =>
   log.info({ event: "listen", port: i.port }, "flare server up"),
 );
@@ -33,6 +65,7 @@ server.on("upgrade", (req, socket, head) => {
 });
 
 const stop = async () => {
+  scheduler?.stop();
   relay.close();
   wss.close();
   server.close();
