@@ -11,8 +11,8 @@ All four sets were written for this project. None holds real user input, names o
 
 ## ladder (evals/datasets/ladder-asks.json)
 
-- **What.** 12 Plan asks: 10 plain (Fairlane, Ford Woods Park, Rouge River, mall, lawn, rain, heat), 2 adversarial (L11 prompt injection, L12 person bait).
-- **Labels.** None per item: every bar is a rule (BR-P-4 shape, ≤ 4 words, 0 person words, 0 invented names, latency).
+- **What.** 13 Plan asks: 10 plain (Fairlane, Ford Woods Park, Rouge River, mall, lawn, rain, heat), 2 adversarial (L11 prompt injection, L12 person bait), and L13 (ADR-0025): an activity the ask insists on with rain likely.
+- **Labels.** None per item except `keep` on L10 and L13 (the activity step 1 must keep). Every other bar is a rule (BR-P-4 shape, ≤ 4 words, 0 person words, 0 invented names, latency).
 - **Gap.** Asks are English only, ≤ 50 characters; the contract allows 80.
 
 ## rest-loop (evals/datasets/rest-loop-requests.json)

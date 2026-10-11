@@ -104,7 +104,9 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     try {
       const left = remaining(arrived, "ladder");
       if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
-      const steps = await ladderFromAsk(opts.ollama, job, AbortSignal.timeout(left));
+      const steps = await ladderFromAsk(opts.ollama, job, AbortSignal.timeout(left), {
+        deadline: performance.now() + left,
+      });
       result = steps
         ? { ...base(job.id, t), ok: true, ladder: steps }
         : { ...base(job.id, t), ok: false, error: "unusable_answer" };

@@ -1,11 +1,12 @@
 // npm run eval -- <task> [--tier hub|rules] [--limit n] [--parser path] [--strict]
-// Tasks: photo, ladder, conditions, rest-loop, osm-tags, all. Model calls are sequential.
+// Tasks: photo, ladder, ladder-agent, conditions, rest-loop, osm-tags, all. Model calls are sequential.
 import { loadavg } from "node:os";
 import { parseArgs } from "node:util";
 import { MODEL, modelReady, warm } from "./ollama.ts";
 import { allPass, type Report, writeReport } from "./report.ts";
 import { runConditions } from "./tasks/conditions.ts";
 import { runLadder } from "./tasks/ladder.ts";
+import { runLadderAgentEval } from "./tasks/ladder-agent.ts";
 import { runOsmTags } from "./tasks/osm-tags.ts";
 import { runPhoto } from "./tasks/photo.ts";
 import { runRestLoop } from "./tasks/rest-loop.ts";
@@ -20,11 +21,12 @@ const { values, positionals } = parseArgs({
   },
 });
 
-const TASKS = ["photo", "ladder", "conditions", "rest-loop", "osm-tags"] as const;
+const TASKS = ["photo", "ladder", "ladder-agent", "conditions", "rest-loop", "osm-tags"] as const;
 type Task = (typeof TASKS)[number];
 const DEFAULT_TIER: Record<Task, string> = {
   photo: "hub",
   ladder: "hub",
+  "ladder-agent": "hub",
   conditions: "rules",
   "rest-loop": "rules",
   "osm-tags": "hub",
@@ -56,6 +58,7 @@ for (const t of list) {
   let r: Report;
   if (t === "photo") r = await runPhoto(tier, limit);
   else if (t === "ladder") r = await runLadder(tier, limit);
+  else if (t === "ladder-agent") r = await runLadderAgentEval(tier, limit);
   else if (t === "conditions") r = await runConditions(tier, values.parser);
   else if (t === "rest-loop") r = await runRestLoop(tier, values.parser, limit);
   else r = await runOsmTags(tier, limit);

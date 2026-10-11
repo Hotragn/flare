@@ -47,6 +47,7 @@ const deps = {
   webBuildDir: env.webBuildDir,
   engine,
   ladderTimeoutMs: env.ladderTimeoutMs,
+  ladderAgent: env.ladderAgent,
   config: {
     publicBaseUrl: env.publicBaseUrl,
     vapidPublicKey: env.vapidPublicKey,

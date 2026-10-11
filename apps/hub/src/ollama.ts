@@ -70,24 +70,44 @@ export async function draftFromPhoto(cfg: OllamaConfig, jpeg: Uint8Array, signal
   return null;
 }
 
-/** Ask line to four steps with ML's ladder prompt v2 and enforceLadder(). Retries once. */
-export async function ladderFromAsk(cfg: OllamaConfig, job: LadderJobT, signal?: AbortSignal): Promise<LadderT | null> {
+/** Ask line to four steps with ML's ladder prompt v2 and enforceLadder(). No retry by default (ADR-0025). */
+export async function ladderFromAsk(
+  cfg: OllamaConfig,
+  job: LadderJobT,
+  signal?: AbortSignal,
+  opts: { retry?: LadderRetry; deadline?: number } = {},
+): Promise<LadderT | null> {
   const input = { ask: job.ask, total_minutes: job.total_minutes, ...(job.weather ? { weather: job.weather } : {}) };
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const text = await post(
-      cfg,
-      [
-        { role: "system", content: LADDER_PROMPT.system },
-        { role: "user", content: ladderUserPrompt(input) },
-      ],
-      LADDER_PROMPT.numPredict,
-      signal,
-    );
-    const d = enforceLadder(text, input);
-    if (d) return d.ladder;
-  }
-  return null;
+  const messages: { role: string; content: string }[] = [
+    { role: "system", content: LADDER_PROMPT.system },
+    { role: "user", content: ladderUserPrompt(input) },
+  ];
+  const t0 = performance.now();
+  const text = await post(cfg, messages, LADDER_PROMPT.numPredict, signal);
+  const d = enforceLadder(text, input);
+  if (d) return d.ladder;
+  // At temperature 0 the same prompt gives the same answer, so a plain retry only costs time
+  // (about 3.5 s, eval 2026-10-11). "corrective" retries once with a correction, only if one
+  // more call of the same length fits before the deadline. The default is "none": in the eval
+  // Gemma kept the same labels after the correction, so the template takes over at once.
+  const retry = opts.retry ?? LADDER_RETRY;
+  const took = performance.now() - t0;
+  if (retry === "none" || (opts.deadline !== undefined && performance.now() + took > opts.deadline)) return null;
+  const again = await post(
+    cfg,
+    [...messages, { role: "assistant", content: text }, { role: "user", content: LADDER_CORRECTION }],
+    LADDER_PROMPT.numPredict,
+    signal,
+  );
+  return enforceLadder(again, input)?.ladder ?? null;
 }
+
+export type LadderRetry = "corrective" | "none";
+/** Chosen by the ladder-agent eval (ADR-0025): see docs/handoffs/10-mastra-plan.md. */
+export const LADDER_RETRY: LadderRetry = "none";
+/** The second turn when the first answer failed enforceLadder(). Names the usual failures. */
+export const LADDER_CORRECTION =
+  "That answer could not be used. Reply with the JSON object only: 4 labels of 2 to 4 plain words in sentence case (only the first letter upper case), only places named in the ask, and 4 whole minutes that go down.";
 
 /**
  * ICR-ML5: one photo to a guarded OSM tag draft with ML's osm-tags prompt v1 and
