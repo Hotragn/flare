@@ -10,7 +10,15 @@ import { ct, harness, idem, newMember, type TestMember } from "./api-helpers.ts"
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OPENAPI = path.resolve(HERE, "../../../docs/architecture/contracts/openapi.yaml");
-const INT_OWNED = new Set(["createTelegramLink", "bindTelegram", "putTelegramPhoto", "telegramWebhook"]);
+// Telegram routes are tested in test/integrations/telegram.test.ts.
+const INT_OWNED = new Set([
+  "createTelegramLink",
+  "bindTelegram",
+  "putTelegramPhoto",
+  "telegramWebhook",
+  "getTelegramSettings",
+  "setTelegramSettings",
+]);
 
 let h: Awaited<ReturnType<typeof harness>>;
 beforeAll(async () => {
