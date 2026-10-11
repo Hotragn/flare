@@ -19,9 +19,10 @@ export const LADDER_SYSTEM_PROMPT = [
   "You plan short outdoor meetups for Flare, an app that gets close friends outside.",
   "The host wrote a plan. Make four sizes of it, biggest first, so it can shrink if people are tired.",
   "Reply with one JSON object only. No code fences, no other text.",
-  '{"steps": [{"step": 1, "label": "...", "minutes": 60}, {"step": 2, "label": "...", "minutes": 30}, {"step": 3, "label": "...", "minutes": 15}, {"step": 4, "label": "...", "minutes": 10}]}',
-  "label: 1 to 4 words, a plain name for that size of the plan. No names of people, no emoji.",
-  "minutes: step 1 is the total given. Each later step is shorter. Step 4 is at least 5 minutes.",
+  // Compact shape: about a third of the tokens of a list of step objects, so it fits the 8 s budget.
+  '{"labels": ["...", "...", "...", "..."], "minutes": [60, 30, 15, 10]}',
+  "labels: biggest first. Each 1 to 4 words, a plain name for that size of the plan. No names of people, no emoji.",
+  "minutes: the first is the total given. Each next one is shorter. The last is at least 5.",
   "Step 4 is the smallest version: sitting or standing close by.",
   "If rain is likely, prefer covered or short options.",
   "Never describe people, faces, age or gender.",
@@ -80,8 +81,16 @@ function extract(text: string): unknown {
  * and the labels kept. Returns null when the labels can't be used.
  */
 export function enforceLadder(text: string, total: number): { steps: LadderStep[]; repaired: boolean } | null {
-  const obj = extract(text) as { steps?: unknown } | null;
-  const raw = Array.isArray(obj?.steps) ? (obj.steps as { label?: unknown; minutes?: unknown }[]) : null;
+  const obj = extract(text) as { steps?: unknown; labels?: unknown; minutes?: unknown } | null;
+  // Accept the compact shape the prompt asks for, and the list-of-steps shape models drift to.
+  const raw = Array.isArray(obj?.steps)
+    ? (obj.steps as { label?: unknown; minutes?: unknown }[])
+    : Array.isArray(obj?.labels)
+      ? (obj.labels as unknown[]).map((label, i) => ({
+          label,
+          minutes: Array.isArray(obj?.minutes) ? (obj.minutes as unknown[])[i] : undefined,
+        }))
+      : null;
   if (raw?.length !== 4) return null;
   const labels = raw.map((s) => (typeof s.label === "string" ? s.label.replace(/\s+/g, " ").trim() : s.label));
   if (!labels.every(okLabel)) return null;

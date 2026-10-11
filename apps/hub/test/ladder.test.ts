@@ -19,6 +19,20 @@ describe("enforceLadder (B2)", () => {
   it("keeps a valid answer, even inside code fences", () => {
     expect(enforceLadder(`\`\`\`json\n${ANSWER}\n\`\`\``, 60)).toMatchObject({ repaired: false });
   });
+  it("accepts the compact shape the prompt asks for", () => {
+    const r = enforceLadder(
+      '{"labels":["Mall loop","Pond walk","Bench stop","Sit nearby"],"minutes":[60,30,15,10]}',
+      60,
+    );
+    expect(r).toMatchObject({ repaired: false });
+    expect(r?.steps.map((s) => `${s.step}:${s.label}:${s.minutes}`)).toEqual([
+      "1:Mall loop:60",
+      "2:Pond walk:30",
+      "3:Bench stop:15",
+      "4:Sit nearby:10",
+    ]);
+    expect(enforceLadder('{"labels":["A","B","C","D"]}', 60)?.repaired).toBe(true); // no minutes: template
+  });
   it("BR-P-4: bad minutes are replaced with the template minutes, labels kept", () => {
     const bad = ANSWER.replace('"minutes":30', '"minutes":90');
     const r = enforceLadder(bad, 60);

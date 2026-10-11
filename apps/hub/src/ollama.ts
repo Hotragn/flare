@@ -56,7 +56,7 @@ export async function chatText(cfg: OllamaConfig, system: string, user: string, 
         { role: "system", content: system },
         { role: "user", content: user },
       ],
-      options: { temperature: 0, seed: 42, num_predict: 200 },
+      options: { temperature: 0, seed: 42, num_predict: 96 },
     }),
     signal: signal ?? AbortSignal.timeout(cfg.timeoutMs),
   });
