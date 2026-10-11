@@ -1185,6 +1185,59 @@
       "kind": "message",
       "where": "InfoLines"
     },
+    "nature.sunset": {
+      "text": "Sunset {time}",
+      "kind": "message",
+      "where": "InfoLines (nature line)",
+      "fixed": "FR-NAT-1",
+      "owner": "map:nature",
+      "sample": {
+        "time": "6:57 PM"
+      }
+    },
+    "nature.feature": {
+      "text": "By {name}",
+      "kind": "message",
+      "where": "InfoLines (nature line)",
+      "owner": "map:nature",
+      "sample": {
+        "name": "Fair Lane Lake"
+      }
+    },
+    "nature.season": {
+      "text": "Week {n} of {season}",
+      "kind": "message",
+      "where": "InfoLines (nature line)",
+      "owner": "map:nature",
+      "sample": {
+        "n": 3,
+        "season": "fall"
+      }
+    },
+    "nature.season.spring": {
+      "text": "spring",
+      "kind": "fragment",
+      "where": "Nature line",
+      "owner": "map:nature"
+    },
+    "nature.season.summer": {
+      "text": "summer",
+      "kind": "fragment",
+      "where": "Nature line",
+      "owner": "map:nature"
+    },
+    "nature.season.fall": {
+      "text": "fall",
+      "kind": "fragment",
+      "where": "Nature line",
+      "owner": "map:nature"
+    },
+    "nature.season.winter": {
+      "text": "winter",
+      "kind": "fragment",
+      "where": "Nature line",
+      "owner": "map:nature"
+    },
     "need.more": {
       "text": "Need {n} more.",
       "kind": "message",
