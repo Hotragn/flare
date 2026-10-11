@@ -23,23 +23,25 @@
   --c-smoke-500: #6F7987;
   --c-smoke-300: #B7BDC5;
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --t-display-size: 2.5rem;
+  /* 2026 direction (docs/design/09-2026-direction.md): the system font (SF Pro on iPhone)
+     everywhere, Fraunces only for the six words. */
+  --font-body: system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  --t-display-size: 2.125rem;
   --t-display-line: 1.1;
-  --t-display-weight: 600;
-  --t-display-family: var(--font-display);
-  --t-display-tracking: -0.01em;
+  --t-display-weight: 700;
+  --t-display-family: var(--font-body);
+  --t-display-tracking: -0.02em;
   --t-title-size: 1.75rem;
   --t-title-line: 1.2;
-  --t-title-weight: 600;
-  --t-title-family: var(--font-display);
-  --t-title-tracking: -0.005em;
+  --t-title-weight: 700;
+  --t-title-family: var(--font-body);
+  --t-title-tracking: -0.015em;
   --t-heading-size: 1.375rem;
   --t-heading-line: 1.27;
   --t-heading-weight: 700;
   --t-heading-family: var(--font-body);
   --t-heading-tracking: 0;
-  --t-body-size: 1.125rem;
+  --t-body-size: 1.0625rem;
   --t-body-line: 1.45;
   --t-body-weight: 400;
   --t-body-family: var(--font-body);
@@ -59,7 +61,7 @@
   --t-sun-weight: 700;
   --t-sun-family: var(--font-body);
   --t-sun-tracking: 0;
-  --t-invite-size: 2rem;
+  --t-invite-size: 2.25rem;
   --t-invite-line: 1.12;
   --t-invite-weight: 600;
   --t-invite-family: var(--font-display);

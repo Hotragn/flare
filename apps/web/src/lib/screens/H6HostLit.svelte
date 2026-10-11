@@ -38,12 +38,14 @@
   let sheet = $state<"" | "plusone" | "done">(view === "plusone" || view === "done" ? view : "");
 </script>
 
-<Screen {theme} sound {onclose} title={t("host.lit.title")}>
+<Screen {theme} sound {onclose} title={t("host.lit.title")} stage>
+  {#snippet hero()}
   <div class="center">
     <Hearth state="lit" size={210} celebrate={view === "lit"} />
     <h1 class="t-display">{t("host.lit.headline")}</h1>
     {#if spot}<p class="t-sun">{t("host.lit.coming", { n: coming, spot })}</p>{/if}
   </div>
+  {/snippet}
   <div class="here" aria-live="polite">
     <span class="t-heading">{t("host.lit.here", { n: here })}</span>
     <Button variant="secondary" icon="plusone" full={false} onclick={() => (sheet = "plusone")}>{t("host.lit.addOne")}</Button>
@@ -74,6 +76,7 @@
 </Screen>
 
 <style>
+  .center { text-align: left; align-items: flex-start; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
   .center h1, .center p { margin: 0; max-width: 24ch; }
   .here { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 2px solid var(--line); }

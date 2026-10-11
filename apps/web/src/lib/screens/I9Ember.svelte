@@ -37,13 +37,15 @@
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} stage backdrop={info.photo} backdropAlt={info.scene}>
+  {#snippet hero()}
   <div class="center">
     <Hearth state={view === "lit" ? "lit" : "ember"} size={150} celebrate={view === "lit"} />
     <h1 class="t-title">{view === "lit" ? t("lit.notice", { host: info.host, spot: bench }) : t("ember.headline", { bench })}</h1>
     {#if meters !== null}<p class="t-muted">{t("ember.where", { Bench: cap(bench), m: meters, spot: info.spot })}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
   </div>
+  {/snippet}
   {#if view !== "lit"}<FlameMeter state="ember" {have} quorum={2} note={t("ember.meterNote")} />{/if}
   <InfoLines access={info.access} nature={info.nature} />
   {#snippet actions()}
@@ -56,6 +58,7 @@
 </Screen>
 
 <style>
+  .center { text-align: left; align-items: flex-start; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
   .err { font-weight: 700; }

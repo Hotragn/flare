@@ -2,7 +2,6 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import PhotoPrint from "../components/PhotoPrint.svelte";
   import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Icon from "../components/Icon.svelte";
@@ -46,7 +45,13 @@
   );
 </script>
 
-<Screen {theme} sound {onclose} title={host ? t("invite.title", { host }) : ""} heading={view === "loading" ? t("app.loading") : ""}>
+<Screen {theme} sound {onclose} title={host ? t("invite.title", { host }) : ""} heading={view === "loading" ? t("app.loading") : ""}
+  stage={(view === "kindling" || view === "lit") && !!info} backdrop={info?.photo ?? ""} backdropAlt={info?.scene ?? ""}>
+  {#snippet hero()}
+    {#if info && (view === "kindling" || view === "lit")}
+      <h1 class="t-invite words">{info.words}</h1>
+    {/if}
+  {/snippet}
   {#if view === "loading"}
     <div class="skeleton print-sk" aria-hidden="true"></div>
     <div class="skeleton line" aria-hidden="true"></div>
@@ -64,8 +69,6 @@
       <p class="t-muted">{t("gone.body")}</p>
     </div>
   {:else if info}
-    <PhotoPrint scene={info.scene} src={info.photo} {sample} height={200} tilt={1.2} />
-    <h1 class="t-invite words">{info.words}</h1>
     <div class="where">
       <Icon name="hotspots" size={22} />
       <div>
@@ -90,7 +93,7 @@
 </Screen>
 
 <style>
-  .words { margin: 0; }
+  .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
   .where { display: flex; gap: 8px; align-items: flex-start; }
   .where p { margin: 0; }
   .spark { display: flex; gap: 6px; align-items: center; color: var(--accent-text); font-weight: 700; margin-top: 4px !important; }

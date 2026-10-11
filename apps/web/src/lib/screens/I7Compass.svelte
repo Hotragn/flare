@@ -6,7 +6,7 @@
   import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let {
-    theme = "sun",
+    theme = "dark", // 2026 direction: Find them is dark and full screen
     name,
     status = "pointing",
     meters = 0,

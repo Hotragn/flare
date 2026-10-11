@@ -2,7 +2,6 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import PhotoPrint from "../components/PhotoPrint.svelte";
   import Choice from "../components/Choice.svelte";
   import TextField from "../components/TextField.svelte";
   import InfoLines from "../components/InfoLines.svelte";
@@ -53,11 +52,9 @@
   const shownLine = $derived(hostLine || (hostName.trim() && (spot || typedSpot.trim()) ? t("send.hostLine", { host: hostName.trim(), spot: spot || typedSpot.trim() }) : ""));
 </script>
 
-<Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}>
-  <div class="top">
-    <div class="thumb"><PhotoPrint {scene} src={photo} {sample} height={150} tilt={-3} /></div>
-    <p class="t-title words">{words}</p>
-  </div>
+<Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}
+  stage backdrop={photo} backdropAlt={scene}>
+  {#snippet hero()}<p class="t-invite words">{words}</p>{/snippet}
   {#if askName}
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
   {/if}
@@ -80,10 +77,8 @@
 </Screen>
 
 <style>
-  .top { display: flex; gap: 14px; align-items: center; }
-  .thumb { width: 116px; flex: none; }
-  .words { margin: 0; }
-  .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 12px 6px 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 2px solid var(--line); font-weight: 700; }
+  .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
+  .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 4px 0; font-weight: 600; }
   .edit { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center; color: var(--text); }
   .err { display: flex; gap: 8px; align-items: center; margin: 0; padding: 12px 14px; border-radius: var(--r-md); border: 2px solid var(--c-ember-700); font-weight: 700; }
 </style>

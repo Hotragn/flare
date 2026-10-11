@@ -6,10 +6,6 @@
   import { page } from "$app/state";
   import { t } from "#lib/copy/index.ts";
   import { onDestroy } from "svelte";
-  // The three faces the first screen uses, preloaded so the swap lands before LCP.
-  import body400 from "@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-400-normal.woff2?url";
-  import body700 from "@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-700-normal.woff2?url";
-  import display600 from "@fontsource/fraunces/files/fraunces-latin-600-normal.woff2?url";
   let { children } = $props();
 
   // Website flames use the CSS renderer (Flame.svelte's "forced css"): same look and motion,
@@ -31,7 +27,6 @@
 </script>
 
 <svelte:head>
-  {#each [body400, body700, display600] as href}<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" {href} />{/each}
 </svelte:head>
 
 <div class="site" data-theme="light">

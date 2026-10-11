@@ -37,7 +37,8 @@
   let asking = $state(false);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={info.photo} backdropAlt={info.scene}>
+  {#snippet hero()}
   <div class="center">
     <Hearth state="lit" size={190} celebrate={view === "lit" && !savedAt} />
     {#if view === "smaller" && smallerAt}
@@ -50,6 +51,7 @@
     {#if cant}<p class="t-muted" role="status">{t("lit.cantDone")}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
   </div>
+  {/snippet}
   <InfoLines access={info.access} nature={info.nature} />
   {#snippet actions()}
     <Button icon="compass" onclick={onfind}>{t("lit.find")}</Button>
@@ -69,6 +71,7 @@
 </Screen>
 
 <style>
+  .center { text-align: left; align-items: flex-start; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
