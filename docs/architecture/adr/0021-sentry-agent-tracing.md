@@ -19,3 +19,15 @@ The founder wants real traces of the AI path for the DEV post: how often the hub
 ## Consequences
 - Traces show tiers and timings per job, which the post can quote.
 - A future span added without the helpers would still be scrubbed by the allow-list; a new attribute must be added to `ALLOWED` on purpose.
+
+## Amendment (Sun 2026-10-11): route performance and server errors
+- **Route performance.** A sampled share of API requests (`FLARE_HTTP_SAMPLE`, default 0.2) becomes one `http.server` transaction each.
+  - Name: the method and the API area only, for example `PUT:gatherings`.
+  - Attributes: `flare.route` (the same token), `flare.status` (`2xx`, `4xx` or `5xx`) and `flare.ok`.
+  - Never sent: the path, ids, the query, headers or bodies. `routeToken()` builds the name from the first path segment after `/api/v1/`.
+- **Server errors.** An unhandled error (not an `ApiError`) is captured with its class and a fingerprint of class plus route token. `scrubEvent()` still drops the message, request, user, tags, breadcrumbs and frame variables.
+- **The Mastra agent** was already traced (ADR-0025):
+  - the run is `invoke_agent flare-ladder` with `flare.agent`;
+  - each tool is `execute_tool <name>` (sunset, weather_window, nearby_places, step_templates, enforce_ladder, keep_asked);
+  - model calls are `chat <model>` with the provider that answered.
+- **Tests.** `apps/server/test/tracing.test.ts` adds a run with sampling at 1 against a route that throws a TypeError whose message holds a marker phrase and a UUID. The envelope has `GET:health`, `GET:boom`, `TypeError` and `flare.status`, and contains neither the marker, `/api/v1` nor the UUID.

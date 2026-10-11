@@ -18,6 +18,7 @@ import { mountGroups } from "./routes/groups.ts";
 import { mountPlaces } from "./routes/places.ts";
 import { mountSystem } from "./routes/system.ts";
 import { mountVoice } from "./routes/voice.ts";
+import { captureServerError, routeSpan } from "./tracing.ts";
 
 /** INT's mountTelegram / mountPreview have this shape (url-map.md). */
 export type Mount = (app: Hono, ctx: Ctx) => void;
@@ -92,7 +93,7 @@ export function createApp(deps: Deps, ctx: Ctx = buildCtx(deps)): Hono {
 
   app.use("*", async (c, next) => {
     const t = performance.now();
-    await next();
+    await routeSpan(c.req.method, c.req.path, next, () => c.res.status); // sampled; method and area only
     log.info(
       { m: c.req.method, r: routeTemplate(c.req.path), s: c.res.status, ms: Math.round(performance.now() - t) },
       "req",
@@ -106,6 +107,7 @@ export function createApp(deps: Deps, ctx: Ctx = buildCtx(deps)): Hono {
     }
     // Never log the error text: it can hold SQL parameters. The class name is enough to grep.
     log.error({ event: "error", r: routeTemplate(c.req.path), kind: err.name }, "unhandled error");
+    captureServerError(err, c.req.method, c.req.path); // the class and route token only
     return c.json({ code: "bad_request", message: "Something went wrong" }, 500);
   });
   app.notFound((c) =>

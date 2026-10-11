@@ -26,6 +26,8 @@ export const ALLOWED = new Set([
   "flare.dropped", // count of OSM tags the guard dropped, a number (ICR-ML5)
   "flare.agent", // true when the Mastra Plan agent drafted the ladder (ADR-0025)
   "flare.weather", // where the ladder's weather came from: "phone" | "tool" | "none"
+  "flare.route", // route performance: method and area only, e.g. "PUT:gatherings" (never a path)
+  "flare.status", // HTTP status class: "2xx" | "4xx" | "5xx"
   "sentry.op",
   "sentry.origin",
   "sentry.source",
@@ -100,6 +102,48 @@ function scrubEvent<T extends Sentry.Event>(event: T): T {
       if (v.stacktrace?.frames) for (const f of v.stacktrace.frames) f.vars = undefined;
     }
   return event;
+}
+
+/** "PUT /api/v1/gatherings/<id>/me" -> "PUT:gatherings". Never ids, never the path. */
+export const routeToken = (method: string, path: string): string => {
+  const area = /^\/api\/v1\/([a-z]+)/.exec(path)?.[1] ?? "other";
+  return `${method.toUpperCase()}:${area}`;
+};
+
+/** Share of API requests traced for route performance (the AI path is always traced). */
+const httpSample = () => Number(process.env.FLARE_HTTP_SAMPLE ?? 0.2);
+
+/**
+ * Route performance: one `http.server` transaction per sampled API request, named by method and
+ * area only. Same allow-list and scrub as the AI spans: no URL, query, header, body or id.
+ */
+export async function routeSpan(
+  method: string,
+  path: string,
+  fn: () => Promise<void>,
+  status: () => number,
+): Promise<void> {
+  if (!enabled || !path.startsWith("/api/") || Math.random() >= httpSample()) return fn();
+  const route = routeToken(method, path);
+  return Sentry.startSpan(
+    { op: "http.server", name: route, forceTransaction: true, attributes: { "flare.route": route } },
+    async (s) => {
+      await fn();
+      const code = status();
+      s.setAttributes({ "flare.status": `${Math.floor(code / 100)}xx`, "flare.ok": code < 500 });
+    },
+  );
+}
+
+/** Server error monitoring: the error class and the route token only (the message is dropped). */
+export function captureServerError(err: unknown, method: string, path: string): void {
+  if (!enabled) return;
+  Sentry.withScope((scope) => {
+    scope.setContext("trace", {});
+    scope.setTag("route", routeToken(method, path)); // tags are cleared by the scrub; kept in the fingerprint below
+    scope.setFingerprint([(err as Error)?.name ?? "Error", routeToken(method, path)]);
+    Sentry.captureException(err);
+  });
 }
 
 type Attrs = Record<string, string | number | boolean>;

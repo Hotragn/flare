@@ -4,7 +4,9 @@
 import { HUB_PROTOCOL } from "@flare/shared";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import WebSocket from "ws";
-import { ALLOWED, flushTracing, initTracing, isDsn, scrubAttributes } from "../src/tracing.ts";
+import { buildCtx, createApp } from "../src/app.ts";
+import type { HubRelay } from "../src/hub/relay.ts";
+import { ALLOWED, flushTracing, initTracing, isDsn, routeToken, scrubAttributes } from "../src/tracing.ts";
 import { fakeJpeg, SECRET, startServer } from "./helpers.ts";
 
 const sent: unknown[] = [];
@@ -131,5 +133,40 @@ describe("Sentry agent tracing (ADR-0021)", () => {
       expect(all, bad).not.toContain(bad);
     expect(all).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/); // no UUIDs (ids)
     expect(all).not.toContain(`<${photo.length} bytes>`);
+  });
+
+  it("route performance and server errors: the method and area only, the error class only", async () => {
+    expect(routeToken("PUT", "/api/v1/gatherings/0b1c2d3e-0000-4000-8000-000000000001/me")).toBe("PUT:gatherings");
+    expect(routeToken("GET", "/g/abc/")).toBe("GET:other");
+    process.env.FLARE_HTTP_SAMPLE = "1";
+    const before = sent.length;
+    const relay = {
+      status: "absent",
+      draft: async () => null,
+      ladder: async () => null,
+      close() {},
+    } as unknown as HubRelay;
+    const deps = {
+      relay,
+      db: null,
+      version: "t",
+      mounts: [
+        (app: Parameters<NonNullable<Parameters<typeof createApp>[0]["mounts"]>[number]>[0]) =>
+          app.get("/api/v1/boom/:id", () => {
+            throw new TypeError(`${MARK_INVITE} 0b1c2d3e-0000-4000-8000-000000000009`);
+          }),
+      ],
+    };
+    const a = createApp(deps, buildCtx(deps));
+    expect((await a.request("/api/v1/health")).status).toBe(200);
+    expect((await a.request("/api/v1/boom/0b1c2d3e-0000-4000-8000-000000000009")).status).toBe(500);
+    delete process.env.FLARE_HTTP_SAMPLE;
+    await flushTracing(3000);
+    const mine = serialize(sent.slice(before));
+    expect(mine).toContain("GET:health"); // a route-performance transaction
+    expect(mine).toContain("GET:boom");
+    expect(mine).toContain("TypeError"); // the error class
+    expect(mine).toContain('"flare.status"');
+    for (const bad of [MARK_INVITE, "Zebracorn", "/api/v1", "0b1c2d3e"]) expect(mine, bad).not.toContain(bad);
   });
 });
