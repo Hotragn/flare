@@ -22,7 +22,14 @@
     "apps/server/src/**/*.ts",
     "apps/server/test/**/*.ts",
     "apps/hub/src/**/*.ts",
+    "apps/hub/field/**/*.ts",
     "apps/hub/test/**/*.ts",
+    "apps/web/src/lib/ai/**/*.ts",
+    "apps/web/src/lib/conditions/**/*.ts",
+    "apps/web/src/lib/capabilities/**/*.ts",
+    "apps/web/test/ai/**/*.ts",
+    "apps/web/test/fakes/**/*.ts",
+    "apps/web/test/e2e/**/*.ts",
     "scripts/**/*.ts",
     "evals/**/*.ts"
   ]

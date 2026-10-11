@@ -25,6 +25,7 @@
     "dev:web": "npm run -w apps/web dev",
     "start": "node apps/server/src/main.ts",
     "hub": "node apps/hub/src/main.ts",
+    "hub:field": "node apps/hub/field/field.ts",
     "e2e:hello": "node scripts/e2e-hello.ts",
     "sweep": "node apps/server/src/cli/sweep.ts",
     "audit": "node apps/server/src/cli/audit.ts",

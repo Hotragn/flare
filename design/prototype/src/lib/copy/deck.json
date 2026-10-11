@@ -433,6 +433,12 @@
       "kind": "error",
       "where": "H2"
     },
+    "develop.empty": {
+      "text": "Write up to six words.",
+      "kind": "error",
+      "where": "H2 typed field",
+      "owner": "apps/web/src/lib/ai"
+    },
     "develop.use": {
       "text": "Use these",
       "kind": "button",
@@ -1029,6 +1035,24 @@
       "where": "I3",
       "sample": {
         "k": 3
+      }
+    },
+    "readback.chip.minStep": {
+      "text": "Step {k} or bigger",
+      "kind": "option",
+      "where": "I3",
+      "owner": "apps/web/src/lib/conditions",
+      "sample": {
+        "k": 1
+      }
+    },
+    "readback.many": {
+      "text": "Got it: {n} rules, listed below. Right?",
+      "kind": "message",
+      "where": "I3 bot, when the full read-back is over 12 words (SRS-COND-5)",
+      "owner": "apps/web/src/lib/conditions",
+      "sample": {
+        "n": 4
       }
     },
     "readback.chipsAria": {
@@ -1709,6 +1733,49 @@
       "where": "P2 sheet",
       "fixed": "BR-P-4"
     },
+    "ladder.err.minutes": {
+      "text": "Each step needs 5 minutes or more.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai",
+      "fixed": "BR-P-4"
+    },
+    "ladder.err.total": {
+      "text": "Step 1 must be 40 to 600 minutes.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.err.name": {
+      "text": "Name each step in four words or fewer.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.1": {
+      "text": "Full walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 1",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.2": {
+      "text": "Half walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 2",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.3": {
+      "text": "Short walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 3",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.4": {
+      "text": "Sit nearby",
+      "kind": "option",
+      "where": "P2 template ladder, step 4",
+      "owner": "apps/web/src/lib/ai"
+    },
     "ladder.tmpl.1": {
       "text": "Long walk",
       "kind": "label",
@@ -2233,6 +2300,48 @@
       "kind": "title",
       "where": "O5"
     },
+    "loop.frag.min": {
+      "text": "{min} min",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts",
+      "sample": {
+        "min": 40
+      }
+    },
+    "loop.frag.gap": {
+      "text": "a bench every {m} m",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts",
+      "sample": {
+        "m": 200
+      }
+    },
+    "loop.frag.trees": {
+      "text": "under trees",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.water": {
+      "text": "by water",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.restrooms": {
+      "text": "near restrooms",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.noSteps": {
+      "text": "no steps",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
     "loop.none": {
       "text": "No loop keeps benches that close.",
       "kind": "title",
@@ -2484,6 +2593,263 @@
       "text": "Stop",
       "kind": "button",
       "where": "O8"
+    },
+    "ai.where.title": {
+      "text": "What runs where",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.feature.photo": {
+      "text": "Six words from your photo",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.feature.conditions": {
+      "text": "Your conditions",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.feature.ladder": {
+      "text": "Plan steps",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.run.photo": {
+      "text": "Our laptop. If it can't answer in 6 s, you type.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "BR-AI-1"
+    },
+    "ai.run.conditions": {
+      "text": "This phone, always. Rules only, no model.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "BR-C-9"
+    },
+    "ai.run.ladder": {
+      "text": "Our laptop. If it can't answer in 8 s, a template.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.never.title": {
+      "text": "Never leaves this phone",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.never.typed": {
+      "text": "The words you type in a condition. Only the rule is sent.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "BR-C-9"
+    },
+    "ai.never.place": {
+      "text": "Your location. Only pass or fail for walk time is sent.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "BR-C-7"
+    },
+    "ai.never.photo": {
+      "text": "Your photo is never stored. Our laptop reads it in memory.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "ADR-0011"
+    },
+    "ai.try.title": {
+      "text": "Try a condition",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.try.note": {
+      "text": "It runs on this phone. Nothing you type here is sent.",
+      "kind": "hint",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "SRS-COND-6"
+    },
+    "ai.try.took": {
+      "text": "Read on this phone in {ms} ms.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.last.title": {
+      "text": "Last run on this phone",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.last.none": {
+      "text": "Nothing has run yet.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.last.line": {
+      "text": "{tier}, {ms} ms, {when}",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "sample": {
+        "tier": "Made on our laptop",
+        "ms": 3100,
+        "when": "2:14 PM"
+      }
+    },
+    "ai.why.offline": {
+      "text": "You were offline.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.why.network": {
+      "text": "The connection dropped.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.why.timeout": {
+      "text": "Our laptop took too long.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.why.hub_down": {
+      "text": "Our laptop wasn't connected.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.why.unusable": {
+      "text": "The answer didn't pass our checks.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.why.server_error": {
+      "text": "Our server had a problem.",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.phone.title": {
+      "text": "This phone can",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.phone.yes": {
+      "text": "Yes",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.phone.no": {
+      "text": "No",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.camera": {
+      "text": "Live camera",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.resize": {
+      "text": "Shrink photos before sending",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.compass": {
+      "text": "Compass",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.speech": {
+      "text": "Read descriptions aloud",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.push": {
+      "text": "Notifications",
+      "kind": "label",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cap.pushInstall": {
+      "text": "Add to Home Screen first",
+      "kind": "status",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.measured.title": {
+      "text": "Measured, not shipped",
+      "kind": "title",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai",
+      "fixed": "CR-E2"
+    },
+    "ai.measured.body": {
+      "text": "We tested 8 browser models. Too big, or no better than rules.",
+      "kind": "message",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.measured.link": {
+      "text": "Read the numbers",
+      "kind": "button",
+      "where": "/ai/",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.measured.row": {
+      "text": "{model}: {mb} MB. {reason}",
+      "kind": "status",
+      "where": "/ai/ measured list",
+      "owner": "apps/web/src/routes/ai",
+      "sample": {
+        "model": "Qwen3-0.6B",
+        "mb": 570,
+        "reason": "No better than the rules."
+      }
+    },
+    "ai.reason.buffer": {
+      "text": "Needs a GPU buffer over the iPhone's 1 GB limit.",
+      "kind": "status",
+      "where": "/ai/ measured list",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.reason.quality": {
+      "text": "Wrong about the photo too often.",
+      "kind": "status",
+      "where": "/ai/ measured list",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.reason.noBetter": {
+      "text": "No better than the rules.",
+      "kind": "status",
+      "where": "/ai/ measured list",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.reason.kernel": {
+      "text": "Doesn't run in the browser yet.",
+      "kind": "status",
+      "where": "/ai/ measured list",
+      "owner": "apps/web/src/routes/ai"
     },
     "push.flareTitle": {
       "text": "{host}'s Flare",
