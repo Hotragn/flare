@@ -2,10 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyEnvAliases } from "@flare/shared/env-aliases";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const file = process.env.FLARE_ENV_FILE ?? path.join(ROOT, ".env");
 if (fs.existsSync(file)) process.loadEnvFile(file);
+applyEnvAliases(process.env); // ELEVENLABS → ELEVENLABS_API_KEY, TINKER → TINKER_API_KEY
 
 const str = (k: string, d = "") => process.env[k] ?? d;
 export const env = {

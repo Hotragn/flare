@@ -2,7 +2,7 @@
 // a report never contains a value, a prefix or a length.
 import { accountToken } from "../../packages/shared/src/token-guard.ts";
 
-export type App = "server" | "hub" | "bot" | "deploy" | "test-area";
+export type App = "server" | "hub" | "bot" | "deploy" | "test-area" | "ml";
 export type Rule = {
   key: string;
   apps: App[];
@@ -126,6 +126,26 @@ export const SPEC: Rule[] = [
       const t = accountToken(v);
       return t ? `this is ${t}, not a scoped model access key; the cloud tier stays off` : null;
     },
+  },
+  {
+    key: "GEMINI_API_KEY",
+    apps: ["server"],
+    required: false,
+    why: "Google AI Studio (Gemini API) for the Gemma cloud tier when DigitalOcean is off; off when empty",
+  },
+  { key: "GEMINI_PROJECTNO", apps: ["server"], required: false, why: "Google Cloud project number, for quota lookups" },
+  { key: "GEMINI_PROJECTNAME", apps: ["server"], required: false, why: "Google Cloud project name, for quota lookups" },
+  {
+    key: "ELEVENLABS_API_KEY",
+    apps: ["server"],
+    required: false,
+    why: "ElevenLabs voice for spoken guidance and opt-in Voice Sparks; off when empty (alias ELEVENLABS)",
+  },
+  {
+    key: "TINKER_API_KEY",
+    apps: ["ml"],
+    required: false,
+    why: "Tinker fine-tuning, ML work only, never deployed (alias TINKER)",
   },
   { key: "RENDER_KEY", apps: ["deploy"], required: true, why: "Render API, deploy only" },
   { key: "TEST_AREA_NAME", apps: ["test-area"], required: false, why: "Map pack label" },

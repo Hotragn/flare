@@ -18,3 +18,16 @@ Every founder and manager ask from Sun 2026-10-11 after the deploy, in the order
 | 12 | Recapture docs/post/media from the new UI; post rework: no outdoor group-test claim unless one happens; built on real-stack runs, iPhone device checks (16 Pro Max, 13), live Telegram checks, deletion audit; signature-moments checklist (docs/post/signature-moments.md) driving the prize section | To do |
 
 Signature moments to finish each tool around (proof for each): Gemma (photo spoken to a low-vision friend, then the talking compass; Voice Flares), DigitalOcean (a crew with no laptop; hub drop mid-Flare with no failed invite; trace plus cost math), Sentry (debug the agent without seeing anyone's words; trace next to the scrub test), Mastra (an agent that never lets a plan die; eval vs old ladder plus a trace), Entire (which AI teammate wrote each line; checkpoint links after the scrub), the simulation ("A Saturday in Fairlane, played by 50 friends", labelled Simulation).
+
+## Added ~12:40 ET (manager, founder)
+
+| # | Item | Status |
+| --- | --- | --- |
+| 13 | 5-second clarity: website hero one line + one picture + big "Try the demo"; app first run onboarding → demo → make a crew; a fresh-eyes subagent (no context) uses the live site and reports every confusion; fix them | To do (after Crew) |
+| 14 | Website feature section in the go-outside theme: a card per feature (private yes + quorum, Ember, Plan + fade, Find them, accessibility, offline, Telegram + iMessage, Sparks + Atlas, Crew space, Voice Flares, auditable deletion, automations), 3-6 word title, one sentence, small real screenshot or loop, "Try it" deep link into the demo; "Built with" strip linking each tool to its signature moment; keep Lighthouse 100 | To do (after #13) |
+| 15 | Gemini API cloud tier (GEMINI_API_KEY, Gemma 4 via Google AI Studio): check model IDs and free limits; text jobs when no hub, photo only on explicit tap, daily cap, privacy page, ADR; DigitalOcean first if it comes back, else Google; demo stays offline | To do |
+| 16 | ElevenLabs: warm voice for low-vision guidance (reads invite, scene, compass lines; generated text only, never people's audio; optional, on-device fallback, cached per Flare, deleted at Gone); Voice Spark (opt-in 10 s own memory → Scribe → text, audio discarded at once); privacy page, ADR, honest "the one closed API" note. NOT recording group conversations (consent, leaves nothing behind) | To do |
+| 17 | Tinker fine-tune (S3 subagent, branch `tinker`): LoRA on a small open model for a measured failure (conditions hard set 15/20), before/after evals, model card | Running |
+| 18 | Env aliases: ELEVENLABS → ELEVENLABS_API_KEY, TINKER → TINKER_API_KEY, GEMINI_API_KEY (+ GEMINI_PROJECTNO, GEMINI_PROJECTNAME) in env.ts and check-env; never printed | In progress |
+
+Order after Crew: 13, 14 (website), 15, 16, 9 (Voice Flares, Atlas), 10 + 17 (merge S1, S2, Tinker), 11, 12.

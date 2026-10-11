@@ -3,17 +3,19 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyEnvAliases } from "../packages/shared/src/env-aliases.ts";
 import { type App, check, failed, format } from "./lib/env-spec.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const file = process.env.FLARE_ENV_FILE ?? path.join(ROOT, ".env");
-const ALL: App[] = ["server", "hub", "bot", "deploy", "test-area"];
+const ALL: App[] = ["server", "hub", "bot", "deploy", "test-area", "ml"];
 const asked = process.argv.slice(2).filter((a): a is App => (ALL as string[]).includes(a));
 const apps = asked.length ? asked : ALL;
 
 // Parse into a private object so the check never mutates process.env.
 const vars: Record<string, string | undefined> = { ...process.env };
 if (fs.existsSync(file)) Object.assign(vars, parseEnv(fs.readFileSync(file, "utf8")));
+applyEnvAliases(vars);
 function parseEnv(text: string): Record<string, string> {
   const util = process as unknown as {
     getBuiltinModule?: (m: string) => { parseEnv?: (s: string) => Record<string, string> };
