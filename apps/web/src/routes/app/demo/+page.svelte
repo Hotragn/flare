@@ -89,12 +89,13 @@
     demo.advance(30 * 60_000 + 1000); // the real 30-minute Ember rule
     // Amor's phone checks both benches; Benny says yes to the smaller plan.
     demo.event({ type: "checks", member_id: DEMO_FRIENDS[0].id, results: { c1: true, c2: true } });
-    later(1500, () => {
+    later(700, () => {
       demo.yes(DEMO_FRIENDS[1].id);
       demo.advance(61_000);
-      // Show the yes that lit it, then "It's lit" (round 3: every yes is seen as a count).
+      // The yes that lit it shows as a count over "It's lit" (the toast floats above every
+      // screen), so there is never a "0 more" beat (fresh-eyes #8, round 3).
       say();
-      if (demo.g?.state === "lit") later(1600, toLit);
+      if (demo.g?.state === "lit") toLit();
     });
   }
   function toLit() {

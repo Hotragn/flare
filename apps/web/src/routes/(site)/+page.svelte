@@ -6,6 +6,8 @@
   import Seo from "./Seo.svelte";
   import Steps from "./Steps.svelte";
   import Shrink from "./Shrink.svelte";
+  import Features from "./Features.svelte";
+  import BuiltWith from "./BuiltWith.svelte";
   import { reveal } from "./reveal.ts";
 
   const promises: CopyKey[] = ["site.privacy.p1", "site.privacy.p2", "site.privacy.p3", "site.privacy.p4", "site.privacy.p5"];
@@ -37,6 +39,10 @@
   <p class="more"><a href="/how/">{t("site.home.readHow")}</a></p>
 </section>
 
+<section class="band feat" use:reveal>
+  <Features />
+</section>
+
 <section class="band alt" use:reveal>
   <Shrink />
 </section>
@@ -55,6 +61,10 @@
     {#each access as [icon, key]}<li><Icon name={icon} /><span>{t(key)}</span></li>{/each}
   </ul>
   <p class="more"><a href="/accessibility/">{t("site.home.readAccess")}</a></p>
+</section>
+
+<section class="band alt" use:reveal>
+  <BuiltWith />
 </section>
 
 <section class="band" use:reveal>

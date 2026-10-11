@@ -4024,6 +4024,171 @@
       "kind": "aria",
       "where": "W2 /how/ walkthrough (fresh-eyes #18)"
     },
+    "site.feat.title": {
+      "text": "What it does",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.try": {
+      "text": "Try it",
+      "kind": "button",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.count.t": {
+      "text": "Yes in private",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.count.b": {
+      "text": "Friends tap I'm in. Everyone sees the count, never who.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.shrink.t": {
+      "text": "Too few? It shrinks",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.shrink.b": {
+      "text": "After 30 minutes it offers 15 minutes at a bench nearby.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.plan.t": {
+      "text": "Plans that bend",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.plan.b": {
+      "text": "Four steps, big to small. It picks the biggest one everyone can do.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.compass.t": {
+      "text": "A compass that talks",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.compass.b": {
+      "text": "It points to your friends with sound and buzz, in a warm voice if you like.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.friend.t": {
+      "text": "One tap to join",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.friend.b": {
+      "text": "Your friends open a link. No app to install, no account.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.loop.t": {
+      "text": "Benches all the way",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.loop.b": {
+      "text": "A walking loop from bench to bench, built from the map.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.crew.t": {
+      "text": "A home for your crew",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.crew.b": {
+      "text": "Your places and time outside together. Never who said no.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.spark.t": {
+      "text": "One line to remember",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.spark.b": {
+      "text": "After a meetup, leave a Spark. Type it, or say it.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.telegram.t": {
+      "text": "Posts in your group chat",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.telegram.b": {
+      "text": "A card in Telegram, or a text you paste into iMessage.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.gone.t": {
+      "text": "Then it's gone",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.gone.b": {
+      "text": "Within 5 minutes of the end, the Flare and every yes are deleted.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.feat.alt": {
+      "text": "The {title} screen in Flare",
+      "kind": "aria",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.title": {
+      "text": "Built with",
+      "kind": "title",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.gemma": {
+      "text": "Gemma 4 writes the invite and the Plan steps, on our laptop with Ollama.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.google": {
+      "text": "Google AI Studio runs Gemma 4 when our laptop is off.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.do": {
+      "text": "DigitalOcean is wired in as the first cloud tier, paused for now.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.eleven": {
+      "text": "ElevenLabs gives the compass its warm voice and turns a said Spark into words.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.sentry": {
+      "text": "Sentry times the AI path and never sees your words.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.mastra": {
+      "text": "Mastra runs an agent that drafts Plan steps, behind a switch.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.osm": {
+      "text": "OpenStreetMap supplies the benches, restrooms and paths.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.render": {
+      "text": "Render hosts the server on a free plan.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.sveltekit": {
+      "text": "SvelteKit builds this site and the app.",
+      "kind": "prose",
+      "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
     "site.how.s1.title": {
       "text": "Snap where you are",
       "kind": "title",

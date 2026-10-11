@@ -71,6 +71,7 @@ try {
       () => true,
       () => false,
     );
+  await page.getByRole("button", { name: "Find them" }).waitFor({ timeout: 10_000 });
   check("30 min later it shrinks to an Ember at a bench, and lights (real engine)", lit);
   await shot("3-ember-lit");
   await page.getByRole("button", { name: "Find them" }).click();
