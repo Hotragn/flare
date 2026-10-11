@@ -1,0 +1,108 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4P2MWBJ92RAFHZX95SSC6WC",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T18:12:24.492927Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "f433e29eadd0",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 3628,
+    "cache_creation_tokens": 5697519,
+    "cache_read_tokens": 888914055,
+    "output_tokens": 1759397,
+    "api_call_count": 1790
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 13
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 2337,
+      "user_lines_removed": 20,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "apps/server/src/app.ts": 5,
+        "apps/server/src/core/deps.ts": 4,
+        "apps/server/src/http/errors.ts": 1,
+        "apps/server/src/main.ts": 2,
+        "apps/server/src/routes/system.ts": 2,
+        "apps/server/src/routes/voice.ts": 30,
+        "apps/server/src/voice.ts": 56,
+        "apps/server/test/contract.test.ts": 9,
+        "apps/server/test/voice.test.ts": 75,
+        "apps/web/src/lib/compass/voice.ts": 97,
+        "apps/web/src/lib/components/Compass.svelte": 21,
+        "apps/web/src/lib/components/SaySpark.svelte": 50,
+        "apps/web/src/lib/push/cache-plan.ts": 1,
+        "apps/web/src/lib/screens/I11Spark.svelte": 11,
+        "apps/web/src/lib/screens/LinkPage.svelte": 14,
+        "apps/web/src/lib/voice/spark.ts": 57,
+        "apps/web/src/routes/app/(more)/needs/+page.svelte": 17,
+        "apps/web/static/scenic/manifest.json": 44,
+        "apps/web/static/voice/manifest.json": 272,
+        "apps/web/test/e2e/sparks.ts": 44,
+        "apps/web/test/flow/voice.test.ts": 42,
+        "design/prototype/src/lib/copy/deck.json": 65,
+        "docs/architecture/contracts/openapi.yaml": 43,
+        "docs/content/02-copy-deck.md": 19,
+        "docs/content/03-checks.md": 5,
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17,
+        "scripts/deploy-render.ts": 1,
+        "scripts/gen-voice.ts": 75
+      },
+      "user_removed_per_file": {
+        "apps/server/src/app.ts": 1,
+        "apps/web/src/lib/components/Compass.svelte": 1,
+        "apps/web/src/lib/screens/I11Spark.svelte": 2,
+        "apps/web/src/lib/screens/LinkPage.svelte": 9,
+        "apps/web/test/e2e/sparks.ts": 1,
+        "docs/content/02-copy-deck.md": 1,
+        "docs/content/03-checks.md": 5
+      }
+    }
+  ]
+}
