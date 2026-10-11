@@ -7,4 +7,4 @@
 - Tests: scripts/test/map-{pack,places,nature}.test.ts (44 tests).
 
 ## Exact next step
-Compass module apps/web/src/lib/compass/ (speech rules SRS-CMP-2, tone/haptic, permission order), then maps index (load + 7-day cache), weather, rest loops + card, Fix the map, docs/maps, handoff.
+Compass DONE (apps/web/src/lib/compass, 11 tests). Next: maps index (load + 7-day cache), weather, rest loops + card, Fix the map, docs/maps, handoff.
