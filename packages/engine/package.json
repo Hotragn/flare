@@ -9,7 +9,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "bench": "node bench/solve.bench.ts",
+    "bench": "node test/bench/solve-bench.ts",
     "coverage": "cd ../.. && vitest run packages/engine/test --coverage.enabled --coverage.provider=v8 --coverage.include=packages/engine/src/** --coverage.reporter=text --coverage.reporter=json-summary --coverage.reportsDirectory=packages/engine/coverage"
   },
   "dependencies": {
