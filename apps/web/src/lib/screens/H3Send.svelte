@@ -61,7 +61,7 @@
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
   {/if}
   {#if askSpot}
-    <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} max={80} />
+    <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} hint={typedSpot.trim() ? "" : t("send.whereHint")} max={80} />
   {/if}
   <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
   <!-- One place field (fresh-eyes round 2): when you type where you are, that is the line;
@@ -72,7 +72,10 @@
     <!-- Fresh-eyes #12: a labelled row with its value and a visible Edit, never a lone pencil. -->
     <div class="hostline">
       <div><p class="lbl t-small">{t("send.hostLineLabel")}</p><p class="val">{shownLine || t("send.hostLineEmpty")}</p></div>
-      <button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => (editing = true)}><Icon name="edit" size={18} /><span>{t("send.edit")}</span></button>
+      <button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => {
+          if (!hostLine) hostLine = shownLine; // edit the line you see, not an empty box (fresh-eyes round 4)
+          editing = true;
+        }}><Icon name="edit" size={18} /><span>{t("send.edit")}</span></button>
     </div>
   {/if}
   <InfoLines {access} {nature} />

@@ -867,6 +867,16 @@
       "kind": "button",
       "where": "H3 where-you'll-be row (fresh-eyes #12)"
     },
+    "tip.dismiss": {
+      "text": "Dismiss tip",
+      "kind": "aria",
+      "where": "Tip close button (fresh-eyes round 4: two buttons named Close)"
+    },
+    "send.whereHint": {
+      "text": "Add where you are to send it.",
+      "kind": "hint",
+      "where": "H3 typed place (fresh-eyes round 4)"
+    },
     "send.hostLineEdit": {
       "text": "Edit where you'll be",
       "kind": "aria",
@@ -1175,7 +1185,7 @@
       "where": "I0"
     },
     "join.namePlaceholder": {
-      "text": "Amor",
+      "text": "e.g. Sam",
       "kind": "placeholder",
       "where": "I0"
     },
@@ -1299,7 +1309,7 @@
       "where": "I2"
     },
     "cond.placeholder": {
-      "text": "after 2, back by 5, only with Amor",
+      "text": "after 2, back by 5, 10 min walk at most",
       "kind": "placeholder",
       "where": "I2"
     },

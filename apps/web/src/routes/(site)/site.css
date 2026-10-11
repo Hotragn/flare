@@ -39,7 +39,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 20px;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  background: var(--bg); /* solid: text no longer shows through while scrolling (fresh-eyes round 4) */
   border-bottom: 1px solid var(--line);
 }
 .site .nav .brand {

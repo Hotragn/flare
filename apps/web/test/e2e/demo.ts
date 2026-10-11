@@ -57,7 +57,27 @@ try {
     await page.getByRole("button", { name: "Add a condition" }).isVisible(),
   );
   await shot("2a-friend");
-  await page.getByRole("button", { name: "I'm in" }).click();
+  // A condition goes through the real parser and its read-back (fresh-eyes round 4).
+  await page.getByRole("button", { name: "Add a condition" }).click();
+  await page.getByRole("textbox").first().fill("back by 5");
+  await page.getByRole("button", { name: "Check it" }).click();
+  const yesIn = page.getByRole("button", { name: "Yes, I'm in" });
+  check(
+    "a condition is read back with Yes and Fix it",
+    (await yesIn.waitFor({ timeout: 10_000 }).then(
+      () => true,
+      () => false,
+    )) && (await page.getByRole("button", { name: "Fix it" }).isVisible()),
+  );
+  await yesIn.click();
+  check(
+    "You're in shows the condition, once",
+    await page
+      .getByText(/^You're in if: back by 5/i)
+      .first()
+      .isVisible({ timeout: 5_000 })
+      .catch(() => false),
+  );
   await page.getByRole("button", { name: "Pocket it" }).click();
   await page.getByText(/One more yes: 2 in/).waitFor({ timeout: 10_000 });
   check("a yes never shows a name", !(await page.getByText(/(Amor|Benny|Kai) said yes/).count()));

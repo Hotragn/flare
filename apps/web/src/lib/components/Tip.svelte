@@ -30,7 +30,7 @@
   <div class="tip" role="note">
     <Icon name="info" size={18} />
     <span>{t(text)}</span>
-    <button aria-label={t("app.close")} onclick={close}><Icon name="close" size={18} /></button>
+    <button aria-label={t("tip.dismiss")} onclick={close}><Icon name="close" size={18} /></button>
   </div>
 {/if}
 

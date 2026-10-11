@@ -15,13 +15,14 @@
   import I8Here from "#lib/screens/I8Here.svelte";
   import Screen from "#lib/components/Screen.svelte";
   import Flame from "#lib/components/Flame.svelte";
-  import { parse } from "#lib/conditions/index.ts";
+  import { parse, readBackChips } from "#lib/conditions/index.ts";
+  import I3Readback from "#lib/screens/I3Readback.svelte";
   import I12Outside from "#lib/screens/I12Outside.svelte";
   import { DEMO_BENCHES, DEMO_FRIENDS, DEMO_HOST, DEMO_SCENE, DEMO_SPOT, DEMO_WORDS, DemoEngine } from "#lib/demo/demo.svelte.ts";
   import type { InviteInfo } from "#lib/components/parts.ts";
 
   // You are the host. For one beat you become Amor, a friend (fresh-eyes #4), then come back.
-  type Step = "send" | "kindling" | "friend" | "condition" | "friendIn" | "lit" | "compass" | "here" | "spark" | "outside" | "done";
+  type Step = "send" | "kindling" | "friend" | "condition" | "readback" | "friendIn" | "lit" | "compass" | "here" | "spark" | "outside" | "done";
   const demo = new DemoEngine();
   let step = $state<Step>("send");
   let quorum = $state("4");
@@ -32,21 +33,25 @@
   let condition = $state("");
   let condRead = $state(""); // the real parser's read-back, as a friend's phone shows it
   let condError = $state("");
+  let condLine = $state("");
+  const ctxFor = () => ({
+    members: [{ id: DEMO_HOST, name: me }, ...DEMO_FRIENDS.map((f) => ({ id: f.id, name: f.name }))],
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    now: new Date(demo.now).toISOString(),
+    kind: "flare" as const,
+  });
   // The same parser a friend's phone uses (fresh-eyes round 3: "Check it" checked nothing).
   function checkCondition(text: string) {
-    const r = parse(text, {
-      members: [{ id: DEMO_HOST, name: me }, ...DEMO_FRIENDS.map((f) => ({ id: f.id, name: f.name }))],
-      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      now: new Date(demo.now).toISOString(),
-      kind: "flare",
-    });
+    const r = parse(text, ctxFor());
     if (!r.ok) {
       condError = r.reason === "not_in_group" ? t("cond.notInGroup", { name: r.name ?? "" }) : r.reason === "too_many" ? t("cond.tooMany") : t("cond.didntCatch");
       return;
     }
     condError = "";
-    condRead = r.readBack;
-    amorYes();
+    // The real read-back with Yes / Fix it, as a friend's phone shows it (fresh-eyes round 4).
+    condLine = r.readBack;
+    condRead = readBackChips(r.rules, ctxFor()).join(", ");
+    step = "readback";
   }
   let amorIn = $state(false);
   let typedLine = $state(""); // what you typed for Where you'll be: the demo keeps it (round 2)
@@ -90,11 +95,14 @@
     // Amor's phone checks both benches; Benny says yes to the smaller plan.
     demo.event({ type: "checks", member_id: DEMO_FRIENDS[0].id, results: { c1: true, c2: true } });
     later(700, () => {
-      demo.yes(DEMO_FRIENDS[1].id);
+      // The smaller plan needs fewer people. If the yeses already in are enough, it lights with
+      // them; only if not does Benny's yes come in, shown as a count (fresh-eyes round 4).
       demo.advance(61_000);
-      // The yes that lit it shows as a count over "It's lit" (the toast floats above every
-      // screen), so there is never a "0 more" beat (fresh-eyes #8, round 3).
-      say();
+      if (demo.g?.state !== "lit") {
+        demo.yes(DEMO_FRIENDS[1].id);
+        demo.advance(61_000);
+        say();
+      }
       if (demo.g?.state === "lit") toLit();
     });
   }
@@ -138,13 +146,23 @@
     spot: bench,
     hostLine: typedLine || t("demo.youWait", { spot: bench }),
     walkMin: 2, // about the compass's 150 m (round 2: numbers that agree)
-    access: { benches: { count: 2, nearest_m: 40 }, restrooms: { count: 1, nearest_m: 180 }, water: { count: 0, nearest_m: null }, steps_mapped: false },
+    access: { benches: { count: 2, nearest_m: 0 }, restrooms: { count: 1, nearest_m: 180 }, water: { count: 0, nearest_m: null }, steps_mapped: false },
     nature: "",
     met: null,
   } as InviteInfo);
   const minutes = $derived(litAt ? Math.round((demo.now - litAt) / 60_000) : 15);
   // Opened straight from a link there is no page to go back to (fresh-eyes #9).
-  const leave = () => (history.length > 1 ? history.back() : (location.href = "/"));
+  const leave = () => {
+    const fromHere = (() => {
+      try {
+        return !!document.referrer && new URL(document.referrer).origin === location.origin;
+      } catch {
+        return false;
+      }
+    })();
+    if (fromHere) history.back();
+    else location.href = "/";
+  };
 </script>
 
 <svelte:head><title>{t("demo.badge")}</title><link rel="preload" as="image" href="/demo/pond.jpg" /></svelte:head>
@@ -176,6 +194,9 @@
   {:else if step === "condition"}
     <aside class="notes" aria-label={t("demo.friendBanner", { host: me })}><p class="role" role="status">{t("demo.friendBanner", { host: me })}</p></aside>
     <I2Condition {info} bind:text={condition} error={condError} oncheck={checkCondition} onclose={() => (step = "friend")} />
+  {:else if step === "readback"}
+    <aside class="notes" aria-label={t("demo.friendBanner", { host: me })}><p class="role" role="status">{t("demo.friendBanner", { host: me })}</p></aside>
+    <I3Readback {info} line={condLine} chips={condRead.split(", ").filter(Boolean)} onyes={amorYes} onfix={() => (step = "condition")} onclose={() => (step = "friend")} />
   {:else if step === "friendIn"}
     <aside class="notes" aria-label={condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}><p class="role" role="status">{condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}</p></aside>
     <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
@@ -195,7 +216,13 @@
     <Screen theme="dark" close={false} heading={t("demo.done")}>
       <div class="done"><Flame state="lit" size={110} /><h1 class="t-display">{t("demo.done")}</h1></div>
       {#snippet actions()}
-        <Button onclick={() => (location.href = "/app/")}>{t("demo.real")}</Button>
+        <Button
+          onclick={() => {
+            try {
+              localStorage.setItem("flare.onboarded", "1"); // the demo was the intro
+            } catch {}
+            location.href = "/app/";
+          }}>{t("demo.real")}</Button>
         <Button variant="text" onclick={() => location.reload()}>{t("demo.again")}</Button>
       {/snippet}
     </Screen>
