@@ -62,9 +62,12 @@ export function startSensors(onReading: (r: Reading) => void, onState: (s: Senso
   let stopped = false;
   const listen = () => {
     if (stopped) return; // the person left before the prompt was answered
-    const name = "ondeviceorientationabsolute" in globalThis ? "deviceorientationabsolute" : "deviceorientation";
-    globalThis.addEventListener(name, onOrient);
-    stops.push(() => globalThis.removeEventListener(name, onOrient));
+    // Both: iOS sends webkitCompassHeading on deviceorientation; Chrome sends absolute alpha on
+    // deviceorientationabsolute (onOrient ignores relative-only events).
+    for (const name of ["deviceorientation", "deviceorientationabsolute"]) {
+      globalThis.addEventListener(name, onOrient);
+      stops.push(() => globalThis.removeEventListener(name, onOrient));
+    }
   };
   if (!Ctor) onState("no-orientation");
   else if (ask) {
