@@ -56,6 +56,8 @@ export function kpis(t: Totals) {
 
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
 const CODE = /(?<![A-Za-z0-9])[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{5}(?![A-Za-z0-9])/g;
+/** Words our own log lines use that fit the code alphabet (the HTTP method PATCH). */
+const NOT_CODES = new Set(["PATCH"]);
 
 /** Finds UUIDs and short codes in a log. Returns counts and line numbers, never the values. */
 export function scanLog(text: string): { lines: number; uuids: number; codes: number; at: number[] } {
@@ -65,7 +67,7 @@ export function scanLog(text: string): { lines: number; uuids: number; codes: nu
   const lines = text.split("\n");
   lines.forEach((line, i) => {
     const u = line.match(UUID)?.length ?? 0;
-    const c = line.match(CODE)?.length ?? 0;
+    const c = (line.match(CODE) ?? []).filter((m) => !NOT_CODES.has(m)).length;
     if (u || c) at.push(i + 1);
     uuids += u;
     codes += c;

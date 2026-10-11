@@ -63,7 +63,7 @@ describe("privacy-safe logs (BR-D-6, 09-observability.md)", () => {
   it("scanLog finds UUIDs and short codes and passes a clean log", () => {
     const bad = '{"r":"/api/v1/gatherings/3f2b8c1e-1d2a-4b3c-8d4e-5f6a7b8c9d0e"}\n{"code":"K7Q2M"}';
     expect(scanLog(bad)).toMatchObject({ uuids: 1, codes: 1, at: [1, 2] });
-    const good = '{"level":"info","m":"GET","r":"/api/v1/gatherings/:id","s":200,"ms":3,"msg":"req"}';
+    const good = '{"level":"info","m":"PATCH","r":"/api/v1/gatherings/:id","s":200,"ms":3,"msg":"req"}';
     expect(scanLog(good)).toMatchObject({ uuids: 0, codes: 0 });
   });
 });
