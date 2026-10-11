@@ -142,3 +142,22 @@ describe("host flow (FE2)", () => {
     ).toHaveLength(4);
   });
 });
+
+describe("place pre-fill (fresh-eyes round 4)", () => {
+  it("a position that arrives before the map pack still gets its place name", async () => {
+    const f = fakeDeps();
+    const host = new HostFlow(f.deps);
+    host.setPosition({ lat: 42.3196, lon: -83.2129 }); // no pack yet: no name
+    expect(host.spot?.name ?? "").toBe("");
+    await host.loadPack("fairlane");
+    expect(host.spot?.name).toBe("Ford Woods Park, by the pond");
+    expect(host.askLocation).toBe(false);
+  });
+  it("a typed place is kept when the pack arrives", async () => {
+    const f = fakeDeps();
+    const host = new HostFlow(f.deps);
+    host.typeSpot("the big oak");
+    await host.loadPack("fairlane");
+    expect(host.spot?.name).toBe("the big oak");
+  });
+});

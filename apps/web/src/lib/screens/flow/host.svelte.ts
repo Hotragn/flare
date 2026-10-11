@@ -94,7 +94,7 @@ export class HostFlow {
 
   #d: Deps;
   #pack: MapPack | null = null;
-  #group: ClientIcd.GroupRecord | null = null;
+  #group = $state.raw<ClientIcd.GroupRecord | null>(null); // reactive: the menu shows crew pages once it loads
   #hotDone = new Set<string>();
   #fragment: string | null = null;
   #stopLive: (() => void) | null = null;
@@ -151,6 +151,10 @@ export class HostFlow {
     } catch {
       this.#pack = null;
     }
+    // A position that arrived before the pack gets its place name now, so Send is pre-filled
+    // instead of asking where you are (fresh-eyes round 4). A typed place is kept.
+    const at = this.spot;
+    if (this.#pack && at && !at.name && (at.lat !== 0 || at.lon !== 0)) this.setPosition({ lat: at.lat, lon: at.lon });
   }
 
   async loadGroup(): Promise<void> {

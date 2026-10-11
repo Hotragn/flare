@@ -176,7 +176,7 @@
 
   const items: [string, CopyKey, CopyKey, string][] = [
     ["plan", "menu.plan", "menu.planSub", "#plan"],
-    ["hotspots", "menu.crew", "menu.crewSub", "/app/crew/"],
+    ["plusone", "menu.crew", "menu.crewSub", "/app/crew/"],
     ["hotspots", "menu.hot", "menu.hotSub", "/app/hotspots/"],
     ["share", "menu.tg", "menu.tgSub", "/app/telegram/"],
     ["bench", "menu.needs", "menu.needsSub", "/app/needs/"],
@@ -186,6 +186,10 @@
     ["spark", "menu.ai", "menu.aiSub", "/ai/"],
     ["close", "menu.forget", "menu.forgetSub", "/app/forget/"],
   ];
+  // A first visit with no crew yet sees 5 items, not 10: the crew pages and the device check
+  // wait until there is a crew (fresh-eyes round 4).
+  const CREW_ONLY = new Set(["/app/crew/", "/app/hotspots/", "/app/telegram/", "/app/forget/", "/check/"]);
+  const shownItems = $derived(flow.groupId ? items : items.filter(([, , , href]) => !CREW_ONLY.has(href)));
   /** Group pages take the group id as `?g=` (Hot spots, Post in Telegram, Forget). */
   const GROUP_PAGES = new Set(["/app/crew/", "/app/hotspots/", "/app/telegram/", "/app/forget/"]);
   const withGroup = (href: string) => (flow.groupId && GROUP_PAGES.has(href) ? `${href}?g=${flow.groupId}` : href);
@@ -227,7 +231,7 @@
 
 <Sheet bind:open={menu} title={t("menu.title")}>
   <ul class="menu">
-    {#each items as [icon, label, sub, href] (label)}
+    {#each shownItems as [icon, label, sub, href] (label)}
       <li>
         {#if href === "#plan"}
           <button class="row" onclick={startPlan}><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="visually-hidden">{t("app.pause")}</span><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></button>

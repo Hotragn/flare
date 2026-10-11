@@ -503,7 +503,7 @@
       "where": "all"
     },
     "app.pause": {
-      "text": ". ",
+      "text": ", ",
       "kind": "separator",
       "where": "O0 (hidden, so screen readers pause between a row's title and subtitle)"
     },
@@ -1874,6 +1874,21 @@
       "one": "Map of the place your crew met",
       "kind": "aria",
       "where": "Crew space, Crew Atlas (ADR-0029)"
+    },
+    "desk.title": {
+      "text": "Made for your phone",
+      "kind": "title",
+      "where": "App on a wide screen, beside the phone column (fresh-eyes round 4)"
+    },
+    "desk.body": {
+      "text": "Scan to open this page on your phone.",
+      "kind": "hint",
+      "where": "App on a wide screen, beside the phone column (fresh-eyes round 4)"
+    },
+    "desk.qrAlt": {
+      "text": "QR code for this page",
+      "kind": "aria",
+      "where": "App on a wide screen, beside the phone column (fresh-eyes round 4)"
     },
     "compass.heading": {
       "text": "Find them",
