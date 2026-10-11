@@ -113,7 +113,7 @@
   .staged .bar-title { color: rgb(255 255 255 / 0.9); }
   .hero { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--l-gutter) 16px; color: #fff; text-shadow: 0 1px 12px rgb(0 0 0 / 0.5); min-height: 0; }
   .sheet { max-height: 62%; display: flex; flex-direction: column; border-radius: 28px 28px 0 0; color: #fff;
-    background: rgb(20 18 18 / 0.62); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    background: rgb(18 16 16 / 0.74); backdrop-filter: blur(28px) saturate(1.6); -webkit-backdrop-filter: blur(28px) saturate(1.6);
     box-shadow: 0 -1px 0 rgb(255 255 255 / 0.12) inset; margin-bottom: calc(-1 * env(safe-area-inset-bottom, 0)); padding-bottom: env(safe-area-inset-bottom, 0); }
   .sheet .content { padding-top: 4px; gap: 12px; }
   /* Cards inside the sheet sit flat on the glass: no second box (rule 6). */
@@ -121,5 +121,7 @@
   .staged .sheet :global(.opt) { background: rgb(255 255 255 / 0.12); border-color: transparent; color: #fff; }
   .staged .sheet :global(.opt.on) { background: #fff; color: #111; border-color: #fff; }
   .staged .sheet :global(input:not([type="radio"]):not([type="checkbox"])), .staged .sheet :global(textarea) { background: rgb(255 255 255 / 0.1); color: #fff; border-color: rgb(255 255 255 / 0.3); }
+  /* Muted text over a photo needs more light to stay at 4.5:1. */
+  .staged .hero :global(.t-muted), .staged .sheet :global(.t-muted) { color: rgb(255 255 255 / 0.86); }
   .grab { width: 36px; height: 5px; border-radius: 3px; background: rgb(255 255 255 / 0.35); margin: 8px auto 4px; flex: none; }
 </style>

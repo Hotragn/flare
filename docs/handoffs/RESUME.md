@@ -179,3 +179,10 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - BUG-065 fixed (small, tested): Ember's access line follows the Ember bench. The screenshot case was correct (Ember at the spot, named West Road). e2e:field 27/27, flow.ts real 5/5 on the final build. Media recaptured.
 - Video: the founder records on the iPhone during the field test, per docs/post/shot-list.md (8 shots, about 10 s each, portrait).
 - STOPPED again: holding the window for the device check, rc-1 and the deploy.
+
+## Status Sun ~11:30 ET (window resets 11:50)
+- main = deploy build. Deploy BLOCKED: Render can't fetch the private repo; founder is granting the Render GitHub app access. Then: `npm run deploy:render -- --yes` (safe to re-run; free Postgres already created), `npm run smoke -- <url>` twice, `npm run telegram:webhook -- --yes`, one live tap in "Flare test". Founder YES given for deploy and setWebhook (via manager).
+- Branch `redesign` (pushed): system font (Fraunces only for the six words), Screen `stage` layout (full-bleed photo, scrim, glass sheet, hero slot), invite/send/lit/host lit/ember on the stage, dark Find them, H0 Home (golden hour, weather window from NWS, nearest green spot, Light a Flare / Plan for later). e2e updated for the Light a Flare tap; flow.ts real 3/3 on the branch. Before/after shots: docs/design/redesign/{before,after}/. Direction: docs/design/09-2026-direction.md.
+- Next on redesign: After an outing ("You were outside N min together", Spark, Phone away), Crew space (A: people, out now, story, stats, manage incl. remove member with key rotation + ADR-0024 outside-minutes counter), Spark screen restyle, website type check (fonts dropped: re-run Lighthouse), axe on new screens, recapture docs/post/media, then merge to main at green.
+- Subagents running in worktrees: S1 Virtual Fairlane simulation (branch `sim`, handoff 09-sim.md), S2 Mastra Plan agent (branch `mastra-plan`, ADR-0025, handoff 10). Later for me: Voice Flares, Crew Atlas.
+- Post plan: no outdoor group-test claims unless one happens; build on real-stack runs, iPhone device checks (16 Pro Max, 13), live Telegram checks, deletion audit.

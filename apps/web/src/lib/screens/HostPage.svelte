@@ -6,7 +6,11 @@
   import { askCamera, askLocation, permissionState } from "#lib/permissions/index.ts";
   import Sheet from "../components/Sheet.svelte";
   import Icon from "../components/Icon.svelte";
+  import H0Home from "./H0Home.svelte";
   import H1Camera from "./H1Camera.svelte";
+  import { golden, nearestGreen } from "./flow/home.ts";
+  import { planWeather } from "#lib/map/weather.ts";
+  import type { LatLon, MapPack } from "@flare/shared/icd/map";
   import H2Develop from "./H2Develop.svelte";
   import H3Send from "./H3Send.svelte";
   import H4Sent from "./H4Sent.svelte";
@@ -31,16 +35,41 @@
   let menu = $state(false);
   let kind = $state<"flare" | "plan">("flare");
   let startLocal = $state("");
+  // H0 Home first (2026 direction, B): going outside now, then Light a Flare opens the camera.
+  let home = $state(true);
+  let homeAt = $state<LatLon | null>(null);
+  let homePack = $state<MapPack | null>(null);
+  let weather = $state<{ temp_f: number; rain_likely: boolean } | null>(null);
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const goldenNow = $derived(homeAt ? golden(homeAt, new Date()) : null);
+  const green = $derived(homeAt && homePack ? nearestGreen(homePack, homeAt, new Date(), tz) : null);
+  async function nearHere() {
+    const r = await askLocation({ timeoutMs: 10_000 });
+    if (!r.ok) return;
+    homeAt = { lat: r.coords.lat, lon: r.coords.lon };
+    const now = new Date();
+    weather = await planWeather(homeAt, now, new Date(now.getTime() + 2 * 3_600_000)).catch(() => null);
+  }
+  function light() {
+    home = false;
+    void openCamera(); // inside the tap: the camera prompt can show
+  }
   let deadlineLocal = $state("");
 
   onMount(() => {
     void flow.loadGroup();
     void flow.loadPack(area);
+    void deps.maps?.load(area).then(
+      (p) => (homePack = p),
+      () => {},
+    );
     void (async () => {
       const cam = await permissionState("camera");
-      if (cam === "granted") await openCamera();
-      else camera = "permission";
-      if ((await permissionState("geolocation")) === "granted") void locate();
+      camera = cam === "granted" ? "loading" : "permission";
+      if ((await permissionState("geolocation")) === "granted") {
+        void locate();
+        void nearHere(); // already allowed: no prompt
+      }
     })();
   });
   onDestroy(() => {
@@ -133,7 +162,9 @@
   const exit = () => location.assign("/app/");
 </script>
 
-{#if flow.screen === "camera"}
+{#if home && flow.screen === "camera"}
+  <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
+{:else if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} />
 {:else if flow.screen === "develop"}
   <H2Develop view={flow.draft} photo={flow.photo} scene={flow.alt} spot={flow.spot?.name ?? ""} words={flow.words} tier={flow.tier} cloud={flow.cloudOptIn} onaskcloud={() => flow.askCloud()} chips={flow.chips} bind:own askLocation={flow.askLocation} bind:typedSpot onuse={(w) => flow.useWords(w)} onwrite={() => (flow.draft = "hub-unreachable")} onallowlocation={locate} onskiplocation={() => flow.typeSpot(typedSpot)} />

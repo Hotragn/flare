@@ -101,6 +101,71 @@
       "kind": "status",
       "where": "every screen"
     },
+    "home.golden": {
+      "text": "Golden hour in {min} min",
+      "kind": "title",
+      "where": "H0"
+    },
+    "home.goldenH": {
+      "text": "Golden hour in {h} h {min} min",
+      "kind": "title",
+      "where": "H0"
+    },
+    "home.goldenNow": {
+      "text": "Golden hour now",
+      "kind": "title",
+      "where": "H0"
+    },
+    "home.goldenLeft": {
+      "text": "Sunset in {min} min",
+      "kind": "label",
+      "where": "H0"
+    },
+    "home.after": {
+      "text": "A good night for a walk",
+      "kind": "title",
+      "where": "H0"
+    },
+    "home.outside": {
+      "text": "Go outside",
+      "kind": "title",
+      "where": "H0"
+    },
+    "home.dry": {
+      "text": "{temp}°, dry for the next 2 hours",
+      "kind": "label",
+      "where": "H0"
+    },
+    "home.rain": {
+      "text": "{temp}°, rain likely in the next 2 hours",
+      "kind": "label",
+      "where": "H0"
+    },
+    "home.green": {
+      "text": "{name} · {min} min walk",
+      "kind": "label",
+      "where": "H0"
+    },
+    "home.light": {
+      "text": "Light a Flare",
+      "kind": "button",
+      "where": "H0"
+    },
+    "home.plan": {
+      "text": "Plan for later",
+      "kind": "button",
+      "where": "H0"
+    },
+    "home.near": {
+      "text": "See what's near",
+      "kind": "button",
+      "where": "H0"
+    },
+    "home.nearNote": {
+      "text": "Your location stays on this phone.",
+      "kind": "hint",
+      "where": "H0"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",
@@ -465,7 +530,7 @@
       "where": "H3"
     },
     "send.quorumLabel": {
-      "text": "Goes ahead when this many are in, you included",
+      "text": "How many, you included",
       "kind": "label",
       "where": "H3 P1"
     },

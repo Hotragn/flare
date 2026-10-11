@@ -80,6 +80,7 @@ for (const [p, who] of [
 
 async function sendFlare(page: Page): Promise<string> {
   await page.goto(`${URL0}/app/`);
+  await page.getByRole("button", { name: "Light a Flare" }).click({ timeout: 15_000 }); // H0 Home first
   await page.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
   await page.getByRole("button", { name: /Use these|Use mine/ }).waitFor({ timeout: 15_000 });
   const sheetWhere = page.getByLabel("Where are you?");

@@ -93,6 +93,7 @@ for (let run = 1; run <= RUNS; run++) {
   watchCsp(host, `host run ${run}`);
   const t0 = Date.now();
   await host.goto(`${srv.url}/app/`);
+  await host.getByRole("button", { name: "Light a Flare" }).click({ timeout: 15_000 }); // H0 Home first
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
   // With no map pack wired (MAP's module), the location gives no name: type it in the sheet.
   await host
