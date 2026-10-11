@@ -202,8 +202,9 @@ function end(d: Draft, ended: Ended, byTimer: JobKind | null): void {
  */
 export function pickEmber(g: Gathering, answers: readonly Answer[], final: boolean): Label | null {
   if (g.ember_candidates.length === 0) return "spot";
-  const voters = answers.filter((a) => a.status === "yes");
+  const voters = answers.filter((a) => a.status === "yes" || a.member_id === g.host);
   if (!final) {
+    if (!voters.some((a) => a.member_id === g.host)) return null; // the host has not reported yet
     const allIn = voters.every((a) => g.ember_candidates.every((c) => a.checks[c] !== undefined));
     if (!allIn) return null;
   }

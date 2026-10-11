@@ -142,9 +142,9 @@ export function best(forced: readonly Id[], cands: readonly Answer[], ctxs: read
   return top;
 }
 
-/** The place label a Flare is judged at in its current state. */
+/** The place label a Flare is judged at: the Ember spot once chosen, else the original spot. */
 export function flareLabel(g: Gathering): Label {
-  return g.state === "ember" ? (g.ember_choice ?? "spot") : "spot";
+  return g.ember_choice ?? "spot"; // set only in Ember, and kept at Lit
 }
 
 /** Total yes-count toward quorum for a set: members plus anonymous text yeses (BR-ID-6). */

@@ -3,10 +3,10 @@
 Brief: docs/engineering/briefs/6b-core-engine.md. Handoff: docs/handoffs/06b-core-engine.md.
 
 ## Done
-- Package skeleton, solver (`src/solve.ts`), transitions F and P (`src/transition.ts`), view, create (F1, P1), Sparks and Hot spots rules (`src/sparks.ts`). Typecheck and lint green; tests not yet written.
+- Package skeleton, solver (`src/solve.ts`), transitions F and P (`src/transition.ts`), view, create (F1, P1), Sparks and Hot spots rules (`src/sparks.ts`). Flare rows F1-F14 tested (56 tests, packages/engine/test/flare.test.ts).
 
 ## In progress
-- Tests per transition row.
+- Plan rows P1-P11 tests, then Ember, arrivals, view, sparks, properties, bench, coverage.
 
 ## Exact next step
 1. Write `src/transition.ts` (Flare rows first, then Plan rows), `src/view.ts`, `src/create.ts`, `src/index.ts` exporting `engine`.
