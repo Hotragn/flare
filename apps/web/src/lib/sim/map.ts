@@ -2,7 +2,7 @@
 // GeoJSON circles. Loaded only by the /sim/ page (dynamic import), never by the app.
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Feature, FeatureCollection } from "geojson";
-import maplibregl, { type GeoJSONSource } from "maplibre-gl";
+import { type GeoJSONSource, Map as MlMap, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { positionAt, type Replay, STATUS, stateAt } from "./replay.ts";
 
@@ -35,9 +35,9 @@ const pt = (lat: number, lon: number, properties: Record<string, unknown>): Feat
 export type SimMap = { draw(tick: number): void; idle(): Promise<void>; destroy(): void };
 
 export function createSimMap(el: HTMLElement, r: Replay): Promise<SimMap> {
-  maplibregl.setWorkerUrl(workerUrl);
+  setWorkerUrl(workerUrl);
   const [[s, w], [n, e]] = r.bounds;
-  const map = new maplibregl.Map({
+  const map = new MlMap({
     container: el,
     style: {
       version: 8,
@@ -61,7 +61,7 @@ export function createSimMap(el: HTMLElement, r: Replay): Promise<SimMap> {
     canvasContextAttributes: { preserveDrawingBuffer: true },
     fadeDuration: 0,
   });
-  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  map.addControl(new NavigationControl({ showCompass: false }), "top-right");
 
   const gatherData = (t: number): FC =>
     fc(
@@ -138,8 +138,12 @@ export function createSimMap(el: HTMLElement, r: Replay): Promise<SimMap> {
         },
         idle: () =>
           new Promise((res) => {
-            if (map.loaded() && map.areTilesLoaded()) res();
-            else map.once("idle", () => res());
+            const to = setTimeout(res, 5000); // tiles that never come should not stop an export
+            map.once("idle", () => {
+              clearTimeout(to);
+              res();
+            });
+            map.triggerRepaint();
           }),
         destroy: () => map.remove(),
       };

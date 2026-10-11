@@ -23,7 +23,7 @@
   };
 
   let el: HTMLDivElement;
-  let replay: Replay | null = $state(null);
+  let replay = $state<Replay | null>(null);
   let error = $state("");
   let tick = $state(0);
   let playing = $state(false);
@@ -34,6 +34,7 @@
   let sim: SimMap | null = null;
   let raf = 0;
   let last = 0;
+  let drawn = -1;
 
   const t = $derived(replay ? tick * replay.tick_s : 0);
   const pct = (x: number | null) => (x === null ? "none" : `${Math.round(x * 100)}%`);
@@ -55,7 +56,10 @@
       tick = Math.min(lastTick, tick + dt * speed);
       if (tick >= lastTick) playing = false;
     }
-    sim?.draw(tick);
+    if (tick !== drawn) {
+      sim?.draw(tick);
+      drawn = tick;
+    }
     raf = requestAnimationFrame(loop);
   }
 
@@ -77,17 +81,21 @@
         frames: r.frames.length,
         seek: async (k: number) => {
           tick = k;
+          drawn = k;
           sim?.draw(k);
           await sim?.idle();
         },
       };
-      raf = requestAnimationFrame(loop);
-      if (!exporting) playing = true;
+      if (!exporting) {
+        raf = requestAnimationFrame(loop);
+        playing = true;
+      }
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     }
   });
   onDestroy(() => {
+    if (typeof window === "undefined") return; // prerender
     cancelAnimationFrame(raf);
     sim?.destroy();
   });
@@ -115,6 +123,12 @@
     <div class="sim-mark" aria-hidden="true">SIMULATION</div>
     {#if replay}
       <div class="clock" aria-live="off">{clock(t)}</div>
+      <div class="tally" aria-hidden="true">
+        {#each ["kindling", "ember", "lit"] as k (k)}
+          <span><i class="dot" style:background={stateColors[k]}></i>{STATE_WORD[k]} {live.filter((x) => x.st?.state === k).length}</span>
+        {/each}
+        <span>{replay.friends.length} pretend friends</span>
+      </div>
     {/if}
     <p class="osm">© OpenStreetMap contributors</p>
   </div>
@@ -272,6 +286,21 @@
     border-radius: 6px;
     font-variant-numeric: tabular-nums;
     pointer-events: none;
+  }
+  .tally {
+    position: absolute;
+    top: 52px;
+    left: 70px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    background: rgba(17, 17, 17, 0.75);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    max-width: calc(100% - 130px);
   }
   .osm {
     position: absolute;

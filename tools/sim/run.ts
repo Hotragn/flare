@@ -419,7 +419,8 @@ async function sendFlare(host: Friend, seat: LatLon, quorum: number) {
   record(g, r.body);
   say(now, `${host.name} sent a Flare at ${g.rec.spot_name}: needs ${quorum} including ${host.name}.`);
   // Some see it right away, some only after half an hour.
-  for (const f of g.members) scheduleLook(g, f, now + R.between(1, 34) * MIN);
+  // A third miss it (phone in a bag); some see it right away, some only after half an hour.
+  for (const f of g.members) if (R.chance(0.67)) scheduleLook(g, f, now + R.between(1, 34) * MIN);
 }
 
 function planPlan(t: number, host: Friend) {
@@ -549,7 +550,7 @@ async function look(g: Gath, f: Friend) {
     }
     default: {
       // Farther is less likely; Plans give people time, so more say yes.
-      const p = (g.kind === "plan" ? 0.65 : 0.5) - walkMin / 60;
+      const p = (g.kind === "plan" ? 0.6 : 0.4) - walkMin / 60;
       if (R.chance(p)) {
         const rules = g.kind === "plan" && R.chance(0.35) ? [{ type: "max_step", step: R.int(2, 4) }] : undefined;
         return answer(
