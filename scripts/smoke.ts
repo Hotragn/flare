@@ -86,7 +86,7 @@ if (hubOff) {
   ).json()) as { tier: string; invite: string };
   say(
     photo.tier === "cloud",
-    "photo draft via DigitalOcean (opted in)",
+    "photo draft via cloud Gemma (opted in)",
     `${photo.tier} in ${Math.round(performance.now() - t1)} ms${photo.tier === "cloud" ? `: "${photo.invite}"` : ""}`,
   );
   const t2 = performance.now();
@@ -100,7 +100,7 @@ if (hubOff) {
   ).json()) as { tier: string; steps: { label: string }[] };
   say(
     ladder.tier === "cloud",
-    "Plan ladder via DigitalOcean",
+    "Plan ladder via cloud Gemma",
     `${ladder.tier} in ${Math.round(performance.now() - t2)} ms${ladder.tier === "cloud" ? `: ${ladder.steps.map((x) => x.label).join(" / ")}` : ""}`,
   );
 } else {

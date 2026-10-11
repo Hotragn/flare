@@ -1,0 +1,37 @@
+# Fresh-eyes test, Sun 2026-10-11
+
+A subagent with no project context used the live site (https://flare-outside.onrender.com) as a phone (390×844, touch) and once at 1280×800. It read no source or docs. It typed only the name "Test" and sent nothing. Score: **5/10** for "I'd understand and use this in under a minute". The idea was clear in about 10 s; the trust to send one took much longer.
+
+Its first-5-seconds guess: "A free web app to get a few friends outside. Take a photo of where you are, send a link, it only happens if enough people say yes, then it deletes itself." That is right.
+
+## Issues, worst first (status in the backlog, #13)
+
+| # | Where | What it saw | Fix |
+| --- | --- | --- | --- |
+| 1 | App, Send it | Onboarding text, dots and "Skip" show through the compose sheet; "Skip" sits under the X | Unmount onboarding when done; solid stage behind compose |
+| 2 | Demo | Toast "Amor said yes." right under "Nobody sees who." | Demo toasts say "Someone said yes" |
+| 3 | Demo | Unclear who I am: I send, then "Fuego is waiting", "Find them" points at me; chips F A B | One clear role: "You sent it" and the friends as friends |
+| 4 | Demo | Never shows the friend's side (I'm in, Add a condition) | A "What your friends get" step |
+| 5 | App, start | "Try a demo" brown on near-black; "Got a link?" dark orange on black | Light outline and text, 4.5:1 |
+| 6 | App, start | "Got a link?" only adds a line of text | Paste-link field, or plain text |
+| 7 | Site, How it works step 1 | The photo print renders as a 25 px grey strip | Give the print a width; check the image |
+| 8 | Demo | "0 more to light it" without "It's lit"; Ember place changes a second later; "outside 34 min" for a 15 min plan | Say "It's lit"; one place; minutes match the plan |
+| 9 | Demo | No meetup moment; "Close" loops to the start; X goes to about:blank from a direct link | End with "Light a real one"; X goes to / with no history |
+| 10 | App, draft | "Made on our laptop" reads as a privacy surprise; "no trackers" vs Sentry on the privacy page | Plain line about Gemma and not storing; "no ad trackers" |
+| 11 | Everywhere | Jargon: Gemma (a person?), Kindling/Lit/Ember, Spark, crew, Hot spots, "2 in, 3 to go ahead" | Plainer copy; "2 of 3 needed" |
+| 12 | Compose | Lone pencil for the place; empty box; hint looks pre-filled | Labelled "Where you'll meet" row |
+| 13 | Camera | "Settings, then Safari" shown on Chrome | Browser-neutral line |
+| 14 | Several | Faint text: "Only your crew sees it.", Skip pill on sky, disabled Save, text on drawings | 4.5:1 everywhere |
+| 15 | Site, mobile | No nav links in the header | A row of links |
+| 16 | Site | "Run it yourself" makes the hosted app sound optional; repo "goes live" line | "No install needed"; fix the code block wrap |
+| 17 | Privacy, Accessibility | Dated placeholders ("after the field test on Sun Oct 11"); unlinked DEV post mention | Update or remove |
+| 18 | /how/ | Repeats the landing | Real step-by-step with screens, or drop |
+| 19 | App, desktop | Full-width Next button, text hugs the left | Phone-width column on desktop |
+| 20 | Small | 5-word invite called six words; "Stop talking"; compass has no arrow; same icon for crew and Hot spots | Copy and icon fixes |
+
+Tooling note: Playwright's normal `.click()` timed out on app and demo buttons (something keeps moving under them); touch taps worked.
+
+## What worked
+The headline and subtitle, the "Demo · nothing is sent" badge, the "Can't make it?" sheet, "it shrinks instead of dying", the privacy page's "Limits we're honest about", and asking for a first name only.
+
+Screenshots: kept in the session scratchpad, not committed.
