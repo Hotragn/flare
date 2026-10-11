@@ -1,10 +1,11 @@
 // ADR-0025: the Mastra Plan agent. Tools are pure (weather takes a fake fetch), the model
 // adapter talks only to a fake relay, and the route keeps today's contract and guard.
 import { templateLadder } from "@flare/shared";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runLadderAgent } from "../src/agent/ladder-agent.ts";
 import { DARK_HINT, planJob, relayModel } from "../src/agent/model.ts";
 import {
+  clearToolCaches,
   coarse,
   loadPlaces,
   NWS,
@@ -52,6 +53,7 @@ function fakeNws(periods: unknown[], hourly = `${NWS}/gridpoints/DTX/60,40/forec
 }
 
 afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => clearToolCaches());
 
 describe("agent tools", () => {
   it("sunset: about 18:57 in Dearborn on 11 Oct, and knows a plan that ends after dark", () => {

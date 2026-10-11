@@ -101,4 +101,13 @@ export const LadderRequest = z.strictObject({
   ask: z.string().min(1).max(80),
   total_minutes: z.number().int().min(40).max(600),
   weather: z.strictObject({ rain_likely: z.boolean(), temp_f: z.number().int().min(-40).max(130) }).optional(),
+  // ADR-0025: when the Plan starts, and a coarse area (a map-pack place label or the pack name).
+  // No digits in the area, so it can never carry coordinates. Used by the agent's tools only.
+  start_at: DateTime.optional(),
+  area: z
+    .string()
+    .min(1)
+    .max(40)
+    .regex(/^[^0-9]+$/, "a place label, not coordinates")
+    .optional(),
 });

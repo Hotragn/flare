@@ -10,8 +10,9 @@ import { z } from "zod";
 import type { CloudTier } from "../cloud.ts";
 import type { HubRelay } from "../hub/relay.ts";
 import { cloudChat, guardSpan, hubChat, type SpanHandle } from "../tracing.ts";
+import { keepAsked } from "./constraints.ts";
 import { type AgentRequest, relayModel } from "./model.ts";
-import { nearbyPlaces, stepTemplates, sunsetWindow, weatherWindow } from "./tools.ts";
+import { nearbyPlaces, resolveArea, stepTemplates, sunsetWindow, weatherWindow } from "./tools.ts";
 
 export type AgentDeps = {
   relay: Pick<HubRelay, "status" | "ladder">;
@@ -32,29 +33,43 @@ export type AgentOutcome = {
   /** Steps whose label the guard replaced with the template label (0 to 3). */
   templateSteps: number;
   weather: "phone" | "tool" | "none";
+  /** True when step 1 was set back to the activity the ask named (constraints.ts). */
+  kept: boolean;
 };
 
 const Minutes = z.object({ total_minutes: z.number().int().min(40).max(600) });
+/** The plan's window and coarse area. The area is a label; the cell it maps to stays inside the tool. */
+const When = Minutes.extend({
+  start_at: z.string().max(40).optional(),
+  area: z.string().max(40).optional(),
+});
 
 function tools(d: AgentDeps, seen: { weather: boolean }) {
   const now = d.now ?? (() => new Date());
+  const startOf = (iso: string | undefined) => {
+    const t = iso ? Date.parse(iso) : Number.NaN;
+    return Number.isFinite(t) ? new Date(t) : now();
+  };
   return {
     sunset: createTool({
       id: "sunset",
-      description: "Sunset today in the field-test area, and whether a plan starting now ends after dark.",
-      inputSchema: Minutes,
-      execute: async ({ total_minutes }) => guardSpan("sunset", () => sunsetWindow(total_minutes, now())),
+      description: "Sunset on the plan's day in its area, and whether the plan ends after dark.",
+      inputSchema: When,
+      execute: async ({ total_minutes, start_at, area }) =>
+        guardSpan("sunset", () => sunsetWindow(total_minutes, startOf(start_at), resolveArea(area)?.cell ?? null)),
     }),
     weather_window: createTool({
       id: "weather_window",
       description: "Rain chance and temperature for the plan's window (api.weather.gov, area rounded to 0.1°).",
-      inputSchema: Minutes,
-      execute: async ({ total_minutes }) =>
+      inputSchema: When,
+      execute: async ({ total_minutes, start_at, area }) =>
         guardSpan("weather_window", async (g) => {
           if (d.fetch === null) return null;
-          const w = await weatherWindow(total_minutes, now(), {
+          const w = await weatherWindow(total_minutes, startOf(start_at), {
             ...(d.fetch ? { fetch: d.fetch } : {}),
             timeoutMs: d.weatherTimeoutMs ?? 2500,
+            at: resolveArea(area)?.cell ?? null,
+            now: now(),
           });
           g.set({ "flare.ok": !!w });
           if (w) seen.weather = true;
@@ -86,8 +101,10 @@ export async function runLadderAgent(d: AgentDeps, req: AgentRequest, job: SpanH
   const seen = { weather: false };
   let tier: AgentOutcome["tier"] = null;
   let hubReplied: boolean | null = null; // null: no reply (timeout), false: hub said not ok
+  let sent: LadderInputT | null = null;
 
   const call = async (j: LadderInputT): Promise<string | null> => {
+    sent = j;
     if (present) {
       const left = Math.max(0, d.budgetMs - Math.round(performance.now() - t0));
       const r = await hubChat(HUB_MODEL, async (chat) => {
@@ -139,6 +156,21 @@ export async function runLadderAgent(d: AgentDeps, req: AgentRequest, job: SpanH
           return v;
         })
       : null;
+  // User constraints beat weather: the asked activity stays on step 1 (constraints.ts), and
+  // the changed ladder passes the same guard again.
+  const rain = !!(sent as LadderInputT | null)?.weather?.rain_likely;
+  const k = guarded ? keepAsked(guarded.ladder, req.ask, rain) : null;
+  const kept = k?.changed
+    ? guardSpan("keep_asked", (g) => {
+        const v = enforceLadder(JSON.stringify({ steps: k.ladder }), {
+          ask: req.ask,
+          total_minutes: req.total_minutes,
+        });
+        g.set({ "flare.valid": !!v });
+        return v;
+      })
+    : null;
+  const final = kept ?? guarded;
   const fallback: AgentOutcome["fallback"] = guarded
     ? null
     : !present
@@ -150,11 +182,12 @@ export async function runLadderAgent(d: AgentDeps, req: AgentRequest, job: SpanH
           : "invalid";
   job.set({ "flare.agent": true, "flare.weather": weather });
   return {
-    steps: guarded?.ladder ?? null,
-    tier: guarded ? tier : null,
+    steps: final?.ladder ?? null,
+    tier: final ? tier : null,
     fallback,
-    repaired: guarded?.repaired.length ?? 0,
-    templateSteps: guarded?.templateSteps ?? 4,
+    repaired: final?.repaired.length ?? 0,
+    templateSteps: final?.templateSteps ?? 4,
     weather,
+    kept: !!kept,
   };
 }

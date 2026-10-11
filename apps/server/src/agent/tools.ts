@@ -85,22 +85,65 @@ export function withPackSpelling(ask: string, named: string[]): string {
   return out;
 }
 
+/**
+ * The area a request names: a pack place label, or the pack name, or nothing (the pack
+ * centre). `cell` is the 0.1° cell, used for weather, sunset and cache keys and never returned
+ * by a tool. Unknown labels fall back to the pack centre with `known: false`.
+ */
+export type Area = { label: string; cell: LatLon; known: boolean };
+
+export function resolveArea(area: string | undefined, places: Places | null = loadPlaces()): Area | null {
+  if (!places) return null;
+  const centre = { label: places.area, cell: coarse(places.center), known: true };
+  const a = area?.trim().toLowerCase();
+  if (!a || a === places.area.toLowerCase()) return centre;
+  const p = places.places.find((x) => x.label.toLowerCase() === a);
+  return p ? { label: p.label, cell: coarse(p.at), known: true } : { ...centre, known: false };
+}
+
+// Caches (ADR-0025): sunset per (cell, 15-minute bucket of the start), the hourly forecast per
+// (cell, 15-minute bucket of the clock). Only failures are not cached. Both stay small.
+export const BUCKET_MS = 15 * 60_000;
+const MAX_ENTRIES = 64;
+const sunsetCache = new Map<string, Date>();
+const forecastCache = new Map<string, Promise<Period[] | null>>();
+const stats = { sunset_hits: 0, sunset_misses: 0, weather_hits: 0, weather_misses: 0 };
+const cellKey = (c: LatLon, ms: number) => `${c.lat.toFixed(1)},${c.lon.toFixed(1)}|${Math.floor(ms / BUCKET_MS)}`;
+function remember<V>(m: Map<string, V>, k: string, v: V): V {
+  if (m.size >= MAX_ENTRIES) m.delete(m.keys().next().value as string);
+  m.set(k, v);
+  return v;
+}
+export const toolCacheStats = () => ({ ...stats });
+export function clearToolCaches(): void {
+  sunsetCache.clear();
+  forecastCache.clear();
+  for (const k of Object.keys(stats)) stats[k as keyof typeof stats] = 0;
+}
+
 export type SunsetOut = {
   sunset_local: string | null; // "18:58" in the area's time zone
-  minutes_to_sunset: number | null;
+  minutes_to_sunset: number | null; // from the plan's start
   ends_after_dark: boolean;
 };
 
-/** Sunset at the pack centre today, and whether a plan starting now would end after it. */
+/** Sunset on the plan's day in its area, and whether a plan from `start` ends after it. */
 export function sunsetWindow(
   totalMinutes: number,
-  now: Date,
+  start: Date,
   at: LatLon | null = loadPlaces()?.center ?? null,
 ): SunsetOut {
   if (!at) return { sunset_local: null, minutes_to_sunset: null, ends_after_dark: false };
-  const s = sunset(at, now);
+  const cell = coarse(at);
+  const key = cellKey(cell, start.getTime());
+  let s = sunsetCache.get(key);
+  if (s) stats.sunset_hits++;
+  else {
+    stats.sunset_misses++;
+    s = remember(sunsetCache, key, sunset(cell, start));
+  }
   if (Number.isNaN(s.getTime())) return { sunset_local: null, minutes_to_sunset: null, ends_after_dark: false };
-  const left = Math.round((s.getTime() - now.getTime()) / 60_000);
+  const left = Math.round((s.getTime() - start.getTime()) / 60_000);
   const local = new Intl.DateTimeFormat("en-GB", { timeZone: PACK_TZ, hour: "2-digit", minute: "2-digit" }).format(s);
   return { sunset_local: local, minutes_to_sunset: left, ends_after_dark: left < totalMinutes };
 }
@@ -133,32 +176,49 @@ export function reduceWeather(periods: Period[], start: Date, end: Date): PlanWe
   return { rain_likely: rain, temp_f: Math.max(-40, Math.min(130, temp)) };
 }
 
-/** Hourly forecast for [now, now + minutes) at the pack area; null on any failure or timeout. */
-export async function weatherWindow(
-  totalMinutes: number,
-  now: Date,
-  deps: { fetch?: typeof fetch; timeoutMs?: number; at?: LatLon | null } = {},
-): Promise<PlanWeather | null> {
-  const at = deps.at === undefined ? (loadPlaces()?.center ?? null) : deps.at;
-  if (!at) return null;
-  const f = deps.fetch ?? fetch;
-  const c = coarse(at);
+async function fetchHourly(cell: LatLon, f: typeof fetch, timeoutMs: number): Promise<Period[] | null> {
   const init: RequestInit = {
     headers: { accept: "application/geo+json", "user-agent": "flare-server (plan weather)" },
-    signal: AbortSignal.timeout(deps.timeoutMs ?? 2500),
+    signal: AbortSignal.timeout(timeoutMs),
   };
   try {
-    const pts = await f(`${NWS}/points/${c.lat.toFixed(1)},${c.lon.toFixed(1)}`, init);
+    const pts = await f(`${NWS}/points/${cell.lat.toFixed(1)},${cell.lon.toFixed(1)}`, init);
     if (!pts.ok) return null;
     const hourly = ((await pts.json()) as { properties?: { forecastHourly?: string } }).properties?.forecastHourly;
     if (typeof hourly !== "string" || new URL(hourly).origin !== NWS) return null;
     const fc = await f(hourly, init);
     if (!fc.ok) return null;
     const periods = ((await fc.json()) as { properties?: { periods?: Period[] } }).properties?.periods;
-    return Array.isArray(periods) ? reduceWeather(periods, now, new Date(now.getTime() + totalMinutes * 60_000)) : null;
+    return Array.isArray(periods) ? periods : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Hourly forecast reduced for [start, start + minutes) in the area's 0.1° cell; null on any
+ * failure, timeout, or a window the forecast does not cover. `now` keys the forecast cache.
+ */
+export async function weatherWindow(
+  totalMinutes: number,
+  start: Date,
+  deps: { fetch?: typeof fetch; timeoutMs?: number; at?: LatLon | null; now?: Date } = {},
+): Promise<PlanWeather | null> {
+  const at = deps.at === undefined ? (loadPlaces()?.center ?? null) : deps.at;
+  if (!at) return null;
+  const cell = coarse(at);
+  const key = cellKey(cell, (deps.now ?? new Date()).getTime());
+  let p = forecastCache.get(key);
+  if (p) stats.weather_hits++;
+  else {
+    stats.weather_misses++;
+    p = remember(forecastCache, key, fetchHourly(cell, deps.fetch ?? fetch, deps.timeoutMs ?? 2500));
+    p.then((v) => {
+      if (!v && forecastCache.get(key) === p) forecastCache.delete(key); // retry next time
+    });
+  }
+  const periods = await p;
+  return periods ? reduceWeather(periods, start, new Date(start.getTime() + totalMinutes * 60_000)) : null;
 }
 
 /** The template ladder for these minutes: the floor the agent falls back to. */

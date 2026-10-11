@@ -13,7 +13,12 @@ export const TOOL_NAMES = ["sunset", "weather_window", "nearby_places", "step_te
 export type ToolName = (typeof TOOL_NAMES)[number];
 
 /** The request the route hands the agent, as the user message (JSON). */
-export type AgentRequest = LadderInputT;
+export type AgentRequest = LadderInputT & {
+  /** When the Plan starts (ISO). Without it the tools use now. */
+  start_at?: string;
+  /** A pack place label or the pack name; never coordinates. */
+  area?: string;
+};
 
 /** What the tools found, by tool name. Missing entries mean the tool did not run or failed. */
 export type ToolResults = Partial<{
@@ -85,9 +90,11 @@ function readResults(prompt: Msg[]): ToolResults | null {
 
 /** The tool inputs for step one, for the tools the agent actually offers. */
 function toolCalls(req: AgentRequest, offered: Set<string>): Content[] {
+  const when = { total_minutes: req.total_minutes, ...(req.start_at ? { start_at: req.start_at } : {}) };
+  const where = req.area ? { area: req.area } : {};
   const inputs: Record<ToolName, unknown> = {
-    sunset: { total_minutes: req.total_minutes },
-    weather_window: { total_minutes: req.total_minutes },
+    sunset: { ...when, ...where },
+    weather_window: { ...when, ...where },
     nearby_places: { ask: req.ask },
     step_templates: { total_minutes: req.total_minutes },
   };

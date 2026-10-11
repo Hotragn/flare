@@ -1599,6 +1599,16 @@ components:
           properties:
             rain_likely: { type: boolean }
             temp_f: { type: integer, minimum: -40, maximum: 130 }
+        start_at:
+          type: string
+          format: date-time
+          description: When the Plan starts. The agent tier (ADR-0025) reads weather and sunset for this window; without it, from now.
+        area:
+          type: string
+          minLength: 1
+          maxLength: 40
+          pattern: "^[^0-9]+$"
+          description: A coarse area, a map-pack place label (for example "Ford Woods Park") or the pack name ("fairlane"). Never coordinates; digits are refused. Used by the agent tier only.
 
     LadderResponse:
       type: object
