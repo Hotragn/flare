@@ -33,16 +33,22 @@ for (let run = 1; run <= RUNS; run++) {
   const t0 = Date.now();
   await host.goto(`${srv.url}/app/`);
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
-  await host.getByRole("button", { name: "Use these" }).click({ timeout: 15_000 });
-  if (
-    await host
-      .getByLabel("Where are you?")
-      .isVisible()
-      .catch(() => false)
-  ) {
-    await host.getByLabel("Where are you?").fill("Ford Woods Park, by the pond");
+  // With no map pack wired (MAP's module), the location gives no name: type it in the sheet.
+  await host
+    .getByRole("button", { name: /Use these|Use mine/ })
+    .waitFor({ timeout: 15_000 })
+    .catch(async (e) => {
+      await host.screenshot({ path: path.join(OUT, "e2e-fail.png") });
+      throw e;
+    });
+  const sheetWhere = host.getByLabel("Where are you?");
+  if (await sheetWhere.isVisible().catch(() => false)) {
+    await sheetWhere.fill("Ford Woods Park, by the pond");
     await host.getByRole("button", { name: "Not now" }).click();
   }
+  await host.getByRole("button", { name: "Use these" }).click({ timeout: 15_000 });
+  const where = host.getByLabel("Where are you?");
+  if (await where.isVisible().catch(() => false)) await where.fill("Ford Woods Park, by the pond");
   const name = host.getByLabel("Your first name");
   if (await name.isVisible().catch(() => false)) await name.fill("Fuego");
   await host.getByRole("button", { name: "Send it" }).click();
@@ -58,7 +64,26 @@ for (let run = 1; run <= RUNS; run++) {
   }
   await host.getByRole("button", { name: "Pocket it" }).click();
 
-  const friendCtx = await browser.newContext(phone);
+  const friendCtx = await browser.newContext({
+    ...phone,
+    permissions: ["geolocation"],
+    geolocation: { latitude: 42.3232, longitude: -83.2129 }, // 400 m north of the host's spot
+  });
+  // iOS-like orientation permission (spike E3 shim): only grants inside a tap.
+  await friendCtx.addInitScript(() => {
+    const w = window as unknown as { __permCalls: boolean[]; __turn: (deg: number) => void };
+    w.__permCalls = [];
+    (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission = () => {
+      const active = navigator.userActivation.isActive;
+      w.__permCalls.push(active);
+      return active ? Promise.resolve("granted") : Promise.reject(new DOMException("gesture", "NotAllowedError"));
+    };
+    w.__turn = (deg) => {
+      const e = new Event("deviceorientation");
+      Object.assign(e, { alpha: null, beta: 0, gamma: 0, absolute: false, webkitCompassHeading: deg });
+      window.dispatchEvent(e);
+    };
+  });
   const friend = await friendCtx.newPage();
   friend.on("pageerror", (e) => fails.push(`friend run ${run}: ${e.message}`));
   const t1 = Date.now();
@@ -86,7 +111,33 @@ for (let run = 1; run <= RUNS; run++) {
     await friend.screenshot({ path: path.join(OUT, "e2e-i6-lit.png") });
     await host.screenshot({ path: path.join(OUT, "e2e-h6-lit.png") });
   }
-  results.push({ host: hostMs, friend: friendMs, lit: lit && hostLit });
+  // FE4: Find them on the real screen. The prompt must come from the tap.
+  // The friend is 400 m north of the spot: facing south reads "straight ahead", facing east "to your right".
+  let compass = false;
+  if (lit) {
+    await friend.getByRole("button", { name: "Find them" }).click();
+    await friend.waitForTimeout(300);
+    await friend.evaluate(() => (window as unknown as { __turn: (d: number) => void }).__turn(180));
+    const ahead = await friend
+      .getByText(/Fuego is straight ahead|Fuego, 4\d0 meters, straight ahead/)
+      .first()
+      .waitFor({ timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    await friend.evaluate(() => (window as unknown as { __turn: (d: number) => void }).__turn(90));
+    const right = await friend
+      .getByText(/Fuego, 4\d0 meters, to your right/)
+      .first()
+      .waitFor({ timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    const calls = await friend.evaluate(() => (window as unknown as { __permCalls: boolean[] }).__permCalls);
+    compass = ahead && right && calls.length === 1 && calls[0] === true;
+    if (!compass)
+      fails.push(`run ${run}: compass ahead=${ahead} right=${right} permission calls=${JSON.stringify(calls)}`);
+    if (run === 1) await friend.screenshot({ path: path.join(OUT, "e2e-i7-compass.png") });
+  }
+  results.push({ host: hostMs, friend: friendMs, lit: lit && hostLit && compass });
   await hostCtx.close();
   await friendCtx.close();
 }

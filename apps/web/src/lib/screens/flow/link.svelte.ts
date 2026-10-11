@@ -241,12 +241,17 @@ export class LinkFlow {
 
   async #saveLit(): Promise<void> {
     if (!this.view || !this.sealed) return;
-    const data: SavedLit = { view: this.view, sealed: this.sealed, saved_at: this.#d.now() };
+    // Plain copies: IndexedDB can't clone the reactive proxies (BUG-FE-1).
+    const data: SavedLit = {
+      view: $state.snapshot(this.view),
+      sealed: $state.snapshot(this.sealed),
+      saved_at: this.#d.now(),
+    };
     try {
       await this.#d.store.saveLit(this.#id, data);
-    } catch {
-      // Storage full: the page still works online (err.storageFull shows on the Lit screen).
-      this.error = t("err.storageFull");
+    } catch (e) {
+      // Storage full: the page still works online. Other failures only lose the offline copy.
+      if ((e as Error | null)?.name === "StorageFullError") this.error = t("err.storageFull");
     }
   }
 
