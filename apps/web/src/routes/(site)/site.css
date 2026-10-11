@@ -275,6 +275,10 @@
   gap: 10px;
 }
 .audit .label {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  font-family: var(--font-body);
   font-weight: 700;
   color: var(--c-gold-300);
 }
@@ -449,4 +453,9 @@
   .keep {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* Paper grain as WebP on the website: 45 KB instead of 121 KB (Lighthouse image delivery). */
+.site .grain::after {
+  background-image: url("/site/paper-grain-ui-256.webp");
 }

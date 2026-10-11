@@ -28,7 +28,7 @@ const TYPES: Record<string, string> = {
 };
 
 function resolve(urlPath: string): string | null {
-  const clean = decodeURIComponent(urlPath.split("?")[0]);
+  const clean = decodeURIComponent(urlPath.split("?")[0] ?? "/");
   const abs = path.join(BUILD, clean);
   if (!abs.startsWith(BUILD)) return null;
   for (const c of [abs, path.join(abs, "index.html"), `${abs}.html`]) {
@@ -61,7 +61,7 @@ export function serve(port: number, api?: (p: string) => { status: number; body:
     headers["cache-control"] = p.includes("/_app/immutable/") ? "public, max-age=31536000, immutable" : "no-cache";
     let body = fs.readFileSync(file);
     if (
-      /text|javascript|json|svg|xml/.test(headers["content-type"]) &&
+      /text|javascript|json|svg|xml/.test(headers["content-type"] ?? "") &&
       /gzip/.test(req.headers["accept-encoding"] ?? "")
     ) {
       body = zlib.gzipSync(body);
