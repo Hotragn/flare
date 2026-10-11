@@ -114,3 +114,7 @@ Usage windows are short (nine agents use a 5-hour window in about 1 to 1.5 hours
 7. Deletion and the audit.
 
 After that (lands Sunday afternoon and evening, before the post): rest-loop routing and the print card, Fix the map, the website, remaining polish and docs depth. Commit after every step above, so a usage stop never costs more than one step.
+
+## Status 22:30 ET
+- Core engine: DONE, merged into main (f89219d). Handoff docs/handoffs/06b-core-engine.md. 141 engine tests, coverage 100% lines / 96.8% branches, B14 p99 0.06 ms. ICR-1 applied (ICD-1 v1.1). Bugs merged as BUG-033, BUG-034; next BUGLOG id BUG-035.
+- Other eight: running (run 2). Check each via `git log origin/wp/<area>` and its notes/<area>-progress.md.

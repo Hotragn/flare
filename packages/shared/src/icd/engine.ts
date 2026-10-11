@@ -80,7 +80,8 @@ export type Effect =
   | { type: "push"; event: PushEvent; to: "set" | "all" | Id[]; label?: Label; step?: Step }
   | { type: "telegram"; action: "edit_count" | "lit" | "ember" | "smaller" | "final" }
   | { type: "spark_ticket"; member_id: Id }
-  | { type: "counter"; name: string; bucket?: string }
+  /** ICR-1 (v1.1, additive): `by` defaults to 1; `op: "max"` keeps the larger value. */
+  | { type: "counter"; name: string; bucket?: string; by?: number; op?: "add" | "max" }
   | { type: "sse" };
 
 /** Error codes the engine can return; a subset of the contract's Error.code list. */
