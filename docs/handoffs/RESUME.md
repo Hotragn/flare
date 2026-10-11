@@ -186,3 +186,5 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - scripts/telegram-lib.ts: process env now overrides .env (so PUBLIC_BASE_URL=https://... works for setWebhook).
 
 - Full ordered backlog with status: docs/engineering/07-sunday-backlog.md
+
+- ~12:15: `npm run smoke -- <url> --hub-off` added. On live it FAILS both DO checks: DigitalOcean returns 402 Payment Required, "This account has been blocked" (reproduced locally with the same key). Founder must fix DO billing; until then "no laptop" falls back to typed words / template. Hub photo path on live: 4.0 s (smoke run 2).
