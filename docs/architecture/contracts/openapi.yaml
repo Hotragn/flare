@@ -849,6 +849,42 @@ paths:
         "415": { $ref: "#/components/responses/UnsupportedMedia" }
         "429": { $ref: "#/components/responses/TooMany" }
 
+  /api/v1/voice/spark:
+    post:
+      tags: [ai]
+      operationId: transcribeSpark
+      summary: A person's own Spark, said instead of typed (ADR-0027)
+      description: |
+        Up to 10 s of the person's own voice, recorded only while they hold "Say it". The server
+        sends it once to ElevenLabs Scribe, zero-fills the buffer and stores nothing; only the
+        words come back, and the phone seals the Spark as usual. `text` is null when Scribe gave
+        nothing usable or the daily cap is reached. 503 when the server has no ElevenLabs key.
+      requestBody:
+        required: true
+        content:
+          audio/webm:
+            schema: { type: string, maxLength: 400000 }
+          audio/mp4:
+            schema: { type: string, maxLength: 400000 }
+      responses:
+        "200":
+          description: The words, or null
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [text]
+                properties:
+                  text: { type: [string, "null"], maxLength: 140 }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMedia" }
+        "429": { $ref: "#/components/responses/TooMany" }
+        "503":
+          description: Say it is off on this server
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
   /api/v1/groups/{groupId}/stats:
     parameters:
       - $ref: "#/components/parameters/GroupId"
@@ -1187,6 +1223,7 @@ components:
             - version_conflict
             - too_large
             - not_jpeg
+            - not_audio
             - rate_limited
             - not_configured
         message:
@@ -1220,6 +1257,12 @@ components:
             providers: { type: array, items: { type: string, enum: [digitalocean, google] }, description: "Every configured provider, in the order tried" }
             ladder: { type: boolean, description: "Plan ladders may come from the cloud when the hub is absent" }
             photo_opt_in: { type: boolean, description: "The host may opt in to send this Flare's photo to the cloud when the hub is absent" }
+        voice:
+          type: object
+          description: ElevenLabs features (ADR-0027). spark is false without ELEVENLABS_API_KEY.
+          required: [spark]
+          properties:
+            spark: { type: boolean, description: "A person may say their own Spark (up to 10 s); POST /api/v1/voice/spark" }
         limits:
           type: object
           required: [max_members, max_photo_bytes, flare_quorum, plan_quorum]

@@ -15,6 +15,16 @@
   import { feedback } from "#lib/motion/feedback.ts";
   import { speechDue, type Spoken } from "#lib/motion/speech.ts";
   import { unwrapAngle } from "#lib/compass/guide.ts";
+  // ADR-0027: the warm-voice player loads only on phones that turned it on (JS budget).
+  const warmOn = () => {
+    try {
+      return localStorage.getItem("flare.voice") === "warm";
+    } catch {
+      return false;
+    }
+  };
+  let voice: typeof import("#lib/compass/voice.ts") | null = null;
+  const loadVoice = async () => (voice ??= await import("#lib/compass/voice.ts"));
   let {
     name = "Fuego",
     meters = 400,
@@ -84,7 +94,17 @@
     if (!speechDue(said, now)) return;
     said = now;
     speechSynthesis.cancel();
-    speechSynthesis.speak(new SpeechSynthesisUtterance(now.text));
+    const device = () => speechSynthesis.speak(new SpeechSynthesisUtterance(now.text));
+    // ADR-0027: the warm voice when this phone turned it on; the phone's own voice otherwise.
+    if (warmOn())
+      void loadVoice()
+        .then((v) => v.playWarm(v.clipsFor(status, meters, bearing, facing)))
+        .then((ok) => ok || device(), device);
+    else device();
+  });
+  $effect(() => {
+    if (!speak) voice?.stopWarm();
+    return () => voice?.stopWarm();
   });
 </script>
 

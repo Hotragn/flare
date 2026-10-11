@@ -10,6 +10,7 @@
   import { EMPTY_FORM, needsToForm, readNeeds, saveNeeds, type NeedsForm } from "../more.ts";
   import { phoneModules } from "../wire.ts";
   import { back } from "../back.ts";
+  import { playWarm, setWarm, warmOn } from "#lib/compass/voice.ts";
 
   let store: Store | null = $state(null);
   let ready = $state(false);
@@ -17,6 +18,15 @@
   let wasSet = $state(false);
   let status = $state("");
   let saving = $state(false);
+  // ADR-0027: the compass's warm voice, a setting on this phone like the needs.
+  let warm = $state("no");
+  onMount(() => {
+    warm = warmOn() ? "yes" : "no";
+  });
+  const changeWarm = (v: string) => {
+    warm = v;
+    void setWarm(v === "yes");
+  };
 
   onMount(async () => {
     store = (await phoneModules()).store;
@@ -63,11 +73,18 @@
     <Choice label={t("needs.restroom")} bind:value={form.wc} options={yesNo} />
     <p class="t-small t-muted">{wasSet ? t("needs.foot") : t("needs.empty")}</p>
   {/if}
+  <!-- ADR-0027: saved the moment you choose, not with Save (it is this phone's setting). -->
+  <div class="warm">
+    <Choice label={t("voice.title")} bind:value={() => warm, changeWarm} options={yesNo} />
+    <p class="t-small t-muted">{t("voice.sub")}</p>
+    <Button variant="text" icon="sound" onclick={() => void playWarm(["m-150", "dir-slightLeft"])}>{t("voice.try")}</Button>
+  </div>
   <p class="t-small" role="status" aria-live="polite">{status}</p>
   {#snippet actions()}<Button onclick={save} loading={saving} disabled={!store}>{t("needs.save")}</Button>{/snippet}
 </Screen>
 
 <style>
+  .warm { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding-top: 8px; border-top: 1px solid var(--line); }
   .lock { display: flex; gap: 8px; align-items: center; margin: 0; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface); font-weight: 700; }
   p { margin: 0; }
 </style>

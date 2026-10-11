@@ -29,6 +29,7 @@ export const WEB_KEYS = [
   "SENTRY_DSN",
   "DO_MODEL_ACCESS_KEY",
   "GEMINI_API_KEY", // ADR-0026: Gemma 4 on Google AI Studio after DigitalOcean
+  "ELEVENLABS_API_KEY", // ADR-0027: Voice Spark (Scribe); the warm-voice clips are static
 ];
 const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 

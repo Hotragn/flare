@@ -1,4 +1,5 @@
-<!-- I11 Spark: one line in your own words, once, optional (BR-K-1 to -3). No AI help offered. -->
+<!-- I11 Spark: one line in your own words, once, optional (BR-K-1 to -3). No AI help offered:
+     "Say it" (ADR-0027) only turns the person's own words into text, for them to edit. -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
@@ -12,6 +13,7 @@
     line = $bindable(""),
     error = "",
     busy = false,
+    canSay = false,
     onsave,
     onskip,
   }: {
@@ -20,9 +22,12 @@
     line?: string;
     error?: string;
     busy?: boolean;
+    /** The server has Voice Spark and this phone can record (lib/voice/spark.ts). */
+    canSay?: boolean;
     onsave?: (line: string) => void;
     onskip?: () => void;
   } = $props();
+  let sayError = $state("");
 </script>
 
 <Screen {theme} onclose={onskip}>
@@ -38,7 +43,11 @@
       <h1 class="t-title">{t("spark.prompt")}</h1>
       <p class="t-muted">{t("spark.body")}</p>
     </div>
-    <TextField label={t("spark.label")} bind:value={line} placeholder={t("spark.placeholder")} {error} max={140} multiline />
+    <TextField label={t("spark.label")} bind:value={line} placeholder={t("spark.placeholder")} error={error || sayError} max={140} multiline />
+    {#if canSay}
+      <!-- Loaded only when the server offers it, so the link page stays in its JS budget. -->
+      {#await import("../components/SaySpark.svelte") then { default: SaySpark }}<SaySpark bind:line bind:error={sayError} />{/await}
+    {/if}
   {/if}
   {#snippet actions()}
     {#if view === "saved"}

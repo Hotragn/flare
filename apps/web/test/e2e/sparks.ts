@@ -63,13 +63,30 @@ const hostCtx = await browser.newContext({
 });
 const friendCtx = await browser.newContext({
   ...phone,
-  permissions: ["geolocation"],
+  permissions: ["geolocation", "microphone"],
   geolocation: { latitude: 42.3232, longitude: -83.2129 },
 });
 await hostCtx.addInitScript(() => {
   try {
     localStorage.setItem("flare.onboarded", "1"); // onboarding is tested on its own
   } catch {}
+});
+// Headless Chrome hangs on audio-only getUserMedia even with the fake-device flags, so the
+// friend's phone gets a synthetic tone as its microphone; MediaRecorder records it for real.
+await friendCtx.addInitScript(() => {
+  const real = navigator.mediaDevices?.getUserMedia?.bind(navigator.mediaDevices);
+  if (!real) return;
+  navigator.mediaDevices.getUserMedia = async (c?: MediaStreamConstraints) => {
+    if (c?.audio && !c.video) {
+      const ac = new AudioContext();
+      const osc = ac.createOscillator();
+      const dest = ac.createMediaStreamDestination();
+      osc.connect(dest);
+      osc.start();
+      return dest.stream;
+    }
+    return real(c);
+  };
 });
 const host = await hostCtx.newPage();
 const friend = await friendCtx.newPage();
@@ -121,6 +138,15 @@ try {
   // Flare 1: lights, friend arrives and leaves a Spark, host ends it.
   const link1 = await sendFlare(host);
   check("flare 1 sent with a link", !!link1);
+  let sentType = "";
+  await friend.route("**/api/v1/config", async (r) => {
+    const res = await r.fetch();
+    await r.fulfill({ response: res, json: { ...(await res.json()), voice: { spark: true } } });
+  });
+  await friend.route("**/api/v1/voice/spark", async (r) => {
+    sentType = r.request().headers()["content-type"] ?? "";
+    await r.fulfill({ json: { text: "The light on the water" } });
+  });
   await friend.goto(URL0 + link1);
   await friend.getByRole("button", { name: "I'm in" }).click({ timeout: 10_000 });
   await friend.getByLabel("Your first name").fill("Amor");
@@ -130,6 +156,52 @@ try {
   await friend.getByRole("button", { name: "I'm here" }).click();
   await friend.getByText("You made it.").first().waitFor({ timeout: 10_000 });
   await friend.getByRole("button", { name: "Pocket it" }).click();
+  // Voice Spark (ADR-0027) with Chrome's fake microphone. This test server has no ElevenLabs
+  // key, so /config and Scribe are stood in for here; the phone's side is what is checked: it
+  // records only after the tap, sends audio once, and puts the words in the field to edit.
+  const sayIt = friend.getByRole("button", { name: "Say it" });
+  if (
+    await sayIt.waitFor({ timeout: 10_000 }).then(
+      () => true,
+      () => false,
+    )
+  ) {
+    await sayIt.click();
+    await friend
+      .getByText(/Listening… \d+ s left/)
+      .waitFor({ timeout: 5_000 })
+      .catch(async () => {
+        await friend.screenshot({ path: path.join(OUT, "e2e-say-fail.png") });
+        throw new Error(
+          `Say it: no Listening; the field says "${await friend
+            .locator(".msg")
+            .first()
+            .innerText()
+            .catch(() => "")}"`,
+        );
+      });
+    await friend.waitForTimeout(1200);
+    await friend.getByRole("button", { name: "Stop" }).click();
+    const said = await friend
+      .getByLabel("Your Spark")
+      .evaluate((el) => (el as HTMLTextAreaElement).value)
+      .catch(() => "");
+    await friend
+      .waitForFunction(
+        () => (document.querySelector("textarea") as HTMLTextAreaElement | null)?.value.includes("light"),
+        null,
+        { timeout: 10_000 },
+      )
+      .catch(() => {});
+    const value = await friend.getByLabel("Your Spark").inputValue();
+    check(
+      "Say it: audio sent once, the words land in the field to edit",
+      sentType.startsWith("audio/") && value === "The light on the water",
+      `${sentType} "${value || said}"`,
+    );
+  } else check("Say it offered when the server has Voice Spark", false);
+  await friend.unroute("**/api/v1/voice/spark");
+  await friend.unroute("**/api/v1/config");
   await friend.getByLabel("Your Spark").fill(SPARK);
   await friend.getByRole("button", { name: "Save it" }).click();
   const saved = await friend

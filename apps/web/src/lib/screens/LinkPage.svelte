@@ -17,15 +17,15 @@
   import I10Gone from "./I10Gone.svelte";
   import I11Spark from "./I11Spark.svelte";
   import I12Outside from "./I12Outside.svelte";
-  import P4PlanInvite from "./P4PlanInvite.svelte";
-  import P5PlanLit from "./P5PlanLit.svelte";
-  import P6Fading from "./P6Fading.svelte";
-  import P7PlanGone from "./P7PlanGone.svelte";
+  // Plan screens (P4 to P7) load when the link is a Plan: Flares are most links (JS budget).
+  const planScreens = () =>
+    Promise.all([import("./P4PlanInvite.svelte"), import("./P5PlanLit.svelte"), import("./P6Fading.svelte"), import("./P7PlanGone.svelte")]);
   import type { Deps } from "./flow/deps.ts";
   import { LinkFlow, rememberedName } from "./flow/link.svelte.ts";
   import { roundMeters, type SensorState, startSensors } from "./flow/compass.ts";
   import { createGuide, type GuideState } from "#lib/compass/guide.ts";
   import { clock } from "./flow/format.ts";
+  import { sparkVoiceOn } from "#lib/voice/spark.ts";
 
   let {
     deps,
@@ -47,6 +47,11 @@
   let talking = $state(true);
   let stopSensors: (() => void) | null = null;
 
+  // ADR-0027: offer "Say it" on the Spark screen when the server has Scribe.
+  let canSay = $state(false);
+  onMount(() => {
+    void sparkVoiceOn().then((v) => (canSay = v));
+  });
   onMount(() => {
     void flow.open(fragment).then(() => {
       void flow.loadNeeds();
@@ -142,7 +147,7 @@
 {:else if flow.screen === "missing-key"}
   <I1Invite view="missing-key" onclose={exit} />
 {:else if flow.screen === "gone"}
-  {#if v?.kind === "plan"}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{:else}<I10Gone onclose={exit} />{/if}
+  {#if v?.kind === "plan"}{#await planScreens() then [, , , { default: P7PlanGone }]}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{/await}{:else}<I10Gone onclose={exit} />{/if}
 {:else if flow.screen === "outside"}
   <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} minutes={flow.outsideMin} photo={info?.photo ?? ""} people={info?.host ? [info.host, name || "You"] : []} spark={flow.sparkLine} onclose={exit} />
 {:else if flow.screen === "join"}
@@ -165,17 +170,17 @@
   {:else if flow.screen === "here"}
     <I8Here here={flow.hereCount} ondone={() => flow.afterHere()} />
   {:else if flow.screen === "spark"}
-    <I11Spark bind:line={sparkLine} error={flow.error} busy={flow.busy} onsave={(l) => flow.saveSpark(l)} onskip={() => flow.skipSpark()} />
+    <I11Spark bind:line={sparkLine} {canSay} error={flow.error} busy={flow.busy} onsave={(l) => flow.saveSpark(l)} onskip={() => flow.skipSpark()} />
   {:else if flow.screen === "spark-saved"}
     <I11Spark view="saved" onskip={() => flow.skipSpark()} />
   {:else if flow.screen === "ember"}
     <I9Ember view="waiting" {info} bench={flow.emberPlace.name} meters={flow.emberPlace.meters} have={flow.have} answered={flow.me?.answer === "yes"} error={flow.error} busy={flow.busy} onyes={() => flow.yes()} onfind={find} onclose={exit} />
   {:else if flow.screen === "plan-invite" && plan}
-    <P4PlanInvite {host} ask={info.words} deadline={clock(plan.deadline_at, flow.tz)} steps={flow.steps} have={flow.have} quorum={v.quorum} error={flow.error} busy={flow.busy} canCondition={flow.canCondition} onyes={() => flow.yes()} onshort={() => flow.shortOnly()} oncondition={() => flow.startCondition()} onclose={exit} />
+    {#await planScreens() then [{ default: P4PlanInvite }]}<P4PlanInvite {host} ask={info.words} deadline={clock(plan.deadline_at, flow.tz)} steps={flow.steps} have={flow.have} quorum={v.quorum} error={flow.error} busy={flow.busy} canCondition={flow.canCondition} onyes={() => flow.yes()} onshort={() => flow.shortOnly()} oncondition={() => flow.startCondition()} onclose={exit} />{/await}
   {:else if flow.screen === "plan-lit" && plan}
-    <P5PlanLit ask={info.words} steps={flow.steps} {current} start={clock(plan.start_at, flow.tz)} smaller={v.state === "ember" || current > 1} canFade={flow.me?.can_fade ?? false} stillComing={flow.me?.still_coming ?? false} savedAt={flow.savedAt} onfind={find} onfade={() => { fadeView = "confirm"; flow.askFade(); }} onclose={exit} />
+    {#await planScreens() then [, { default: P5PlanLit }]}<P5PlanLit ask={info.words} steps={flow.steps} {current} start={clock(plan.start_at, flow.tz)} smaller={v.state === "ember" || current > 1} canFade={flow.me?.can_fade ?? false} stillComing={flow.me?.still_coming ?? false} savedAt={flow.savedAt} onfind={find} onfade={() => { fadeView = "confirm"; flow.askFade(); }} onclose={exit} />{/await}
   {:else if flow.screen === "fade" && plan}
-    <P6Fading view={fadeView} ask={info.words} steps={flow.steps} {current} smallGroup={(v.headcount ?? v.quorum) <= 3} error={flow.error} busy={flow.busy} onyes={async () => { if (await flow.fade()) fadeView = "notice"; }} onno={() => flow.backToLit()} onok={() => flow.backToLit()} />
+    {#await planScreens() then [, , { default: P6Fading }]}<P6Fading view={fadeView} ask={info.words} steps={flow.steps} {current} smallGroup={(v.headcount ?? v.quorum) <= 3} error={flow.error} busy={flow.busy} onyes={async () => { if (await flow.fade()) fadeView = "notice"; }} onno={() => flow.backToLit()} onok={() => flow.backToLit()} />{/await}
   {/if}
 {/if}
 

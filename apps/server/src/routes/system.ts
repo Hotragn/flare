@@ -41,6 +41,8 @@ export function mountSystem(app: Hono, ctx: Ctx, rl: RateLimiter): void {
         ladder: !!ctx.cloud,
         photo_opt_in: !!ctx.cloud,
       },
+      // ADR-0027: the phone offers "Say it" on the Spark screen only when this is true.
+      voice: { spark: !!ctx.voice },
       limits: {
         max_members: MAX_MEMBERS,
         max_photo_bytes: 1_500_000,

@@ -12,6 +12,7 @@ import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { integrations } from "./integrations.ts";
 import { log } from "./log.ts";
 import { flushTracing, initTracing } from "./tracing.ts";
+import { voiceTier } from "./voice.ts";
 
 // ADR-0021: AI-path tracing to Sentry when SENTRY_DSN is set; allow-listed attributes only.
 log.info({ event: "tracing", on: initTracing() }, "tracing");
@@ -41,6 +42,7 @@ const deps = {
   mounts: e2eClock ? [e2eMount, ints.mount] : [ints.mount],
   ...(e2eClock ? { clock: { now: () => new Date(Date.now() + clockOffset) } } : {}),
   cloud: cloudTier(),
+  voice: voiceTier(),
   relay,
   db,
   version: env.version,

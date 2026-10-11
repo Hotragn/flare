@@ -16,6 +16,7 @@ const SKIP = [
   /^\/scenic\//,
   /^\/sim\//,
   /^\/site\/how\//, // the /how/ walkthrough screens, lazy on that page
+  /^\/voice\//, // warm-voice clips: saved only when the warm voice is turned on (ADR-0027)
   /^\/splash\//,
   /^\/check\//,
   /^\/icons\/icon-(1024|384|256)\.png$/,

@@ -12,3 +12,6 @@ Third-party material:
   and sources: docs/credits/photos.md.
 - Fonts: Fraunces (SIL Open Font License 1.1) and Atkinson Hyperlegible Next (SIL Open Font
   License 1.1), via Fontsource.
+- Warm-voice compass clips (apps/web/static/voice/): generated with ElevenLabs text to speech
+  (premade voice "Sarah", model eleven_multilingual_v2) from fixed lines in the copy deck, by
+  scripts/gen-voice.ts. Voice by ElevenLabs (elevenlabs.io). See ADR-0027.

@@ -226,6 +226,11 @@
       "kind": "status",
       "where": "demo, friend side after a condition (fresh-eyes round 2)"
     },
+    "demo.back": {
+      "text": "Back to you, {host}. One more yes: {n} in.",
+      "kind": "status",
+      "where": "demo, after the friend's view (fresh-eyes round 3)"
+    },
     "demo.shrinkHint": {
       "text": "Not enough yet. Skip ahead to see it shrink.",
       "kind": "hint",
@@ -1799,6 +1804,41 @@
       "kind": "status",
       "where": "I6 bot"
     },
+    "voice.meters": {
+      "text": "{meters} meters",
+      "kind": "spoken",
+      "where": "warm-voice clip (ADR-0027)"
+    },
+    "voice.km": {
+      "text": "{km} kilometers",
+      "kind": "spoken",
+      "where": "warm-voice clip (ADR-0027)"
+    },
+    "voice.ahead": {
+      "text": "Straight ahead.",
+      "kind": "spoken",
+      "where": "warm-voice clip (ADR-0027)"
+    },
+    "voice.close": {
+      "text": "You're close. Look around.",
+      "kind": "spoken",
+      "where": "warm-voice clip (ADR-0027)"
+    },
+    "voice.title": {
+      "text": "Warm voice",
+      "kind": "label",
+      "where": "O2 needs, warm voice toggle (ADR-0027)"
+    },
+    "voice.sub": {
+      "text": "A recorded voice for the compass. Nothing of yours is sent.",
+      "kind": "hint",
+      "where": "O2 needs, warm voice toggle (ADR-0027)"
+    },
+    "voice.try": {
+      "text": "Hear it",
+      "kind": "button",
+      "where": "O2 needs, warm voice sample (ADR-0027)"
+    },
     "compass.heading": {
       "text": "Find them",
       "kind": "title",
@@ -1993,6 +2033,36 @@
       "text": "The light on the water at 5",
       "kind": "placeholder",
       "where": "I11"
+    },
+    "spark.say": {
+      "text": "Say it",
+      "kind": "button",
+      "where": "I11 Voice Spark (ADR-0027)"
+    },
+    "spark.stop": {
+      "text": "Stop",
+      "kind": "button",
+      "where": "I11 Voice Spark (ADR-0027)"
+    },
+    "spark.listening": {
+      "text": "Listening\u2026 {s} s left",
+      "kind": "status",
+      "where": "I11 Voice Spark (ADR-0027)"
+    },
+    "spark.working": {
+      "text": "Turning it into words\u2026",
+      "kind": "status",
+      "where": "I11 Voice Spark (ADR-0027)"
+    },
+    "spark.sayNote": {
+      "text": "Your voice, 10 seconds. ElevenLabs makes it words; no audio is kept.",
+      "kind": "hint",
+      "where": "I11 Voice Spark (ADR-0027)"
+    },
+    "spark.sayFail": {
+      "text": "Didn't catch that. Type it instead.",
+      "kind": "error",
+      "where": "I11 Voice Spark (ADR-0027)"
     },
     "spark.save": {
       "text": "Save it",
@@ -4291,7 +4361,7 @@
       "where": "site W4"
     },
     "site.privacy.l.weather": {
-      "text": "When you make a Plan, your phone asks the US weather service for the forecast near you, to about 11 km.",
+      "text": "When you open Flare or make a Plan, your phone asks the US weather service for the weather near you. It sends a spot rounded to about 11 km.",
       "kind": "prose",
       "where": "site W4",
       "fixed": "ADR-0007"
@@ -4754,6 +4824,11 @@
       "kind": "prose",
       "where": "site W4",
       "fixed": "ADR-0022"
+    },
+    "site.privacy.l.voice": {
+      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it. Say it for a Spark sends up to 10 seconds of your own voice to ElevenLabs once, only after you tap. We keep no audio. ElevenLabs may keep it under its own terms. We never record anyone else or a conversation.",
+      "kind": "prose",
+      "where": "site W4 (ADR-0027)"
     },
     "site.privacy.l.sleep": {
       "text": "Our server runs on a free plan that sleeps when nobody uses it. A Flare that ends while it sleeps is deleted the moment it wakes, not within 5 minutes.",

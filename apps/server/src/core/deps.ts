@@ -4,6 +4,7 @@ import type { Engine, Id, Label, Step } from "@flare/shared/icd/engine";
 import type { CloudTier } from "../cloud.ts";
 import type { Db } from "../db/db.ts";
 import type { HubRelay } from "../hub/relay.ts";
+import type { VoiceTier } from "../voice.ts";
 import type { EventBus } from "./events.ts";
 
 export type Clock = { now(): Date };
@@ -58,6 +59,8 @@ export type Deps = {
   ladderAgent?: boolean;
   /** DigitalOcean cloud tier (ADR-0022); null when no scoped key is configured. */
   cloud?: CloudTier | null;
+  /** Voice Spark via ElevenLabs Scribe (ADR-0027); null without ELEVENLABS_API_KEY. */
+  voice?: VoiceTier | null;
 };
 
 /** The resolved deps every route and INT module gets. */
@@ -72,4 +75,5 @@ export type Ctx = {
   ladderTimeoutMs: number;
   ladderAgent: boolean;
   cloud: CloudTier | null;
+  voice: VoiceTier | null;
 };

@@ -22,6 +22,7 @@
     "site.privacy.l.weather",
     "site.privacy.l.sentry",
     "site.privacy.l.cloud",
+    "site.privacy.l.voice",
     "site.privacy.l.sleep",
     "site.privacy.l.push",
   ];

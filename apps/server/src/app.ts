@@ -17,6 +17,7 @@ import { mountGatherings } from "./routes/gatherings.ts";
 import { mountGroups } from "./routes/groups.ts";
 import { mountPlaces } from "./routes/places.ts";
 import { mountSystem } from "./routes/system.ts";
+import { mountVoice } from "./routes/voice.ts";
 
 /** INT's mountTelegram / mountPreview have this shape (url-map.md). */
 export type Mount = (app: Hono, ctx: Ctx) => void;
@@ -35,6 +36,7 @@ const TYPES: Record<string, string> = {
   ".ico": "image/x-icon",
   ".wav": "audio/wav",
   ".m4a": "audio/mp4",
+  ".mp3": "audio/mpeg", // warm-voice clips (ADR-0027)
   ".txt": "text/plain",
 };
 
@@ -56,6 +58,7 @@ export function buildCtx(d: BaseDeps): Ctx {
     ladderTimeoutMs: d.ladderTimeoutMs ?? 8000,
     ladderAgent: d.ladderAgent ?? false,
     cloud: d.cloud ?? null,
+    voice: d.voice ?? null,
   };
 }
 
@@ -116,6 +119,7 @@ export function createApp(deps: Deps, ctx: Ctx = buildCtx(deps)): Hono {
   mountGatherings(app, ctx, rl);
   mountPlaces(app, ctx, rl);
   mountAi(app, ctx, rl);
+  mountVoice(app, ctx, rl);
   for (const m of deps.mounts ?? []) m(app, ctx);
 
   if (webBuildDir && fs.existsSync(webBuildDir)) {
@@ -164,7 +168,7 @@ export function csp(scriptHashes: string[]): string {
     // api.weather.gov: the host's phone asks for the Plan forecast near it (ADR-0007).
     // /sim/ map tiles (OSM raster, Simulation page only); weather for Plans and Home.
     "connect-src 'self' https://api.weather.gov https://tile.openstreetmap.org",
-    "media-src 'self'",
+    "media-src 'self' blob:", // ADR-0027: warm-voice clips play from this phone's cache as blob: URLs
     "font-src 'self'",
     "worker-src 'self'",
     "manifest-src 'self'",
