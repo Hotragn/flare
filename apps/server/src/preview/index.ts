@@ -119,8 +119,8 @@ export function mountPreview(app: Hono, deps: PreviewDeps): void {
   };
 
   for (const route of ["/g/:id", "/g/:id/"])
+    app.get(route, async (c, next) => {
       const id = c.req.param("id") ?? "";
-      const id = c.req.param("id");
       if (!UUID.test(id)) return next();
       const { html, headers } = await page(id);
       return c.body(html, 200, headers);
