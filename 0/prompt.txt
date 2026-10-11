@@ -1683,3 +1683,12 @@ Then hold.
 <status>completed</status>
 <summary>Background command "Count findings by rule and checkpoint; secrets-only scan" completed (exit code 0)</summary>
 </task-notification>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The usage limit reset at 4:50. Continue where you left off:
+1. Run fresh-eyes round 5 now, fix what it finds, redeploy, and update the post's score and shots.
+2. Then the pre-review pass from my last message: CI and every e2e, live smoke, check-env, a scan-sessions --public dry run with the email count, and docs/post/REVIEW.md with the founder's exact steps.
+3. Then hold for the founder at 9 PM.
+</cross-session-message>
