@@ -452,6 +452,7 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "410": { $ref: "#/components/responses/Gone" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
 
   /api/v1/gatherings/{gatheringId}/text-yes:
     parameters:
@@ -482,6 +483,7 @@ paths:
               schema: { $ref: "#/components/schemas/Gathering" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
         "422": { $ref: "#/components/responses/Unprocessable" }
 
   /api/v1/gatherings/{gatheringId}/fade:
@@ -504,6 +506,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
 
   /api/v1/gatherings/{gatheringId}/arrivals:
     parameters:
@@ -533,6 +536,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
 
   /api/v1/gatherings/{gatheringId}/done:
     parameters:
@@ -552,6 +556,7 @@ paths:
               schema: { $ref: "#/components/schemas/Gathering" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
 
   /api/v1/gatherings/{gatheringId}/cancel:
     parameters:
@@ -571,6 +576,7 @@ paths:
               schema: { $ref: "#/components/schemas/Gathering" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "410": { $ref: "#/components/responses/Gone" }
 
   /api/v1/gatherings/{gatheringId}/live-location:
     parameters:
@@ -959,7 +965,10 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
     Gone:
-      description: The gathering ended; its data is deleted or about to be
+      description: |
+        The gathering ended; its data is deleted or about to be. While the row still exists
+        (up to 5 min after Gone) the body also carries `ended`, so every phone shows the same
+        last screen (SRS-ST-3).
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
