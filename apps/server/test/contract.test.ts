@@ -736,7 +736,8 @@ describe("draftFromVoice", () => {
     const r = await h.call("POST", "/api/v1/drafts/voice", { raw: wav, type: "audio/wav", key: null });
     expect(r.status).toBe(200);
     expect(r.body).toMatchObject({ tier: "rules", alt: "" });
-    const bad = (raw: Buffer<ArrayBuffer>, type = "audio/wav") => h.call("POST", "/api/v1/drafts/voice", { raw, type, key: null });
+    const bad = (raw: Buffer<ArrayBuffer>, type = "audio/wav") =>
+      h.call("POST", "/api/v1/drafts/voice", { raw, type, key: null });
     expect((await bad(Buffer.alloc(200))).status).toBe(400);
     expect((await bad(Buffer.alloc(400_001))).status).toBe(413);
     expect((await bad(wav, "audio/webm")).status).toBe(415);
