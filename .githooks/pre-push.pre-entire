@@ -7,5 +7,6 @@ node scripts/secret-scan.ts || exit 1
 node scripts/scan-sessions.ts || exit 1
 npx biome check . >/dev/null 2>&1 || { echo "pre-push: lint failed (run npm run lint)"; exit 1; }
 npx tsc -p tsconfig.json --noEmit || { echo "pre-push: types failed"; exit 1; }
+(cd apps/web && npx svelte-check --tsconfig ./tsconfig.json --threshold error >/dev/null 2>&1) || { echo "pre-push: web types failed (run npm run check -w apps/web)"; exit 1; }
 npx vitest run --reporter=dot >/dev/null 2>&1 || { echo "pre-push: tests failed (run npx vitest run)"; exit 1; }
-echo "pre-push: secrets, sessions, lint, types and tests ok"
+echo "pre-push: secrets, sessions, lint, types, web types and tests ok"

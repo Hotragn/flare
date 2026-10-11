@@ -7,7 +7,7 @@
 //   later, so the motion is unchanged. The server hashes the final inline script for the CSP
 //   (apps/server/src/app.ts inlineScriptHashes), so the edited script stays allowed.
 // App pages keep SvelteKit's defaults.
-import type { Handle } from "@sveltejs/kit";
+import type { Handle } from "@sveltejs/kit/hooks";
 
 const SITE = /^\/(\(site\)|ai)(\/|$)/;
 const BOOT = /import\(("[^"]*\/entry\/start\.[^"]+\.js")\)\.then\(/;
