@@ -232,6 +232,7 @@ describe("transition properties", () => {
           g.text_yes = 0;
           let answers: Answer[] = [];
           let t = 0;
+          let someoneLeft = false; // forgetting a group may shrink a Lit set below quorum; Lit stays (BR-F-7)
           for (const [e, dt] of events) {
             t += dt;
             const now = at(t);
@@ -243,6 +244,7 @@ describe("transition properties", () => {
             expect(answers).toEqual(aCopy);
             expect(engine.transition(g, answers, ev, now)).toEqual(r); // INV-1 determinism
             if (!r.ok) continue;
+            if (ev.type === "member_left") someoneLeft = true;
             const n = r.gathering;
             expect(ORDER[n.state]).toBeGreaterThanOrEqual(ORDER[g.state]); // INV-6 BR-F-7
             expect(n.version).toBeGreaterThanOrEqual(g.version); // INV-7
@@ -256,7 +258,7 @@ describe("transition properties", () => {
               expect(after - before).toBeGreaterThanOrEqual(0);
               expect(after - before).toBeLessThanOrEqual(1);
             }
-            if (n.state === "lit")
+            if (n.state === "lit" && !someoneLeft)
               expect(n.chosen_set.length + n.text_yes).toBeGreaterThanOrEqual(
                 n.kind === "plan" ? 2 : Math.min(n.quorum, 2),
               );

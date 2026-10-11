@@ -21,11 +21,28 @@ export const JobHeader = z.object({
   mime: z.literal("image/jpeg"),
 });
 
+/** ICR-BE-1: Plan ladder job (asyncapi `ladderJob`). Text only, 8 s budget. */
+export const LadderJob = z.object({
+  type: z.literal("job"),
+  id: z.string().uuid(),
+  kind: z.literal("ladder-draft"),
+  ask: z.string().max(80),
+  total_minutes: z.number().int().min(40).max(600),
+  weather: z.object({ rain_likely: z.boolean(), temp_f: z.number().int() }).optional(),
+});
+
+export const LadderStep = z.object({
+  step: z.number().int().min(1).max(4),
+  label: z.string(),
+  minutes: z.number().int(),
+});
+
 export const JobResult = z.object({
   type: z.literal("result"),
   id: z.string().uuid(),
   ok: z.boolean(),
   draft: z.object({ invite: z.string().min(1), alt: z.string().min(1) }).optional(),
+  ladder: z.array(LadderStep).length(4).optional(), // ICR-BE-1
   error: z.enum(["model_unavailable", "unusable_answer", "timeout", "bad_image"]).optional(),
   ms: z.number().int().nonnegative(),
   model: z.string(),
@@ -36,8 +53,13 @@ export const Pong = z.object({ type: z.literal("pong"), t: z.number() });
 
 export const FromHub = z.discriminatedUnion("type", [HelloFromHub, JobResult, Pong]);
 export const ToHub = z.discriminatedUnion("type", [JobHeader, Ping]);
+/** ICR-BE-1: everything the server may send once the hub handles ladder jobs. A hub on
+ * plain ToHub ignores ladder jobs, and the server falls back to the template after 8 s. */
+export const ToHubV11 = z.union([JobHeader, LadderJob, Ping]);
 
 export type JobHeaderT = z.infer<typeof JobHeader>;
 export type JobResultT = z.infer<typeof JobResult>;
 export type FromHubT = z.infer<typeof FromHub>;
 export type ToHubT = z.infer<typeof ToHub>;
+export type LadderJobT = z.infer<typeof LadderJob>;
+export type ToHubV11T = z.infer<typeof ToHubV11>;

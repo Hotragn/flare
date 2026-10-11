@@ -7,8 +7,8 @@ import { FromHub, HUB_PROTOCOL, type JobHeaderT, type JobResultT } from "@flare/
 import type { WebSocket } from "ws";
 import { log } from "../log.ts";
 
-/** A result plus the raw `ladder` array, which the shared JobResult schema does not list yet. */
-export type RelayResult = JobResultT & { ladder?: unknown };
+/** A parsed hub result; `ladder` is validated by the shared schema (ICR-BE-1). */
+export type RelayResult = JobResultT;
 type Pending = { resolve: (r: RelayResult | null) => void; timer: NodeJS.Timeout };
 
 export function secretMatches(given: string | undefined, expected: string): boolean {
@@ -80,8 +80,7 @@ export class HubRelay {
         if (!p) return;
         clearTimeout(p.timer);
         this.pending.delete(m.id);
-        const raw = msg as { ladder?: unknown };
-        p.resolve(raw.ladder === undefined ? m : { ...m, ladder: raw.ladder });
+        p.resolve(m);
       }
     });
     ws.on("close", () => {
