@@ -1,8 +1,8 @@
-<!-- How it works (W2 and W3 in full), with the Gemma attribution (docs/ml/model-selection.md). -->
+<!-- How it works in full: the real screens step by step (fresh-eyes #18), the shrink rule (W3), and the Gemma attribution (docs/ml/model-selection.md). -->
 <script lang="ts">
   import { t } from "#lib/copy/index.ts";
   import Seo from "../Seo.svelte";
-  import Steps from "../Steps.svelte";
+  import Walkthrough from "../Walkthrough.svelte";
   import Shrink from "../Shrink.svelte";
   import { reveal } from "../reveal.ts";
 
@@ -14,7 +14,7 @@
 <Seo path="/how/" />
 
 <section class="band">
-  <Steps heading="h1" />
+  <Walkthrough />
 </section>
 
 <section class="band alt" use:reveal>

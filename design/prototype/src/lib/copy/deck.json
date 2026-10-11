@@ -3864,6 +3864,86 @@
       "kind": "title",
       "where": "site W2"
     },
+    "site.walk.title": {
+      "text": "On a phone, step by step",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.lead": {
+      "text": "These are the real screens, from the demo.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.send.t": {
+      "text": "You send a photo",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.send.b": {
+      "text": "Snap where you are. Gemma writes a short invite. Pick how many need to come.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.friend.t": {
+      "text": "Friends tap I'm in",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.friend.b": {
+      "text": "They see the photo, the spot and the walk time. A yes is private.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.count.t": {
+      "text": "You see a count",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.count.b": {
+      "text": "Never names. It lights only when enough say yes.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.lit.t": {
+      "text": "Too few? It shrinks",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.lit.b": {
+      "text": "After 30 minutes it offers a 15 minute plan at a nearby bench.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.find.t": {
+      "text": "Find each other",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.find.b": {
+      "text": "A compass points to the spot, with sound and buzz if you can't look.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.after.t": {
+      "text": "Then it's gone",
+      "kind": "title",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.after.b": {
+      "text": "You see how long you were outside. The Flare deletes itself.",
+      "kind": "prose",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.try": {
+      "text": "Try the demo",
+      "kind": "button",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
+    "site.walk.alt": {
+      "text": "The {step} screen in the Flare demo",
+      "kind": "aria",
+      "where": "W2 /how/ walkthrough (fresh-eyes #18)"
+    },
     "site.how.s1.title": {
       "text": "Snap where you are",
       "kind": "title",

@@ -15,6 +15,7 @@ const SKIP = [
   /^\/scenery\//,
   /^\/scenic\//,
   /^\/sim\//,
+  /^\/site\/how\//, // the /how/ walkthrough screens, lazy on that page
   /^\/splash\//,
   /^\/check\//,
   /^\/icons\/icon-(1024|384|256)\.png$/,
