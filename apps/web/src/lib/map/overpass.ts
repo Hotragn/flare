@@ -19,6 +19,7 @@ export type OverpassElement = {
   geometry?: (OverpassGeom | null)[];
   members?: { type: string; ref: number; role: string; geometry?: (OverpassGeom | null)[] }[];
   tags?: Record<string, string>;
+  nodes?: number[];
 };
 export type OverpassResult = {
   osm3s?: { timestamp_osm_base?: string; copyright?: string };
@@ -65,6 +66,26 @@ out tags center;
   way(${r})["highway"~"^(trunk|primary|secondary|tertiary|unclassified|residential|living_street|pedestrian|footway|path|cycleway)$"]["name"];
 );
 out tags geom;`;
+}
+
+/** Highway classes a person can walk on. Motorways and trunk roads are left out. */
+export const WALK_CLASSES =
+  "footway|path|pedestrian|living_street|residential|unclassified|tertiary|secondary|primary|service|cycleway|steps|track";
+
+/**
+ * Query 3 (rest loops only): the walking network with node ids, so the phone can route.
+ * Private and no-access ways are dropped unless foot access is allowed (SRS-REST-2).
+ */
+export function pathsQuery(a: Area): string {
+  const r = around(a);
+  return `[out:json][timeout:120];
+(
+  way(${r})["highway"~"^(${WALK_CLASSES})$"]["access"!~"^(private|no)$"]["foot"!~"^(no|private)$"]["area"!="yes"];
+  way(${r})["highway"~"^(${WALK_CLASSES})$"]["foot"~"^(yes|designated|permissive)$"];
+);
+out body qt;
+>;
+out skel qt;`;
 }
 
 export type FetchLike = (input: string, init: RequestInit) => Promise<Response>;

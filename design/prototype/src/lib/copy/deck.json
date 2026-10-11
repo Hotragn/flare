@@ -2347,6 +2347,36 @@
       "kind": "message",
       "where": "card and audio"
     },
+    "loop.path.unnamed": {
+      "text": "the path",
+      "kind": "fragment",
+      "where": "O5 turns (unnamed path)",
+      "owner": "map:loop"
+    },
+    "loop.landmark.corner": {
+      "text": "the corner",
+      "kind": "fragment",
+      "where": "O5 turns (unnamed turn)",
+      "owner": "map:loop"
+    },
+    "loop.landmark.bench": {
+      "text": "the bench",
+      "kind": "fragment",
+      "where": "O5 turns (passing a bench)",
+      "owner": "map:loop"
+    },
+    "loop.side.left": {
+      "text": "left",
+      "kind": "fragment",
+      "where": "O5 turns (restroom, water)",
+      "owner": "map:loop"
+    },
+    "loop.side.right": {
+      "text": "right",
+      "kind": "fragment",
+      "where": "O5 turns (restroom, water)",
+      "owner": "map:loop"
+    },
     "map.title": {
       "text": "Fix the map",
       "kind": "title",

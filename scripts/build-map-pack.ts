@@ -6,6 +6,7 @@
 //   node scripts/build-map-pack.ts                      # Fairlane (TEST_AREA), fetch and write
 //   node scripts/build-map-pack.ts --raw DIR             # also keep the raw responses in DIR
 //   node scripts/build-map-pack.ts --from-raw DIR        # rebuild from saved responses, no network
+//   node scripts/build-map-pack.ts --paths [--raw DIR]   # walking network for rest loops (query 3)
 //   node scripts/build-map-pack.ts --area NAME --lat N --lon N --radius M --out FILE
 import fs from "node:fs";
 import os from "node:os";
@@ -16,11 +17,13 @@ import {
   extraQuery,
   MIN_SPACING_MS,
   type OverpassResult,
+  pathsQuery,
   pinnedQuery,
   runQuery,
   USER_AGENT,
 } from "../apps/web/src/lib/map/overpass.ts";
 import { buildPack, countByKind } from "../apps/web/src/lib/map/pack.ts";
+import { buildPaths } from "../apps/web/src/lib/map/paths.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -50,6 +53,27 @@ async function main() {
   const fromRaw = arg("from-raw");
   const rawDir = arg("raw") ?? fromRaw ?? path.join(os.tmpdir(), "flare-map-raw");
   if (![lat, lon, radius_m].every(Number.isFinite)) throw new Error("lat, lon and radius must be numbers");
+
+  if (process.argv.includes("--paths")) {
+    // Query 3 only: the walking network for rest loops, written to {area}-paths.json.
+    let result: OverpassResult;
+    const rawFile = path.join(rawDir, `${area}-paths.json`);
+    if (fromRaw) result = JSON.parse(fs.readFileSync(rawFile, "utf8"));
+    else {
+      console.log("query 3 (walking network) to overpass-api.de");
+      result = await runQuery(pathsQuery({ lat, lon, radius_m }), { userAgent: USER_AGENT });
+      fs.mkdirSync(rawDir, { recursive: true });
+      fs.writeFileSync(rawFile, JSON.stringify(result));
+    }
+    const paths = buildPaths({ area, center: [lat, lon], radius_m, result });
+    const pOut = arg("out") ?? path.join(ROOT, "apps/web/static/maps", `${area}-paths.json`);
+    const json = JSON.stringify(paths);
+    fs.writeFileSync(pOut, `${json}\n`);
+    const s = sizes(json);
+    console.log(`wrote ${path.relative(ROOT, pOut)}: ${paths.nodes.length / 2} nodes, ${paths.ways.length} ways`);
+    console.log(`size: ${s.raw} B raw, ${s.gzip} B gzip, ${s.brotli} B brotli`);
+    return;
+  }
 
   let pinned: OverpassResult;
   let extra: OverpassResult;

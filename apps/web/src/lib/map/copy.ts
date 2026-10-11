@@ -31,6 +31,11 @@ export const MAP_COPY = {
   "loop.turn.restroom": "Restroom on your {side}.",
   "loop.turn.water": "Water on your {side}.",
   "loop.turn.end": "Back at {place}. That's the loop.",
+  "loop.path.unnamed": "the path",
+  "loop.landmark.corner": "the corner",
+  "loop.landmark.bench": "the bench",
+  "loop.side.left": "left",
+  "loop.side.right": "right",
   "map.noteText":
     "Missing {thing} here, seen {date}. Suggested tags: {tags}. Drafted with Flare and checked by a person on site.",
   "site.foot.osm": "Map data © OpenStreetMap contributors.",
