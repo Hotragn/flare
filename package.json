@@ -41,7 +41,8 @@
     "eval": "node evals/harness/run.ts",
     "telegram:webhook": "node scripts/telegram-webhook.ts",
     "telegram:status": "node scripts/telegram-status.ts",
-    "deploy:render": "node scripts/deploy-render.ts"
+    "deploy:render": "node scripts/deploy-render.ts",
+    "smoke": "node scripts/smoke.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",

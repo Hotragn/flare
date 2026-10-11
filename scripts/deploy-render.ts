@@ -31,7 +31,7 @@ const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 export type Step = { what: string; method: "GET" | "POST" | "PUT"; path: string };
 export type DeployPlan = {
   repo: string;
-  env: { key: string; status: "set" | "missing" | "from Render" }[];
+  env: { key: string; status: "set" | "missing" | "from Render" | "not sent: account token" }[];
   steps: Step[];
   problems: string[];
 };
@@ -51,16 +51,19 @@ const httpsBase = (vars: Vars) => (vars.PUBLIC_BASE_URL?.startsWith("https://") 
 
 export function deployPlan(vars: Vars, repo: string): DeployPlan {
   const problems = REQUIRED.filter((k) => !vars[k]).map((k) => `${k} is missing`);
-  for (const k of WEB_KEYS) {
-    const t = accountToken(vars[k]);
-    if (t) problems.push(`${k} holds ${t}; refusing to send it to Render`);
-  }
+  // An account-wide token in a narrow slot is never sent; that feature stays off on Render.
   if (!repo.startsWith("https://github.com/")) problems.push("git remote origin is not a GitHub repo");
   return {
     repo,
     env: WEB_KEYS.map((key) => ({
       key,
-      status: key === "PUBLIC_BASE_URL" && !httpsBase(vars) ? "from Render" : vars[key] ? "set" : "missing",
+      status: accountToken(vars[key])
+        ? "not sent: account token"
+        : key === "PUBLIC_BASE_URL" && !httpsBase(vars)
+          ? "from Render"
+          : vars[key]
+            ? "set"
+            : "missing",
     })),
     steps: [
       { what: "find the workspace (owner)", method: "GET", path: "/v1/owners" },
@@ -131,11 +134,6 @@ type Listed<K extends string, T> = Record<K, T>[];
 
 /** Runs the plan. Find-or-create by name, so a second run updates instead of duplicating. */
 export async function deploy(vars: Vars, repo: string, base = "https://api.render.com"): Promise<string[]> {
-  // Never ship an account-wide token to the server host, even if the plan step was skipped.
-  for (const k of WEB_KEYS) {
-    const t = accountToken(vars[k]);
-    if (t) throw new Error(`${k} holds ${t}; refusing to send it to Render`);
-  }
   const api = renderApi(vars.RENDER_KEY as string, base);
   const done: string[] = [];
   const owners = await api<Listed<"owner", { id: string }>>("GET", "/v1/owners?limit=1");
@@ -159,7 +157,8 @@ export async function deploy(vars: Vars, repo: string, base = "https://api.rende
   if (!conn.internalConnectionString) throw new Error("Postgres has no connection string yet; run again in a minute");
 
   const env = [
-    ...WEB_KEYS.filter((k) => vars[k]).map((key) => ({ key, value: vars[key] as string })),
+    // Never ship an account-wide token to the server host (scripts/../token-guard.ts).
+    ...WEB_KEYS.filter((k) => vars[k] && !accountToken(vars[k])).map((key) => ({ key, value: vars[key] as string })),
     { key: "DATABASE_URL", value: conn.internalConnectionString },
     { key: "NODE_VERSION", value: NODE_VERSION },
   ];

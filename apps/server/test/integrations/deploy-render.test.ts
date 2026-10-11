@@ -109,6 +109,16 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
       ].sort(),
     );
   });
+  it("never sends an account-wide token to Render, and says which key was left out", async () => {
+    reqs.length = 0;
+    const pat = ["dop", "v1", "z".repeat(64)].join("_");
+    const vars = { ...VARS, DO_MODEL_ACCESS_KEY: pat, SENTRY_DSN: "https://abc123@o1.ingest.sentry.io/2" };
+    expect(formatPlan(deployPlan(vars, REPO))).toContain("DO_MODEL_ACCESS_KEY: not sent: account token");
+    await deploy(vars, REPO, base);
+    const sent = JSON.stringify(reqs.map((r) => r.body));
+    expect(sent).not.toContain(pat);
+    expect(sent).toContain("SENTRY_DSN");
+  });
   it("a local http PUBLIC_BASE_URL is replaced by the service's onrender.com URL", async () => {
     reqs.length = 0;
     const done = await deploy({ ...VARS, PUBLIC_BASE_URL: "http://localhost:8787" }, REPO, base);
