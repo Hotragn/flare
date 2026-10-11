@@ -17,7 +17,16 @@
     src = "",
     height = 420,
     tilt = -1.2,
-  }: { state?: "blank" | "developing" | "developed"; scene?: string; src?: string; height?: number; tilt?: number } = $props();
+    sample = false,
+  }: {
+    state?: "blank" | "developing" | "developed";
+    scene?: string;
+    src?: string;
+    height?: number;
+    tilt?: number;
+    /** Catalog only: the illustrated stand-in photo. The app always passes a real photo. */
+    sample?: boolean;
+  } = $props();
 </script>
 
 <figure class="print {state}" style:--tilt="{tilt}deg" style:height="{height}px">
@@ -25,7 +34,7 @@
     <div class="image photo-art" role="img" aria-label={scene || t("invite.photoFallback")}>
       {#if src}
         <img {src} alt="" />
-      {:else}
+      {:else if sample}
         <SampleScene />
       {/if}
       {#if state === "developing"}

@@ -20,10 +20,11 @@ function mark(kind: "page" | "step") {
 /** For SvelteKit onNavigate: resolves when the browser has captured the old page. */
 export function pageTransition(complete: () => Promise<void>): Promise<void> | void {
   const d = document as VTDoc;
-  if (!d.startViewTransition) return;
+  const start = d.startViewTransition?.bind(d);
+  if (!start) return;
   const done = mark("page");
   return new Promise((resolve) => {
-    const vt = d.startViewTransition!(async () => {
+    const vt = start(async () => {
       resolve();
       await complete();
     });

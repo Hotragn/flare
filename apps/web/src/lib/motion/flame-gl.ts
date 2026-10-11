@@ -69,7 +69,8 @@ function blur(ch: Float32Array, w: number, r: number, passes: number) {
 function draw(size: number, paint: (x: CanvasRenderingContext2D) => void) {
   const c = document.createElement("canvas");
   c.width = c.height = size;
-  const x = c.getContext("2d", { willReadFrequently: true })!;
+  const x = c.getContext("2d", { willReadFrequently: true });
+  if (!x) throw new Error("2d canvas");
   const k = size / 140;
   x.setTransform(k, 0, 0, k, 20 * k, 30 * k);
   paint(x);
@@ -153,13 +154,15 @@ function buildMask() {
 // ---------- GL setup ----------
 function compile(gl: WebGLRenderingContext) {
   const sh = (type: number, src: string) => {
-    const s = gl.createShader(type)!;
+    const s = gl.createShader(type);
+    if (!s) throw new Error("shader");
     gl.shaderSource(s, src);
     gl.compileShader(s);
     if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? "shader");
     return s;
   };
-  const p = gl.createProgram()!;
+  const p = gl.createProgram();
+  if (!p) throw new Error("program");
   gl.attachShader(p, sh(gl.VERTEX_SHADER, VERT));
   gl.attachShader(p, sh(gl.FRAGMENT_SHADER, FRAG));
   gl.linkProgram(p);

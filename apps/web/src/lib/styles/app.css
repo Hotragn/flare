@@ -1,4 +1,5 @@
-@import "../generated/tokens.css";
+/* Design tokens straight from design/system (ICD-13), never copied. */
+@import "../../../../../design/system/tokens.css";
 @import "@fontsource/fraunces/400.css";
 @import "@fontsource/fraunces/600.css";
 @import "@fontsource/atkinson-hyperlegible-next/400.css";
@@ -27,7 +28,7 @@ body {
 /* Respect iOS Dynamic Type when the app runs on an iPhone. */
 @supports (font: -apple-system-body) {
   html.dynamic-type {
-    /* biome-ignore lint/a11y/useGenericFontNames: iOS Dynamic Type system font keyword */
+    /* biome-ignore lint/a11y/useGenericFontNames: a system text-style keyword (Dynamic Type), not a family. */
     font: -apple-system-body;
   }
 }
@@ -56,7 +57,7 @@ button {
   outline-color: var(--c-dusk-700);
 }
 .visually-hidden {
-  position: absolute !important;
+  position: absolute;
   width: 1px;
   height: 1px;
   margin: -1px;
@@ -145,41 +146,4 @@ button {
   .grain::after {
     display: none;
   }
-}
-
-/* Wireframe mode: same layout, no color or imagery (design/exports/wireframes) */
-[data-wire] {
-  --c-maple-500: #9a9a9a;
-  --c-maple-600: #8a8a8a;
-  --c-maple-700: #6a6a6a;
-  --c-ember-700: #7a7a7a;
-  --c-gold-300: #bdbdbd;
-  --c-gold-400: #b0b0b0;
-  --c-pine-700: #555;
-  --c-pine-500: #777;
-  --bg: #f4f4f4 !important;
-  --surface: #fff !important;
-  --text: #222 !important;
-  --text-muted: #666 !important;
-  --accent-bg: #555 !important;
-  --accent-text: #333 !important;
-  --on-accent: #fff !important;
-  --line: #ddd !important;
-  --lit: #888 !important;
-  --kindling: #999 !important;
-  --ember: #777 !important;
-  --gone: #aaa !important;
-  --positive: #444 !important;
-}
-[data-wire] .t-display,
-[data-wire] .t-title,
-[data-wire] .t-invite {
-  font-family: var(--font-body);
-}
-[data-wire] .photo-art,
-[data-wire] .wire-hide {
-  filter: grayscale(1) contrast(0.4) brightness(1.3);
-}
-[data-wire] .grain::after {
-  display: none;
 }

@@ -71,8 +71,8 @@ try {
   await page.getByRole("button", { name: "Save" }).click();
   await page.getByText("Saved on this phone.").waitFor();
   await page.reload({ waitUntil: "networkidle" });
-  const pressed = await page.getByRole("radio", { name: "200 m" }).getAttribute("aria-checked");
-  check(pressed === "true", "needs survive a reload");
+  const pressed = await page.getByRole("radio", { name: "200 m" }).isChecked();
+  check(pressed, "needs survive a reload");
   check(reqs.length === before, `needs made ${reqs.length - before} server requests`);
   await axe(page, "/app/needs/ filled");
 
