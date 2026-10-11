@@ -141,6 +141,58 @@ try {
     await page.screenshot({ path: path.join(OUT, "e2e-o5-none.png") });
     await ctx.close();
   }
+  // Fix the map (SRS-MAP-1 to -4): pick, check every tag, export; nothing goes to OSM or our API.
+  {
+    const ctx = await browser.newContext({
+      ...phone,
+      permissions: ["geolocation", "clipboard-read", "clipboard-write"],
+      geolocation: { latitude: 42.3196, longitude: -83.2129 },
+      acceptDownloads: true,
+    });
+    const page = await ctx.newPage();
+    const hosts = new Set<string>();
+    page.on("pageerror", (e) => fails.push(`fix-map: ${e.message}`));
+    page.on("request", (r) => {
+      const u = new URL(r.url());
+      if (u.pathname.startsWith("/api/") || u.host !== `localhost:${PORT}`) hosts.add(`${u.host}${u.pathname}`);
+    });
+    await page.goto(`${URL0}/app/fix-map/`);
+    await page.getByRole("radio", { name: "Bench" }).check();
+    await page.getByRole("button", { name: "Check the tags" }).click();
+    const exportNote = page.getByRole("button", { name: "Export note" });
+    await page.getByText("3 tags left to check").waitFor({ timeout: 10_000 });
+    check("fix-map: export waits until every tag is checked (SRS-MAP-2)", await exportNote.isDisabled());
+    await page.getByRole("group", { name: "Review backrest" }).getByRole("button", { name: "Keep" }).click();
+    await page.getByRole("group", { name: "Review material" }).getByRole("button", { name: "Remove" }).click();
+    await page.getByRole("group", { name: "Review seats" }).getByRole("button", { name: "Change" }).click();
+    await page.getByLabel("New value for seats").fill("lots");
+    await page.getByRole("button", { name: "Save" }).click();
+    check("fix-map: a bad value is refused", await page.getByText("That value doesn't fit seats.").isVisible());
+    await page.getByLabel("New value for seats").fill("2");
+    await page.getByRole("button", { name: "Save" }).click();
+    check("fix-map: ready after the last tag", await page.getByText("Ready. You choose where to post it.").isVisible());
+    await exportNote.click();
+    const note = await page.evaluate(() => navigator.clipboard.readText());
+    check(
+      "fix-map: the note has the kept and changed tags only (SRS-MAP-3)",
+      /Missing bench here.*amenity=bench, backrest=yes, seats=2\./s.test(note) &&
+        !note.includes("material") &&
+        /42\.3196, -83\.2129/.test(note),
+    );
+    const [dl] = await Promise.all([
+      page.waitForEvent("download"),
+      page.getByRole("button", { name: "Export .osm file" }).click(),
+    ]);
+    const osm = fs.readFileSync(await dl.path());
+    check(
+      "fix-map: the .osm file has one new node",
+      /<node id="-1"[^>]*>[\s\S]*k="seats" v="2"/.test(osm.toString()),
+      `${osm.length} bytes`,
+    );
+    check("fix-map: no request to OpenStreetMap or our API (SRS-MAP-3)", hosts.size === 0, [...hosts].join(", "));
+    await page.screenshot({ path: path.join(OUT, "e2e-o6-fixmap.png"), fullPage: true });
+    await ctx.close();
+  }
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));
 }

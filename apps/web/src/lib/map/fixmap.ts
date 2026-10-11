@@ -168,3 +168,29 @@ ${tags}
 </osm>
 `;
 }
+
+/**
+ * The usual tags for each thing, as a draft to review when there is no photo drafter (ML5 has
+ * no hub job yet). Every one starts pending, so the person still checks each against the spot.
+ */
+export const STARTER: Record<Thing, Tag[]> = {
+  bench: [
+    { key: "backrest", value: "yes" },
+    { key: "material", value: "wood" },
+    { key: "seats", value: "3" },
+  ],
+  toilets: [
+    { key: "access", value: "yes" },
+    { key: "fee", value: "no" },
+    { key: "wheelchair", value: "yes" },
+  ],
+  drinking_water: [
+    { key: "access", value: "yes" },
+    { key: "wheelchair", value: "yes" },
+  ],
+  steps: [
+    { key: "step_count", value: "5" },
+    { key: "handrail", value: "yes" },
+    { key: "lit", value: "no" },
+  ],
+};

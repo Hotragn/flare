@@ -2616,6 +2616,47 @@
       "where": "O6 export ({thing})",
       "owner": "map:fixmap"
     },
+    "map.pick": {
+      "text": "What's missing here?",
+      "kind": "title",
+      "where": "O6"
+    },
+    "map.start": {
+      "text": "Check the tags",
+      "kind": "button",
+      "where": "O6"
+    },
+    "map.starter": {
+      "text": "These are the usual tags, not read from a photo.",
+      "kind": "hint",
+      "where": "O6"
+    },
+    "map.changeLabel": {
+      "text": "New value for {key}",
+      "kind": "label",
+      "where": "O6",
+      "gradeNote": "{key} is an OSM tag name such as backrest; the label is four plain words."
+    },
+    "map.badValue": {
+      "text": "That value doesn't fit {key}.",
+      "kind": "message",
+      "where": "O6"
+    },
+    "map.save": {
+      "text": "Save",
+      "kind": "button",
+      "where": "O6"
+    },
+    "map.noLocation": {
+      "text": "No location, so no note. Allow it, then try again.",
+      "kind": "message",
+      "where": "O6"
+    },
+    "map.copied": {
+      "text": "Copied. Paste it into an OpenStreetMap note.",
+      "kind": "status",
+      "where": "O6"
+    },
     "ai.title": {
       "text": "AI on this phone",
       "kind": "title",
