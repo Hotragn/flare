@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { countWords, enforce, PHOTO_PROMPT, TEMPLATE_INVITE } from "../../../packages/shared/src/photo.ts";
 import { hasPersonWords } from "../../../packages/shared/src/prompts/guard.ts";
-import { chat, MODEL } from "../ollama.ts";
+import { chat, MODEL, warmImage } from "../ollama.ts";
 import { dataset, labDir, readJson } from "../paths.ts";
 import { latency, type Report } from "../report.ts";
 
@@ -59,6 +59,10 @@ export async function runPhoto(tier: string, limit?: number): Promise<Report> {
   const lab = labDir();
   if (!lab) throw new Error("lab/data/photos not found; set FLARE_LAB_DIR");
   const manifest = readJson<Manifest>(join(lab, "data", "photos", "photos.json"));
+  const w0 = manifest.find((x) => x.id === items[0]?.id);
+  const warmMs = w0
+    ? await warmImage(PHOTO_PROMPT.system, readFileSync(join(lab, "data", "photos", w0.file)).toString("base64"))
+    : 0;
   const rows: Record<string, unknown>[] = [];
   const ms: number[] = [];
   let usable = 0;
@@ -123,6 +127,7 @@ export async function runPhoto(tier: string, limit?: number): Promise<Report> {
       { name: "Median latency", target: "≤ 4000 ms", value: `${lat.median_ms} ms`, pass: lat.median_ms <= 4000 },
     ],
     notes: [
+      `Image warm-up before timing: ${warmMs} ms (not counted).`,
       `Usable on the first try: ${firstTry}/${n}. Raw answers with person words before the guard: ${personRaw}. Over budget: ${overBudget}.`,
       "Key fact = the scene mentions at least one item from evals/datasets/photos.json expect_any (a proxy for the lab's hand grade).",
       "Suspect names are capitalised words outside the sign text in the photo; each one is reviewed by hand in docs/ml/eval-results.md.",

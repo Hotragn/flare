@@ -13,8 +13,6 @@
       "pass": true
     }
   ],
-  "notes": [
-    "The floor is the manual picker built from OSM_ALLOW; it cannot produce an off-list key."
-  ],
+  "notes": ["The floor is the manual picker built from OSM_ALLOW; it cannot produce an off-list key."],
   "items": []
 }

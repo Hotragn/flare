@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { hasPersonWords } from "../../../packages/shared/src/prompts/guard.ts";
 import { enforceOsmTags, OSM_PROMPT, OsmTags } from "../../../packages/shared/src/prompts/osm-tags.ts";
-import { chat, MODEL } from "../ollama.ts";
+import { chat, MODEL, warmImage } from "../ollama.ts";
 import { dataset, labDir, readJson } from "../paths.ts";
 import { latency, type Report } from "../report.ts";
 
@@ -31,6 +31,10 @@ export async function runOsmTags(tier: string, limit?: number): Promise<Report> 
   const lab = labDir();
   if (!lab) throw new Error("lab/data/photos not found; set FLARE_LAB_DIR");
   const manifest = readJson<{ id: string; file: string; use: boolean }[]>(join(lab, "data", "photos", "photos.json"));
+  const w0 = manifest.find((x) => x.id === items[0]?.id);
+  const warmMs = w0
+    ? await warmImage(OSM_PROMPT.system, readFileSync(join(lab, "data", "photos", w0.file)).toString("base64"))
+    : 0;
   const rows: Record<string, unknown>[] = [];
   const ms: number[] = [];
   let parsed = 0;
@@ -82,6 +86,7 @@ export async function runOsmTags(tier: string, limit?: number): Promise<Report> 
       { name: "p95 latency", target: "≤ 8000 ms", value: `${lat.p95_ms} ms`, pass: lat.p95_ms <= 8000 },
     ],
     notes: [
+      `Image warm-up before timing: ${warmMs} ms (not counted).`,
       `Answers with at least one off-list or bad-value key before the guard: ${rawOff}/${n} (dropped, never shown).`,
     ],
     items: rows,

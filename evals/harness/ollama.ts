@@ -54,3 +54,15 @@ export async function warm(): Promise<number> {
   const r = await chat({ system: "Reply with {}", user: "{}", numPredict: 4, timeoutMs: 120_000 });
   return r.ms;
 }
+
+/**
+ * Vision jobs need an image warm-up too: after a text-only warm-up the first 3 photo calls
+ * took 12 to 13 s against 3 to 4 s for the rest (eval run 2026-10-10, failure mode F16).
+ */
+const warmedImage = { done: false };
+export async function warmImage(system: string, imageBase64: string): Promise<number> {
+  if (warmedImage.done) return 0;
+  const r = await chat({ system, user: "{}", imageBase64, numPredict: 4, timeoutMs: 120_000 });
+  warmedImage.done = true;
+  return r.ms;
+}

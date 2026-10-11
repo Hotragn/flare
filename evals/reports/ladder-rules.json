@@ -13,9 +13,7 @@
       "pass": true
     }
   ],
-  "notes": [
-    "Template minutes: total × 1, 0.5, 0.25, 0.125 rounded to 5; labels from copy keys ladder.template.*."
-  ],
+  "notes": ["Template minutes: total × 1, 0.5, 0.25, 0.125 rounded to 5; labels from copy keys ladder.template.*."],
   "items": [
     {
       "id": "L01",
