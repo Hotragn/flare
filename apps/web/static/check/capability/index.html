@@ -334,14 +334,15 @@ T.wake = async () => {
 // ---------- Flare features: mirrors apps/web/src/lib/capabilities detect() (ICD-8) ----------
 // Feature checks only; the user agent is shown in the Device card for the report, never used here.
 async function icd8() {
+  // storage.persisted() is async, so it is read first and the passive checks are timed alone (ICD-8: under 20 ms).
+  let persisted = null;
+  try { persisted = (await navigator.storage?.persisted?.()) ?? null; } catch { persisted = null; }
   const t0 = performance.now();
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   const input = document.createElement('input'); input.type = 'checkbox'; input.setAttribute('switch', '');
   const DOE = window.DeviceOrientationEvent;
   let shareFiles = false;
   try { shareFiles = !!navigator.canShare?.({ files: [new File([new Uint8Array(1)], 'f.jpg', { type: 'image/jpeg' })] }); } catch { shareFiles = false; }
-  let persisted = null;
-  try { persisted = (await navigator.storage?.persisted?.()) ?? null; } catch { persisted = null; }
   const c = {
     secureContext: isSecureContext, standalone,
     camera: navigator.mediaDevices?.getUserMedia ? 'live' : 'file-only',
