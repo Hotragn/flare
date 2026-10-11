@@ -8,26 +8,45 @@ Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". 
 
 ## Run it yourself
 
-Needs Node 24.21.0 or later ([.nvmrc](.nvmrc)), and for the photo AI a Mac (or any machine with a GPU) running [Ollama](https://ollama.com).
+You need Node 24.21.0 or later ([.nvmrc](.nvmrc)). For the photo AI you also need a Mac (or any machine with a GPU) running [Ollama](https://ollama.com). Everything else is optional: `DATABASE_URL=pglite:memory` gives an in-memory Postgres, and without the hub the app falls back to typed words.
+
+**1. The server and the app**
 
 ```bash
-git clone https://github.com/Hotragn/flare-outside && cd flare-outside
+git clone https://github.com/Hotragn/flare && cd flare
 npm ci
-cp .env.example .env        # then fill in HUB_SECRET (any 32+ random characters)
-npm run check-env           # reports set or missing, never values
+cp .env.example .env        # set HUB_SECRET to any 32+ random characters
+npm run check-env           # lists every setting as set, missing or default; never prints values
 npm run build && npm start  # server and web app on http://localhost:8787
 ```
 
-The AI hub, in a second terminal on the machine with Ollama:
+Set `DATABASE_URL=pglite:memory` in `.env` for a quick local run (an in-memory Postgres, wiped on restart), or `postgres://…` for a real one. With it empty the server starts, but Flares can't be saved.
+
+**2. The AI hub** (second terminal, on the machine with Ollama)
 
 ```bash
 ollama pull gemma4:e4b-it-q4_K_M
 npm run hub
 ```
 
-Then open http://localhost:8787/hello/, pick a photo, and six words come back from the model in about 3.5 s. `npm run e2e:hello` does the same with Chrome and checks the answer.
+The hub dials out to the server over a WebSocket, so nothing on that machine is exposed. Check it at http://localhost:8787/hello/: pick a photo, and six words come back in about 3.5 s. `npm run e2e:hello` does the same in headless Chrome.
 
-Postgres is optional for local runs (`DATABASE_URL`); tests use an in-memory Postgres (PGlite).
+**3. A phone**
+
+Open `http://localhost:8787/app/` in Chrome on the same computer, or on a phone at `http://<your-computer's-IP>:8787/app/` (set `PUBLIC_BASE_URL` to that address so links work). iPhones only allow the live camera on HTTPS, so on plain HTTP tap **Pick a photo** instead. For the full phone experience (camera, compass, install, notifications), deploy it: [deploy runbook](docs/engineering/06-deploy-runbook.md).
+
+### Optional settings
+
+`npm run check-env -- server hub bot` shows each one. Each feature is off when its settings are empty:
+
+| Feature | Settings | Docs |
+| --- | --- | --- |
+| Lit and Ember notifications | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | [push](docs/integrations/push.md) |
+| Telegram groups | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_ALLOWED_CHAT_IDS`, `TELEGRAM_WEBHOOK_SECRET` | [Telegram contract](docs/architecture/contracts/telegram.md), [ADR-0023](docs/architecture/adr/0023-telegram-card-and-photo-opt-in.md) |
+| Cloud fallback when the hub is off | `DO_MODEL_ACCESS_KEY` (a scoped model key, not an account token) | [ADR-0022](docs/architecture/adr/0022-digitalocean-cloud-tier.md) |
+| AI tracing | `SENTRY_DSN` (a project DSN, not an auth token) | [ADR-0021](docs/architecture/adr/0021-sentry-agent-tracing.md) |
+
+`check-env` refuses account-wide tokens in these fields, and the deploy script never sends them.
 
 ## Scripts
 
@@ -37,8 +56,11 @@ Postgres is optional for local runs (`DATABASE_URL`); tests use an in-memory Pos
 | `npm test` | Vitest, all workspaces |
 | `npm run contracts` | Lints [openapi.yaml](docs/architecture/contracts/openapi.yaml), parses [asyncapi.yaml](docs/architecture/contracts/asyncapi.yaml), checks the server's routes against them |
 | `npm run e2e:hello` | Phone page, server, hub relay, Ollama and back, in headless Chrome |
+| `npm run e2e:field`, `e2e:sparks`, `e2e:loop`, `e2e:telegram`, `e2e:pwa` | The field-test paths on the real server and engine, in Chrome |
+| `npm run eval -- <task>` | Model evals (photo, ladder, conditions, rest-loop, osm-tags); reports in [evals/reports](evals/reports) |
+| `npm run device-check` | The HTTPS kit for checking real iPhones ([checklist](docs/engineering/05-device-checklist.md)) |
 | `npm run check-env [-- server hub bot]` | Which settings are set or missing, per app |
-| `npm run hooks` | Installs the pre-push secret scan |
+| `npm run hooks` | Installs the pre-push gate: secret scan, session scan, lint, types, tests (about 26 s) |
 
 ## Layout
 
@@ -48,7 +70,9 @@ Postgres is optional for local runs (`DATABASE_URL`); tests use an in-memory Pos
 | [apps/hub](apps/hub) | Runs next to Ollama, dials out to the server, drafts six words from a photo in memory |
 | [apps/web](apps/web) | SvelteKit app: the phone app and the link page |
 | [packages/shared](packages/shared) | Code both sides use: photo prompt and `enforce()`, short codes, plain-text SMS forms, hub protocol |
-| [docs/](docs) | Research, product, requirements, brand, design, content, [architecture](docs/architecture/README.md), handoffs |
+| [packages/engine](packages/engine) | The core engine: quorum, conditions, Ember, the smaller plan |
+| [evals](evals) | Datasets, harness and reports for every model task |
+| [docs/](docs) | Everything else, indexed in [docs/README.md](docs/README.md) |
 | [design/prototype](design/prototype) | Clickable prototype of all 33 screens |
 
 ## Privacy in one paragraph
