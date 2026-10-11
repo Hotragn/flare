@@ -1,6 +1,7 @@
-<!-- O6 Fix the map (SRS-MAP-1 to -4): pick what's missing, check every tag, export a note or an
-     .osm file. Nothing is sent to OpenStreetMap or to our server; the person posts the export
-     themselves. With no photo drafter yet (ML5), the draft is the usual tags for the thing. -->
+<!-- O6 Fix the map (SRS-MAP-1 to -4): pick what's missing, take a photo, our laptop drafts the
+     tags (ICR-ML5, POST /api/v1/drafts/tags), the person checks every tag, then exports a note or
+     an .osm file. The photo is zeroed after the draft and is never in an export. Nothing is sent
+     to OpenStreetMap; the person posts the export themselves. No photo or no hub: the usual tags. -->
 <script lang="ts">
   import Screen from "#lib/components/Screen.svelte";
   import Button from "#lib/components/Button.svelte";
@@ -8,6 +9,7 @@
   import TextField from "#lib/components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
   import { askLocation } from "#lib/permissions/index.ts";
+  import { toJpeg768 } from "#lib/photo.ts";
   import { fixmap } from "#lib/map/index.ts";
   import type { AllowKey, Review, Thing } from "#lib/map/fixmap.ts";
   import { back } from "../back.ts";
@@ -20,12 +22,28 @@
   let error = $state("");
   let status = $state("");
   let locating = $state(false);
+  let drafting = $state(false);
+  let source = $state<"photo" | "none" | "failed">("none");
+  let input: HTMLInputElement | undefined = $state();
   let review = $state<Review | null>(null);
   let editing = $state<AllowKey | null>(null);
   let draft = $state("");
   let fieldError = $state("");
 
-  async function start() {
+  /** Ask the hub for tags. Empty on any failure; the thing's own amenity is the person's choice. */
+  async function ask(jpeg: Uint8Array): Promise<unknown> {
+    const res = await fetch("/api/v1/drafts/tags", {
+      method: "POST",
+      headers: { "content-type": "image/jpeg" },
+      body: jpeg as BodyInit,
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    const body = (await res.json()) as { tags?: Record<string, string> };
+    const { amenity: _, ...rest } = body.tags ?? {};
+    return rest;
+  }
+
+  async function start(photo: File | null) {
     error = "";
     locating = true;
     const at = await askLocation({ timeoutMs: 15_000 });
@@ -35,7 +53,23 @@
       return;
     }
     const th = thing as Thing;
-    review = fixmap.startReview(th, { lat: at.coords.lat, lon: at.coords.lon }, fixmap.STARTER[th]);
+    let tags = fixmap.STARTER[th];
+    source = "none";
+    if (photo) {
+      drafting = true;
+      const jpeg = new Uint8Array(await (await toJpeg768(photo).catch(() => photo)).arrayBuffer());
+      const drafted = await fixmap.draftFromPhoto(jpeg, ask); // zero-fills jpeg (SRS-MAP-4)
+      drafting = false;
+      source = drafted.length ? "photo" : "failed";
+      if (drafted.length) tags = drafted;
+    }
+    review = fixmap.startReview(th, { lat: at.coords.lat, lon: at.coords.lon }, tags);
+  }
+
+  function picked(e: Event) {
+    const f = (e.currentTarget as HTMLInputElement).files?.[0] ?? null;
+    (e.currentTarget as HTMLInputElement).value = "";
+    if (f) start(f);
   }
 
   function edit(key: AllowKey, value: string) {
@@ -85,9 +119,16 @@
 <Screen heading={t("map.title")} title={t("map.title")} onclose={back}>
   {#if !review}
     <Choice label={t("map.pick")} bind:value={thing} {options} />
+    <p class="t-small t-muted">{t("map.photoAsk")}</p>
+    <input bind:this={input} class="file" type="file" accept="image/*" capture="environment" onchange={picked} tabindex="-1" aria-hidden="true" />
+    {#if drafting}<p class="t-muted" role="status">{t("map.drafting")}</p>{/if}
     {#if error}<p role="alert">{error}</p>{/if}
   {:else}
-    <p class="t-small t-muted">{t("map.starter")} {t("map.review")}</p>
+    {#if source === "photo"}<p class="t-small" role="status">{t("map.photoGone")}</p>{/if}
+    <p class="t-small t-muted">
+      {source === "photo" ? t("map.drafted") : source === "failed" ? t("map.noDraft") : t("map.starter")}
+      {t("map.review")}
+    </p>
     <ul class="tags">
       {#each review.tags as tag (tag.key)}
         <li>
@@ -112,7 +153,8 @@
   {/if}
   {#snippet actions()}
     {#if !review}
-      <Button onclick={start} disabled={!thing} loading={locating}>{t("map.start")}</Button>
+      <Button icon="camera" onclick={() => input?.click()} disabled={!thing} loading={locating || drafting}>{t("camera.shutter")}</Button>
+      <Button variant="text" onclick={() => start(null)} disabled={!thing || locating || drafting}>{t("map.noPhoto")}</Button>
     {:else}
       <Button onclick={exportNote} disabled={!ready}>{t("map.export")}</Button>
       <Button variant="text" onclick={exportOsm} disabled={!ready}>{t("map.exportFile")}</Button>
@@ -132,4 +174,5 @@
   .acts button { min-height: 44px; padding: 0 10px; border-radius: var(--r-pill); border: 2px solid var(--line); background: transparent; color: var(--text); font-weight: 700; font-size: 0.85rem; }
   .acts button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
   .edit { display: flex; flex-direction: column; gap: 8px; }
+  .file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 </style>

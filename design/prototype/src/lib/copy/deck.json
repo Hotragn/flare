@@ -2621,11 +2621,6 @@
       "kind": "title",
       "where": "O6"
     },
-    "map.start": {
-      "text": "Check the tags",
-      "kind": "button",
-      "where": "O6"
-    },
     "map.starter": {
       "text": "These are the usual tags, not read from a photo.",
       "kind": "hint",
@@ -2655,6 +2650,26 @@
     "map.copied": {
       "text": "Copied. Paste it into an OpenStreetMap note.",
       "kind": "status",
+      "where": "O6"
+    },
+    "map.photoAsk": {
+      "text": "A photo lets our laptop draft the tags. It's deleted after.",
+      "kind": "hint",
+      "where": "O6"
+    },
+    "map.noPhoto": {
+      "text": "No photo",
+      "kind": "button",
+      "where": "O6"
+    },
+    "map.drafted": {
+      "text": "Drafted from your photo on our laptop.",
+      "kind": "hint",
+      "where": "O6"
+    },
+    "map.noDraft": {
+      "text": "Our laptop couldn't draft tags. These are the usual ones.",
+      "kind": "hint",
       "where": "O6"
     },
     "ai.title": {

@@ -33,15 +33,22 @@ const server = spawn(process.execPath, ["apps/server/src/main.ts"], {
   },
   stdio: "ignore",
 });
-process.on("exit", () => server.kill("SIGTERM"));
-for (let i = 0; i < 120; i++) {
-  if (
-    await fetch(`${URL0}/api/v1/health`).then(
-      (r) => r.ok,
-      () => false,
-    )
-  )
-    break;
+// The hub drafts Fix the map tags from a photo (ICR-ML5). It needs Ollama with the model.
+const hub = spawn(process.execPath, ["apps/hub/src/main.ts"], {
+  cwd: ROOT,
+  env: { ...process.env, LOG_LEVEL: "warn", FLARE_SERVER_URL: `ws://localhost:${PORT}` },
+  stdio: "ignore",
+});
+process.on("exit", () => {
+  hub.kill("SIGTERM");
+  server.kill("SIGTERM");
+});
+for (let i = 0; i < 240; i++) {
+  const h = await fetch(`${URL0}/api/v1/health`).then(
+    (r) => r.json() as Promise<{ hub: string }>,
+    () => ({ hub: "" }),
+  );
+  if (h.hub === "connected") break;
   await new Promise((r) => setTimeout(r, 250));
 }
 
@@ -158,7 +165,7 @@ try {
     });
     await page.goto(`${URL0}/app/fix-map/`);
     await page.getByRole("radio", { name: "Bench" }).check();
-    await page.getByRole("button", { name: "Check the tags" }).click();
+    await page.getByRole("button", { name: "No photo" }).click();
     const exportNote = page.getByRole("button", { name: "Export note" });
     await page.getByText("3 tags left to check").waitFor({ timeout: 10_000 });
     check("fix-map: export waits until every tag is checked (SRS-MAP-2)", await exportNote.isDisabled());
@@ -193,10 +200,71 @@ try {
     await page.screenshot({ path: path.join(OUT, "e2e-o6-fixmap.png"), fullPage: true });
     await ctx.close();
   }
+  // Fix the map with a real photo through the hub: a bench (lab photo 04, Wikimedia Commons,
+  // license in evals/datasheets/photos.md; lab/ is not in git, so this block needs the lab copy).
+  const BENCH = path.join(ROOT, "lab/data/photos/p04.jpg");
+  if (!fs.existsSync(BENCH)) console.info("SKIP fix-map photo draft: lab/data/photos/p04.jpg not here");
+  else {
+    const ctx = await browser.newContext({
+      ...phone,
+      permissions: ["geolocation"],
+      geolocation: { latitude: 42.3196, longitude: -83.2129 },
+    });
+    const page = await ctx.newPage();
+    const calls: string[] = [];
+    page.on("pageerror", (e) => fails.push(`fix-map photo: ${e.message}`));
+    page.on("request", (r) => {
+      if (new URL(r.url()).pathname.startsWith("/api/")) calls.push(new URL(r.url()).pathname);
+    });
+    await page.goto(`${URL0}/app/fix-map/`);
+    await page.getByRole("radio", { name: "Bench" }).check();
+    const t0 = Date.now();
+    await page.locator('input[type="file"]').setInputFiles(BENCH);
+    await page.getByText("Drafted from your photo on our laptop.").waitFor({ timeout: 20_000 });
+    const ms = Date.now() - t0;
+    const tags = await page.locator(".tags code").allTextContents();
+    check(
+      "fix-map photo: the hub drafts tags from the photo (SRS-MAP-1)",
+      tags.length > 0,
+      `${tags.join(" ")}, ${ms} ms`,
+    );
+    const keys = tags.map((x) => x.split("=")[0]);
+    check(
+      "fix-map photo: every drafted key is on the allow-list (BR-AI-4)",
+      keys.every((k) =>
+        [
+          "backrest",
+          "material",
+          "seats",
+          "wheelchair",
+          "fee",
+          "access",
+          "opening_hours",
+          "drinking_water",
+          "step_count",
+          "handrail",
+          "covered",
+          "lit",
+        ].includes(k ?? ""),
+      ),
+    );
+    check(
+      "fix-map photo: says the photo is deleted (SRS-MAP-4)",
+      await page.getByText("Photo deleted. It's not in the export.").isVisible(),
+    );
+    check(
+      "fix-map photo: every tag still waits for review",
+      await page.getByRole("button", { name: "Export note" }).isDisabled(),
+    );
+    check("fix-map photo: one API call, the draft", calls.join(",") === "/api/v1/drafts/tags", calls.join(","));
+    await page.screenshot({ path: path.join(OUT, "e2e-o6-fixmap-photo.png"), fullPage: true });
+    await ctx.close();
+  }
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));
 }
 await browser.close();
+hub.kill("SIGTERM");
 server.kill("SIGTERM");
 console.info(fails.length ? `\nFAIL ${fails.join(" | ")}` : "\nloop e2e: all pass");
 process.exit(fails.length ? 1 : 0);
