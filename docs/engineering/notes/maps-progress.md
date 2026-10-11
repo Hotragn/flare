@@ -7,4 +7,4 @@
 - Tests: scripts/test/map-{pack,places,nature}.test.ts (44 tests).
 
 ## Exact next step
-Compass, maps index, weather, rest loops (paths.ts, loop.ts, fairlane-paths.json 89 KB brotli) and PDF card (card.ts) DONE. Next: Fix the map (fixmap.ts) + card, Fix the map, docs/maps, handoff.
+All code DONE incl. Fix the map (fixmap.ts). Next: docs/maps/01..06, docs/engineering/bugs/maps.md, handoff 06g, npm run ci + card, Fix the map, docs/maps, handoff.

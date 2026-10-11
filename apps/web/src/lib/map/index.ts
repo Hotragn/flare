@@ -18,10 +18,15 @@ export const maps: Maps = {
   placeWords,
 };
 
+export { CARD_COLORS, cardLines, cardPdf } from "./card.ts";
 export { MAP_COPY } from "./copy.ts";
+export * as fixmap from "./fixmap.ts";
 export { bearingDeg, distanceM } from "./geo.ts";
+export { buildLoop, type Loop, type LoopRequest, type LoopResult, speakTurns, type Turn } from "./loop.ts";
 export { endsAfterSunset, natureLine, season } from "./nature.ts";
 export { ATTRIBUTION, countByKind, isFresh, PackError, places, validatePack } from "./pack.ts";
+export { type PathsPack, validatePaths } from "./paths.ts";
 export { failedNeeds, isUsable, nearestSeatM, stepsNear } from "./places.ts";
-export { cacheStore, type Loaded, load, loadNear, memoryStore, type PackStore } from "./store.ts";
+export { cacheStore, type Loaded, load, loadNear, loadPathsNear, memoryStore, type PackStore } from "./store.ts";
 export { sunset } from "./sun.ts";
+export { type PlanWeather, planWeather } from "./weather.ts";

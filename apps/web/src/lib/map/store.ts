@@ -5,6 +5,7 @@ import type { LatLon, MapPack } from "@flare/shared/icd/map";
 import { distanceM } from "./geo.ts";
 import { extraQuery, type FetchLike, MIN_SPACING_MS, pinnedQuery, runQuery } from "./overpass.ts";
 import { buildPack, isFresh, PACK_VERSION, PackError, validatePack } from "./pack.ts";
+import { type PathsPack, validatePaths } from "./paths.ts";
 
 /** Bundled packs, served as static files (PWA precaches them). */
 export const BUNDLED: Record<string, { center: LatLon; radius_m: number }> = {
@@ -69,6 +70,25 @@ export async function load(area: string, deps: LoadDeps = {}): Promise<MapPack> 
   const res = await f(`${deps.base ?? "/maps/"}${encodeURIComponent(area)}.json`, {});
   if (!res.ok) throw new PackError(`Pack ${area} not found (HTTP ${res.status})`);
   return validatePack(await res.json());
+}
+
+/**
+ * The walking network for rest loops near a point: the bundled `{area}-paths.json` when the
+ * point is inside a bundled area, else null (loops need a bundled area in v1; see
+ * docs/maps/05-rest-loops.md).
+ */
+export async function loadPathsNear(at: LatLon, deps: LoadDeps = {}): Promise<PathsPack | null> {
+  const f = deps.fetch ?? ((i, init) => fetch(i, init));
+  for (const [area, b] of Object.entries(BUNDLED)) {
+    if (!covers({ center: [b.center.lat, b.center.lon], radius_m: b.radius_m }, at)) continue;
+    try {
+      const res = await f(`${deps.base ?? "/maps/"}${encodeURIComponent(area)}-paths.json`, {});
+      if (res.ok) return validatePaths(await res.json());
+    } catch {
+      // Offline and not cached by the service worker: no loop.
+    }
+  }
+  return null;
 }
 
 function covers(pack: { center: [number, number]; radius_m: number }, at: LatLon): boolean {

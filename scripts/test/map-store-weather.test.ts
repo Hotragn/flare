@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { maps } from "../../apps/web/src/lib/map/index.ts";
-import { cellKey, loadNear, memoryStore } from "../../apps/web/src/lib/map/store.ts";
+import { cellKey, loadNear, loadPathsNear, memoryStore } from "../../apps/web/src/lib/map/store.ts";
 import { coarse, planWeather, reduce } from "../../apps/web/src/lib/map/weather.ts";
 import { FAIRLANE_PATH, POINTS } from "./map-fixtures.ts";
 
@@ -148,5 +148,19 @@ describe("MP5 plan weather (SRS-PLAN-2)", () => {
     const slow = (_u: string, init: RequestInit) =>
       new Promise<Response>((_r, rej) => init.signal?.addEventListener("abort", () => rej(new Error("timeout"))));
     expect(await planWeather(POINTS.mall, s, e, { fetch: slow, timeoutMs: 20 })).toBeNull();
+  });
+});
+
+describe("loadPathsNear", () => {
+  it("serves the bundled walking network inside Fairlane only", async () => {
+    const paths = fs.readFileSync(FAIRLANE_PATH.replace("fairlane.json", "fairlane-paths.json"), "utf8");
+    const seen: string[] = [];
+    const fetch = async (url: string) => {
+      seen.push(url);
+      return url === "/maps/fairlane-paths.json" ? new Response(paths) : new Response("", { status: 404 });
+    };
+    expect((await loadPathsNear(POINTS.green, { fetch }))?.v).toBe(1);
+    expect(await loadPathsNear({ lat: 41.88, lon: -87.63 }, { fetch })).toBeNull();
+    expect(seen).toEqual(["/maps/fairlane-paths.json"]);
   });
 });

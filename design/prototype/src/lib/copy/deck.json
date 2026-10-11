@@ -2453,6 +2453,30 @@
       "kind": "export",
       "where": "O6 export (OSM Note text)"
     },
+    "map.thing.bench": {
+      "text": "bench",
+      "kind": "fragment",
+      "where": "O6 export ({thing})",
+      "owner": "map:fixmap"
+    },
+    "map.thing.toilets": {
+      "text": "restroom",
+      "kind": "fragment",
+      "where": "O6 export ({thing})",
+      "owner": "map:fixmap"
+    },
+    "map.thing.drinking_water": {
+      "text": "drinking fountain",
+      "kind": "fragment",
+      "where": "O6 export ({thing})",
+      "owner": "map:fixmap"
+    },
+    "map.thing.steps": {
+      "text": "steps",
+      "kind": "fragment",
+      "where": "O6 export ({thing})",
+      "owner": "map:fixmap"
+    },
     "ai.title": {
       "text": "AI on this phone",
       "kind": "title",

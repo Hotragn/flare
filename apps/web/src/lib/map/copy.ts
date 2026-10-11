@@ -38,6 +38,10 @@ export const MAP_COPY = {
   "loop.side.right": "right",
   "map.noteText":
     "Missing {thing} here, seen {date}. Suggested tags: {tags}. Drafted with Flare and checked by a person on site.",
+  "map.thing.bench": "bench",
+  "map.thing.toilets": "restroom",
+  "map.thing.drinking_water": "drinking fountain",
+  "map.thing.steps": "steps",
   "site.foot.osm": "Map data © OpenStreetMap contributors.",
 } as const;
 
