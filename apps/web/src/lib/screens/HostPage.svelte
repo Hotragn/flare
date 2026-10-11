@@ -173,7 +173,7 @@
 {:else if flow.screen === "sent"}
   <H4Sent kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
 {:else if flow.screen === "kindling"}
-  <H5HostKindling have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} onclose={exit} />
+  <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} onclose={exit} />
 {:else if flow.screen === "lit"}
   <H6HostLit coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}

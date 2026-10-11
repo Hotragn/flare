@@ -3,13 +3,15 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
-  import NeedCount from "../components/NeedCount.svelte";
+  import CountRing from "../components/CountRing.svelte";
   import Sheet from "../components/Sheet.svelte";
   import TextField from "../components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
   import { kindlingProgress } from "#lib/motion/core.ts";
   import type { Theme } from "../components/parts";
   let {
+    photo = "",
+    scene = "",
     view = "growing",
     theme = "sun",
     have = 1,
@@ -27,6 +29,9 @@
     onshare,
     onclose,
   }: {
+    /** The Flare photo behind the screen (2026 direction); the warm light when there is none. */
+    photo?: string;
+    scene?: string;
     view?: "zero" | "growing" | "near" | "offline" | "text-yes" | "cancel";
     theme?: Theme;
     have?: number;
@@ -49,12 +54,14 @@
   let reply = $state("");
 </script>
 
-<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""}>
-  <div class="center">
-    <Hearth state="kindling" progress={kindlingProgress(have, quorum)} size={230} />
-    <NeedCount {have} {quorum} />
-    <p class="t-muted">{shrinkMin === null || have <= 1 ? t("host.kindling.sentAgo", { min: sentMin }) : t("host.kindling.shrinkIn", { min: shrinkMin })}</p>
-  </div>
+<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene}>
+  {#snippet hero()}
+    <div class="center">
+      <Hearth state="kindling" progress={kindlingProgress(have, quorum)} size={150} />
+      <CountRing {have} {quorum} />
+      <p class="t-muted">{shrinkMin === null || have <= 1 ? t("host.kindling.sentAgo", { min: sentMin }) : t("host.kindling.shrinkIn", { min: shrinkMin })}</p>
+    </div>
+  {/snippet}
   {#if hostLine}<p class="hostline t-small">{hostLine}</p>{/if}
   {#if error}<p class="err" role="alert">{error}</p>{/if}
   {#snippet actions()}

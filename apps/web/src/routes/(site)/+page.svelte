@@ -22,6 +22,7 @@
     <p class="lead">{t("site.hero.lead")}</p>
     <div class="ctas">
       <a class="cta primary" href="/app/">{t("site.nav.open")}</a>
+      <a class="cta" href="/app/demo/">{t("demo.try")}</a>
       <a class="cta" href="/how/">{t("site.hero.how")}</a>
     </div>
     <p class="fine">{t("site.hero.fine")}</p>

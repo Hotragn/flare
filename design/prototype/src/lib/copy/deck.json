@@ -166,6 +166,51 @@
       "kind": "hint",
       "where": "H0"
     },
+    "demo.badge": {
+      "text": "Demo · nothing is sent",
+      "kind": "status",
+      "where": "demo"
+    },
+    "demo.try": {
+      "text": "Try a demo",
+      "kind": "button",
+      "where": "H0, website"
+    },
+    "demo.skip": {
+      "text": "Skip 30 min",
+      "kind": "button",
+      "where": "demo"
+    },
+    "demo.asFriend": {
+      "text": "Be Amor",
+      "kind": "button",
+      "where": "demo"
+    },
+    "demo.said": {
+      "text": "{name} said yes.",
+      "kind": "status",
+      "where": "demo"
+    },
+    "demo.shrinkHint": {
+      "text": "Not enough yet. Skip ahead to see it shrink.",
+      "kind": "hint",
+      "where": "demo"
+    },
+    "demo.done": {
+      "text": "That's Flare. Try it with your friends.",
+      "kind": "title",
+      "where": "demo"
+    },
+    "demo.again": {
+      "text": "Play again",
+      "kind": "button",
+      "where": "demo"
+    },
+    "demo.real": {
+      "text": "Light a Flare",
+      "kind": "button",
+      "where": "demo"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",

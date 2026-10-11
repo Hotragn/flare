@@ -68,6 +68,7 @@
     <div class="row">
       <Button variant="text" onclick={onplan}>{t("home.plan")}</Button>
       {#if !located}<Button variant="text" onclick={onnear}>{t("home.near")}</Button>{/if}
+      <a class="demo" href="/app/demo/">{t("demo.try")}</a>
     </div>
   {/snippet}
 </Screen>
@@ -79,5 +80,6 @@
   .green { display: flex; gap: 12px; align-items: flex-start; }
   .green p { margin: 0; }
   .name { font-weight: 700; font-size: calc(var(--t-label-size) * var(--text-scale)); }
-  .row { display: flex; justify-content: center; gap: 8px; }
+  .row { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .demo { min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; color: #fff; font-weight: 700; text-underline-offset: 4px; }
 </style>

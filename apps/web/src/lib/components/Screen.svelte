@@ -118,7 +118,7 @@
   .staged .icon-btn { background: rgb(255 255 255 / 0.18); color: #fff; backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); }
   .staged .bar-title { color: rgb(255 255 255 / 0.9); }
   .hero { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--l-gutter) 16px; color: #fff; text-shadow: 0 1px 12px rgb(0 0 0 / 0.5); min-height: 0; }
-  .sheet { max-height: 62%; display: flex; flex-direction: column; border-radius: 28px 28px 0 0; color: #fff;
+  .sheet { width: 100%; align-self: stretch; box-sizing: border-box; max-height: 62%; display: flex; flex-direction: column; border-radius: 28px 28px 0 0; color: #fff;
     background: rgb(18 16 16 / 0.74); backdrop-filter: blur(28px) saturate(1.6); -webkit-backdrop-filter: blur(28px) saturate(1.6);
     box-shadow: 0 -1px 0 rgb(255 255 255 / 0.12) inset; margin-bottom: calc(-1 * env(safe-area-inset-bottom, 0)); padding-bottom: env(safe-area-inset-bottom, 0); }
   .sheet .content { padding-top: 4px; gap: 12px; }
