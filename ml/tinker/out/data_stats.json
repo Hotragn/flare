@@ -3,25 +3,25 @@
   "examples": 3000,
   "dropped": {
     "near_eval_item_jaccard_0.6": 98,
-    "duplicate": 370,
-    "equals_eval_item": 56
+    "duplicate": 359,
+    "equals_eval_item": 60
   },
   "rule_counts": {
-    "back_by": 978,
-    "unparsed": 142,
-    "with": 1311,
-    "max_walk": 590,
-    "after": 1011,
+    "back_by": 976,
+    "unparsed": 147,
+    "with": 1309,
+    "max_walk": 589,
+    "after": 1008,
     "max_step": 469,
     "min_step": 176,
     "error:not_in_group": 50,
     "plain_yes": 15
   },
   "rules_parser_cross_check": {
-    "agrees": 1308,
-    "differs": 1692
+    "agrees": 1325,
+    "differs": 1675
   },
-  "rules_parser_agree_rate": 0.436,
+  "rules_parser_agree_rate": 0.442,
   "held_out_texts": 104,
   "differs_examples": [
     {

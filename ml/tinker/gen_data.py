@@ -235,9 +235,11 @@ def negative(rng) -> tuple[str, object]:
             f"only if {a} or {b} is there", f"after {s1}, or with {a}",
         ]), None
     if r < 0.8:  # impossible times
-        h = rng.choice([13, 14, 19, 24, 25, 26, 30, 40, 99])
+        # v2: only hours past 23 are impossible. v1 also labelled 13, 14, 19 and "13pm" unparsed,
+        # which are valid 24 h times for the rules parser; that label bug taught "after N" -> unparsed.
+        h = rng.choice([24, 25, 26, 27, 30, 36, 40, 48, 99])
         return rng.choice([f"after {h}", f"back by {h}", f"not before {h}", f"home by {h}",
-                           f"after {h}:00", f"back by 3:75", f"after 13pm", f"after 25:30"]), None
+                           f"after {h}:00", "back by 3:75", "after 4:61", f"back by {h}:30"]), None
     o = rng.choice(OUTSIDERS)  # not in group
     return rng.choice([f"only if {o} comes", f"with {o}", f"if {o} is there", f"if {o}'s coming",
                        f"only with {o}", f"if {o} comes too", f"as long as {o} comes"]), "error:not_in_group"

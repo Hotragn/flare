@@ -186,10 +186,10 @@
 {"text": "I can do it after my half 6 class, 15 minutes on foot max, and if Shilp is in", "expect": [{"type": "after", "value": "18:30"}, {"type": "max_walk", "value": 15}, {"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}, {"type": "after", "value": "18:30"}]}
 {"text": "Yes but when I'm done with lunch at 3 oclock", "expect": [{"type": "after", "value": "15:00"}], "rules_parser": null}
 {"text": "Yeah just say hi", "expect": [{"type": "max_step", "value": 4}], "rules_parser": null}
-{"text": "after 25:30", "expect": null, "rules_parser": null}
+{"text": "back by 30:30", "expect": null, "rules_parser": null}
 {"text": "yes but only if Amor and fuego come!", "expect": [{"type": "with", "value": "Amor"}, {"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Amor"}, {"type": "with", "value": "Fuego"}]}
-{"text": "after 19:00", "expect": null, "rules_parser": [{"type": "after", "value": "19:00"}]}
-{"text": "home by 19", "expect": null, "rules_parser": [{"type": "back_by", "value": "19:00"}]}
+{"text": "after 26:00", "expect": null, "rules_parser": null}
+{"text": "home by 26", "expect": null, "rules_parser": null}
 {"text": "yes but need Shilp there also not too far, 20 min tops", "expect": [{"type": "with", "value": "Shilp"}, {"type": "max_walk", "value": 20}], "rules_parser": [{"type": "max_walk", "value": 20}]}
 {"text": "Until 1 oclock only, nothing long, the short one!", "expect": [{"type": "back_by", "value": "13:00"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_step", "value": 3}]}
 {"text": "I'll come if Fuego is in but till half ten max pls", "expect": [{"type": "with", "value": "Fuego"}, {"type": "back_by", "value": "10:30"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
@@ -234,9 +234,9 @@
 {"text": "sure, need fuego and ammo there and need to wrap up by 3 pm. step 3 or less then I'm in", "expect": [{"type": "with", "value": "Fuego"}, {"type": "with", "value": "Ammo"}, {"type": "back_by", "value": "15:00"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_step", "value": 3}]}
 {"text": "sounds fun, if Fuego is in also once I'm done with my errands around quarter past ten!", "expect": [{"type": "with", "value": "Fuego"}, {"type": "after", "value": "10:15"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
 {"text": "down when amor comes :)", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": null}
-{"text": "after 26", "expect": null, "rules_parser": null}
+{"text": "after 36", "expect": null, "rules_parser": null}
 {"text": "need Amor there, and gotta be home at 3:15 pls", "expect": [{"type": "with", "value": "Amor"}, {"type": "back_by", "value": "15:15"}], "rules_parser": [{"type": "back_by", "value": "15:15"}]}
-{"text": "after 13pm", "expect": null, "rules_parser": [{"type": "after", "value": "13:00"}]}
+{"text": "after 4:61", "expect": null, "rules_parser": null}
 {"text": "done by 1 o'clock, nearby only, if fuego joins lol", "expect": [{"type": "back_by", "value": "13:00"}, {"type": "max_walk", "value": 10}, {"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}, {"type": "back_by", "value": "13:00"}, {"type": "max_walk", "value": 10}]}
 {"text": "yes please", "expect": [], "rules_parser": null}
 {"text": "The smallest one - under 10 min walk", "expect": [{"type": "max_step", "value": 4}, {"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}, {"type": "max_step", "value": 4}]}
@@ -265,7 +265,7 @@
 {"text": "down if Ammo and Amor are going :)", "expect": [{"type": "with", "value": "Ammo"}, {"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "with", "value": "Amor"}]}
 {"text": "in, with Ammo and have to be out by 4:20", "expect": [{"type": "with", "value": "Ammo"}, {"type": "back_by", "value": "16:20"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "back_by", "value": "16:20"}]}
 {"text": "I'll come Amor has to come lol", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": null}
-{"text": "not before 13", "expect": null, "rules_parser": [{"type": "after", "value": "13:00"}]}
+{"text": "not before 24", "expect": null, "rules_parser": null}
 {"text": "I'm in need Shilp and Ammo there I'm in", "expect": [{"type": "with", "value": "Shilp"}, {"type": "with", "value": "Ammo"}], "rules_parser": null}
 {"text": "if both fuego and Amor come - gotta be home at 4:10 then I'm in", "expect": [{"type": "with", "value": "Fuego"}, {"type": "with", "value": "Amor"}, {"type": "back_by", "value": "16:10"}], "rules_parser": [{"type": "back_by", "value": "16:10"}]}
 {"text": "possibly", "expect": null, "rules_parser": null}
@@ -309,7 +309,7 @@
 {"text": "sure, need to be back for dinner at 10:15 pls", "expect": [{"type": "back_by", "value": "10:15"}], "rules_parser": null}
 {"text": "if Shilp joins. need to be home by 11 then I'm in", "expect": [{"type": "with", "value": "Shilp"}, {"type": "back_by", "value": "11:00"}], "rules_parser": [{"type": "with", "value": "Shilp"}, {"type": "back_by", "value": "11:00"}]}
 {"text": "I'm in free after 7", "expect": [{"type": "after", "value": "19:00"}], "rules_parser": [{"type": "after", "value": "19:00"}]}
-{"text": "after 24:00", "expect": null, "rules_parser": null}
+{"text": "after 27:00", "expect": null, "rules_parser": null}
 {"text": "Max 15 min walk, and step 1 or more then I'm in", "expect": [{"type": "max_walk", "value": 15}, {"type": "min_step", "value": 1}], "rules_parser": [{"type": "max_walk", "value": 15}, {"type": "min_step", "value": 1}]}
 {"text": "in, after my 3 pm meeting, if Amor is in lol", "expect": [{"type": "after", "value": "15:00"}, {"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}, {"type": "after", "value": "15:00"}]}
 {"text": "sounds fun, just the short one I'm in", "expect": [{"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_step", "value": 3}]}
@@ -335,7 +335,7 @@
 {"text": "only if Shilp or Amor is there", "expect": null, "rules_parser": null}
 {"text": "COUNT ME IN LONGEST ONE PLEASE I'M IN", "expect": [{"type": "min_step", "value": 1}], "rules_parser": [{"type": "min_step", "value": 1}]}
 {"text": "down under 15 min walk", "expect": [{"type": "max_walk", "value": 15}], "rules_parser": [{"type": "max_walk", "value": 15}]}
-{"text": "after 25:00", "expect": null, "rules_parser": null}
+{"text": "after 30:00", "expect": null, "rules_parser": null}
 {"text": "as long as Fuego's there :)", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": null}
 {"text": "count me in the park loop or longer pls", "expect": [{"type": "min_step", "value": 2}], "rules_parser": [{"type": "min_step", "value": 2}]}
 {"text": "IN, AFTER MY 2AM MEETING THEN I'M IN", "expect": [{"type": "after", "value": "02:00"}], "rules_parser": [{"type": "after", "value": "02:00"}]}
@@ -366,7 +366,7 @@
 {"text": "if Lena is there", "expect": "error:not_in_group", "rules_parser": "error:not_in_group"}
 {"text": "I'm in need to be back for dinner at quarter past 3", "expect": [{"type": "back_by", "value": "15:15"}], "rules_parser": null}
 {"text": "in, gotta be back by 12 lol", "expect": [{"type": "back_by", "value": "12:00"}], "rules_parser": [{"type": "back_by", "value": "12:00"}]}
-{"text": "not before 30", "expect": null, "rules_parser": null}
+{"text": "not before 40", "expect": null, "rules_parser": null}
 {"text": "have to be out by 10:30!", "expect": [{"type": "back_by", "value": "10:30"}], "rules_parser": [{"type": "back_by", "value": "10:30"}]}
 {"text": "absolutely", "expect": [], "rules_parser": null}
 {"text": "I'm in out by quarter past 7, within 5 minutes walking", "expect": [{"type": "back_by", "value": "19:15"}, {"type": "max_walk", "value": 5}], "rules_parser": null}
@@ -514,7 +514,7 @@
 {"text": "I'll come as long as Amor's there, and have to be out by 6:30.", "expect": [{"type": "with", "value": "Amor"}, {"type": "back_by", "value": "18:30"}], "rules_parser": [{"type": "back_by", "value": "18:30"}]}
 {"text": "down 25 min walk max I'm in", "expect": [{"type": "max_walk", "value": 25}], "rules_parser": [{"type": "max_walk", "value": 25}]}
 {"text": "Ok need Shilp there and only after 11:10", "expect": [{"type": "with", "value": "Shilp"}, {"type": "after", "value": "11:10"}], "rules_parser": [{"type": "after", "value": "11:10"}]}
-{"text": "not before 14", "expect": null, "rules_parser": [{"type": "after", "value": "14:00"}]}
+{"text": "not before 25", "expect": null, "rules_parser": null}
 {"text": "in, the shorter one. if Ammo goes too then I'm in", "expect": [{"type": "max_step", "value": 3}, {"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
 {"text": "I'm in if ammo is in but after my 4:10 class", "expect": [{"type": "with", "value": "Ammo"}, {"type": "after", "value": "16:10"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "after", "value": "16:10"}]}
 {"text": "park loop minimum :)", "expect": [{"type": "min_step", "value": 2}], "rules_parser": null}
@@ -546,6 +546,7 @@
 {"text": "Count me in need to be back for dinner at quarter past ten - when I'm done with lunch at 2 :)", "expect": [{"type": "back_by", "value": "10:15"}, {"type": "after", "value": "14:00"}], "rules_parser": null}
 {"text": "Have to go at 2 I'm in", "expect": [{"type": "back_by", "value": "14:00"}], "rules_parser": null}
 {"text": "sure, from 11 o'clock!", "expect": [{"type": "after", "value": "11:00"}], "rules_parser": [{"type": "after", "value": "11:00"}]}
+{"text": "back by 48:30", "expect": null, "rules_parser": null}
 {"text": "down with Amor, at most 30 min walking but no bigger than step 3 then I'm in", "expect": [{"type": "with", "value": "Amor"}, {"type": "max_walk", "value": 30}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "with", "value": "Amor"}, {"type": "max_walk", "value": 30}]}
 {"text": "sure, any time after half 9!", "expect": [{"type": "after", "value": "09:30"}], "rules_parser": [{"type": "after", "value": "09:30"}]}
 {"text": "I'll come home by 4am!", "expect": [{"type": "back_by", "value": "04:00"}], "rules_parser": [{"type": "back_by", "value": "04:00"}]}
@@ -563,14 +564,14 @@
 {"text": "have to head home at 2 but assuming Amor shows up pls", "expect": [{"type": "back_by", "value": "14:00"}, {"type": "with", "value": "Amor"}], "rules_parser": [{"type": "back_by", "value": "14:00"}]}
 {"text": "Yes but after my 11 class", "expect": [{"type": "after", "value": "11:00"}], "rules_parser": [{"type": "after", "value": "11:00"}]}
 {"text": "I can do it at most 30 min walking", "expect": [{"type": "max_walk", "value": 30}], "rules_parser": [{"type": "max_walk", "value": 30}]}
-{"text": "not before 26", "expect": null, "rules_parser": null}
+{"text": "not before 36", "expect": null, "rules_parser": null}
 {"text": "count me in if Shilp's in", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
 {"text": "if Fuego can make it, and quick one only", "expect": [{"type": "with", "value": "Fuego"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "with", "value": "Fuego"}, {"type": "max_step", "value": 3}]}
 {"text": "probably", "expect": null, "rules_parser": null}
 {"text": "I'll come have to go at 5 pls", "expect": [{"type": "back_by", "value": "17:00"}], "rules_parser": null}
 {"text": "in, need to leave by half five!", "expect": [{"type": "back_by", "value": "17:30"}], "rules_parser": [{"type": "back_by", "value": "17:30"}]}
 {"text": "if Shilp tags along then I'm in", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
-{"text": "home by 13", "expect": null, "rules_parser": [{"type": "back_by", "value": "13:00"}]}
+{"text": "home by 24", "expect": null, "rules_parser": null}
 {"text": "count me in after the gym around 3 o'clock also not more than 30 mins walk, need Shilp and Amor there then I'm in", "expect": [{"type": "after", "value": "15:00"}, {"type": "max_walk", "value": 30}, {"type": "with", "value": "Shilp"}, {"type": "with", "value": "Amor"}], "rules_parser": null}
 {"text": "not too far, 25 min tops and if Ammo tags along I'm in", "expect": [{"type": "max_walk", "value": 25}, {"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "max_walk", "value": 25}]}
 {"text": "I'm in with ammo and after my 7 class.", "expect": [{"type": "with", "value": "Ammo"}, {"type": "after", "value": "19:00"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "after", "value": "19:00"}]}
@@ -582,18 +583,19 @@
 {"text": "count me in 5 min walk tops", "expect": [{"type": "max_walk", "value": 5}], "rules_parser": null}
 {"text": "need to leave by quarter past nine also only to say hi also the full loop I'm in", "expect": [{"type": "back_by", "value": "09:15"}, {"type": "max_step", "value": 4}, {"type": "min_step", "value": 1}], "rules_parser": [{"type": "min_step", "value": 1}]}
 {"text": "I can do it out by 12 lol", "expect": [{"type": "back_by", "value": "12:00"}], "rules_parser": [{"type": "back_by", "value": "12:00"}]}
+{"text": "back by 36", "expect": null, "rules_parser": null}
 {"text": "yes but if Shilp joins lol", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
 {"text": "close by, and gotta be back by 1 o'clock then I'm in", "expect": [{"type": "max_walk", "value": 10}, {"type": "back_by", "value": "13:00"}], "rules_parser": [{"type": "back_by", "value": "13:00"}, {"type": "max_walk", "value": 10}]}
 {"text": "down if Ammo goes too", "expect": [{"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
-{"text": "home by 14", "expect": null, "rules_parser": [{"type": "back_by", "value": "14:00"}]}
+{"text": "home by 25", "expect": null, "rules_parser": null}
 {"text": "ok only a quick lap", "expect": [{"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_step", "value": 3}]}
 {"text": "need to wrap up by 8am.", "expect": [{"type": "back_by", "value": "08:00"}], "rules_parser": null}
+{"text": "back by 40:30", "expect": null, "rules_parser": null}
 {"text": "I'm in if Ammo is going pls", "expect": [{"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
 {"text": "I'll come when I'm done with lunch at half four then I'm in", "expect": [{"type": "after", "value": "16:30"}], "rules_parser": null}
 {"text": "IF AMOR JOINS BUT NOT TOO FAR, 30 MIN TOPS THEN I'M IN", "expect": [{"type": "with", "value": "Amor"}, {"type": "max_walk", "value": 30}], "rules_parser": [{"type": "max_walk", "value": 30}]}
 {"text": "have to go at half 6 I'm in", "expect": [{"type": "back_by", "value": "18:30"}], "rules_parser": null}
 {"text": "I'll come the park loop or longer pls", "expect": [{"type": "min_step", "value": 2}], "rules_parser": [{"type": "min_step", "value": 2}]}
-{"text": "after 14", "expect": null, "rules_parser": [{"type": "after", "value": "14:00"}]}
 {"text": "I'll come have to get the kids at 8pm :)", "expect": [{"type": "back_by", "value": "20:00"}], "rules_parser": null}
 {"text": "if Kim is there", "expect": "error:not_in_group", "rules_parser": "error:not_in_group"}
 {"text": "sure, quick one only. after 2 am", "expect": [{"type": "max_step", "value": 3}, {"type": "after", "value": "02:00"}], "rules_parser": [{"type": "after", "value": "02:00"}, {"type": "max_step", "value": 3}]}
@@ -613,7 +615,7 @@
 {"text": "if Jake comes too", "expect": "error:not_in_group", "rules_parser": "error:not_in_group"}
 {"text": "ok max 30 minute walk pls", "expect": [{"type": "max_walk", "value": 30}], "rules_parser": [{"type": "max_walk", "value": 30}]}
 {"text": "After my shift ends at 6:40", "expect": [{"type": "after", "value": "18:40"}], "rules_parser": null}
-{"text": "back by 14", "expect": null, "rules_parser": [{"type": "back_by", "value": "14:00"}]}
+{"text": "back by 25", "expect": null, "rules_parser": null}
 {"text": "sure, till 6 pm max pls", "expect": [{"type": "back_by", "value": "18:00"}], "rules_parser": null}
 {"text": "sounds fun, free until 11:15 but can't walk far", "expect": [{"type": "back_by", "value": "11:15"}, {"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
 {"text": "I'm in 20 min walk tops then I'm in", "expect": [{"type": "max_walk", "value": 20}], "rules_parser": null}
@@ -754,7 +756,7 @@
 {"text": "I'll come can't walk too far - any time after 9 and need to be home by 8 pm", "expect": [{"type": "max_walk", "value": 10}, {"type": "after", "value": "09:00"}, {"type": "back_by", "value": "20:00"}], "rules_parser": [{"type": "after", "value": "09:00"}, {"type": "back_by", "value": "20:00"}, {"type": "max_walk", "value": 10}]}
 {"text": "LATEST 10, AND WITH AMMO", "expect": [{"type": "back_by", "value": "10:00"}, {"type": "with", "value": "Ammo"}], "rules_parser": null}
 {"text": "I'll come after I finish work at 4:45 also close by only, and back by 11:30 :)", "expect": [{"type": "after", "value": "16:45"}, {"type": "max_walk", "value": 10}, {"type": "back_by", "value": "11:30"}], "rules_parser": [{"type": "back_by", "value": "11:30"}, {"type": "max_walk", "value": 10}]}
-{"text": "home by 26", "expect": null, "rules_parser": null}
+{"text": "home by 36", "expect": null, "rules_parser": null}
 {"text": "sure, only if Fuego is coming.", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
 {"text": "not until half 4", "expect": [{"type": "after", "value": "16:30"}], "rules_parser": null}
 {"text": "I'm in under 20 min walk, and with fuego I'm in", "expect": [{"type": "max_walk", "value": 20}, {"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}, {"type": "max_walk", "value": 20}]}
@@ -784,7 +786,7 @@
 {"text": "sure, not too far", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
 {"text": "can't do before 8", "expect": [{"type": "after", "value": "08:00"}], "rules_parser": null}
 {"text": "sure, have to go at 9 am :)", "expect": [{"type": "back_by", "value": "09:00"}], "rules_parser": null}
-{"text": "after 19", "expect": null, "rules_parser": [{"type": "after", "value": "19:00"}]}
+{"text": "after 26", "expect": null, "rules_parser": null}
 {"text": "Count me in can walk 15 minutes max but can't do before quarter past 2 :)", "expect": [{"type": "max_walk", "value": 15}, {"type": "after", "value": "14:15"}], "rules_parser": null}
 {"text": "bet", "expect": [], "rules_parser": null}
 {"text": "yes but only if shilp is coming :)", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
@@ -819,6 +821,7 @@
 {"text": "I work till midday :)", "expect": [{"type": "after", "value": "12:00"}], "rules_parser": null}
 {"text": "I'm in from 5 oclock on pls", "expect": [{"type": "after", "value": "17:00"}], "rules_parser": [{"type": "after", "value": "17:00"}]}
 {"text": "after my 9 oclock appointment and 25 minutes on foot max I'm in", "expect": [{"type": "after", "value": "09:00"}, {"type": "max_walk", "value": 25}], "rules_parser": [{"type": "after", "value": "09:00"}]}
+{"text": "back by 99:30", "expect": null, "rules_parser": null}
 {"text": "sure, out by half 1 I'm in", "expect": [{"type": "back_by", "value": "13:30"}], "rules_parser": [{"type": "back_by", "value": "13:30"}]}
 {"text": "at most 20 min walking I'm in", "expect": [{"type": "max_walk", "value": 20}], "rules_parser": [{"type": "max_walk", "value": 20}]}
 {"text": "only after 12 also back home for dinner at 11:30!", "expect": [{"type": "after", "value": "12:00"}, {"type": "back_by", "value": "11:30"}], "rules_parser": [{"type": "after", "value": "12:00"}, {"type": "back_by", "value": "11:30"}]}
@@ -964,7 +967,7 @@
 {"text": "sounds fun, not far please lol", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
 {"text": "Sounds fun, not until 1 pls", "expect": [{"type": "after", "value": "13:00"}], "rules_parser": null}
 {"text": "I'll come if Amor tags along", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}]}
-{"text": "not before 24", "expect": null, "rules_parser": null}
+{"text": "not before 27", "expect": null, "rules_parser": null}
 {"text": "as long as ammo comes, have to go at 12pm lol", "expect": [{"type": "with", "value": "Ammo"}, {"type": "back_by", "value": "12:00"}], "rules_parser": null}
 {"text": "short version.", "expect": [{"type": "max_step", "value": 3}], "rules_parser": null}
 {"text": "Count me in have to go at 11, just want to sit", "expect": [{"type": "back_by", "value": "11:00"}, {"type": "max_step", "value": 4}], "rules_parser": null}
@@ -1032,7 +1035,7 @@
 {"text": "I can do it step 2 or shorter", "expect": [{"type": "max_step", "value": 2}], "rules_parser": [{"type": "max_step", "value": 2}]}
 {"text": "Down just say hi pls", "expect": [{"type": "max_step", "value": 4}], "rules_parser": null}
 {"text": "down as long as Amor's there lol", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": null}
-{"text": "after 13:00", "expect": null, "rules_parser": [{"type": "after", "value": "13:00"}]}
+{"text": "after 24:00", "expect": null, "rules_parser": null}
 {"text": "Yeah earliest 1 - if both fuego and Shilp come I'm in", "expect": [{"type": "after", "value": "13:00"}, {"type": "with", "value": "Fuego"}, {"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "after", "value": "13:00"}]}
 {"text": "IF AMOR IS THERE - STEP 1 OR BIGGER.", "expect": [{"type": "with", "value": "Amor"}, {"type": "min_step", "value": 1}], "rules_parser": [{"type": "min_step", "value": 1}]}
 {"text": "Sounds fun, if amor is in but after my shift ends at 11am also 20 minutes on foot max", "expect": [{"type": "with", "value": "Amor"}, {"type": "after", "value": "11:00"}, {"type": "max_walk", "value": 20}], "rules_parser": [{"type": "with", "value": "Amor"}]}
@@ -1124,6 +1127,7 @@
 {"text": "if Ammo can make it I'm in", "expect": [{"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
 {"text": "Ammo has to come also need to be home by quarter past four", "expect": [{"type": "with", "value": "Ammo"}, {"type": "back_by", "value": "16:15"}], "rules_parser": null}
 {"text": "Fuego or Ammo has to come", "expect": null, "rules_parser": null}
+{"text": "back by 24:30", "expect": null, "rules_parser": null}
 {"text": "down", "expect": [], "rules_parser": []}
 {"text": "I'm in nothing past a 30 min walk I'm in", "expect": [{"type": "max_walk", "value": 30}], "rules_parser": null}
 {"text": "down when Ammo comes pls", "expect": [{"type": "with", "value": "Ammo"}], "rules_parser": null}
@@ -1406,7 +1410,7 @@
 {"text": "I'm in can't do before 2:20 pls", "expect": [{"type": "after", "value": "14:20"}], "rules_parser": null}
 {"text": "sounds fun, provided fuego comes", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": null}
 {"text": "close by only and only after 9 pls", "expect": [{"type": "max_walk", "value": 10}, {"type": "after", "value": "09:00"}], "rules_parser": [{"type": "after", "value": "09:00"}, {"type": "max_walk", "value": 10}]}
-{"text": "back by 30", "expect": null, "rules_parser": null}
+{"text": "back by 40", "expect": null, "rules_parser": null}
 {"text": "down need to be back for dinner at 5 o'clock!", "expect": [{"type": "back_by", "value": "17:00"}], "rules_parser": null}
 {"text": "Max 5 minute walk and step 3 or smaller", "expect": [{"type": "max_walk", "value": 5}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_walk", "value": 5}, {"type": "max_step", "value": 3}]}
 {"text": "down somewhere close pls", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
@@ -1418,6 +1422,7 @@
 {"text": "Have to head home at half ten", "expect": [{"type": "back_by", "value": "10:30"}], "rules_parser": [{"type": "back_by", "value": "10:30"}]}
 {"text": "after half 8, or with Shilp", "expect": null, "rules_parser": null}
 {"text": "can stay until 4 am", "expect": [{"type": "back_by", "value": "04:00"}], "rules_parser": null}
+{"text": "back by 25:30", "expect": null, "rules_parser": null}
 {"text": "I'm in 5 minutes on foot max!", "expect": [{"type": "max_walk", "value": 5}], "rules_parser": null}
 {"text": "If Amor can make it then I'm in", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}]}
 {"text": "count me in only with Fuego also 1:20 at the latest then I'm in", "expect": [{"type": "with", "value": "Fuego"}, {"type": "back_by", "value": "13:20"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
@@ -1543,7 +1548,7 @@
 {"text": "in, the smallest one also need to be home by 2", "expect": [{"type": "max_step", "value": 4}, {"type": "back_by", "value": "14:00"}], "rules_parser": [{"type": "back_by", "value": "14:00"}, {"type": "max_step", "value": 4}]}
 {"text": "SOUNDS FUN, AFTER MY 7 CLASS", "expect": [{"type": "after", "value": "19:00"}], "rules_parser": [{"type": "after", "value": "19:00"}]}
 {"text": "I'll come busy until half three", "expect": [{"type": "after", "value": "15:30"}], "rules_parser": null}
-{"text": "after 14:00", "expect": null, "rules_parser": [{"type": "after", "value": "14:00"}]}
+{"text": "after 25:00", "expect": null, "rules_parser": null}
 {"text": "in, not before 3 oclock :)", "expect": [{"type": "after", "value": "15:00"}], "rules_parser": [{"type": "after", "value": "15:00"}]}
 {"text": "Only sitting pls", "expect": [{"type": "max_step", "value": 4}], "rules_parser": null}
 {"text": "any time after 9 also need to wrap up by 5 pls", "expect": [{"type": "after", "value": "09:00"}, {"type": "back_by", "value": "17:00"}], "rules_parser": [{"type": "after", "value": "09:00"}]}
@@ -1686,7 +1691,7 @@
 {"text": "IN, NOT UNTIL 9PM", "expect": [{"type": "after", "value": "21:00"}], "rules_parser": null}
 {"text": "I'm in gotta be home at 2:45", "expect": [{"type": "back_by", "value": "14:45"}], "rules_parser": [{"type": "back_by", "value": "14:45"}]}
 {"text": "I'm in until 6 only", "expect": [{"type": "back_by", "value": "18:00"}], "rules_parser": null}
-{"text": "after 24", "expect": null, "rules_parser": null}
+{"text": "after 27", "expect": null, "rules_parser": null}
 {"text": "Ok if Shilp tags along then I'm in", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
 {"text": "ok half 8 at the latest", "expect": [{"type": "back_by", "value": "08:30"}], "rules_parser": null}
 {"text": "count me in only to say hi and park loop minimum pls", "expect": [{"type": "max_step", "value": 4}, {"type": "min_step", "value": 2}], "rules_parser": null}
@@ -1832,6 +1837,7 @@
 {"text": "only with Amor :)", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}]}
 {"text": "ok need to leave by 9!", "expect": [{"type": "back_by", "value": "09:00"}], "rules_parser": [{"type": "back_by", "value": "09:00"}]}
 {"text": "latest 12 also only if Ammo drives :)", "expect": [{"type": "back_by", "value": "12:00"}, {"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
+{"text": "back by 26:30", "expect": null, "rules_parser": null}
 {"text": "Curfew is 10 then I'm in", "expect": [{"type": "back_by", "value": "10:00"}], "rules_parser": null}
 {"text": "sounds fun, free after 7:45 lol", "expect": [{"type": "after", "value": "19:45"}], "rules_parser": [{"type": "after", "value": "19:45"}]}
 {"text": "When Shilp comes I'm in", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": null}
@@ -1914,7 +1920,7 @@
 {"text": "yes but not more than 20 mins walk pls", "expect": [{"type": "max_walk", "value": 20}], "rules_parser": null}
 {"text": "sounds fun, gotta be back by 12 - ammo has to come also when I'm done with lunch at 11", "expect": [{"type": "back_by", "value": "12:00"}, {"type": "with", "value": "Ammo"}, {"type": "after", "value": "11:00"}], "rules_parser": [{"type": "back_by", "value": "12:00"}]}
 {"text": "Yeah just the short one. provided Shilp comes", "expect": [{"type": "max_step", "value": 3}, {"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "max_step", "value": 3}]}
-{"text": "after 30:00", "expect": null, "rules_parser": null}
+{"text": "after 40:00", "expect": null, "rules_parser": null}
 {"text": "sure, need to be back for dinner at 3 - only with shilp :)", "expect": [{"type": "back_by", "value": "15:00"}, {"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
 {"text": "yes but after my shift ends at 5 o'clock I'm in", "expect": [{"type": "after", "value": "17:00"}], "rules_parser": null}
 {"text": "just a hello", "expect": [{"type": "max_step", "value": 4}], "rules_parser": null}
@@ -1966,7 +1972,7 @@
 {"text": "with Fuego", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
 {"text": "I'm in only if Amor is coming.", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}]}
 {"text": "Busy till 7 and only if Amor drives and till 10:45 max pls", "expect": [{"type": "after", "value": "19:00"}, {"type": "with", "value": "Amor"}, {"type": "back_by", "value": "10:45"}], "rules_parser": [{"type": "with", "value": "Amor"}]}
-{"text": "after 13", "expect": null, "rules_parser": [{"type": "after", "value": "13:00"}]}
+{"text": "after 24", "expect": null, "rules_parser": null}
 {"text": "sure, if both Shilp and amor come", "expect": [{"type": "with", "value": "Shilp"}, {"type": "with", "value": "Amor"}], "rules_parser": null}
 {"text": "sure, sit and chill and only after 7", "expect": [{"type": "max_step", "value": 4}, {"type": "after", "value": "19:00"}], "rules_parser": [{"type": "after", "value": "19:00"}]}
 {"text": "back by 12 or 6 am", "expect": null, "rules_parser": null}
@@ -2074,13 +2080,13 @@
 {"text": "Yes but just want to sit lol", "expect": [{"type": "max_step", "value": 4}], "rules_parser": null}
 {"text": "Count me in provided Shilp comes - need to wrap up by half 8 lol", "expect": [{"type": "with", "value": "Shilp"}, {"type": "back_by", "value": "08:30"}], "rules_parser": null}
 {"text": "I'll come curfew is 12 o'clock, max 30 min walk also only after quarter past 1", "expect": [{"type": "back_by", "value": "12:00"}, {"type": "max_walk", "value": 30}, {"type": "after", "value": "13:15"}], "rules_parser": [{"type": "max_walk", "value": 30}]}
-{"text": "not before 25", "expect": null, "rules_parser": null}
+{"text": "not before 30", "expect": null, "rules_parser": null}
 {"text": "home by quarter past five, nothing past a 10 min walk", "expect": [{"type": "back_by", "value": "17:15"}, {"type": "max_walk", "value": 10}], "rules_parser": null}
 {"text": "I'm in if Amor is in but short version", "expect": [{"type": "with", "value": "Amor"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "with", "value": "Amor"}]}
 {"text": "Count me in if shilp tags along pls", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": [{"type": "with", "value": "Shilp"}]}
 {"text": "sure, max 30 minute walk I'm in", "expect": [{"type": "max_walk", "value": 30}], "rules_parser": [{"type": "max_walk", "value": 30}]}
-{"text": "back by 25", "expect": null, "rules_parser": null}
-{"text": "after 40", "expect": null, "rules_parser": null}
+{"text": "back by 30", "expect": null, "rules_parser": null}
+{"text": "after 48", "expect": null, "rules_parser": null}
 {"text": "Sure, gotta be back by 7:45. I work till 11 pls", "expect": [{"type": "back_by", "value": "19:45"}, {"type": "after", "value": "11:00"}], "rules_parser": [{"type": "back_by", "value": "19:45"}]}
 {"text": "I'm in if ammo joins. the quick version please pls", "expect": [{"type": "with", "value": "Ammo"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "max_step", "value": 3}]}
 {"text": "Down need to leave by 6 but only if Amor is coming", "expect": [{"type": "back_by", "value": "18:00"}, {"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Amor"}, {"type": "back_by", "value": "18:00"}]}
@@ -2102,7 +2108,7 @@
 {"text": "busy until 11 am also only if Ammo comes and only sitting :)", "expect": [{"type": "after", "value": "11:00"}, {"type": "with", "value": "Ammo"}, {"type": "max_step", "value": 4}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
 {"text": "Yes but from 4 on", "expect": [{"type": "after", "value": "16:00"}], "rules_parser": [{"type": "after", "value": "16:00"}]}
 {"text": "gotta be home at 8:30, and just say hi, and under 25 min walk lol", "expect": [{"type": "back_by", "value": "08:30"}, {"type": "max_step", "value": 4}, {"type": "max_walk", "value": 25}], "rules_parser": [{"type": "back_by", "value": "08:30"}, {"type": "max_walk", "value": 25}]}
-{"text": "after 26:00", "expect": null, "rules_parser": null}
+{"text": "after 36:00", "expect": null, "rules_parser": null}
 {"text": "I can do it if Fuego goes then I'm in", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
 {"text": "No later than half eleven. at most 20 min walking!", "expect": [{"type": "back_by", "value": "11:30"}, {"type": "max_walk", "value": 20}], "rules_parser": [{"type": "back_by", "value": "11:30"}, {"type": "max_walk", "value": 20}]}
 {"text": "sounds fun, if fuego is there - nothing far I'm in", "expect": [{"type": "with", "value": "Fuego"}, {"type": "max_walk", "value": 10}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
@@ -2175,7 +2181,7 @@
 {"text": "yeah need Fuego there I'm in", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": null}
 {"text": "I can do it not more than 20 mins walk :)", "expect": [{"type": "max_walk", "value": 20}], "rules_parser": null}
 {"text": "I can do it until 3 only and need amor there", "expect": [{"type": "back_by", "value": "15:00"}, {"type": "with", "value": "Amor"}], "rules_parser": null}
-{"text": "after 40:00", "expect": null, "rules_parser": null}
+{"text": "after 48:00", "expect": null, "rules_parser": null}
 {"text": "yes but not more than 30 mins walk, just say hi then I'm in", "expect": [{"type": "max_walk", "value": 30}, {"type": "max_step", "value": 4}], "rules_parser": null}
 {"text": "max 10 minute walk then I'm in", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
 {"text": "ok within walking distance, close :)", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
@@ -2228,7 +2234,7 @@
 {"text": "yeah max 5 min walk and busy till 3am. step 3 or smaller then I'm in", "expect": [{"type": "max_walk", "value": 5}, {"type": "after", "value": "03:00"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "max_walk", "value": 5}, {"type": "max_step", "value": 3}]}
 {"text": "I'm in only if amor is coming - only a quick lap!", "expect": [{"type": "with", "value": "Amor"}, {"type": "max_step", "value": 3}], "rules_parser": [{"type": "with", "value": "Amor"}, {"type": "max_step", "value": 3}]}
 {"text": "only if Ammo drives I'm in", "expect": [{"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "with", "value": "Ammo"}]}
-{"text": "home by 40", "expect": null, "rules_parser": null}
+{"text": "home by 48", "expect": null, "rules_parser": null}
 {"text": "when Amor comes - home by 2 and after 3:15 lol", "expect": [{"type": "with", "value": "Amor"}, {"type": "back_by", "value": "14:00"}, {"type": "after", "value": "15:15"}], "rules_parser": [{"type": "after", "value": "15:15"}, {"type": "back_by", "value": "14:00"}]}
 {"text": "down with Shilp and fuego, and the quick one also at most 5 min walking I'm in", "expect": [{"type": "with", "value": "Shilp"}, {"type": "with", "value": "Fuego"}, {"type": "max_step", "value": 3}, {"type": "max_walk", "value": 5}], "rules_parser": [{"type": "with", "value": "Shilp"}, {"type": "with", "value": "Fuego"}, {"type": "max_walk", "value": 5}, {"type": "max_step", "value": 3}]}
 {"text": "out by 2am - not until half 2. as long as ammo's there", "expect": [{"type": "back_by", "value": "02:00"}, {"type": "after", "value": "14:30"}, {"type": "with", "value": "Ammo"}], "rules_parser": [{"type": "back_by", "value": "02:00"}]}
@@ -2363,7 +2369,6 @@
 {"text": "ok after 3am then I'm in", "expect": [{"type": "after", "value": "03:00"}], "rules_parser": [{"type": "after", "value": "03:00"}]}
 {"text": "when I'm done with lunch at quarter past eleven", "expect": [{"type": "after", "value": "11:15"}], "rules_parser": null}
 {"text": "I need to be gone by 2 then I'm in", "expect": [{"type": "back_by", "value": "14:00"}], "rules_parser": null}
-{"text": "back by 19", "expect": null, "rules_parser": [{"type": "back_by", "value": "19:00"}]}
 {"text": "once I'm off work at 6 and under 30 min walk also with fuego", "expect": [{"type": "after", "value": "18:00"}, {"type": "max_walk", "value": 30}, {"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}, {"type": "max_walk", "value": 30}]}
 {"text": "I'll come if Fuego is there!", "expect": [{"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}]}
 {"text": "ok from 9:30 on then I'm in", "expect": [{"type": "after", "value": "09:30"}], "rules_parser": [{"type": "after", "value": "09:30"}]}
@@ -2453,6 +2458,7 @@
 {"text": "Sounds fun, not before 12:15.", "expect": [{"type": "after", "value": "12:15"}], "rules_parser": [{"type": "after", "value": "12:15"}]}
 {"text": "I'll come once I'm done with my errands around 4 o'clock then I'm in", "expect": [{"type": "after", "value": "16:00"}], "rules_parser": null}
 {"text": "I'll come curfew is 10, and from 3:40", "expect": [{"type": "back_by", "value": "10:00"}, {"type": "after", "value": "15:40"}], "rules_parser": [{"type": "after", "value": "15:40"}]}
+{"text": "back by 27:30", "expect": null, "rules_parser": null}
 {"text": "In, have to be out by half 10", "expect": [{"type": "back_by", "value": "10:30"}], "rules_parser": [{"type": "back_by", "value": "10:30"}]}
 {"text": "when Amor comes pls", "expect": [{"type": "with", "value": "Amor"}], "rules_parser": null}
 {"text": "in, can't do before 7 also midday at the latest. provided ammo comes then I'm in", "expect": [{"type": "after", "value": "19:00"}, {"type": "back_by", "value": "12:00"}, {"type": "with", "value": "Ammo"}], "rules_parser": null}
@@ -2849,7 +2855,7 @@
 {"text": "I'm in nearby only I'm in", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
 {"text": "in, from 10 o'clock on pls", "expect": [{"type": "after", "value": "10:00"}], "rules_parser": [{"type": "after", "value": "10:00"}]}
 {"text": "in, after my 12 o'clock meeting - 30 minutes on foot max lol", "expect": [{"type": "after", "value": "12:00"}, {"type": "max_walk", "value": 30}], "rules_parser": [{"type": "after", "value": "12:00"}]}
-{"text": "back by 40", "expect": null, "rules_parser": null}
+{"text": "back by 48", "expect": null, "rules_parser": null}
 {"text": "I can do it with Ammo and amor", "expect": [{"type": "with", "value": "Ammo"}, {"type": "with", "value": "Amor"}], "rules_parser": [{"type": "with", "value": "Ammo"}, {"type": "with", "value": "Amor"}]}
 {"text": "ok from 6:10 on pls", "expect": [{"type": "after", "value": "18:10"}], "rules_parser": [{"type": "after", "value": "18:10"}]}
 {"text": "yeah not too far!", "expect": [{"type": "max_walk", "value": 10}], "rules_parser": [{"type": "max_walk", "value": 10}]}
@@ -2992,9 +2998,3 @@
 {"text": "In, back by 11:45 and just the long one. only if Fuego drives :)", "expect": [{"type": "back_by", "value": "11:45"}, {"type": "min_step", "value": 1}, {"type": "with", "value": "Fuego"}], "rules_parser": [{"type": "with", "value": "Fuego"}, {"type": "back_by", "value": "11:45"}, {"type": "min_step", "value": 1}]}
 {"text": "NEED TO LEAVE BY 11, AND ONCE I'M DONE WITH MY ERRANDS AROUND 4 I'M IN", "expect": [{"type": "back_by", "value": "11:00"}, {"type": "after", "value": "16:00"}], "rules_parser": [{"type": "back_by", "value": "11:00"}]}
 {"text": "Down need to wrap up by 3pm!", "expect": [{"type": "back_by", "value": "15:00"}], "rules_parser": null}
-{"text": "I'm in with Shilp. not before 4 but 15 min walk max pls", "expect": [{"type": "with", "value": "Shilp"}, {"type": "after", "value": "16:00"}, {"type": "max_walk", "value": 15}], "rules_parser": [{"type": "with", "value": "Shilp"}, {"type": "after", "value": "16:00"}, {"type": "max_walk", "value": 15}]}
-{"text": "Starting half 7 lol", "expect": [{"type": "after", "value": "19:30"}], "rules_parser": null}
-{"text": "down have to be out by quarter past four", "expect": [{"type": "back_by", "value": "16:15"}], "rules_parser": null}
-{"text": "as long as Shilp's there :)", "expect": [{"type": "with", "value": "Shilp"}], "rules_parser": null}
-{"text": "earliest 12 pm, back home for dinner at 7", "expect": [{"type": "after", "value": "12:00"}, {"type": "back_by", "value": "19:00"}], "rules_parser": [{"type": "after", "value": "12:00"}, {"type": "back_by", "value": "19:00"}]}
-{"text": "after half 4, or with Shilp", "expect": null, "rules_parser": null}
