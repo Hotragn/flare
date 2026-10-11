@@ -2252,6 +2252,48 @@
       "kind": "title",
       "where": "O5"
     },
+    "loop.frag.min": {
+      "text": "{min} min",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts",
+      "sample": {
+        "min": 40
+      }
+    },
+    "loop.frag.gap": {
+      "text": "a bench every {m} m",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts",
+      "sample": {
+        "m": 200
+      }
+    },
+    "loop.frag.trees": {
+      "text": "under trees",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.water": {
+      "text": "by water",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.restrooms": {
+      "text": "near restrooms",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
+    "loop.frag.noSteps": {
+      "text": "no steps",
+      "kind": "fragment",
+      "where": "loop read-back",
+      "owner": "apps/web/src/lib/conditions/rest.ts"
+    },
     "loop.none": {
       "text": "No loop keeps benches that close.",
       "kind": "title",
