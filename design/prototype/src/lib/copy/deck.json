@@ -2414,6 +2414,26 @@
       "kind": "button",
       "where": "O5"
     },
+    "loop.noLocation": {
+      "text": "No location, so no loop. Allow it, then try again.",
+      "kind": "message",
+      "where": "O5"
+    },
+    "loop.noMap": {
+      "text": "No walking map here yet. Loops work near Fairlane.",
+      "kind": "message",
+      "where": "O5"
+    },
+    "loop.hint": {
+      "text": "Say how long, like 30 minutes.",
+      "kind": "message",
+      "where": "O5"
+    },
+    "loop.finding": {
+      "text": "Finding benches…",
+      "kind": "status",
+      "where": "O5"
+    },
     "loop.card.title": {
       "text": "{min} min loop from {place}",
       "kind": "title",
