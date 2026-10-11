@@ -35,3 +35,13 @@ Sun 2026-10-11, 03:40 ET, on main after integration point 1. Everything below wa
 1. Hub latency under load: median 4.0 s at load 5, 4/5 within 6 s; lab 3.0 s idle. The field Mac must run only the hub (device checklist step 0).
 2. `/check/capability/` accessibility findings (internal tool).
 3. Web Push, compass sensors, haptics and Home Screen install are only provable on the iPhones (03-spikes.md section 5).
+
+## Update Sun ~07:30 ET: rest loop and Fix the map
+
+| Item | Before | Now | Proof |
+| --- | --- | --- | --- |
+| Bench to Bench `/app/loop/` | Menu link 404 | Built; words parsed on the phone | `npm run e2e:loop`: Village Green 32 min · 1.6 km · 11 benches in 83 ms, PDF 3,565 bytes; 0 API calls carry the words |
+| Ford Woods loop | n/a | No loop (benches clustered in OSM); screen says so and offers 400 m | same run |
+| Fix the map `/app/fix-map/` | Menu link 404 | Built; review every tag, export note (clipboard) or `.osm` | same run: export locked until 0 pending, bad value refused, 0 requests to OSM or the API |
+
+Known limit: Fix the map starts from the usual tags for the thing, not from a photo, because the hub has no tag-drafting job (ML5).

@@ -8,9 +8,10 @@ Owner: Engineering lead. Every step that touches the founder's accounts waits fo
 git pull && npm ci && npm run ci
 npm run build && node apps/web/test/e2e/flow.ts 5 real
 npm run e2e:hello && npm run e2e:pwa
+npm run e2e:field && npm run e2e:sparks && npm run e2e:loop
 ```
 
-Pass bar: CI green (GitHub Actions too), real flow 5/5 with 0 page errors, e2e-hello tier hub, PWA ALL PASS.
+Pass bar: CI green (GitHub Actions too), real flow 5/5 with 0 page errors, e2e-hello tier hub, PWA ALL PASS, field 27/27, sparks and loop all pass.
 
 ## 08:30 Device checklist
 

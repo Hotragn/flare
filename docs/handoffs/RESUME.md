@@ -141,3 +141,9 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - IN PROGRESS: `/app/loop/` route at `apps/web/src/routes/app/(more)/loop/+page.svelte`. Flow: words → `parseRest` (lib/conditions/rest.ts, on the phone) → read-back → `askLocation` → `loadNear` + `loadPathsNear` → `nameSpot` → `buildLoop` (map gap: parser `restGapM` → `rest_gap_m`, prefer only trees/water) → card preview `cardLines`, Print card = `cardPdf` download, Read it aloud = `speakTurns`; no loop → "Try {m} m" with `next_gap_m`. New copy keys loop.noLocation, loop.noMap, loop.hint, loop.finding.
 - Data fact: Fairlane gives NO loop at Ford Woods / West Road (benches clustered; docs/maps/05-rest-loops.md). Village Green (42.3064, -83.227) gives loops. E2E: `apps/web/test/e2e/loop.ts` (`npm run e2e:loop`): Village Green → loop + PDF starts with %PDF; Ford Woods → "No loop keeps benches that close."
 - Then `/app/fix-map/` (draft and export only, lib/map/fixmap.ts, prototype screen for "map.*" keys). If not done by rc-1 (09:30), remove the `/app/fix-map/` row from HostPage.svelte menu items for the RC, finish in the afternoon.
+
+## Status Sun ~07:30 ET
+- DONE `/app/loop/` (3bc35dc) and `/app/fix-map/` (ac88bb0). `npm run e2e:loop` 15/15 (loop at Village Green, honest "no loop" at Ford Woods, fix-map review and both exports, 0 OSM/API requests). Every menu link now resolves.
+- Field note: at the Ford Woods spot Bench to Bench says no loop; demo it at Village Green (42.3064, -83.227) or say so in the post.
+- Next: 08:00 integration point 3 per docs/engineering/06-deploy-runbook.md (add `npm run e2e:loop` to it), 08:30 device check, 09:30 rc-1, deploy on the founder's YES.
+- After the test: Lighthouse 61 on mobile `/`, frontend extras, website and maps ICRs, CR-FE-2, field-scan notes into docs/research, scrub Entire session logs (100 emails) before the repo goes public, ML5 tag-drafting hub job for Fix the map.
