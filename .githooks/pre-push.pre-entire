@@ -1,3 +1,6 @@
 #!/bin/sh
-# Blocks a push that would publish a secret (SRS-SEC-2). Installed by `npm run hooks`.
-exec node scripts/secret-scan.ts
+# Blocks a push that would publish a secret (SRS-SEC-2), in the files and in Entire's recorded
+# agent sessions (refs/entire/*, SRS-SEC-7). Installed by `npm run hooks`; Entire's pre-push
+# hook calls this one after pushing its session logs is prepared.
+node scripts/secret-scan.ts || exit 1
+exec node scripts/scan-sessions.ts
