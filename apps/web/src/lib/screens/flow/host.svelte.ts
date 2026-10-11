@@ -168,10 +168,10 @@ export class HostFlow {
 
   /** Spot from the phone's location (SRS-CRE-3): nearest named feature, else the street. */
   setPosition(at: LatLon): void {
-    this.askLocation = false;
     const m = this.#d.maps;
     const named = m && this.#pack ? m.nameSpot(this.#pack, at) : null;
     this.spot = named ? { ...named, ...at } : { name: "", key: "", ...at };
+    this.askLocation = !named; // no name from the map: the host types where they are
     if (m && this.#pack) {
       try {
         this.access = m.accessLine(this.#pack, at);
@@ -190,14 +190,14 @@ export class HostFlow {
   /** Typed spot when location is off (perm.locationHost.denied); no compass target then. */
   typeSpot(name: string): void {
     this.askLocation = false;
-    if (name.trim()) this.spot = { name: name.trim(), key: name.trim(), lat: 0, lon: 0 };
+    const n = name.trim();
+    if (n) this.spot = { name: n, key: n, lat: this.spot?.lat ?? 0, lon: this.spot?.lon ?? 0 };
   }
 
   useWords(words: string): void {
     this.words = words;
     const host = this.hostName || storedName();
-    if (!this.hostLine)
-      this.hostLine = t("send.hostLine", { host: host || t("join.namePlaceholder"), spot: this.spot?.name || "" });
+    if (!this.hostLine && host && this.spot?.name) this.hostLine = t("send.hostLine", { host, spot: this.spot.name });
     this.screen = "send";
   }
 

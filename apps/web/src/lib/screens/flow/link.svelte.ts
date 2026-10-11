@@ -138,7 +138,7 @@ export class LinkFlow {
     if (label && label !== "spot" && s.candidates?.[label]) return s.candidates[label];
     const step = v?.plan?.current_step;
     if (step && s.steps?.[`step:${step}`]) return s.steps[`step:${step}`].place;
-    return s.spot;
+    return s.spot.lat === 0 && s.spot.lon === 0 ? null : s.spot; // a typed spot has no position
   }
   /** Plan steps for the Ladder, biggest first. */
   get steps(): { name: string; place: string; minutes: number; access: string }[] {

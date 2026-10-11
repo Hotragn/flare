@@ -31,7 +31,35 @@ export function wire(
   const store = createStore();
   const outbox = createOutbox({ store, onDropped: opts.onDropped });
   outbox.start();
-  const live = createLive({ store, onStatus: (_id, s) => opts.onStatus?.(s.online, s.savedAt) });
+  // The live module reports Gone through onGone (a 410 or the `gone` event) and then stops; the
+  // flows want one stream of views, so Gone becomes a last view with state "gone".
+  const last = new Map<string, { view: GatheringView | null; on: (v: GatheringView, o: number) => void }>();
+  const live = createLive({
+    store,
+    onStatus: (_id, s) => opts.onStatus?.(s.online, s.savedAt),
+    onGone: (id, ended) => {
+      const f = last.get(id);
+      if (!f?.view) return;
+      const view: GatheringView = {
+        ...f.view,
+        state: "gone",
+        ended: ended === "thanks_for_coming" || ended === "not_this_time" ? ended : (f.view.ended ?? "not_this_time"),
+      };
+      f.on(view, live.offset(id));
+    },
+  });
+  const follow: Deps["live"]["follow"] = (id, onView) => {
+    const entry = { view: null as GatheringView | null, on: onView };
+    last.set(id, entry);
+    const stop = live.follow(id, (v, o) => {
+      entry.view = v as unknown as GatheringView; // the module passes the whole parsed Gathering
+      onView(entry.view, o);
+    });
+    return () => {
+      last.delete(id);
+      stop();
+    };
+  };
   void store.sweep().catch(() => {
     // A failed sweep retries on the next open; expired rows are also skipped on read.
   });
@@ -39,10 +67,7 @@ export function wire(
     crypto: flareCrypto,
     store,
     outbox,
-    // The live module passes the whole Gathering view it parsed; LiveView types the fields it reads.
-    live: live as unknown as Deps["live"] & {
-      follow(id: string, f: (v: GatheringView, o: number) => void): () => void;
-    },
+    live: { follow },
     conditions: find<ConditionsIcd.Conditions>("conditions", REQUIRED.conditions),
     maps: find<MapIcd.Maps>("map", REQUIRED.maps),
     caps: find<CapabilitiesIcd.CapabilityProbe>("capabilities", REQUIRED.caps),

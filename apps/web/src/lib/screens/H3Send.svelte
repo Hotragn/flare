@@ -15,6 +15,7 @@
     photo = "",
     scene = "",
     words,
+    spot = "",
     quorum = $bindable("2"),
     hostLine = $bindable(""),
     hostName = $bindable(""),
@@ -31,6 +32,7 @@
     photo?: string;
     scene?: string;
     words: string;
+    spot?: string;
     quorum?: string;
     hostLine?: string;
     hostName?: string;
@@ -44,6 +46,7 @@
   } = $props();
   let editing = $state(false);
   const showEdit = $derived(editing || view === "editing");
+  const shownLine = $derived(hostLine || (hostName.trim() && spot ? t("send.hostLine", { host: hostName.trim(), spot }) : ""));
 </script>
 
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}>
@@ -58,7 +61,7 @@
   {#if showEdit}
     <TextField label={t("send.hostLineLabel")} bind:value={hostLine} hint={t("send.hostLineHint")} max={80} />
   {:else}
-    <p class="hostline"><span>{hostLine}</span><button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => (editing = true)}><Icon name="edit" /></button></p>
+    <p class="hostline"><span>{shownLine}</span><button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => (editing = true)}><Icon name="edit" /></button></p>
   {/if}
   <InfoLines {access} {nature} />
   {#if view === "error" || error}
