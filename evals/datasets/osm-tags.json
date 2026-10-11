@@ -1,30 +1,150 @@
 {
-  "version": 1,
-  "about": "Five lab photos (Wikimedia Commons, licenses in evals/datasheets/photos.md) with the tags a mapper would draft. must = tags that should appear; may = tags that are fine either way. Images are read from lab/data/photos, not copied.",
+  "version": 2,
+  "about": "Lab photos (Wikimedia Commons, licenses in evals/datasheets/photos.md) with the tags a mapper would draft. must = tags that should appear; may = tags that are fine either way. Images are read from lab/data/photos, not copied. v2 adds six: one lit fountain and five scenes with no allow-listed feature, which test that nothing is invented (no names from signs).",
   "items": [
-    { "id": "04", "must": { "amenity": "bench" }, "may": ["backrest", "material", "seats", "covered", "lit"] },
+    {
+      "id": "04",
+      "must": {
+        "amenity": "bench"
+      },
+      "may": [
+        "backrest",
+        "material",
+        "seats",
+        "covered",
+        "lit"
+      ]
+    },
     {
       "id": "10",
-      "must": { "amenity": "drinking_water" },
-      "may": ["material", "wheelchair", "fee", "access", "drinking_water"],
-      "also_ok": { "amenity": ["fountain"] }
+      "must": {
+        "amenity": "drinking_water"
+      },
+      "may": [
+        "material",
+        "wheelchair",
+        "fee",
+        "access",
+        "drinking_water"
+      ],
+      "also_ok": {
+        "amenity": [
+          "fountain"
+        ]
+      }
     },
     {
       "id": "18",
-      "must": { "amenity": "shelter" },
-      "may": ["covered", "material", "lit", "backrest", "seats", "wheelchair"]
+      "must": {
+        "amenity": "shelter"
+      },
+      "may": [
+        "covered",
+        "material",
+        "lit",
+        "backrest",
+        "seats",
+        "wheelchair"
+      ]
     },
     {
       "id": "05",
       "must": {},
-      "may": ["material", "amenity", "seats", "covered", "backrest"],
+      "may": [
+        "material",
+        "amenity",
+        "seats",
+        "covered",
+        "backrest"
+      ],
       "note": "picnic table: leisure=picnic_table is off the list, so nothing is required"
     },
     {
       "id": "07",
       "must": {},
-      "may": ["lit", "access", "fee", "amenity", "covered", "material"],
+      "may": [
+        "lit",
+        "access",
+        "fee",
+        "amenity",
+        "covered",
+        "material"
+      ],
       "note": "basketball court: no allow-listed feature is required"
+    },
+    {
+      "id": "15",
+      "must": {},
+      "may": [
+        "amenity",
+        "lit",
+        "drinking_water",
+        "access",
+        "fee"
+      ],
+      "also_ok": {
+        "amenity": [
+          "fountain"
+        ]
+      },
+      "note": "decorative fountains at night; amenity=fountain is right but not required"
+    },
+    {
+      "id": "06",
+      "must": {},
+      "may": [
+        "material",
+        "access",
+        "fee",
+        "lit",
+        "covered"
+      ],
+      "note": "playground: leisure=playground is off the list"
+    },
+    {
+      "id": "13",
+      "must": {},
+      "may": [
+        "material",
+        "access",
+        "fee",
+        "lit"
+      ],
+      "note": "pier: no allow-listed feature"
+    },
+    {
+      "id": "24",
+      "must": {},
+      "may": [
+        "material",
+        "access",
+        "fee",
+        "lit"
+      ],
+      "note": "skate park: no allow-listed feature"
+    },
+    {
+      "id": "21",
+      "must": {},
+      "may": [
+        "access",
+        "fee",
+        "covered",
+        "lit"
+      ],
+      "note": "shopping cart in a parking lot: nothing to tag"
+    },
+    {
+      "id": "01",
+      "must": {},
+      "may": [
+        "access",
+        "fee",
+        "opening_hours",
+        "wheelchair",
+        "lit"
+      ],
+      "note": "mall entrance with a sign: the name on the sign must never appear"
     }
   ]
 }

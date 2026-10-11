@@ -147,3 +147,8 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Field note: at the Ford Woods spot Bench to Bench says no loop; demo it at Village Green (42.3064, -83.227) or say so in the post.
 - Next: 08:00 integration point 3 per docs/engineering/06-deploy-runbook.md (add `npm run e2e:loop` to it), 08:30 device check, 09:30 rc-1, deploy on the founder's YES.
 - After the test: Lighthouse 61 on mobile `/`, frontend extras, website and maps ICRs, CR-FE-2, field-scan notes into docs/research, scrub Entire session logs (100 emails) before the repo goes public, ML5 tag-drafting hub job for Fix the map.
+
+## Status Sun ~07:30 ET
+- ML5 photo-to-tags: hub job, route, contracts, phone photo step DONE (c324bf2, d373d29, b27c525); e2e:loop 20/20 with the real hub. Eval set grown to 11 (v2). PAUSED by the manager for Lighthouse; resumes first after the field test. Open: p95 latency 13.8 s (eval sends 1280 px, phone sends 768 px) and invented amenity on 4/6 no-feature photos. Next steps are in evals/reports/osm-tags-hub.md "Open findings".
+- NOW: Lighthouse 100 in all four categories on every website page, mobile and desktop, reports saved as proof. Fix by budget (images, fonts, preload, render-blocking, CLS); keep motion and design.
+- DO NOT touch the Telegram bot, webhook or getUpdates: the live test is running from lab/ (about 60 min from ~07:30). The manager will send the chat id for TELEGRAM_ALLOWED_CHAT_IDS.

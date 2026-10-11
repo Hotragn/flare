@@ -1,20 +1,20 @@
 {
   "task": "osm-tags",
   "tier": "hub",
-  "date": "2026-10-11T01:20:41.123Z",
-  "n": 5,
+  "date": "2026-10-11T07:23:16.136Z",
+  "n": 11,
   "prompt": "osm-tags@1",
   "model": "gemma4:e4b-it-q4_K_M",
   "latency": {
-    "median_ms": 1072,
-    "p95_ms": 1362,
-    "max_ms": 1362
+    "median_ms": 7708,
+    "p95_ms": 13754,
+    "max_ms": 13754
   },
   "bars": [
     {
       "name": "Parsed answers",
-      "target": "5/5",
-      "value": "5/5",
+      "target": "11/11",
+      "value": "11/11",
       "pass": true
     },
     {
@@ -25,8 +25,8 @@
     },
     {
       "name": "Required tags drafted",
-      "target": "≥ 4/5",
-      "value": "5/5",
+      "target": "≥ 10/11",
+      "value": "11/11",
       "pass": true
     },
     {
@@ -38,19 +38,19 @@
     {
       "name": "p95 latency",
       "target": "≤ 8000 ms",
-      "value": "1362 ms",
-      "pass": true
+      "value": "13754 ms",
+      "pass": false
     }
   ],
   "notes": [
-    "Image warm-up before timing: 15795 ms (not counted).",
-    "Answers with at least one off-list or bad-value key before the guard: 0/5 (dropped, never shown).",
-    "Mac 1-min load average: 22.0 at start, 30.3 at end (10 cores; other agents share this Mac and its Ollama)."
+    "Image warm-up before timing: 547 ms (not counted).",
+    "Answers with at least one off-list or bad-value key before the guard: 0/11 (dropped, never shown).",
+    "Mac 1-min load average: 3.8 at start, 3.9 at end (10 cores; other agents share this Mac and its Ollama)."
   ],
   "items": [
     {
       "id": "04",
-      "ms": 1362,
+      "ms": 913,
       "tags": {
         "amenity": "bench",
         "material": "stone"
@@ -64,7 +64,7 @@
     },
     {
       "id": "10",
-      "ms": 1072,
+      "ms": 941,
       "tags": {
         "amenity": "fountain"
       },
@@ -77,7 +77,7 @@
     },
     {
       "id": "18",
-      "ms": 1268,
+      "ms": 11589,
       "tags": {
         "amenity": "shelter",
         "covered": "yes"
@@ -91,7 +91,7 @@
     },
     {
       "id": "05",
-      "ms": 752,
+      "ms": 917,
       "tags": {},
       "dropped": [],
       "must": {},
@@ -100,7 +100,72 @@
     },
     {
       "id": "07",
-      "ms": 761,
+      "ms": 866,
+      "tags": {},
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {}}"
+    },
+    {
+      "id": "15",
+      "ms": 7854,
+      "tags": {
+        "amenity": "shelter"
+      },
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"shelter\"}}"
+    },
+    {
+      "id": "06",
+      "ms": 9946,
+      "tags": {
+        "amenity": "shelter"
+      },
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"shelter\"}}"
+    },
+    {
+      "id": "13",
+      "ms": 7465,
+      "tags": {
+        "material": "wood"
+      },
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {\"material\": \"wood\"}}"
+    },
+    {
+      "id": "24",
+      "ms": 7708,
+      "tags": {
+        "amenity": "shelter"
+      },
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"shelter\"}}"
+    },
+    {
+      "id": "21",
+      "ms": 13754,
+      "tags": {
+        "amenity": "waste_basket",
+        "material": "metal"
+      },
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"waste_basket\", \"material\": \"metal\"}}"
+    },
+    {
+      "id": "01",
+      "ms": 9531,
       "tags": {},
       "dropped": [],
       "must": {},
