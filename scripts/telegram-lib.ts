@@ -22,7 +22,9 @@ export function loadVars(): Vars {
     };
     const parse = util.getBuiltinModule?.("node:util")?.parseEnv;
     if (!parse) throw new Error("Node 24.21+ needed for util.parseEnv");
-    Object.assign(vars, parse(fs.readFileSync(file, "utf8")));
+    // The process environment wins over .env, as usual: PUBLIC_BASE_URL=https://… on the
+    // command line points the webhook at the deployed host without editing .env.
+    return { ...parse(fs.readFileSync(file, "utf8")), ...process.env };
   }
   return vars;
 }

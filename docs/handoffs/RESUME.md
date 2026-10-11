@@ -188,3 +188,9 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Post plan: no outdoor group-test claims unless one happens; build on real-stack runs, iPhone device checks (16 Pro Max, 13), live Telegram checks, deletion audit.
 
 - ~11:48: redesign adds I12 after-outing ("You were outside N min together" → Phone away), CountRing on invite, access chips (Access unknown here), sun/rain icons, Scenery backdrop on Home, Lit "Outside together" line. OPEN: invite backdrop black in capture (photo not shown yet or img issue: debug next); Home green line shows generic season ("Week 3 of fall"): filter like InfoLines.
+## DEPLOYED Sun ~11:55 ET: https://flare-outside.onrender.com (Render free; main 340970d)
+- smoke x2: all required checks pass (health, db ok, hub connected, push, telegram, cloud tier, pages with CSP, HSTS, traversal refused, safe previews, deletion audit). Photo draft fell to rules both runs at 6.0 s: the hub's model call itself hit 6 s (Ollama shared with subagent evals); recheck when S2 is done.
+- Hub running on this Mac against the live server (keeps it awake). setWebhook done: webhook https://flare-outside.onrender.com/api/v1/telegram/webhook, 0 pending, no error. Live tap still needs a human in "Flare test".
+- scripts/telegram-lib.ts: process env now overrides .env (so PUBLIC_BASE_URL=https://... works for setWebhook).
+
+- Full ordered backlog with status: docs/engineering/07-sunday-backlog.md
