@@ -59,7 +59,9 @@ export function startSensors(onReading: (r: Reading) => void, onState: (s: Senso
     r.heading = h;
     onReading({ ...r });
   };
+  let stopped = false;
   const listen = () => {
+    if (stopped) return; // the person left before the prompt was answered
     const name = "ondeviceorientationabsolute" in globalThis ? "deviceorientationabsolute" : "deviceorientation";
     globalThis.addEventListener(name, onOrient);
     stops.push(() => globalThis.removeEventListener(name, onOrient));
@@ -87,6 +89,7 @@ export function startSensors(onReading: (r: Reading) => void, onState: (s: Senso
   } else onState("no-gps");
 
   return () => {
+    stopped = true;
     for (const s of stops) s();
   };
 }
