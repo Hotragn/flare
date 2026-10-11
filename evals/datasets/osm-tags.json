@@ -7,30 +7,16 @@
       "must": {
         "amenity": "bench"
       },
-      "may": [
-        "backrest",
-        "material",
-        "seats",
-        "covered",
-        "lit"
-      ]
+      "may": ["backrest", "material", "seats", "covered", "lit"]
     },
     {
       "id": "10",
       "must": {
         "amenity": "drinking_water"
       },
-      "may": [
-        "material",
-        "wheelchair",
-        "fee",
-        "access",
-        "drinking_water"
-      ],
+      "may": ["material", "wheelchair", "fee", "access", "drinking_water"],
       "also_ok": {
-        "amenity": [
-          "fountain"
-        ]
+        "amenity": ["fountain"]
       }
     },
     {
@@ -38,112 +24,57 @@
       "must": {
         "amenity": "shelter"
       },
-      "may": [
-        "covered",
-        "material",
-        "lit",
-        "backrest",
-        "seats",
-        "wheelchair"
-      ]
+      "may": ["covered", "material", "lit", "backrest", "seats", "wheelchair"]
     },
     {
       "id": "05",
       "must": {},
-      "may": [
-        "material",
-        "amenity",
-        "seats",
-        "covered",
-        "backrest"
-      ],
+      "may": ["material", "amenity", "seats", "covered", "backrest"],
       "note": "picnic table: leisure=picnic_table is off the list, so nothing is required"
     },
     {
       "id": "07",
       "must": {},
-      "may": [
-        "lit",
-        "access",
-        "fee",
-        "amenity",
-        "covered",
-        "material"
-      ],
+      "may": ["lit", "access", "fee", "amenity", "covered", "material"],
       "note": "basketball court: no allow-listed feature is required"
     },
     {
       "id": "15",
       "must": {},
-      "may": [
-        "amenity",
-        "lit",
-        "drinking_water",
-        "access",
-        "fee"
-      ],
+      "may": ["amenity", "lit", "drinking_water", "access", "fee"],
       "also_ok": {
-        "amenity": [
-          "fountain"
-        ]
+        "amenity": ["fountain"]
       },
       "note": "decorative fountains at night; amenity=fountain is right but not required"
     },
     {
       "id": "06",
       "must": {},
-      "may": [
-        "material",
-        "access",
-        "fee",
-        "lit",
-        "covered"
-      ],
+      "may": ["material", "access", "fee", "lit", "covered"],
       "note": "playground: leisure=playground is off the list"
     },
     {
       "id": "13",
       "must": {},
-      "may": [
-        "material",
-        "access",
-        "fee",
-        "lit"
-      ],
+      "may": ["material", "access", "fee", "lit"],
       "note": "pier: no allow-listed feature"
     },
     {
       "id": "24",
       "must": {},
-      "may": [
-        "material",
-        "access",
-        "fee",
-        "lit"
-      ],
+      "may": ["material", "access", "fee", "lit"],
       "note": "skate park: no allow-listed feature"
     },
     {
       "id": "21",
       "must": {},
-      "may": [
-        "access",
-        "fee",
-        "covered",
-        "lit"
-      ],
+      "may": ["access", "fee", "covered", "lit"],
       "note": "shopping cart in a parking lot: nothing to tag"
     },
     {
       "id": "01",
       "must": {},
-      "may": [
-        "access",
-        "fee",
-        "opening_hours",
-        "wheelchair",
-        "lit"
-      ],
+      "may": ["access", "fee", "opening_hours", "wheelchair", "lit"],
       "note": "mall entrance with a sign: the name on the sign must never appear"
     }
   ]
