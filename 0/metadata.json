@@ -1,0 +1,78 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4MXKFBA3KF0K0F08H7QQMVP",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T07:25:00.217789Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "72f26e587652",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 1908,
+    "cache_creation_tokens": 3938912,
+    "cache_read_tokens": 493239516,
+    "output_tokens": 1132672,
+    "api_call_count": 937
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 222,
+      "user_lines_removed": 37,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "evals/datasets/osm-tags.json": 130,
+        "evals/reports/osm-tags-hub.json": 84,
+        "evals/reports/osm-tags-hub.md": 8
+      },
+      "user_removed_per_file": {
+        "evals/datasets/osm-tags.json": 10,
+        "evals/reports/osm-tags-hub.json": 19,
+        "evals/reports/osm-tags-hub.md": 8
+      }
+    }
+  ]
+}
