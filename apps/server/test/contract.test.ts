@@ -717,6 +717,16 @@ describe("draftOsmTags", () => {
   });
 });
 
+describe("getGroupStats", () => {
+  it("200 counts only, 401 without a member", async () => {
+    const g = await h.group(2);
+    const r = await h.call("GET", `/api/v1/groups/${g.groupId}/stats`, { as: g.host });
+    expect(r.status).toBe(200);
+    expect(r.body).toEqual({ outings: 0, outside_min: 0, outside_min_week: 0, embers_saved: 0 });
+    expect((await h.call("GET", `/api/v1/groups/${g.groupId}/stats`)).status).toBe(401);
+  });
+});
+
 describe("coverage of the contract", () => {
   it("has a describe block for every BE operation in openapi.yaml", () => {
     const spec = YAML.parse(fs.readFileSync(OPENAPI, "utf8")) as {

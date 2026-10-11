@@ -1,7 +1,8 @@
 // Groups and members (openapi tag groups): create, read, join, rename, forget (SRS-ID-1 to 6).
+
 import type { Hono } from "hono";
 import type { Ctx } from "../core/deps.ts";
-import { b64u, runEvent, unb64u } from "../core/gatherings.ts";
+import { b64u, isoWeek, runEvent, unb64u } from "../core/gatherings.ts";
 import type { Q } from "../db/db.ts";
 import { ApiError } from "../http/errors.ts";
 import { body, isUuid, type RateLimiter, requireMember, sha256 } from "../http/middleware.ts";
@@ -69,6 +70,29 @@ export function mountGroups(app: Hono, ctx: Ctx, rl: RateLimiter): void {
       });
     }),
   );
+
+  // Crew space stats (backlog #5): from the group's own counters only, never who or where.
+  app.get("/api/v1/groups/:groupId/stats", async (c) => {
+    const db = needDb(ctx);
+    const groupId = groupParam(c.req.param("groupId"));
+    const m = await requireMember(c, db);
+    sameGroup(m, groupId);
+    const r = await db.query<{ name: string; bucket: string; value: string }>(
+      `select name, bucket, value::text from counters where group_id = $1
+       and name in ('flares_lit', 'embers_lit', 'lit_minutes_sum', 'lit_minutes_week', 'plans_lit_step')`,
+      [groupId],
+    );
+    const sum = (n: string, bucket?: string) =>
+      r.rows
+        .filter((x) => x.name === n && (bucket === undefined || x.bucket === bucket))
+        .reduce((a, x) => a + Number(x.value), 0);
+    return c.json({
+      outings: sum("flares_lit") + sum("plans_lit_step"),
+      outside_min: sum("lit_minutes_sum"),
+      outside_min_week: sum("lit_minutes_week", isoWeek(new Date())),
+      embers_saved: sum("embers_lit"),
+    });
+  });
 
   app.get("/api/v1/groups/:groupId", async (c) => {
     const db = needDb(ctx);

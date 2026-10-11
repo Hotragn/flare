@@ -849,6 +849,35 @@ paths:
         "415": { $ref: "#/components/responses/UnsupportedMedia" }
         "429": { $ref: "#/components/responses/TooMany" }
 
+  /api/v1/groups/{groupId}/stats:
+    parameters:
+      - $ref: "#/components/parameters/GroupId"
+    get:
+      tags: [groups]
+      operationId: getGroupStats
+      summary: The crew's story in numbers, from its own counters only (Crew space)
+      description: |
+        Outings (Flares and Plans that lit), minutes outside together (Lit to Gone, all time and
+        this ISO week), and Embers that saved a Flare. Counts only: never who, where or when.
+        Deleted with the group.
+      security: [{ member: [] }]
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [outings, outside_min, outside_min_week, embers_saved]
+                properties:
+                  outings: { type: integer, minimum: 0 }
+                  outside_min: { type: integer, minimum: 0 }
+                  outside_min_week: { type: integer, minimum: 0 }
+                  embers_saved: { type: integer, minimum: 0 }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
   /api/v1/groups/{groupId}/telegram-link:
     parameters:
       - $ref: "#/components/parameters/GroupId"

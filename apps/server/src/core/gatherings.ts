@@ -261,6 +261,16 @@ const VALUE_IN_BUCKET: Record<string, "add" | "max"> = {
  * ICD-1 v1.1 counter effect: `by` and `op` when present; otherwise the engine's 1.0 form,
  * where headcount_sum, lit_minutes_sum and headcount_max carry their number in `bucket`.
  */
+/** "2026-W41": the ISO week a date falls in (UTC). */
+export function isoWeek(d: Date): string {
+  const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const year = t.getUTCFullYear();
+  const week = Math.ceil(((t.getTime() - Date.UTC(year, 0, 1)) / 86_400_000 + 1) / 7);
+  return `${year}-W${String(week).padStart(2, "0")}`;
+}
+
 export async function applyCounter(
   q: Q,
   groupId: string,
@@ -276,6 +286,14 @@ export async function applyCounter(
     op = legacy;
   }
   if (!Number.isFinite(by) || by < 0) return;
+  // Crew space: the week's outside minutes too, bucketed by ISO week (counts only, deleted
+  // with the group). Lit-to-Gone minutes are the "outside together" time.
+  if (e.name === "lit_minutes_sum")
+    await q.query(
+      `insert into counters (group_id, name, bucket, value) values ($1, 'lit_minutes_week', $2, $3)
+       on conflict (group_id, name, bucket) do update set value = counters.value + excluded.value`,
+      [groupId, isoWeek(new Date()), Math.round(by)],
+    );
   await q.query(
     op === "max"
       ? `insert into counters (group_id, name, bucket, value) values ($1, $2, $3, $4)
