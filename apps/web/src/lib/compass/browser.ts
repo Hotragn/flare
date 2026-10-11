@@ -6,7 +6,7 @@ type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () =
 
 let audio: AudioContext | null = null;
 
-/** A 120 ms 880 Hz blip. Call once inside a tap first (unlockAudio) so iOS lets it play later. */
+/** A 120 ms 880 Hz blip. Call once inside a tap first (primeAudio) so iOS lets it play later. */
 export function tone(): void {
   try {
     audio ??= new AudioContext();
@@ -25,13 +25,13 @@ export function tone(): void {
 }
 
 /** iOS only plays audio started from a tap; call this in the same tap as start(). */
-export function unlockAudio(): void {
+export function primeAudio(): void {
   try {
     audio ??= new AudioContext();
     void audio.resume();
     if ("speechSynthesis" in globalThis) speechSynthesis.speak(new SpeechSynthesisUtterance(""));
   } catch {
-    // Nothing to unlock.
+    // No audio APIs: nothing to prime.
   }
 }
 

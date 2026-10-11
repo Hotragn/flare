@@ -1,10 +1,13 @@
 # Maps progress (wp/maps)
 
-## Done
-- Pack v2 builder: apps/web/src/lib/map/{geo,overpass,pack}.ts, scripts/build-map-pack.ts. Fairlane pack committed (osm_base 2026-10-11T00:53:36Z, 11,043 items, 37.8 KB brotli). Counts match evidence (54/7/7/3/32/28).
-- Place functions (places.ts): nameSpot, emberCandidates, walkMinutes, accessLine, checkNeeds/failedNeeds, placeWords.
-- Nature line (nature.ts, sun.ts NOAA), endsAfterSunset (BR-P-9). Copy keys nature.* added to deck.json.
-- Tests: scripts/test/map-{pack,places,nature}.test.ts (44 tests).
+## Done (all deliverables, MP1 to MP7)
+- Pack v2 builder and Fairlane pack (osm_base 2026-10-11T00:53:36Z, 37.8 KB brotli, pinned counts match).
+- Place functions, needs checks, nature line (NOAA sunset), weather, loaders with 7-day cache.
+- Talking compass (lib/compass).
+- Rest loops, paths pack, PDF card, spoken turns.
+- Fix the map.
+- Docs: docs/maps/ (7 files), bugs docs/engineering/bugs/maps.md, handoff docs/handoffs/06g-maps.md.
+- `npm run ci` green; 87 map tests.
 
 ## Exact next step
-All code DONE incl. Fix the map (fixmap.ts). Next: docs/maps/01..06, docs/engineering/bugs/maps.md, handoff 06g, npm run ci + card, Fix the map, docs/maps, handoff.
+None. Wait for the lead's review and integration. If restarted: rebuild packs only if older than 7 days before a field day.

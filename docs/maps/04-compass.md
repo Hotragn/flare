@@ -5,12 +5,12 @@ Wayfinding without a map screen (SRS-CMP-1 to -3, -7). Code: `apps/web/src/lib/c
 ## Use
 
 ```ts
-import { browserEnv, createCompass, unlockAudio } from "#lib/compass/index.ts";
+import { browserEnv, createCompass, primeAudio } from "#lib/compass/index.ts";
 
 button.onclick = () => {
   const c = createCompass({ target, name: hostName, env: browserEnv() }); // target saved at Lit
   void c.start();   // first call in the tap: asks motion, then location
-  unlockAudio();    // same tap: lets iOS play the tone and speech later
+  primeAudio();    // same tap: lets iOS play the tone and speech later
   c.subscribe((s) => render(s)); // s.rel_deg for the arrow, s.distance_m, s.line, s.facing
 };
 ```
@@ -28,7 +28,7 @@ button.onclick = () => {
 | Repeat (SRS-CMP-2) | Speak again when the relative angle moved 30° or more since the last sentence, the distance halved, 60 s passed, or a heading appeared. |
 | Facing (SRS-CMP-3) | Entering ±15°: `navigator.vibrate(30)`; where that doesn't exist (iOS Safari), a 120 ms 880 Hz tone. Once per entry. |
 | Offline (SRS-CMP-7) | The target is a saved `LatLon`; the module makes no network request. Motion denied still gives distance and speech. |
-| Screen locked | iOS pauses Web Speech when the screen locks; speech resumes on unlock. This is the "where iOS allows audio" limit. |
+| Screen locked | iOS pauses Web Speech when the screen locks; speech resumes when the screen is on again. This is the "where iOS allows audio" limit. |
 | Privacy | Positions stay in memory on the phone; nothing is logged or sent. |
 
 Accuracy (SRS-CMP-4) depends on the phone's GPS and magnetometer; `accuracy_m` is exposed so the UI can say so. Field proof is the device checklist's compass step (`/check/compass.html`).
