@@ -95,7 +95,7 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.bot.idle();
 
     // 6. Lit: post edited, chat notified, the Telegram friend gets a private Find them.
-    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string }).caption).toBe(
+    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string } | undefined)?.caption).toBe(
       "It's lit. Sam is at Fairlane pond bench.",
     );
     const lit = w.tg.of("sendMessage").filter((s) => s.params.text === "It's lit. Sam is at Fairlane pond bench.");
@@ -105,7 +105,7 @@ describe("full flow: Telegram + iMessage link + plain text", () => {
     await w.setState(gid, "gone", ", ended = 'thanks_for_coming'");
     w.bot.effect(gid, "final");
     await w.bot.idle();
-    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string }).caption).toBe(
+    expect((w.tg.of("editMessageMedia").at(-1)?.params.media as { caption?: string } | undefined)?.caption).toBe(
       "Thanks for coming.",
     );
     await w.db.query("delete from gatherings where id = $1", [gid]);

@@ -70,7 +70,9 @@ describe("Telegram branded card (ADR-0023)", () => {
     expect(long[1]?.endsWith("…")).toBe(true);
   });
   it("escapes text for SVG", () => {
-    const svg = cardSvg(cardView(row({ plain: { ...row().plain!, invite: "Tea & <cake>" } }), null));
+    const svg = cardSvg(
+      cardView(row({ plain: { ...(row().plain as NonNullable<PostRow["plain"]>), invite: "Tea & <cake>" } }), null),
+    );
     expect(svg).toContain("Tea &amp; &lt;cake&gt;");
   });
   it("converts WOFF 1.0 to an SFNT with the same table count", () => {
