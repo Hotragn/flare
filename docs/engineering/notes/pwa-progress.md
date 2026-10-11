@@ -9,8 +9,13 @@
 - Push copy: a small JSON copied from the deck's push.* keys, with a test that fails on drift (the whole deck is 85 KB).
 - Root vitest.config.ts doesn't include apps/web/test; tests run with `npx vitest run --config apps/web/test/pwa/vitest.config.ts`; change request for the root include line.
 
+- PW1 crypto, PW2 store, PW3 outbox, PW4 live (fetch-based SSE + poll + offset): 33 unit tests pass
+  (`npx -w apps/web svelte-kit sync` once, then `npx vitest run --config apps/web/test/pwa/vitest.config.ts`;
+  types: `npx tsc -p apps/web/test/pwa/tsconfig.json --noEmit`).
+
 ## In progress
-- PW1 crypto (apps/web/src/lib/crypto/index.ts) and tests.
+- PW5 service worker: precache, update prompt, push handler opening notice_ct.
 
 ## Next step
-Write crypto, store, outbox, live (field-test path), then service worker push, permissions, then manifest, icons, splash, e2e, docs, handoff.
+Write apps/web/src/lib/push/notice.ts (pure: payload -> title/body using push-copy.json) and
+apps/web/src/service-worker.ts; then permissions (PW6), manifest/icons/splash, e2e in Chrome, docs, handoff.
