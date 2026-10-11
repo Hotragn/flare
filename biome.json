@@ -13,7 +13,8 @@
       "!apps/web/build",
       "!**/*.svelte",
       "!apps/web/static/check/capability",
-      "!evals/reports"
+      "!evals/reports",
+      "!apps/web/static/maps"
     ]
   },
   "formatter": {
