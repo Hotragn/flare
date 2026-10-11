@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /g/
+Disallow: /check/
+Disallow: /hello/
+Disallow: /ai/
+
+Sitemap: https://flare-outside.onrender.com/sitemap.xml
