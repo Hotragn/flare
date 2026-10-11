@@ -1,0 +1,115 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4PC1W0VG8VV43T7NT18XZGD",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T20:56:47.724063Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 5,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "e05b07e2fa37",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 4200,
+    "cache_creation_tokens": 6047903,
+    "cache_read_tokens": 1057277291,
+    "output_tokens": 1975472,
+    "api_call_count": 2073,
+    "subagent_tokens": {
+      "input_tokens": 82,
+      "cache_creation_tokens": 60223,
+      "cache_read_tokens": 2822021,
+      "output_tokens": 4677,
+      "api_call_count": 42
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 21
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 1275,
+      "user_lines_removed": 0,
+      "agent_lines_added": 12,
+      "agent_lines_removed": 12,
+      "user_added_per_file": {
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 1275,
+      "user_lines_removed": 0,
+      "agent_lines_added": 12,
+      "agent_lines_removed": 12,
+      "user_added_per_file": {
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 1275,
+      "user_lines_removed": 0,
+      "agent_lines_added": 12,
+      "agent_lines_removed": 12,
+      "user_added_per_file": {
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17
+      }
+    }
+  ]
+}
