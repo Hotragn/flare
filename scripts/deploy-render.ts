@@ -6,7 +6,7 @@
 //        npm run deploy:render -- --yes   (creates or updates on Render)
 
 import { execFileSync } from "node:child_process";
-import { accountToken } from "../packages/shared/src/token-guard.ts";
+import { accountToken, doKeyIsScoped } from "../packages/shared/src/token-guard.ts";
 import { hasYes, loadVars, type Vars } from "./telegram-lib.ts";
 
 export const REGION = "ohio";
@@ -133,7 +133,12 @@ function renderApi(key: string, base: string): Api {
 type Listed<K extends string, T> = Record<K, T>[];
 
 /** Runs the plan. Find-or-create by name, so a second run updates instead of duplicating. */
-export async function deploy(vars: Vars, repo: string, base = "https://api.render.com"): Promise<string[]> {
+export async function deploy(
+  vars: Vars,
+  repo: string,
+  base = "https://api.render.com",
+  doFetch: typeof fetch = fetch,
+): Promise<string[]> {
   const api = renderApi(vars.RENDER_KEY as string, base);
   const done: string[] = [];
   const owners = await api<Listed<"owner", { id: string }>>("GET", "/v1/owners?limit=1");
@@ -154,11 +159,16 @@ export async function deploy(vars: Vars, repo: string, base = "https://api.rende
     done.push(`created ${NAMES.db}`);
   } else done.push(`found ${NAMES.db}`);
   const conn = await api<{ internalConnectionString?: string }>("GET", `/v1/postgres/${dbId}/connection-info`);
+  // ADR-0022: the DigitalOcean key goes to Render only when the account API refuses it (scoped).
+  const doScoped = vars.DO_MODEL_ACCESS_KEY ? await doKeyIsScoped(vars.DO_MODEL_ACCESS_KEY, doFetch) : false;
+  if (vars.DO_MODEL_ACCESS_KEY) done.push(doScoped ? "DO key is scoped: sent" : "DO key not proven scoped: not sent");
   if (!conn.internalConnectionString) throw new Error("Postgres has no connection string yet; run again in a minute");
 
   const env = [
     // Never ship an account-wide token to the server host (scripts/../token-guard.ts).
-    ...WEB_KEYS.filter((k) => vars[k] && !accountToken(vars[k])).map((key) => ({ key, value: vars[key] as string })),
+    ...WEB_KEYS.filter((k) => vars[k] && !accountToken(vars[k]) && (k !== "DO_MODEL_ACCESS_KEY" || doScoped)).map(
+      (key) => ({ key, value: vars[key] as string }),
+    ),
     { key: "DATABASE_URL", value: conn.internalConnectionString },
     { key: "NODE_VERSION", value: NODE_VERSION },
   ];

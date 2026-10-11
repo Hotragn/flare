@@ -18,7 +18,10 @@ When the laptop hub is off or unreachable, every AI job falls to the template. T
 - **Never while the hub is up.** A slow hub answer still falls to the template; the cloud is not a second try that doubles the wait.
 - **Guards:** the same `enforce()` and `enforceLadder()` as the hub. Server budget 35 s; phones wait up to 40 s only when `/config` says the tier is on.
 - **No spend cap exists per key** at DigitalOcean (prepaid balance only, docs checked 2026-10-11). The server caps calls per UTC day (`DO_DAILY_MAX_CALLS`, default 60) and 200 output tokens per call.
-- **Key type:** only a scoped model access key. An account-wide token (`dop_v1_…`) in `DO_MODEL_ACCESS_KEY` leaves the tier off, fails `npm run check-env`, and makes `npm run deploy:render` refuse to send it (packages/shared/src/token-guard.ts).
+- **Key type:** only a scoped model access key, proven by behavior, not by prefix. DigitalOcean model access keys and OAuth tokens share the `doo_v1_` prefix (the founder's scoped key "flare-server", 1 model, starts with it), and the docs don't state a key format. So:
+  - a `dop_v1_` personal access token is always refused (check-env fails, the tier stays off, the deploy leaves it out);
+  - any other value is sent to Render only if `GET https://api.digitalocean.com/v2/account` with it answers 401 or 403 (`doKeyIsScoped`, packages/shared/src/token-guard.ts). A 200 means an account token: not sent.
+  - Result on 2026-10-11 05:10 ET: the account API answered **403** for "flare-server", and one ladder call for "Fairlane walk at 11?" through the cloud tier code returned a valid 4-step ladder in **3.8 s**.
 - **Disclosed:** `/config.cloud_ai`, the "AI on this phone" screen (`/ai/`, "When DigitalOcean is used"), the privacy page limit `site.privacy.l.cloud`, the H2 note under the button, and the tier label "Made by DigitalOcean".
 - **Traced:** the call is a `chat gemma-4-31B-it` span with provider `digitalocean` (ADR-0021), outcome only.
 

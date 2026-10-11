@@ -119,6 +119,19 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
     expect(sent).not.toContain(pat);
     expect(sent).toContain("SENTRY_DSN");
   });
+  it("sends the DigitalOcean key only when the account API refuses it (scoped, ADR-0022)", async () => {
+    const key = ["doo", "v1", "k".repeat(64)].join("_");
+    const vars = { ...VARS, DO_MODEL_ACCESS_KEY: key };
+    const status = (code: number) => (async () => new Response("{}", { status: code })) as unknown as typeof fetch;
+    reqs.length = 0;
+    const scoped = await deploy(vars, REPO, base, status(403));
+    expect(scoped).toContain("DO key is scoped: sent");
+    expect(JSON.stringify(reqs.map((r) => r.body))).toContain("DO_MODEL_ACCESS_KEY");
+    reqs.length = 0;
+    const account = await deploy(vars, REPO, base, status(200));
+    expect(account).toContain("DO key not proven scoped: not sent");
+    expect(JSON.stringify(reqs.map((r) => r.body))).not.toContain(key);
+  });
   it("a local http PUBLIC_BASE_URL is replaced by the service's onrender.com URL", async () => {
     reqs.length = 0;
     const done = await deploy({ ...VARS, PUBLIC_BASE_URL: "http://localhost:8787" }, REPO, base);
