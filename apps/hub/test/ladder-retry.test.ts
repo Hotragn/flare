@@ -1,5 +1,6 @@
-// ADR-0025: no identical retry at temperature 0. One retry carries the first answer and a
-// correction, only when it fits before the deadline; "none" lets the template take over.
+// ADR-0025: no identical retry at temperature 0. Default "none" (the template takes over);
+// "corrective" retries once with the first answer and a
+// correction, only when it fits before the deadline.
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it } from "vitest";
@@ -33,7 +34,7 @@ const job = { type: "job", id: "x", kind: "ladder-draft", ask: "Fairlane walk", 
 describe("ladderFromAsk retry", () => {
   it("retries once with the first answer and a correction, not the same prompt", async () => {
     const o = await fakeOllama([BAD, GOOD]);
-    const l = await ladderFromAsk({ url: o.url, model: "m", timeoutMs: 5000 }, job);
+    const l = await ladderFromAsk({ url: o.url, model: "m", timeoutMs: 5000 }, job, undefined, { retry: "corrective" });
     expect(l?.[0]?.label).toBe("Fairlane walk");
     expect(o.seen).toHaveLength(2);
     expect(o.seen[1]?.slice(2)).toEqual([
@@ -51,6 +52,7 @@ describe("ladderFromAsk retry", () => {
   it("skips the retry when another call of the same length would pass the deadline", async () => {
     const o = await fakeOllama([BAD, GOOD], 150);
     const l = await ladderFromAsk({ url: o.url, model: "m", timeoutMs: 5000 }, job, undefined, {
+      retry: "corrective",
       deadline: performance.now() + 250,
     });
     expect(l).toBeNull();

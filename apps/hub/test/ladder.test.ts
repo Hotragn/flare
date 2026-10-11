@@ -124,12 +124,12 @@ describe("hub runs a ladder job end to end", () => {
     expect(seen).toHaveLength(0);
   });
 
-  it("an unusable model answer is unusable_answer after one retry", async () => {
+  it("an unusable model answer is unusable_answer at once: no retry by default (ADR-0025)", async () => {
     const seen: Seen[] = [];
     const url = await fakeOllama(seen, "no json here");
     const results = await hubWith(url, (ws) => ws.send(ladderJob("44444444-2b7a-4d8e-9c3f-1a2b3c4d5e6f")), 1);
     expect(results[0]).toMatchObject({ ok: false, error: "unusable_answer" });
-    expect(seen).toHaveLength(2);
+    expect(seen).toHaveLength(1);
   });
 });
 

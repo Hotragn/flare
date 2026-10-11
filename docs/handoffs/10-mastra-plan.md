@@ -1,6 +1,6 @@
 # Handoff 10: Plan ladder as a Mastra agent
 
-From: S2. Date: Sun 2026-10-11, about 11:30 ET. Branch: `mastra-plan` (not merged). Decision: [ADR-0025](../architecture/adr/0025-mastra-plan-agent.md). Audit: [docs/security/audit-notes.md](../security/audit-notes.md).
+From: S2. Date: Sun 2026-10-11, about 12:10 ET. Branch: `mastra-plan` (not merged). Decision: [ADR-0025](../architecture/adr/0025-mastra-plan-agent.md). Audit: [docs/security/audit-notes.md](../security/audit-notes.md).
 
 ## What
 `POST /api/v1/drafts/ladder` can now draft with a Mastra agent (`@mastra/core` 1.68.0) instead of the plain relay call.
@@ -26,33 +26,47 @@ From: S2. Date: Sun 2026-10-11, about 11:30 ET. Branch: `mastra-plan` (not merge
 | apps/server/test/ladder-agent*.test.ts, mastra-import-graph.test.ts | 32 tests |
 | evals/harness/tasks/ladder-agent.ts, evals/datasets/ladder-asks.json (L13, `keep`) | `npm run eval -- ladder-agent` |
 | docs/security/audit-notes.md | The 5 moderate npm audit findings, kept with proof |
+| packages/shared/src/prompts/ladder.ts, packages/shared/test/ladder-case.test.ts | Title Case answers to sentence case before the invented-name check (8 tests) |
+| apps/hub/src/ollama.ts, apps/hub/src/client.ts, apps/hub/test/ladder-retry.test.ts | No identical retry; `LADDER_RETRY` none (default) or corrective with a deadline (4 tests) |
 
 ## How to turn it on
-1. Set `LADDER_AGENT=1` in the server's environment and restart. The hub needs no update (same job kind and fields).
+1. Set `LADDER_AGENT=1` in the server's environment and restart. The agent itself needs no hub update (same job kind and fields); the guard and retry change reaches the Mac's hub after a merge and a hub restart.
 2. To make it useful, the Plan screen should send `start_at` (the plan's start) and `area` (the place the host picked, by label) with the ladder request. Both are optional, and older phones keep working.
 3. Unset the flag to go back.
 
-## Eval numbers (local Ollama, gemma4:e4b-it-q4_K_M, 13 asks, 2026-10-11 11:15 ET)
+## Guard and hub changes (shared code, so they also change the flag-off route)
+- **`enforceLadder()`:** when 3 or more labels are Title Case, labels go to sentence case before the invented-name check. "Covered Frisbee Play" becomes "Covered frisbee play"; names the ask capitalises and all-caps words stay as written.
+- **The check still works where it should:**
+  - in a sentence-case answer, "Walk to Paris" still gets the template label;
+  - in a Title Case answer, "Walk To Dearborn Mall" (a capitalised word before a place noun, not in the ask) still gets the template label.
+- **`ladderFromAsk()`:** no identical retry. `LADDER_RETRY = "none"` is the default: the template takes over at once. `"corrective"` (one retry with the first answer and a correction, only if it fits before the deadline) stays available.
+- **Why "none":**
+  - neither eval run had a first answer fail the guard (0 of 13, and 0 of 18 in a probe with 5 harder asks), so the retry never ran;
+  - tested directly on two Title Case answers, the correction cost about 3.5 s, changed one label of four in one answer and nothing in the other.
+- **To roll out:** the running hub on the Mac picks this up only after a merge and a hub restart.
+
+## Eval numbers (local Ollama, gemma4:e4b-it-q4_K_M, 13 asks, 2026-10-11 12:00 ET, hub retry none)
 
 | Bar | Target | Current | Agent |
 | --- | --- | --- | --- |
 | Valid ladder shown | 13/13 | 13/13 | 13/13 |
-| Hub answer used (≤ 1 template step, ≤ 8 s) | ≥ 10/13 | 12/13 | 12/13 |
+| Hub answer used (≤ 1 template step, ≤ 8 s) | ≥ 10/13 | 13/13 | 13/13 |
 | Labels with person words | 0 | 0 | 0 |
 | Labels with invented names | 0 | 0 | 0 |
-| p95, 12 original asks | ≤ 6500 ms (agent) | 6189 ms | 6170 ms |
-| p95, all 13 | ≤ 8000 ms | 8028 ms | 8026 ms |
-| Asked activity kept on step 1 (hub answered) | all | 1/1 | 1/1 |
+| p95, all 13 | ≤ 8000 ms | 5527 ms | 5127 ms |
+| p95, 12 original asks | ≤ 6500 ms (agent) | 5172 ms | 5127 ms |
+| Asked activity kept on step 1 (hub answered) | all | 2/2 | 2/2 |
 | Tool weather matches the plan's window | all | n/a | 7/7 |
 
-- **Agent overhead:** median 15 ms, p95 561 ms. The 561 ms is the first request, with a cold forecast cache.
-- **Mac load:** 7.5 to 13.3 during the run.
-- **Weather window:** the forecast for tomorrow 11:00 differed from "now" for 7 of 7 tool-weather asks (rain now, dry then), and the agent used the right window every time.
-- **L13 fell to the template in both variants:** Gemma wrote Title Case labels, the guard rejected them, and the hub's identical retry used up the 8 s.
-- **Spot check with rain likely now:** "Kite flying if windy" kept "Kite flying if windy" on step 1, and "Frisbee on the big lawn" became "Frisbee if dry".
+- **Medians:** 4432 ms current, 4312 ms agent.
+- **Agent overhead:** median 12 ms, p95 293 ms.
+- **Mac load:** 3.9 to 4.5.
+- **L13 is valid on both paths:** "Covered frisbee play", "Short frisbee toss", "Quick frisbee throw", "Sit and talk".
+- **Same run with `EVAL_LADDER_RETRY=corrective`:** same bars; p95 5332 ms current, 5638 ms agent (`evals/reports/ladder-agent-hub-retry-corrective.md`).
+- **Before the guard fix (11:15):** p95 on all 13 was 8028 ms current and 8026 ms agent, and L13 fell to the template on both.
 
 Proof:
-- `npx vitest run apps/server`: 210 passed.
+- `npx vitest run apps/server apps/hub packages/shared`: all pass.
 - `npx tsc -p . --noEmit`: clean.
 - `npm run contracts`: ok.
 - `npx biome check`: clean on changed files.
@@ -60,7 +74,7 @@ Proof:
 ## Limits
 - **The phone doesn't send `start_at` or `area` yet.** Until it does, the agent uses now and the Fairlane centre.
 - **The kept-activity list is fixed and in English.** Activities outside it get no protection from the weather.
-- **Hub retries cost the p95, not the agent.** The hub's `ladderFromAsk()` retries the same prompt at temperature 0 and gets the same rejected answer, adding about 3.5 s; Title Case labels are the usual cause. This needs the hub and guard owners. It is the biggest p95 lever.
-- **Nearby places never reach Gemma:** the hub prompt and the guard allow only places the ask names.
-- **Gemma doesn't choose the tools;** the adapter calls them by rule.
-- **npm audit:** 5 moderate findings kept. There is no fixed version, and argparse and sprintf-js never load, which a test proves. See docs/security/audit-notes.md.
+- **A Title Case answer can still pass an invented name with no place noun after it** ("Coffee At Starbucks"). A sentence-case answer keeps the full check.
+- **With the retry off,** a first answer that fails the guard goes straight to the template; that was 0 of 13 asks today.
+- **Nearby places never reach Gemma,** and Gemma doesn't choose the tools; the adapter calls them by rule.
+- **npm audit:** 5 moderate findings kept. There is no fixed version, and argparse and sprintf-js never load (see docs/security/audit-notes.md).

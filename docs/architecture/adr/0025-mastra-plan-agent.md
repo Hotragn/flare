@@ -42,48 +42,61 @@ Status: Proposed (S2, Sun 2026-10-11; follow-ups the same day). Off by default (
 - **Budget:** the hub path keeps 8 s for the whole run. The relay gets what is left after the tools, and an abort stops the run at 8.25 s. The cloud path keeps its own 35 s (ADR-0022), as today.
 - **Tracing:** each tool runs in an `execute_tool <name>` span, the relay call keeps its `chat` span, and the guard keeps `enforce_ladder`. There is also a `keep_asked` span. Two new allow-listed attributes: `flare.agent` (true/false) and `flare.weather` (`phone` | `tool` | `none`). No value carries user text.
 - **npm audit:** there are 5 moderate findings, all one chain: gray-matter → js-yaml 3 → argparse 1 → sprintf-js. No fixed version exists. The vulnerable code never loads on our path, which a test proves. Details: `docs/security/audit-notes.md`.
+- **Guard: Title Case answers are a style, not names** (`packages/shared/src/prompts/ladder.ts`):
+  - When 3 or more of the 4 labels are in Title Case (two or more capitalised words after the first, not counting small words like "by" or "the"), every label goes to sentence case before the invented-name check: "Covered Frisbee Play" becomes "Covered frisbee play".
+  - Names the ask capitalises after its own first word ("Ford Woods Park") stay as written, and so do all-caps words ("WDDA"), so both are still checked.
+  - The check stays real in three ways:
+    - in a sentence-case answer, one capitalised word the ask doesn't contain still counts ("Walk to Paris" gets the template label);
+    - one capitalised word on its own never makes a label Title Case;
+    - inside a Title Case answer, a capitalised word in front of a place noun (Mall, Park, Lake, Street, Cafe and others) still counts unless the ask contains it ("Walk To Dearborn Mall" gets the template label, "Short Park Walk" passes).
+  - Before this change, L13 ("Frisbee at Ford Woods Park even if it rains") fell to the template on both paths: Gemma wrote every label in Title Case, and the guard read each capitalised word as an invented place.
+- **Hub: no identical retry** (`apps/hub/src/ollama.ts`, `ladderFromAsk()`):
+  - At temperature 0 the same prompt gives the same answer, so the old retry only added about 3.5 s.
+  - There are now two modes. `"corrective"` retries once with the first answer and a correction ("sentence case, only places named in the ask"), and only if one more call of the same length fits before the deadline the hub client passes. `"none"` lets the template take over at once.
+  - **The default is `"none"`.** Neither eval run below had a first answer fail the guard, so the retry never ran. A probe of 18 asks (the 13 plus 5 harder ones) also had no first-answer failures.
+  - Tested directly on the two Title Case answers, the correction cost 3.4 to 3.6 s. On the L13 answer it changed one label of four, and the other three stayed Title Case; on the second answer it changed nothing. So the cost is real and the gain small; the template is the better fallback.
+  - `EVAL_LADDER_RETRY=corrective` measures the other mode.
 
-## Eval (local Ollama, 2026-10-11 11:15 ET, `npm run eval -- ladder-agent`)
-- **Items:** 13 asks: the 12 originals plus L13, an activity with rain likely.
-- **Setup:** both variants ran the hub's own `ladderFromAsk()` through a stand-in relay with the 8 s budget, back to back per item, with the order swapped every other item.
-- **Agent requests:** each carried `start_at` = tomorrow 11:00 and the pack place the ask names as `area`. The current route ignores both.
+## Eval (local Ollama, 2026-10-11 12:00 ET, `npm run eval -- ladder-agent`)
+- **Items:** all 13 asks.
+- **Setup:** order-balanced, with the hub's own `ladderFromAsk()` behind a stand-in relay and the 8 s budget. Default hub retry `none`.
+- **Agent requests:** each carried `start_at` = tomorrow 11:00 and the pack place the ask names as `area`.
 
 | Bar | Target | Current | Agent |
 | --- | --- | --- | --- |
 | Valid ladder shown | 13/13 | 13/13 | 13/13 |
-| Hub answer used (≤ 1 template step, ≤ 8 s) | ≥ 10/13 | 12/13 | 12/13 |
+| Hub answer used (≤ 1 template step, ≤ 8 s) | ≥ 10/13 | **13/13** | **13/13** |
 | Shown labels with person words | 0 | 0 | 0 |
 | Shown labels with invented names | 0 | 0 | 0 |
-| p95 latency, 12 original asks | ≤ 6500 ms (agent) | 6189 ms | **6170 ms** |
-| p95 latency, all 13 | ≤ 8000 ms | 8028 ms | 8026 ms |
-| Asked activity kept on step 1, when the hub answered | all | 1/1 | 1/1 |
-| Tool weather matches the plan's window | all | n/a | **7/7** |
+| p95 latency, all 13 | ≤ 8000 ms | **5527 ms** | **5127 ms** |
+| p95 latency, 12 original asks | ≤ 6500 ms (agent) | 5172 ms | 5127 ms |
+| Asked activity kept on step 1, when the hub answered | all | 2/2 | 2/2 |
+| Tool weather matches the plan's window | all | n/a | 7/7 |
 
-- **Medians (12 originals):** 4995 ms current, 5139 ms agent. Mac load ran from 7.5 to 13.3; other agents share this Ollama.
-- **Agent overhead** (the run minus the time inside the relay): median 15 ms, p95 561 ms. The 561 ms is the first request, which fetches the forecast with a cold cache.
-- **Caches:** weather 5 hits and 2 misses (one miss from a 15-minute bucket change), sunset 12 hits and 1 miss.
-- **Weather fit:**
-  - An independent forecast read matched the agent's weather for all 7 asks where the tool supplied it.
-  - Against a "from now" window the answer would have differed for 7 of 7 asks: rain today, dry tomorrow at 11:00.
-  - In the first run, without `start_at`, those same asks had moved to covered or indoor steps.
-- **L13 ("Frisbee at Ford Woods Park even if it rains"):** both variants fell to the template. Gemma answered in Title Case ("Covered Frisbee Play"), so the guard read every capitalised word as an invented name and replaced all four labels. The hub then retried the same prompt at temperature 0 and got the same answer, which used up the 8 s.
-- **Spot check with rain likely now (no `start_at`):**
-  - "Kite flying if windy" gave "Kite flying if windy", "Short walk", "Sit down", "Quick look".
-  - "Frisbee on the big lawn" gave "Frisbee if dry" first.
-  - Without the rule, the first run showed "Indoor activity".
+- **Medians:** 4432 ms current, 4312 ms agent. Mac load was 3.9 to 4.5.
+- **Agent overhead:** median 12 ms, p95 293 ms. No relay call hit the budget.
+- **L13 is valid on both paths:** "Covered frisbee play", "Short frisbee toss", "Quick frisbee throw", "Sit and talk". Step 1 keeps the frisbee the ask insists on.
+- **The same run with `EVAL_LADDER_RETRY=corrective`:** every bar the same; p95 5332 ms current, 5638 ms agent. Report: `evals/reports/ladder-agent-hub-retry-corrective.md`.
+- **Earlier runs, same day:**
+  - 11:15: before the guard fix. p95 on all 13 was 8028 ms current and 8026 ms agent, and L13 was the template on both.
+  - 10:50: before `start_at`. That forecast had rain now, and step 1 of "Kite flying if windy" became "Indoor activity".
+- **Spot check with rain likely now:** "Kite flying if windy" kept "Kite flying if windy", and "Frisbee on the big lawn" became "Frisbee if dry".
 - Report: `evals/reports/ladder-agent-hub.md`.
 
 ## Consequences
-- The agent meets every bar the current route meets, plus the two new ones: the weather window and the kept activity. Within the 8 s budget, its latency is the same as today's.
+- The agent meets every bar, as does the current route. With the guard fix, both stay well inside 8 s on all 13 asks.
+- **The guard and hub changes reach production only after a merge and a hub restart.** They are in shared code, so they change the current (flag-off) route too: Title Case answers that were thrown away before are now used.
 - Limits:
-  - The phone does not send `start_at` or `area` yet, so a phone request today still gets "now" in the Fairlane area. That phone change belongs to the Plan screen and was not done here.
-  - The activity list is fixed and in English. An activity outside it (for example "board games") gets no protection.
-  - Nearby places don't reach the model: the hub prompt allows only places the ask names, and the guard enforces that.
-  - The adapter decides the tool calls by rule; Gemma writes only the ladder.
-  - **Biggest p95 lever, outside this branch:** the hub's `ladderFromAsk()` retries an identical prompt at temperature 0, so the retry repeats the same rejected answer and adds about 3.5 s. Title Case labels are the common cause. That fix belongs to the hub and guard owners (`apps/hub/src/ollama.ts`, `packages/shared/src/prompts/ladder.ts`).
+  - The phone doesn't send `start_at` or `area` yet, so phones still get "now" in the Fairlane area. That phone change belongs to the Plan screen and was not done here.
+  - The kept-activity list is fixed and in English. An activity outside it (for example "board games") gets no protection.
+  - A Title Case answer can still pass an invented name that has no place noun after it ("Walk To Dearborn", or "Coffee At Starbucks" since "Starbucks" isn't a place noun). That trade was made so L13-style answers get through. A sentence-case answer keeps the full check.
+  - The adapter decides the tool calls by rule; Gemma writes only the ladder. Nearby places don't reach the model.
+  - With the retry off, a first answer that fails the guard goes straight to the template. Today that happened for 0 of 13 asks.
   - `@mastra/core` adds 140 packages to the lock file (audit above).
 - Turn on after the phone sends `start_at` and `area`.
 - Proof:
   - `apps/server/test/ladder-agent.test.ts` (19 tests);
-  - `apps/server/test/ladder-agent-plan.test.ts` (10 tests: area lookup, window follows `start_at`, caches, nothing new sent to the hub, route schema, constraints);
-  - `apps/server/test/mastra-import-graph.test.ts` (3 tests: the audit chain).
+  - `apps/server/test/ladder-agent-plan.test.ts` (10 tests);
+  - `apps/server/test/mastra-import-graph.test.ts` (3 tests);
+  - `packages/shared/test/ladder-case.test.ts` (8 tests: Title Case, sentence case, L13 answer accepted, invented names still caught);
+  - `apps/hub/test/ladder-retry.test.ts` (4 tests).
