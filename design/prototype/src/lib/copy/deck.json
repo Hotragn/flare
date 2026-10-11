@@ -2664,6 +2664,19 @@
         "min": 60
       }
     },
+    "bot.post.smaller": {
+      "text": "Smaller plan: {step}.",
+      "kind": "bot",
+      "where": "group post caption after the Plan steps down (telegram.md 5)",
+      "sample": {
+        "step": "Ford Woods loop"
+      }
+    },
+    "bot.cb.closed": {
+      "text": "This Flare is closed.",
+      "kind": "bot",
+      "where": "button tap reply after Lit, Gone or a full group"
+    },
     "sms.flare": {
       "text": "FLARE {code} {spot}. Need {n} more. Reply IN {code}. Ends {time}",
       "kind": "sms",

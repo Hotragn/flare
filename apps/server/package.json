@@ -5,6 +5,10 @@
   "type": "module",
   "license": "AGPL-3.0-or-later",
   "main": "src/main.ts",
+  "scripts": {
+    "telegram:webhook": "node ../../scripts/telegram-webhook.ts",
+    "telegram:status": "node ../../scripts/telegram-status.ts"
+  },
   "dependencies": {
     "@flare/engine": "0.1.0",
     "@flare/shared": "0.1.0",
@@ -12,12 +16,14 @@
     "hono": "4.13.13",
     "pg": "8.23.1",
     "pino": "10.4.0",
+    "web-push": "3.6.7",
     "ws": "8.22.0",
     "zod": "4.6.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
     "@types/pg": "8.23.1",
+    "@types/web-push": "3.6.4",
     "@types/ws": "8.18.2"
   }
 }

@@ -18,7 +18,12 @@ export type Member = { id: string; group_id: string };
 
 /** Parses `Authorization: Bearer {memberId}.{writeToken}` and checks the token hash. */
 export async function requireMember(c: Context, db: Db): Promise<Member> {
-  const h = c.req.header("authorization") ?? "";
+  return memberFromHeader(c.req.header("authorization"), db);
+}
+
+/** The same check without a request context (used by the Telegram phone routes). */
+export async function memberFromHeader(header: string | undefined, db: Db): Promise<Member> {
+  const h = header ?? "";
   const m = /^Bearer ([0-9a-fA-F-]{36})\.([A-Za-z0-9_-]{22})$/.exec(h);
   if (!m || !isUuid(m[1]) || !TOKEN.test(m[2] ?? "")) throw new ApiError(401, "unauthorized", "Member token needed");
   const id = (m[1] as string).toLowerCase();

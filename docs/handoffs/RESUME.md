@@ -121,3 +121,4 @@ After that (lands Sunday afternoon and evening, before the post): rest-loop rout
 - PWA: DONE, merged into main. Handoff 07b-pwa-offline.md. 54 tests now in the root run (CR-PW1), ICD-5 v1.1 (CR-PW4). CR-PW2/3 sent to FE. Bugs BUG-035 to 037; next id BUG-038.
 - Backend: DONE, merged. Handoff 06c-backend.md. ICR-BE-1 applied (LadderJob, JobResult.ladder, ToHubV11). Bugs BUG-038 to 040; integration found BUG-041, BUG-042 (engine tests). Next id BUG-043.
 - ML: DONE, merged. Handoff 06e-ml.md. Bugs BUG-043 to 045. Asks: ODAI warms with real photo prompt + image; WEB adds Gemma attribution. Next id BUG-046.
+- Integrations: DONE, merged and wired into main by the lead (apps/server/src/integrations.ts; wired.test.ts). Bugs BUG-046 to 049; next BUG-050. Founder must add TELEGRAM_WEBHOOK_SECRET and TELEGRAM_ALLOWED_CHAT_IDS to .env before setWebhook.

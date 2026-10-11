@@ -8,6 +8,7 @@ import { startScheduler } from "./core/scheduler.ts";
 import { type Db, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
+import { integrations } from "./integrations.ts";
 import { log } from "./log.ts";
 
 const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
@@ -18,7 +19,9 @@ if (env.databaseUrl) {
   log.info({ event: "db.migrated", applied: applied.length }, "migrations applied");
 }
 
+const ints = integrations(process.env, env.webBuildDir);
 const deps = {
+  mounts: [ints.mount],
   relay,
   db,
   version: env.version,
@@ -38,6 +41,7 @@ const scheduler = db && ctx.engine ? startScheduler(ctx) : null;
 const server = serve({ fetch: app.fetch, port: env.port }, (i) =>
   log.info({ event: "listen", port: i.port }, "flare server up"),
 );
+void ints.resume().catch(() => log.warn({ event: "tg.resume_failed" }, "telegram resume failed"));
 
 const wss = new WebSocketServer({ noServer: true, maxPayload: 2_000_000 });
 server.on("upgrade", (req, socket, head) => {
@@ -53,6 +57,7 @@ server.on("upgrade", (req, socket, head) => {
 
 const stop = async () => {
   scheduler?.stop();
+  ints.close();
   relay.close();
   wss.close();
   server.close();
