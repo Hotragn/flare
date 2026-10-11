@@ -7,7 +7,6 @@
   import Sheet from "../components/Sheet.svelte";
   import Icon from "../components/Icon.svelte";
   import H0Home from "./H0Home.svelte";
-  import H00Onboarding from "./H00Onboarding.svelte";
   import H1Camera from "./H1Camera.svelte";
   import { golden, nearestGreen } from "./flow/home.ts";
   import { planWeather } from "#lib/map/weather.ts";
@@ -19,8 +18,8 @@
   import H6HostLit from "./H6HostLit.svelte";
   import I10Gone from "./I10Gone.svelte";
   import I12Outside from "./I12Outside.svelte";
-  import P1PlanAsk from "./P1PlanAsk.svelte";
-  import P2Ladder from "./P2Ladder.svelte";
+  // The Plan flow (P1, P2) is the second way in: loaded when you start a Plan (JS budget).
+  const planScreens = () => Promise.all([import("./P1PlanAsk.svelte"), import("./P2Ladder.svelte")]);
   import type { Deps } from "./flow/deps.ts";
   import { clock } from "./flow/format.ts";
   import { HostFlow } from "./flow/host.svelte.ts";
@@ -193,7 +192,10 @@
 </script>
 
 {#if onboarding && home && flow.screen === "camera"}
-  <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
+  <!-- First run only, so it loads on demand and stays out of the /app budget. -->
+  {#await import("./H00Onboarding.svelte") then { default: H00Onboarding }}
+    <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
+  {/await}
 {:else if home && flow.screen === "camera"}
   <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
@@ -213,9 +215,13 @@
 {:else if flow.screen === "gone"}
   <I10Gone onclose={exit} />
 {:else if flow.screen === "plan-ask"}
-  <P1PlanAsk bind:ask={flow.ask} bind:quorum={flow.quorum} bind:start={startLocal} bind:deadline={deadlineLocal} error={planError} offline={!navigator.onLine} ondraft={() => flow.draftLadder()} onclose={exit} />
+  {#await planScreens() then [{ default: P1PlanAsk }]}
+    <P1PlanAsk bind:ask={flow.ask} bind:quorum={flow.quorum} bind:start={startLocal} bind:deadline={deadlineLocal} error={planError} offline={!navigator.onLine} ondraft={() => flow.draftLadder()} onclose={exit} />
+  {/await}
 {:else if flow.screen === "plan-ladder"}
-  <P2Ladder ask={flow.ask} bind:steps={flow.steps} tier={flow.ladderTier} drafting={flow.steps.length === 0} error={flow.ladderError() || flow.error} sending={flow.sending} onsend={send} onclose={exit} />
+  {#await planScreens() then [, { default: P2Ladder }]}
+    <P2Ladder ask={flow.ask} bind:steps={flow.steps} tier={flow.ladderTier} drafting={flow.steps.length === 0} error={flow.ladderError() || flow.error} sending={flow.sending} onsend={send} onclose={exit} />
+  {/await}
 {/if}
 
 <Sheet bind:open={menu} title={t("menu.title")}>

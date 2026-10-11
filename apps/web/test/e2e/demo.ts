@@ -50,8 +50,8 @@ try {
   );
   await shot("1-send");
   await page.getByRole("button", { name: "Send it" }).click();
-  await page.getByRole("button", { name: "Be Amor" }).click();
-  await page.getByText("You're Amor now, a friend.").waitFor({ timeout: 10_000 });
+  await page.getByRole("button", { name: "Friend's view" }).click();
+  await page.getByText(/^Now you're Amor, a friend of/).waitFor({ timeout: 10_000 });
   check(
     "friend side: Add a condition is offered",
     await page.getByRole("button", { name: "Add a condition" }).isVisible(),

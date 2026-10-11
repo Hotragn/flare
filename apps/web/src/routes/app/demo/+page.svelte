@@ -30,6 +30,7 @@
   let sparkLine = $state("");
   let condition = $state("");
   let amorIn = $state(false);
+  let typedLine = $state(""); // what you typed for Where you'll be: the demo keeps it (round 2)
   // Friends see the host by first name. In the demo the host is you (fresh-eyes #3).
   let me = $state("Fuego");
   $effect(() => {
@@ -111,9 +112,9 @@
     scene: DEMO_SCENE,
     photo: "/demo/pond.jpg",
     spot: bench,
-    hostLine: t("demo.youWait", { spot: bench }),
-    walkMin: 6,
-    access: { benches: { count: 2, nearest_m: 0 }, restrooms: { count: 1, nearest_m: 180 }, water: { count: 0, nearest_m: null }, steps_mapped: false },
+    hostLine: typedLine || t("demo.youWait", { spot: bench }),
+    walkMin: 2, // about the compass's 150 m (round 2: numbers that agree)
+    access: { benches: { count: 2, nearest_m: 40 }, restrooms: { count: 1, nearest_m: 180 }, water: { count: 0, nearest_m: null }, steps_mapped: false },
     nature: "",
     met: null,
   } as InviteInfo);
@@ -122,17 +123,18 @@
   const leave = () => (history.length > 1 ? history.back() : (location.href = "/"));
 </script>
 
-<svelte:head><title>{t("demo.badge")}</title></svelte:head>
+<svelte:head><title>{t("demo.badge")}</title><link rel="preload" as="image" href="/demo/pond.jpg" /></svelte:head>
 
 <div class="demo" class:coach={step === "kindling" && !!demo.g && demo.g.state !== "lit"}>
   <p class="badge" role="status">{t("demo.badge")}</p>
   {#if toast}<p class="toast" role="status">{toast}</p>{/if}
 
   {#if step === "send"}
-    <H3Send words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
+    <p class="role" role="status">{t("demo.intro", { host: me })}</p>
+    <H3Send bind:hostLine={typedLine} words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
   {:else if step === "kindling"}
     <div class="layer">
-      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={0} hostLine={t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />
+      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={0} hostLine={typedLine || t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />
       {#if demo.g?.state === "kindling" && !amorIn}
         <div class="control"><p>{t("demo.friendCoach")}</p><Button onclick={() => (step = "friend")}>{t("demo.asFriend")}</Button></div>
       {:else if demo.g?.state === "kindling" && demo.have() > 1}
@@ -142,26 +144,26 @@
       {/if}
     </div>
   {:else if step === "friend"}
-    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <p class="role" role="status">{t("demo.friendBanner", { host: me })}</p>
     <I1Invite info={{ ...info, spot: DEMO_SPOT, hostLine: "" }} have={demo.have()} quorum={demo.g?.quorum ?? 4} onyes={amorYes} oncondition={() => (step = "condition")} onclose={() => (step = "kindling")} />
   {:else if step === "condition"}
-    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <p class="role" role="status">{t("demo.friendBanner", { host: me })}</p>
     <I2Condition {info} bind:text={condition} oncheck={amorYes} onclose={() => (step = "friend")} />
   {:else if step === "friendIn"}
-    <p class="role" role="status">{t("demo.friendBanner")}</p>
+    <p class="role" role="status">{condition.trim() ? t("demo.inIf", { rule: condition.trim() }) : t("demo.friendBanner", { host: me })}</p>
     <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
   {:else if step === "lit"}
     <div class="layer">
       <I6Lit view={demo.g?.ember_choice ? "smaller" : "lit"} {info} smallerAt={bench} onfind={compass} onhere={here} onclose={leave} />
     </div>
   {:else if step === "compass"}
-    <I7Compass name={bench} status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={120} {bearing} onhere={here} onclose={() => (step = "lit")} />
+    <I7Compass name={bench.charAt(0).toUpperCase() + bench.slice(1)} status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={150} {bearing} onhere={here} onclose={() => (step = "lit")} />
   {:else if step === "here"}
-    <I8Here here={3} ondone={() => (step = "spark")} />
+    <I8Here here={demo.have()} ondone={() => (step = "spark")} />
   {:else if step === "spark"}
     <I11Spark onsave={(l) => { sparkLine = l; outside(); }} onskip={outside} />
   {:else if step === "outside"}
-    <I12Outside view="end" {minutes} photo="/demo/pond.jpg" people={[me === "Fuego" ? t("demo.you") : me, "Amor", "Benny"]} spark={sparkLine} onclose={() => (step = "done")} />
+    <I12Outside view="end" {minutes} photo="/demo/pond.jpg" people={[me === "Fuego" ? t("demo.you") : me, "Amor", "Benny"].slice(0, demo.have())} spark={sparkLine} onclose={() => (step = "done")} />
   {:else}
     <Screen theme="dark" close={false} heading={t("demo.done")}>
       <div class="done"><Flame state="lit" size={110} /><h1 class="t-display">{t("demo.done")}</h1></div>
@@ -187,7 +189,7 @@
   .control { position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; border-radius: 28px 28px 0 0 !important; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0)) !important; display: flex; flex-direction: column; gap: 8px; align-items: stretch;
     padding: 14px; border-radius: 20px; background: rgb(255 255 255 / 0.94); color: #111; box-shadow: 0 8px 30px rgb(0 0 0 / 0.3); }
   .control p { margin: 0; font-weight: 600; }
-  .role { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0; white-space: nowrap;
+  .role { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0; width: max-content; max-width: calc(100% - 32px); text-align: center;
     padding: 8px 16px; border-radius: 999px; background: #111; color: #fff; font-weight: 700; font-size: 0.9375rem; }
   .done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
   .done h1 { margin: 0; }

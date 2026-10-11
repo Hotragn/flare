@@ -94,7 +94,7 @@ async function sendFlare(page: Page): Promise<string> {
   await page.goto(`${URL0}/app/`);
   await page.getByRole("button", { name: "Light a Flare" }).click({ timeout: 15_000 }); // H0 Home first
   await page.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
-  await page.getByRole("button", { name: /Use these|Use mine/ }).waitFor({ timeout: 15_000 });
+  await page.getByRole("button", { name: /Use these|Use my words/ }).waitFor({ timeout: 15_000 });
   const where = page.getByLabel("Where are you?");
   if (await where.isVisible().catch(() => false)) {
     await where.fill("Ford Woods Park, by the pond");
@@ -110,7 +110,7 @@ async function sendFlare(page: Page): Promise<string> {
     await use.click();
   else {
     await page.getByRole("textbox").first().fill("Pond walk, come sit");
-    await page.getByRole("button", { name: "Use mine" }).click();
+    await page.getByRole("button", { name: "Use my words" }).click();
   }
   const name = page.getByLabel("Your first name");
   if (await name.isVisible().catch(() => false)) await name.fill("Fuego");

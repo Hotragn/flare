@@ -66,6 +66,7 @@
 .nav nav a {
   flex: none;
   font-size: 0.95rem;
+  min-height: 36px;
 }
 .nav nav a,
 .foot-nav a {
@@ -115,23 +116,30 @@
 /* The moment, as a real screenshot of the app (5-second clarity). */
 .hero-shot {
   position: relative;
+  z-index: 1;
   justify-self: center;
-  margin-top: 72px;
+  margin: 0 0 32px;
 }
 .hero-shot img {
   display: block;
-  width: 190px;
+  width: 150px;
   height: auto;
-  border-radius: 28px;
+  border-radius: 24px;
   border: 6px solid #111;
   box-shadow: 0 18px 50px rgb(0 0 0 / 0.45);
 }
+/* Phones: the words and the two buttons come first, the screenshot under them (round 2). */
+.hero {
+  align-content: start;
+}
 .hero-copy {
+  order: -1;
   position: relative;
-  padding: 32px 20px 40px;
+  z-index: 1; /* order also changes paint order: keep the words over the art */
+  padding: 24px 20px 28px;
   color: var(--c-birch-50);
   max-width: 640px;
-  background: linear-gradient(transparent, rgba(22, 35, 58, 0.85) 30%);
+  background: linear-gradient(rgba(22, 35, 58, 0.88) 75%, transparent);
 }
 .kicker {
   margin: 0;
@@ -473,6 +481,7 @@
   }
   .nav nav a {
     font-size: inherit;
+    min-height: 44px;
   }
   .hero {
     min-height: 680px;
@@ -482,12 +491,18 @@
   .hero-shot {
     grid-column: 2;
     grid-row: 1;
+    align-self: center;
     margin: 40px 64px 40px 0;
   }
   .hero-shot img {
     width: 260px;
+    border-radius: 28px;
+  }
+  .hero {
+    align-content: normal;
   }
   .hero-copy {
+    order: 0;
     margin-left: 48px;
     padding: 40px;
     border-radius: var(--r-xl);

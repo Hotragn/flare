@@ -182,7 +182,7 @@
       "where": "demo"
     },
     "demo.asFriend": {
-      "text": "Be Amor",
+      "text": "Friend's view",
       "kind": "button",
       "where": "demo"
     },
@@ -207,7 +207,7 @@
       "where": "demo, kindling coach (fresh-eyes #4)"
     },
     "demo.friendBanner": {
-      "text": "You're Amor now, a friend.",
+      "text": "Now you're Amor, a friend of {host}.",
       "kind": "status",
       "where": "demo, friend side (fresh-eyes #4)"
     },
@@ -215,6 +215,16 @@
       "text": "Back to you",
       "kind": "button",
       "where": "demo, friend side (fresh-eyes #4)"
+    },
+    "demo.intro": {
+      "text": "A sample invite from you, {host}. Tap Send it.",
+      "kind": "message",
+      "where": "demo, first screen (fresh-eyes round 2)"
+    },
+    "demo.inIf": {
+      "text": "You're in if: {rule}",
+      "kind": "status",
+      "where": "demo, friend side after a condition (fresh-eyes round 2)"
     },
     "demo.shrinkHint": {
       "text": "Not enough yet. Skip ahead to see it shrink.",
@@ -753,7 +763,7 @@
       "where": "H2"
     },
     "develop.writing": {
-      "text": "Writing six words…",
+      "text": "Writing a short invite…",
       "kind": "status",
       "where": "H2"
     },
@@ -813,7 +823,7 @@
       "where": "H2"
     },
     "develop.useMine": {
-      "text": "Use mine",
+      "text": "Use my words",
       "kind": "button",
       "where": "H2"
     },
@@ -1558,7 +1568,7 @@
       }
     },
     "access.benchHere": {
-      "text": "Bench right here",
+      "text": "Bench at the spot",
       "kind": "label",
       "where": "I1, I6, I9"
     },

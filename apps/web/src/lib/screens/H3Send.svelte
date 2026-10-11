@@ -50,7 +50,7 @@
   } = $props();
   let editing = $state(false);
   const showEdit = $derived(editing || view === "editing");
-  const shownLine = $derived(hostLine || (hostName.trim() && (spot || typedSpot.trim()) ? t("send.hostLine", { host: hostName.trim(), spot: spot || typedSpot.trim() }) : ""));
+  const shownLine = $derived(hostLine || (hostName.trim() && (spot || typedSpot.trim()) ? t("send.hostLine", { host: hostName.trim(), spot: spot || typedSpot.trim() }) : spot || typedSpot.trim()));
 </script>
 
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}
@@ -64,8 +64,10 @@
     <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} max={80} />
   {/if}
   <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
-  {#if showEdit}
-    <TextField label={t("send.hostLineLabel")} bind:value={hostLine} hint={t("send.hostLineHint")} max={80} />
+  <!-- One place field (fresh-eyes round 2): when you type where you are, that is the line;
+       the Where you'll be row only shows when the map already named the spot. -->
+  {#if askSpot && !showEdit}{:else if showEdit}
+    <TextField label={t("send.hostLineLabel")} bind:value={hostLine} placeholder={shownLine} hint={t("send.hostLineHint")} max={80} />
   {:else}
     <!-- Fresh-eyes #12: a labelled row with its value and a visible Edit, never a lone pencil. -->
     <div class="hostline">

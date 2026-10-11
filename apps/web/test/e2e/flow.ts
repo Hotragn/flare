@@ -102,7 +102,7 @@ for (let run = 1; run <= RUNS; run++) {
   await host.getByRole("button", { name: "Take the photo" }).click({ timeout: 15_000 });
   // With no map pack wired (MAP's module), the location gives no name: type it in the sheet.
   await host
-    .getByRole("button", { name: /Use these|Use mine/ })
+    .getByRole("button", { name: /Use these|Use my words/ })
     .waitFor({ timeout: 15_000 })
     .catch(async (e) => {
       await host.screenshot({ path: path.join(OUT, "e2e-fail.png") });

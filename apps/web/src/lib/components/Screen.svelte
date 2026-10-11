@@ -130,7 +130,10 @@
   .staged .sheet :global(.meter) { background: transparent; border: 0; box-shadow: none; padding-left: 0; }
   .staged .sheet :global(.opt) { background: rgb(255 255 255 / 0.12); border-color: transparent; color: #fff; }
   .staged .sheet :global(.opt.on) { background: #fff; color: #111; border-color: #fff; }
-  .staged .sheet :global(input:not([type="radio"]):not([type="checkbox"])), .staged .sheet :global(textarea) { background: rgb(255 255 255 / 0.1); color: #fff; border-color: rgb(255 255 255 / 0.3); }
+  /* The field's box carries the glass fill; the input inside stays clear, so there is one box,
+     not a box in a box (fresh-eyes round 2). */
+  .staged .sheet :global(.box) { background: rgb(255 255 255 / 0.1); border-color: rgb(255 255 255 / 0.45); }
+  .staged .sheet :global(input:not([type="radio"]):not([type="checkbox"])), .staged .sheet :global(textarea) { background: transparent; color: #fff; }
   /* Muted text over a photo needs more light to stay at 4.5:1. */
   .staged .hero :global(.t-muted), .staged .sheet :global(.t-muted) { color: rgb(255 255 255 / 0.86); }
   .grab { width: 36px; height: 5px; border-radius: 3px; background: rgb(255 255 255 / 0.35); margin: 8px auto 4px; flex: none; }

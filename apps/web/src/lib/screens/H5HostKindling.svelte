@@ -91,6 +91,8 @@
 <style>
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
   .center p { margin: 0; }
+  /* Fresh-eyes #14: the status line sits on a dark backing so it reads on any photo or drawing. */
+  .center > p { padding: 6px 14px; border-radius: 999px; background: rgb(0 0 0 / 0.45); color: #fff; }
   .hostline { margin: 0; text-align: center; color: var(--text-muted); font-weight: 700; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .err { font-weight: 700; margin: 0; text-align: center; }
