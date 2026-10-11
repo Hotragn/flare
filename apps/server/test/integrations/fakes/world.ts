@@ -1,6 +1,7 @@
 // A small world for the bot tests: PGlite with the real migrations, one Telegram group,
 // a host, and fake BE ports (yes, view, member, me) that follow the contract's shape.
 import { randomUUID } from "node:crypto";
+import { newCode } from "@flare/shared";
 import { Hono } from "hono";
 import { type Db, memoryDb, migrate } from "../../../src/db/db.ts";
 import { type Bot, mountTelegram, type YesResult } from "../../../src/telegram/index.ts";
@@ -23,7 +24,14 @@ const sharedDb = () => {
   return shared;
 };
 
-export async function makeWorld(opts: { editEveryMs?: number; photoWaitMs?: number } = {}) {
+export type WorldOpts = {
+  editEveryMs?: number;
+  photoWaitMs?: number;
+  /** Runs after a counted yes, like BE running the engine's effects after commit. */
+  afterYes?: (gatheringId: string) => Promise<void>;
+};
+
+export async function makeWorld(opts: WorldOpts = {}) {
   const db: Db = await sharedDb();
   await db.query("delete from groups");
   await db.query("delete from idempotency");
@@ -59,7 +67,9 @@ export async function makeWorld(opts: { editEveryMs?: number; photoWaitMs?: numb
          values ($1, $2, $3, 'yes', now() + interval '1 day') on conflict do nothing returning id`,
         [randomUUID(), gid, memberId],
       );
-      return r.rows.length ? "counted" : "already";
+      if (!r.rows.length) return "already";
+      await opts.afterYes?.(gid);
+      return "counted";
     },
     async view(gid) {
       const r = await db.query<{ n: number }>(
@@ -139,7 +149,7 @@ export async function makeWorld(opts: { editEveryMs?: number; photoWaitMs?: numb
           groupId,
           over.kind ?? "flare",
           over.state ?? "kindling",
-          id.slice(0, 5).toUpperCase(),
+          newCode(),
           hostId,
           plain ? JSON.stringify(plain) : null,
           over.kind === "plan"
