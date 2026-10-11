@@ -29,6 +29,8 @@ export type AgentOutcome = {
   tier: "hub" | "cloud" | null;
   fallback: "hub_absent" | "timeout" | "hub_error" | "invalid" | null;
   repaired: number;
+  /** Steps whose label the guard replaced with the template label (0 to 3). */
+  templateSteps: number;
   weather: "phone" | "tool" | "none";
 };
 
@@ -152,6 +154,7 @@ export async function runLadderAgent(d: AgentDeps, req: AgentRequest, job: SpanH
     tier: guarded ? tier : null,
     fallback,
     repaired: guarded?.repaired.length ?? 0,
+    templateSteps: guarded?.templateSteps ?? 4,
     weather,
   };
 }
