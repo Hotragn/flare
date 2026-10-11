@@ -1,0 +1,38 @@
+Hey! I'm entering the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". The deadline is Sunday Oct 11, 11:59 PM PDT (2:59 AM ET Monday). DevRelay is connected. Use it to understand the challenge (rules, judging, prizes, submission template), and to study what people have submitted so far: what's crowded, what's missing, what tends to win. Nothing to build yet.
+
+We'll run this like a real software company, waterfall style. I'll bring in one specialist at a time. I'll often send follow-ups through my manager session. Those messages come from me, so treat them the same as mine.
+
+Each specialist:
+- reads the earlier handoffs in docs/handoffs/
+- owns their scope completely and decides how to do it
+- finishes every deliverable in their role. No TODOs, TBDs, placeholders, or "next role will handle it."
+- verifies their own work actually works, with proof (test output, screenshots, commands run)
+- writes a handoff (docs/handoffs/NN-role.md) covering what was delivered, key decisions and why, and anything the next role must know
+- commits their work with a clear message
+
+Roles don't depend on later roles. If you find a problem from an earlier phase, fix it if it's small and log it. If it's big, write a change request in your handoff and propose the fix.
+
+Ground rules for everyone:
+- Research before deciding or debugging. Check how others solved it (DEV via DevRelay, official docs, GitHub issues). Keep docs/BUGLOG.md so nobody solves the same problem twice.
+- Real, working output only, with proof. No mock data where real data exists.
+- Secrets are already in .env, at <project>/flare/.env (if you're running in a worktree copy, read them from that path). They cover MongoDB Atlas, the Telegram bot, and RENDER_KEY for the Render API. Never print, log or commit them. .gitignore already protects .env.
+- Anything public waits for my yes: deploying under my accounts, making the repo public, publishing, posting, uploading, or messaging people.
+- Already approved, no need to ask: npm installs; installing Ollama with Homebrew and pulling gemma4:e4b; downloading the Gemma 4 E2B ONNX model (~3.2 GB) for browser tests; creating a private GitHub repo named flare on my account and pushing to it; keeping the Mac awake (caffeinate) during long work.
+- A separate lab session is running technical spikes in lab/ (git-ignored). Don't edit or commit lab/. The engineering lead will review its reports and import what we keep.
+- Real iPhone checks happen when we're awake. Build whatever page or script makes that quick, and we'll run it on our phones.
+
+Writing rules, for every doc, UI string, commit message and the final post:
+- Plain words, short sentences. Say the concrete thing: numbers, names, what happens.
+- No buzzwords or filler. Don't use: seamless, leverage, robust, empower, unlock, elevate, delve, cutting-edge, revolutionize, game-changer, harness, synergy, holistic, paradigm, next-level, supercharge, effortless, ecosystem, tapestry, testament, "in today's fast-paced world", "it's not just X, it's Y", "let's dive in".
+- No em-dash chains, no emoji decoration in docs, no intros or outros that say nothing.
+- Every claim gets a number, a link, or proof. If we don't know, say so.
+- UI copy is short and human: buttons 3 words max, messages 12 words max, warm and a bit playful, never cute at the cost of clarity.
+
+Quality bar, for every role (product, design, engineering, AI, maps, PWA, QA, security, ops, docs):
+- No timeboxes and no compromises. Take the time each role needs to do it properly, and don't cut scope to save time. The only fixed points are the Sunday daytime field test in Fairlane and the submission deadline.
+- Each role produces the standard documents its discipline owns, at the level a strong company would expect.
+- Use the latest stable versions of everything. Check current releases and known issues before choosing.
+- Engineering work ships with tests, types, error handling and docs. No stubs, no fake data, no "works on my machine."
+- The product has to feel premium: a full brand, polished motion and sound, and fast on every one of our phones.
+
+Reply with your read of the challenge and the field, in 10 bullets or fewer.
