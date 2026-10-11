@@ -19,8 +19,9 @@
 <section class="hero">
   <div class="hero-art" aria-hidden="true"><Scenery width={1200} height={640} /></div>
   <picture class="hero-shot">
-    <source type="image/avif" srcset="/site/hero-invite.avif" />
-    <img src="/site/hero-invite.webp" width="360" height="779" alt={t("site.hero.shotAlt")} fetchpriority="low" decoding="async" />
+    <!-- 150 px wide on phones, 260 px on desktops: the 300 w file covers phones at 2x. -->
+    <source type="image/avif" srcset="/site/hero-invite-300.avif 300w, /site/hero-invite.avif 360w" sizes="(min-width: 900px) 260px, 150px" />
+    <img src="/site/hero-invite.webp" srcset="/site/hero-invite-300.webp 300w, /site/hero-invite.webp 360w" sizes="(min-width: 900px) 260px, 150px" width="360" height="779" alt={t("site.hero.shotAlt")} fetchpriority="high" decoding="async" />
   </picture>
   <div class="hero-copy">
     <p class="kicker">{t("site.hero.kicker")}</p>

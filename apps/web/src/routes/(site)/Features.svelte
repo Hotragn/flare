@@ -2,6 +2,25 @@
      real screen from the app and a way into the demo. Features still being built get no card. -->
 <script lang="ts">
   import { t, type CopyKey } from "#lib/copy/index.ts";
+  // The screens load when the cards come within 400 px, not with the page: Chrome's own lazy
+  // margin on phones is a whole screen or more, and they would compete with the hero (LCP).
+  function near(img: HTMLImageElement) {
+    const go = () => {
+      img.src = img.dataset.src ?? "";
+    };
+    if (typeof IntersectionObserver === "undefined") return go();
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          go();
+          io.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" },
+    );
+    io.observe(img);
+    return { destroy: () => io.disconnect() };
+  }
   const cards = ["count", "shrink", "friend", "plan", "compass", "loop", "crew", "spark", "telegram", "gone"] as const;
 </script>
 
@@ -10,7 +29,7 @@
   {#each cards as c}
     {@const title = t(`site.feat.${c}.t` as CopyKey)}
     <li class="card">
-      <img src="/site/feat/{c}.webp" width="120" height="180" loading="lazy" decoding="async" alt={t("site.feat.alt", { title })} />
+      <img use:near data-src="/site/feat/{c}.webp" width="120" height="180" decoding="async" alt={t("site.feat.alt", { title })} />
       <div class="txt">
         <h3>{title}</h3>
         <p>{t(`site.feat.${c}.b` as CopyKey)}</p>
