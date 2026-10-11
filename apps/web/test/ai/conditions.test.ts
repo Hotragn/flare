@@ -63,7 +63,7 @@ describe("OD1 rules parser (SRS-COND-1, SRS-COND-2)", () => {
   it("SRS-COND-4: hard_20 score is reported and beats the lab's 15", () => {
     const ok = score(fixture.hard_20 as Case[]);
     console.info(`hard_20: ${ok}/20`);
-    expect(ok).toBeGreaterThanOrEqual(17);
+    expect(ok).toBeGreaterThanOrEqual(18);
   });
 
   it("CR-A1 min_step: the 4 phrases parse", () => {
