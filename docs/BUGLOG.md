@@ -498,3 +498,12 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** `/` became the website's home at integration (url-map.md); the test still expected the old app h1 "Flare".
 - **Fix:** The check now passes when any h1 renders offline.
 - **Proof:** `npm run e2e:pwa`: ALL PASS.
+
+## BUG-058: "Short one only" sent a rule that constrains nothing
+
+- **Date:** 2026-10-11
+- **Area:** Frontend link page (Plan answer), found in the lead's coverage check
+- **Symptom:** Tapping "Short one only" on a Plan sent `min_step(4)`. Under ADR-0016 `min_step(n)` holds when the step number is at most n, so `min_step(4)` is true for every step: the friend could be counted for the 60-minute step 1.
+- **Cause:** min and max read backwards: the smallest step is step 4, and "only step 4" is `max_step(4)` (BR-C-8: step number ≥ n).
+- **Fix:** `shortOnly()` sends `max_step(4)`; the test asserts it.
+- **Proof:** flow tests 37/37; the engine test for max_step keeps the member out of steps 1 to 3.

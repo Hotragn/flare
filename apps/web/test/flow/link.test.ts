@@ -195,7 +195,7 @@ describe("link page (FE3)", () => {
     expect(JSON.stringify(spark?.body)).not.toContain("Geese");
   });
 
-  it("SRS-PLAN-3: a Plan opens on the ladder; Short one only sends min_step 4", async () => {
+  it("SRS-PLAN-3: a Plan opens on the ladder; Short one only sends max_step 4 (smallest step only)", async () => {
     const { f, flow } = await opened({ kind: "plan", quorum: 3 });
     expect(flow.screen).toBe("plan-invite");
     expect(flow.steps.map((x) => x.minutes)).toEqual([60, 30, 15, 10]);
@@ -203,7 +203,7 @@ describe("link page (FE3)", () => {
     await flow.join("Amor");
     await settle();
     const put = f.outbox.sent.filter((x) => x.method === "PUT").at(-1);
-    expect(put?.body).toMatchObject({ rules: [{ type: "min_step", step: 4 }] });
+    expect(put?.body).toMatchObject({ rules: [{ type: "max_step", step: 4 }] });
   });
 
   it("BR-P-7: I'm fading makes the Plan one step smaller, once", async () => {

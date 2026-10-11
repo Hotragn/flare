@@ -556,9 +556,9 @@ export class LinkFlow {
 
   // ---------- Plans (P4 to P6) ----------
 
-  /** "Short one only": a yes for the smallest step only (min_step 4, ADR-0016). */
+  /** "Short one only": a yes for the smallest step only (max_step 4, BR-C-8: step number 4 or more). */
   shortOnly(): void {
-    this.yes([{ type: "min_step", step: 4 }], false);
+    this.yes([{ type: "max_step", step: 4 }], false);
   }
 
   askFade(): void {
