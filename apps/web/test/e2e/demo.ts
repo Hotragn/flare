@@ -14,7 +14,8 @@ const check = (name: string, ok: boolean, detail = "") => {
   if (!ok) fails.push(name);
   console.info(`${ok ? "PASS" : "FAIL"} ${name}${detail ? `: ${detail}` : ""}`);
 };
-const site = await serve(8887, () => null);
+const live = process.env.DEMO_URL;
+const site = live ? { url: live, close: async () => {} } : await serve(8887, () => null);
 const browser = await chromium.launch({ channel: "chrome" });
 const page = await (
   await browser.newContext({
