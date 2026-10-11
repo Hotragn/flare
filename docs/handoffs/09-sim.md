@@ -118,4 +118,6 @@ import only on that page. `/app` (140 KB) and `/g/[id]` (139.7 KB) didn't change
 - OSM's tile servers ask for light use. Fine for a demo page; for heavy traffic, use a
   self-hosted or paid tile source and update the CSP host.
 - Frames need network for tiles and the installed Google Chrome.
-- The replay JSON (about 730 KB) is committed so the page works without running the sim.
+- The replay JSON (about 730 KB) is committed so the page works without running the sim. A nested
+  `apps/web/static/sim/biome.json` (`root: false`) keeps Biome from formatting it, because the root
+  `biome.json` was off limits. That file is also served as `/sim/biome.json`, which does no harm.
