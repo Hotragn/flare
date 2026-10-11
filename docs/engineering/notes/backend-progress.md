@@ -1,13 +1,14 @@
 # Backend progress (wp/backend)
 
 ## Done
-- Step 0: middleware (auth, rate limit, idempotency, strict body) in apps/server/src/http/.
-- Step 1: every BE route in openapi.yaml; engine runner (lock, transition, effects after commit);
-  scheduler (jobs table, 1 s tick); sweep; audit; SSE; ladder; 200.html for /app/* and /g/*.
-- Tests: flow.test.ts (8 full flows), contract.test.ts (38, one describe per operationId).
+- Middleware (auth, rate limit, idempotency, strict body).
+- Every BE route in openapi.yaml on the real @flare/engine; SSE; scheduler; delete job; sweep; audit; ladder; 200.html.
+- CLIs: sweep, audit, kpi, audit:logs.
+- Tests: contract 39, flow 8, ops 9 (77 server tests in total).
+- Docs: docs/backend/01 to 04; handoff docs/handoffs/06c-backend.md; bugs BUG-BACKEND-1 to 3.
 
 ## In progress
-- Step 2: CLIs (`npm run sweep`, `npm run audit`, `npm run kpi`, `npm run audit:logs`), openapi 410 additions.
+- Nothing.
 
 ## Exact next step
-- Write apps/server/src/cli/*.ts and root package.json scripts; then docs/backend/*, handoff 06c.
+- Lead: merge wp/backend; run the CLIs once against the integration database; wire INT's mounts and effects.
