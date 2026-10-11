@@ -98,8 +98,8 @@ button:disabled {
 pre {
   white-space: pre-wrap;
   font-size: 0.8rem;
-  max-height: 300px;
-  overflow: auto;
+  /* No inner scroll: a scrollable region would need keyboard focus (axe scrollable-region-focusable). */
+  overflow-wrap: anywhere;
 }
 a {
   color: var(--accent);
