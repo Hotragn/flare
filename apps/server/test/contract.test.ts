@@ -500,6 +500,24 @@ describe("cancelGathering", () => {
   });
 });
 
+describe("writes after Gone (F13)", () => {
+  it("410 gone with ended for text-yes, fade, arrivals, done, cancel", async () => {
+    const g = await h.group(2);
+    const { id, r } = await h.flare(g.groupId, g.host);
+    await h.call("POST", G(id, "/cancel"), { as: g.host });
+    const now = h.clock.now().toISOString();
+    const calls = [
+      h.call("POST", G(id, "/text-yes"), { as: g.host, body: { code: r.body.short_code } }),
+      h.call("POST", G(id, "/fade"), { as: g.members[1] }),
+      h.call("POST", G(id, "/arrivals"), { as: g.host, body: { for: "self", recorded_at: now } }),
+      h.call("POST", G(id, "/done"), { as: g.host }),
+      h.call("POST", G(id, "/cancel"), { as: g.host }),
+    ];
+    for (const res of await Promise.all(calls))
+      expect(res.body).toMatchObject({ code: "gone", ended: "not_this_time" });
+  });
+});
+
 describe("putLiveLocation", () => {
   it("204 overwrite in place, 403 non-host, 409 before Lit", async () => {
     const k = await h.group(2);
