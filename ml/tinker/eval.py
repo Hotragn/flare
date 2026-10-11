@@ -1,6 +1,6 @@
 """Score rules parser, base model zero-shot and the LoRA on the held-out sets.
 
-Scoring is the conditions harness's own same() (evals/harness/tasks/conditions.ts), called
+Scoring is the conditions eval's own same() (evals/harness/tasks/conditions.ts), called
 through rules_bridge.ts, so a model answer passes exactly when a parser answer would.
 
 Usage:

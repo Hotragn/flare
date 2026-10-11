@@ -1,6 +1,6 @@
 // Bridge for the Python side. Two modes, both read-only on app code:
 //   node rules_bridge.ts parse  < texts.json      -> the app rules parser's answer per text
-//   node rules_bridge.ts score  < predictions.json -> harness scoring (same()) per prediction
+//   node rules_bridge.ts score  < predictions.json -> the eval scoring (same()) per prediction
 // The parse mode builds the same context and mapping as evals/harness/tasks/conditions.ts.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";

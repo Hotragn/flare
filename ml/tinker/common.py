@@ -56,7 +56,7 @@ def messages(text: str) -> list[dict]:
 
 
 def encode_answer(expect) -> str:
-    """Canonical target string. null -> "unparsed" (the harness's unparsed form)."""
+    """Canonical target string. null -> "unparsed" (the eval's unparsed form)."""
     if expect is None:
         return '"unparsed"'
     if isinstance(expect, str):
@@ -72,7 +72,7 @@ def _try_json(s: str):
 
 
 def decode_answer(s: str):
-    """Model text back to the harness's Simple form; anything malformed counts as unparsed (null)."""
+    """Model text back to the eval's Simple form; anything malformed counts as unparsed (null)."""
     s = s.strip()
     if s.startswith("```"):
         s = s.strip("`").strip()
