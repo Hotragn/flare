@@ -16,14 +16,17 @@
 
 <section class="hero">
   <div class="hero-art" aria-hidden="true"><Scenery width={1200} height={640} /></div>
+  <picture class="hero-shot">
+    <source type="image/avif" srcset="/site/hero-invite.avif" />
+    <img src="/site/hero-invite.webp" width="360" height="779" alt={t("site.hero.shotAlt")} fetchpriority="low" decoding="async" />
+  </picture>
   <div class="hero-copy">
     <p class="kicker">{t("site.hero.kicker")}</p>
     <h1 class="t-display">{t("site.hero.title")}</h1>
     <p class="lead">{t("site.hero.lead")}</p>
     <div class="ctas">
-      <a class="cta primary" href="/app/">{t("site.nav.open")}</a>
-      <a class="cta" href="/app/demo/">{t("demo.try")}</a>
-      <a class="cta" href="/how/">{t("site.hero.how")}</a>
+      <a class="cta primary" href="/app/demo/">{t("demo.try")}</a>
+      <a class="cta" href="/app/">{t("site.nav.open")}</a>
     </div>
     <p class="fine">{t("site.hero.fine")}</p>
   </div>

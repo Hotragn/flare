@@ -3773,18 +3773,18 @@
       "where": "W0 W1"
     },
     "site.hero.kicker": {
-      "text": "Flare, for getting friends outside",
+      "text": "Flare · a free web app",
       "kind": "title",
       "where": "site W1"
     },
     "site.hero.title": {
-      "text": "If enough friends say yes, it's on.",
+      "text": "Get your friends outside.",
       "kind": "title",
       "where": "site W1",
       "fixed": "brand primary tagline"
     },
     "site.hero.lead": {
-      "text": "Snap where you are. Friends get a six-word invite and answer in private. It only happens if enough say yes, and nobody ever sees a no.",
+      "text": "Snap where you are. Friends say yes in private. It goes ahead only if enough can come, then deletes itself.",
       "kind": "prose",
       "where": "site W1"
     },
@@ -3797,6 +3797,11 @@
       "text": "See how",
       "kind": "button",
       "where": "site W1"
+    },
+    "site.hero.shotAlt": {
+      "text": "A Flare invite: a pond photo, six words, one more needed.",
+      "kind": "aria",
+      "where": "W1"
     },
     "site.hero.fine": {
       "text": "Seconds of screen. An hour outside.",
