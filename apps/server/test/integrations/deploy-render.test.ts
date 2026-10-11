@@ -12,7 +12,7 @@ import { deploy, deployPlan, formatPlan, NAMES } from "../../../../scripts/deplo
 
 const ROOT = path.resolve(import.meta.dirname, "../../../..");
 const VARS = {
-  RENDER_KEY: "rnd_fakeRenderKeyForTests0123456789",
+  RENDER_KEY: "fake-render-key-for-tests",
   PUBLIC_BASE_URL: "https://flare-outside.onrender.com",
   HUB_SECRET: "hubSecretValueForTests_0123456789abcdef",
   TELEGRAM_BOT_TOKEN: "123456789:AAfakeTokenForTestsOnly_abcdefghijklmn",
@@ -46,6 +46,8 @@ beforeAll(async () => {
       const name = new URL(url, "http://x").searchParams.get("name") ?? "";
       return json(existing.has(name) ? [{ service: { id: `svc-${name}` } }] : []);
     }
+    if (req.method === "GET" && url === `/v1/services/svc-${NAMES.web}`)
+      return json({ serviceDetails: { url: "https://flare-outside-x1.onrender.com" } });
     if (url === "/v1/services") return json({ service: { id: `svc-${(body as { name: string }).name}` } });
     return json({});
   });
@@ -105,6 +107,19 @@ describe("deploy:render (BE10, SRS-MNT-3)", () => {
         "TELEGRAM_BOT_TOKEN",
         "VAPID_PRIVATE_KEY",
       ].sort(),
+    );
+  });
+  it("a local http PUBLIC_BASE_URL is replaced by the service's onrender.com URL", async () => {
+    reqs.length = 0;
+    const done = await deploy({ ...VARS, PUBLIC_BASE_URL: "http://localhost:8787" }, REPO, base);
+    expect(done).toContain("PUBLIC_BASE_URL from Render: https://flare-outside-x1.onrender.com");
+    const env = reqs.find((r) => r.url === `/v1/services/svc-${NAMES.web}/env-vars`)?.body as {
+      key: string;
+      value: string;
+    }[];
+    expect(env.find((e) => e.key === "PUBLIC_BASE_URL")?.value).toBe("https://flare-outside-x1.onrender.com");
+    expect(formatPlan(deployPlan({ PUBLIC_BASE_URL: "http://localhost:8787" }, REPO))).toContain(
+      "PUBLIC_BASE_URL: from Render",
     );
   });
   it("a second run finds everything by name and creates nothing", async () => {

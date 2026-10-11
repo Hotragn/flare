@@ -22,12 +22,12 @@ export const WEB_KEYS = [
   "VAPID_PRIVATE_KEY",
   "VAPID_SUBJECT",
 ];
-const REQUIRED = ["RENDER_KEY", "PUBLIC_BASE_URL", "HUB_SECRET"];
+const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 
 export type Step = { what: string; method: "GET" | "POST" | "PUT"; path: string };
 export type DeployPlan = {
   repo: string;
-  env: { key: string; status: "set" | "missing" }[];
+  env: { key: string; status: "set" | "missing" | "from Render" }[];
   steps: Step[];
   problems: string[];
 };
@@ -42,14 +42,18 @@ export function repoUrl(): string {
   }
 }
 
+/** The local .env usually holds http://localhost; then the service's onrender.com URL is used. */
+const httpsBase = (vars: Vars) => (vars.PUBLIC_BASE_URL?.startsWith("https://") ? vars.PUBLIC_BASE_URL : null);
+
 export function deployPlan(vars: Vars, repo: string): DeployPlan {
   const problems = REQUIRED.filter((k) => !vars[k]).map((k) => `${k} is missing`);
   if (!repo.startsWith("https://github.com/")) problems.push("git remote origin is not a GitHub repo");
-  if (vars.PUBLIC_BASE_URL && !vars.PUBLIC_BASE_URL.startsWith("https://"))
-    problems.push("PUBLIC_BASE_URL must be https");
   return {
     repo,
-    env: WEB_KEYS.map((key) => ({ key, status: vars[key] ? "set" : "missing" })),
+    env: WEB_KEYS.map((key) => ({
+      key,
+      status: key === "PUBLIC_BASE_URL" && !httpsBase(vars) ? "from Render" : vars[key] ? "set" : "missing",
+    })),
     steps: [
       { what: "find the workspace (owner)", method: "GET", path: "/v1/owners" },
       { what: `find or create Postgres ${NAMES.db} (${REGION})`, method: "POST", path: "/v1/postgres" },
@@ -178,6 +182,15 @@ export async function deploy(vars: Vars, repo: string, base = "https://api.rende
     },
     "web_service",
   );
+  if (!httpsBase(vars)) {
+    const svc = await api<{ serviceDetails?: { url?: string } }>("GET", `/v1/services/${webId}`);
+    const url = svc.serviceDetails?.url;
+    if (!url?.startsWith("https://")) throw new Error(`${NAMES.web} has no https URL yet; run again in a minute`);
+    const i = env.findIndex((e) => e.key === "PUBLIC_BASE_URL");
+    if (i >= 0) env.splice(i, 1);
+    env.push({ key: "PUBLIC_BASE_URL", value: url });
+    done.push(`PUBLIC_BASE_URL from Render: ${url}`);
+  }
   await api("PUT", `/v1/services/${webId}/env-vars`, env);
   done.push(`set ${env.length} env vars on ${NAMES.web}`);
 
