@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4NTQN3KT9H6ZV4A8WD3ZD43",
+  "strategy": "manual-commit",
+  "branch": "mastra-plan",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "apps/hub/src/client.ts",
+    "apps/hub/src/ollama.ts",
+    "evals/harness/tasks/ladder-agent.ts",
+    "packages/shared/src/prompts/ladder.ts",
+    "packages/shared/test/ladder-case.test.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 11584,
+    "cache_read_tokens": 5192313,
+    "output_tokens": 7609,
+    "api_call_count": 6
+  }
+}

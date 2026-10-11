@@ -1,0 +1,109 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4NTQN3KT9H6ZV4A8WD3ZD43",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T15:54:05.411097Z",
+  "branch": "mastra-plan",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "apps/hub/src/client.ts",
+    "apps/hub/src/ollama.ts",
+    "evals/harness/tasks/ladder-agent.ts",
+    "packages/shared/src/prompts/ladder.ts",
+    "packages/shared/test/ladder-case.test.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "63e9399ad3c8",
+  "checkpoint_transcript_start": 9337,
+  "transcript_lines_at_start": 9337,
+  "compact_transcript_start": 1482,
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 11584,
+    "cache_read_tokens": 5192313,
+    "output_tokens": 7609,
+    "api_call_count": 6
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-11T15:54:04.73548Z",
+    "agent_lines": 420,
+    "agent_removed": 18,
+    "human_added": 116,
+    "human_modified": 6,
+    "human_removed": 0,
+    "total_committed": 542,
+    "total_lines_changed": 560,
+    "agent_percentage": 78.21428571428571,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
