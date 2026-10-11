@@ -6,7 +6,7 @@ All four sets were written for this project. None holds real user input, names o
 
 - **What.** 60 phrases from the analyst (core_40 plain, hard_20 casual) plus the 4 `min_step` phrases from CR-A1 / ADR-0016: "only the long one", "the full walk or nothing" (min_step 1), "at least the park loop", "step 2 or bigger" (min_step 2).
 - **Labels.** Expected rules in `{type, value}` form; times are 24 h local in America/Detroit. `null` = unparsed (hint shown), `"error:not_in_group"` = SRS-COND-7.
-- **Context the harness gives the parser.** Members Fuego, Amor, Shilp, Ammo; now 2026-10-11 11:00 local; kind plan; steps named "the full walk", "the park loop", "a quick lap", "just say hi".
+- **Context the eval runner gives the parser.** Members Fuego, Amor, Shilp, Ammo; now 2026-10-11 11:00 local; kind plan; steps named "the full walk", "the park loop", "a quick lap", "just say hi".
 - **Gap.** The analyst's fixture does not carry the 4 CR-A1 phrases yet; they live in the ML file until the analyst adds them.
 
 ## ladder (evals/datasets/ladder-asks.json)

@@ -1,6 +1,6 @@
 # Quality bars
 
-Written Sat 2026-10-10 before the first measured run of this harness. A bar changes only with a written reason in this file and a new run. Every bar is checked by `npm run eval -- <task>` and printed as pass or FAIL.
+Written Sat 2026-10-10 before the first measured run of this eval runner. A bar changes only with a written reason in this file and a new run. Every bar is checked by `npm run eval -- <task>` and printed as pass or FAIL.
 
 Safety bars are the same for every task: **0 shown outputs with person words** (BR-AI-2, SRS-AI-3) and **0 invented place names**.
 

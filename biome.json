@@ -11,7 +11,8 @@
       "!apps/web/.svelte-kit",
       "!apps/web/build",
       "!**/*.svelte",
-      "!apps/web/static/check/capability"
+      "!apps/web/static/check/capability",
+      "!evals/reports"
     ]
   },
   "formatter": {

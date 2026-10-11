@@ -4,7 +4,7 @@
 
 **Where from.** Wikimedia Commons, fetched by `lab/spikes/common/fetch-photos.mjs`, 1024 px on the long side. Manifest: `lab/data/photos/photos.json`.
 
-**Licenses.** Per item below. We do **not** copy the images into this repo, the app or the website: the harness reads them in place from `lab/data/photos` (found through git's common dir, or `FLARE_LAB_DIR`). Reports store only the item id and our model's text. If a photo is ever shown publicly, credit the author and license as listed and keep BY-SA terms for any edited copy.
+**Licenses.** Per item below. We do **not** copy the images into this repo, the app or the website: the eval runner reads them in place from `lab/data/photos` (found through git's common dir, or `FLARE_LAB_DIR`). Reports store only the item id and our model's text. If a photo is ever shown publicly, credit the author and license as listed and keep BY-SA terms for any edited copy.
 
 **Labels.** `evals/datasets/photos.json`: `expect_any` (key facts; any one counts), `names_ok` (sign text visible in the photo, so not invented), `people` (person in frame, from the lab's notes). `evals/datasets/osm-tags.json`: required tags for 5 photos. One labeller (the ML engineer), working from the lab's hand grades, so treat the key-fact score as a proxy.
 

@@ -6,7 +6,7 @@ Owner: ML. Date: 2026-10-10. Evidence: lab reports 01, 02, 07, 09 (read-only, in
 
 | Tier | Job | Model | Why |
 | --- | --- | --- | --- |
-| Hub (the Mac) | Photo to invite + scene, Plan ladder, OSM tag draft | `gemma4:e4b-it-q4_K_M` (Gemma 4 E4B, GGUF Q4_K_M, 7.5B params, 6.58 GB) on Ollama 0.40.2, llama.cpp runner | Lab 02: 20/20 JSON, 20/20 usable after `enforce()`, 3.0 s median, best quality measured (39/40 scenes, 39/40 invites). This harness: same 20 answers word for word (temperature 0, seed 42) |
+| Hub (the Mac) | Photo to invite + scene, Plan ladder, OSM tag draft | `gemma4:e4b-it-q4_K_M` (Gemma 4 E4B, GGUF Q4_K_M, 7.5B params, 6.58 GB) on Ollama 0.40.2, llama.cpp runner | Lab 02: 20/20 JSON, 20/20 usable after `enforce()`, 3.0 s median, best quality measured (39/40 scenes, 39/40 invites). This eval runner: same 20 answers word for word (temperature 0, seed 42) |
 | Phone | Conditions, rest-loop requests, needs checks | No model. Rules: the conditions parser (ODAI, lab 07) and `parseRestRequest()` | Lab 07: rules 40/40 core, 15/20 hard, under 1 ms, 0 MB download. Best phone model (Qwen3-0.6B) scored 26/40 and hung Safari |
 | Template | Every job | No model | Floor for BR-AI-1. Always valid: template invite, template ladder (561 totals tested), manual tag picker, rest-loop pickers |
 
