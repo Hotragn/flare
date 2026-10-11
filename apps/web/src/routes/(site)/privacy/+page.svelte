@@ -20,6 +20,7 @@
     coords === "B" ? "site.privacy.l.coordsB" : "site.privacy.l.coordsA",
     "site.privacy.l.hub",
     "site.privacy.l.weather",
+    "site.privacy.l.sentry",
     "site.privacy.l.push",
   ];
 

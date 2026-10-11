@@ -63,7 +63,7 @@ async function realServer(port: number) {
   return { url, close };
 }
 const srv = REAL ? await realServer(8863) : await startServer(8862);
-console.log(`API: ${REAL ? "real server (apps/server, PGlite)" : "in-memory fake"}`);
+console.info(`API: ${REAL ? "real server (apps/server, PGlite)" : "in-memory fake"}`);
 const browser = await chromium.launch({
   channel: "chrome",
   args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],

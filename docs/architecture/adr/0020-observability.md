@@ -1,6 +1,6 @@
 # ADR-0020: Structured logs with redaction, counters, no third-party telemetry
 
-Status: Accepted. Date: 2026-10-10. Details in [09-observability.md](../09-observability.md).
+Status: Accepted; the "no Sentry" part is superseded by [ADR-0021](0021-sentry-agent-tracing.md) (AI-path traces, server side, allow-listed). Date: 2026-10-10. Details in [09-observability.md](../09-observability.md).
 
 ## Decision
 - **Logs:** pino 10.4.0, JSON to stdout, Render keeps them 7 days (BR-D-6). One line per request: method, route template (ids replaced by `:id`), status, milliseconds. Redaction paths drop `authorization`, `cookie`, tokens, bodies. Events use fixed names (`hub.hello`, `tg.refused`, `sweep.deleted`) with counts, never content.

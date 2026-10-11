@@ -677,7 +677,7 @@ describe("draftLadder", () => {
     });
     expect(r.body.tier).toBe("rules");
     expect(r.body.steps.map((s: { minutes: number }) => s.minutes)).toEqual([60, 30, 15, 10]);
-    expect(r.body.steps[0].label).toBe("Long walk");
+    expect(r.body.steps[0].label).toBe("The full plan"); // ML's TEMPLATE_LABELS, one set for hub, server and phone
     expect(
       (await h.call("POST", "/api/v1/drafts/ladder", { body: { ask: "", total_minutes: 60 }, key: null })).status,
     ).toBe(400);

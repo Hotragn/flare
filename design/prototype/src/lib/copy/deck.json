@@ -1805,30 +1805,6 @@
       "where": "P2 step edit",
       "owner": "apps/web/src/lib/ai"
     },
-    "ladder.tmpl.1": {
-      "text": "Long walk",
-      "kind": "label",
-      "where": "Template ladder step 1 (server, ADR-0007)",
-      "owner": "apps/server/src/routes/ai.ts"
-    },
-    "ladder.tmpl.2": {
-      "text": "Short walk",
-      "kind": "label",
-      "where": "Template ladder step 2 (server, ADR-0007)",
-      "owner": "apps/server/src/routes/ai.ts"
-    },
-    "ladder.tmpl.3": {
-      "text": "Sit a while",
-      "kind": "label",
-      "where": "Template ladder step 3 (server, ADR-0007)",
-      "owner": "apps/server/src/routes/ai.ts"
-    },
-    "ladder.tmpl.4": {
-      "text": "Quick hello",
-      "kind": "label",
-      "where": "Template ladder step 4 (server, ADR-0007)",
-      "owner": "apps/server/src/routes/ai.ts"
-    },
     "planSent.title": {
       "text": "Plan sent.",
       "kind": "title",
@@ -4044,29 +4020,11 @@
       "where": "H6 +1 list for a member the bot made (openapi Member.name_ct null)",
       "owner": "frontend"
     },
-    "ladder.tpl.1": {
-      "text": "Full plan",
-      "kind": "label",
-      "where": "P2 template step 1 when offline (no ladder draft)",
-      "owner": "frontend"
-    },
-    "ladder.tpl.2": {
-      "text": "Half the plan",
-      "kind": "label",
-      "where": "P2 template step 2 when offline",
-      "owner": "frontend"
-    },
-    "ladder.tpl.3": {
-      "text": "Short version",
-      "kind": "label",
-      "where": "P2 template step 3 when offline",
-      "owner": "frontend"
-    },
-    "ladder.tpl.4": {
-      "text": "10 minutes together",
-      "kind": "label",
-      "where": "P2 template step 4 when offline",
-      "owner": "frontend"
+    "site.privacy.l.sentry": {
+      "text": "Our server sends Sentry timings for AI jobs: which tier ran, how long, and whether it worked. Never your photo, words, names, places or ids. Your phone talks to no tracker.",
+      "kind": "prose",
+      "where": "site W4",
+      "fixed": "ADR-0021"
     }
   }
 }

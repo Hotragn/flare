@@ -574,7 +574,12 @@ export class HostFlow {
       const m = [totalMinutes, Math.round(totalMinutes / 2), Math.round(totalMinutes / 4), 10].map((x, i, a) =>
         Math.max(5 + (a.length - 1 - i) * 5, x),
       );
-      const names = [t("ladder.tpl.1"), t("ladder.tpl.2"), t("ladder.tpl.3"), t("ladder.tpl.4")];
+      const names = [
+        t("ladder.template.step1"),
+        t("ladder.template.step2"),
+        t("ladder.template.step3"),
+        t("ladder.template.step4"),
+      ];
       this.steps = m.map((minutes, i) => ({ name: names[i] ?? "", place: this.spot?.name ?? "", minutes, access: "" }));
     }
   }

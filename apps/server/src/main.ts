@@ -10,6 +10,10 @@ import { env } from "./env.ts";
 import { bearer, HubRelay, secretMatches } from "./hub/relay.ts";
 import { integrations } from "./integrations.ts";
 import { log } from "./log.ts";
+import { flushTracing, initTracing } from "./tracing.ts";
+
+// ADR-0021: AI-path tracing to Sentry when SENTRY_DSN is set; allow-listed attributes only.
+log.info({ event: "tracing", on: initTracing() }, "tracing");
 
 const relay = new HubRelay(env.hubJobTimeoutMs, { pingMs: env.hubPingMs });
 let db: Db | null = null;
@@ -59,6 +63,7 @@ server.on("upgrade", (req, socket, head) => {
 const stop = async () => {
   scheduler?.stop();
   ints.close();
+  await flushTracing();
   relay.close();
   wss.close();
   server.close();
