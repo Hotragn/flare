@@ -1,0 +1,150 @@
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Dev relay login" from-mode="prompting">
+Good catch on the Sentry value, and the tracing design is exactly right. Don't use the auth token to read the DSN; the founder will paste the real DSN.
+
+Same problem with DigitalOcean: DO_MODEL_ACCESS_KEY has the shape of a personal access token (dop_v1_…), which is full account access, not a Serverless Inference model access key. Don't use it, and never let it reach Render. Build the DigitalOcean tier against a scoped model access key and keep the tier off until one is in .env. Add the same wrong-type check to check-env for both (dop_v1_ in the DigitalOcean slot, sntryu_ in SENTRY_DSN), and make deploy prep refuse to send either kind of token to Render.
+
+Carry on with the DigitalOcean tier code, then QA/a11y/security, then deploy prep.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Thanks for the straight disclosure about the four calls. It's logged for the founder, who's already set to revoke that token. The design is right: hub first, DigitalOcean only when the hub is absent, the photo only on an explicit tap, a daily cap, and the token guards. 20 to 27 s is slow but still beats a dead end when the Mac is offline, and the post can say so honestly. Approved. Go ahead with QA, a11y and security on the field-test path, then deploy prep.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Strong work, and thanks for owning the two red CI runs. One change: don't idle. This window resets at 6:50 AM whatever we do, so unused usage now is lost. Use it on the field test.
+
+1. **Coverage check.** Take the field-test runs we'll do Sunday and mark each one built + e2e on the real stack, or not:
+   - a Plan ("Fairlane walk at 11?") with a deadline, conditions and a fade
+   - a lazy Flare through Telegram
+   - a Flare through an iMessage link
+   - the plain-text reply
+   - an ambitious Flare that shrinks to Ember
+   - airplane mode after Lit, plus the outbox
+   - the low-vision compass walk with VoiceOver
+   - the needs profile and access line
+   - Sparks and "met here N times"
+   - Hot spots
+   - the rest-loop print card
+   - the deletion audit at T+62
+2. **Close every P0 gap** you find, in that order, with real-stack e2e for each. Plan mode and Sparks matter most, because the day starts with a Plan and the post needs Sparks.
+3. **Then** write the 07a and 07c handoffs, and chain Entire's hooks if it's enabled by then.
+
+Keep committing often, and keep RESUME.md current for the 6:50 reset.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder update: both keys are fixed, and Entire is enabled.
+- **SENTRY_DSN** checks out as a DSN.
+- **DO_MODEL_ACCESS_KEY** is no longer a dop_v1_ token, so it should be the scoped model access key. Run one check with a non-personal fixture (the ladder for "Fairlane walk at 11?"), confirm the token guard passes, and confirm the deploy plan now sends it to Render with the cloud tier on.
+- **Entire:** the founder ran `entire enable`. .claude/settings.json now has Entire hooks and .entire/ exists.
+  - Chain Entire's git hooks into .githooks so both the secret scan and Entire run.
+  - Add the SRS-SEC-7 scrub for session logs before anything is pushed publicly.
+  - Check whether your next commit carries an Entire checkpoint. If hooks only load in a new session, tell me, and we'll decide whether that's worth a restart.
+
+Then carry on with the field-test coverage check and the gaps.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder confirmed, with a screenshot of the DigitalOcean console, that they created a Model Access Key named "flare-server" scoped to 1 model. That's the right kind of key. Its value starts with doo_v1_, but DigitalOcean's docs don't state the model-key format (https://docs.digitalocean.com/products/inference/how-to/model-access-keys/), so the prefix guard may be wrong. Check it by behavior, never printing the value:
+1. **Scope check:** GET https://api.digitalocean.com/v2/account with the key. A scoped model key should be refused (401 or 403). If it returns 200, it's an account token: stop, keep the tier off and tell me.
+2. If it's refused, make **one ladder fixture call** ("Fairlane walk at 11?") at inference.do-ai.run to confirm it works.
+3. If both pass, update the token guard to classify by this scope check, not by prefix. Record the result in ADR-0022, and let the deploy plan send it to Render with the cloud tier on.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Small process fix: four CI runs went red tonight on things a local check would have caught. Two were lint errors (a console call, and aria-label/tabindex on the check page), plus the engine property-test bug, and the run after that. Add `npm run lint` and the fast unit tests to the pre-push chain, next to the secret and session scans, so red builds never reach GitHub. Keep it under about 30 seconds.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Great coverage pass. The behavior-based key check is the right fix, and finding BUG-058 to 060 (Sparks never wrote Hot spots) before the field test is exactly why we ran it. Approved.
+
+Order: `/app/loop/` with a real-stack e2e, then `/app/fix-map/` (draft and export only). Both are in scope for the product. If fix-map isn't done by rc-1, hide its menu entry for the RC so nothing 404s, and finish it this afternoon. Keep RESUME.md current for the 6:50 reset.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Usage is at 79%. The limit will likely stop us in about 30 minutes, and it resets at 6:50 AM ET. Commit at each step and keep RESUME.md exact (the next step for /app/loop/ and fix-map), then keep going.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Approved. 15/15 on e2e:loop, and an honest "no loop here, try 400 m" at Ford Woods is the right behavior. We'll demo the rest loop at Village Green and mention Ford Woods in the post.
+
+Next: the ML5 photo-to-tag drafting job on the hub. It's the AI-essential half of Fix the map. Do it in this window if there's room, else it's first after the field test. Same rules as the other hub jobs: versioned prompt, enforce(), human review of every tag, and an eval set. Then rest until the 6:50 reset; integration point 3 is at 8:00 as planned.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Two founder updates:
+1. **Lighthouse target is 100**, not 95. That's all four categories (performance, accessibility, best practices, SEO) on every website page, mobile and desktop, with the reports saved as proof. Do it now, before ML5. ML5 moves to first after the field test. Keep the motion and design intact: fix by the budget (images, fonts, preload, render-blocking, layout shift), not by stripping polish.
+2. **The live Telegram test is running now** from lab/ (tg.mjs morning). Don't touch the bot, its webhook or getUpdates until I say it's finished, about 60 minutes max. I'll pass you the chat ID result for TELEGRAM_ALLOWED_CHAT_IDS.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The live Telegram test in "Flare test" passed:
+- post with buttons, count edits, notify post
+- deleteMessage and deleteMessages
+- deep link /start with a private reply
+- a tap on "I'm in" got answerCallbackQuery ok, plus an ephemeral "Only you can see this" message (ephemeral works on this bot)
+- the founder also tapped "Not now"
+
+TELEGRAM_ALLOWED_CHAT_IDS=[chat-id] is now in .env. The lab script stops polling and deletes the webhook when its window ends (about 3:46). Leave the bot alone until then; after that, setWebhook still waits for the founder's YES at deploy. The raw log is lab/spikes/03-telegram/results/api-log.jsonl (read-only) if you want the exact behaviors for the integrations docs.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Founder decision for Telegram posts. Do it after the deploy, before the post:
+
+1. **Branded card by default.** The bot's Flare post uses sendPhoto with a generated card instead of a text-only message:
+   - the current flame state art, the six words, the place label, and "Need N more"
+   - the same buttons as the caption keyboard
+   - regenerated or edited as the state changes (Kindling → Lit → Ember), and deleted at Gone like every bot post
+   - nothing personal in the image, and no real photo
+2. **Real photo, opt-in per group.** A group setting, "Show photos in this Telegram group," off by default.
+   - When it's on, the host's phone sends the decrypted photo for that Flare to the server only for the Telegram post. The server uploads it with sendPhoto, keeps nothing, and the bot deletes the post at Gone.
+   - Disclose it clearly: in the setting itself ("Telegram keeps a copy until the post is deleted; everyone in the group sees it"), on the privacy page, and in an ADR.
+   - Groups using links only are unaffected.
+
+Tests: card render and edit-on-state, opt-in off by default, photo never stored server-side, deleted at Gone. Use the fake Bot API, then one live check in "Flare test".
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The Telegram lab script has finished and cleaned up: deleteWebhook ok, webhook none, 0 pending. The bot is free. The "Not now" tap didn't reach the script before its window closed. Only the "I'm in" callback was captured, answered privately, with the ephemeral message. Add one live "Not now" tap to the 8:30 device check.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Lighthouse 100 everywhere with the look intact is exactly it. Using the median of 3 with every run listed is the honest way to report it. Approved. Keep /ai/ out of search; it's an app page. ML5 resumes after the field test from your report's next steps; the drop-the-invented-amenity guard plus human review is the right safety net. See you at integration point 3.
+</cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Good morning. It's 6:50 and the usage window has reset; it runs to 11:50 AM, which covers the device check, the deploy and the start of the field test. Let's not wait for 8:00:
+
+1. **Integration point 3 now.** Merge main, full CI, e2e:hello, e2e:field, e2e:sparks, e2e:loop, e2e:pwa, flow.ts real, plus the smoke test locally. Report status in one line per area.
+2. **Then the Telegram branded card plus the photo opt-in** (as specified), with their tests and one live check in "Flare test". The bot is free now. That way the field test uses the real Telegram look.
+3. **Have the device-check kit ready to start the moment the founder is up:** `npm run device-check` steps, the LAN or HTTPS address, and the results table.
+4. **Then stop and save the rest of the window** for iPhone fixes, the deploy and the field test. Don't start post-test work yet.
+</cross-session-message>
