@@ -120,3 +120,4 @@ After that (lands Sunday afternoon and evening, before the post): rest-loop rout
 - Other eight: running (run 2). Check each via `git log origin/wp/<area>` and its notes/<area>-progress.md.
 - PWA: DONE, merged into main. Handoff 07b-pwa-offline.md. 54 tests now in the root run (CR-PW1), ICD-5 v1.1 (CR-PW4). CR-PW2/3 sent to FE. Bugs BUG-035 to 037; next id BUG-038.
 - Backend: DONE, merged. Handoff 06c-backend.md. ICR-BE-1 applied (LadderJob, JobResult.ladder, ToHubV11). Bugs BUG-038 to 040; integration found BUG-041, BUG-042 (engine tests). Next id BUG-043.
+- ML: DONE, merged. Handoff 06e-ml.md. Bugs BUG-043 to 045. Asks: ODAI warms with real photo prompt + image; WEB adds Gemma attribution. Next id BUG-046.

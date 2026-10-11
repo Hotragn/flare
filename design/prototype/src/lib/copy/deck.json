@@ -1615,6 +1615,30 @@
       "kind": "hint",
       "where": "P2"
     },
+    "ladder.template.step1": {
+      "text": "The full plan",
+      "kind": "label",
+      "where": "P2",
+      "fixed": "FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts"
+    },
+    "ladder.template.step2": {
+      "text": "A shorter loop",
+      "kind": "label",
+      "where": "P2",
+      "fixed": "FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts"
+    },
+    "ladder.template.step3": {
+      "text": "A quick lap",
+      "kind": "label",
+      "where": "P2",
+      "fixed": "FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts"
+    },
+    "ladder.template.step4": {
+      "text": "A quick hello",
+      "kind": "label",
+      "where": "P2",
+      "fixed": "FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts"
+    },
     "ladder.afterSunset": {
       "text": "Ends after sunset",
       "kind": "hint",

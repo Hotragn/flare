@@ -1,0 +1,455 @@
+{
+  "task": "rest-loop",
+  "tier": "rules",
+  "model": "none (rules): packages/shared/src/prompts/rest-loop.ts@1",
+  "prompt": "n/a (no model; SRS-PRIV-1)",
+  "date": "2026-10-11T01:01:18.201Z",
+  "n": 20,
+  "bars": [
+    {
+      "name": "E16-S1 AC1 example",
+      "target": "pass",
+      "value": "pass",
+      "pass": true
+    },
+    {
+      "name": "Plain requests, all fields right",
+      "target": "≥ 15/16",
+      "value": "16/16",
+      "pass": true
+    },
+    {
+      "name": "Hard requests (reported)",
+      "target": "report",
+      "value": "4/4",
+      "pass": true
+    },
+    {
+      "name": "Read-backs over 12 words",
+      "target": "0",
+      "value": "0",
+      "pass": true
+    }
+  ],
+  "notes": [
+    "A wrong field is caught by the read-back: the person sees it and edits it before any loop is built (SRS-REST-1)."
+  ],
+  "items": [
+    {
+      "id": "R01",
+      "hard": null,
+      "text": "Knee's bad, 40 minutes, want trees",
+      "expect": {
+        "minutes": 40,
+        "rest_gap_m": null,
+        "prefer": ["trees"],
+        "avoid_steps": null,
+        "mobility_hint": true
+      },
+      "got": {
+        "minutes": 40,
+        "rest_gap_m": null,
+        "prefer": ["trees"],
+        "avoid_steps": null,
+        "mobility_hint": true
+      },
+      "pass": true,
+      "readback": "40 min, bench every 200 m, trees.",
+      "readback_words": 7
+    },
+    {
+      "id": "R02",
+      "hard": null,
+      "text": "30 min walk with a bench every 100 m",
+      "expect": {
+        "minutes": 30,
+        "rest_gap_m": 100,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 30,
+        "rest_gap_m": 100,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "30 min, bench every 100 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R03",
+      "hard": null,
+      "text": "an hour by the water, no stairs",
+      "expect": {
+        "minutes": 60,
+        "rest_gap_m": null,
+        "prefer": ["water"],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 60,
+        "rest_gap_m": null,
+        "prefer": ["water"],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "60 min, bench every 200 m, water, no steps.",
+      "readback_words": 9
+    },
+    {
+      "id": "R04",
+      "hard": null,
+      "text": "half an hour, flat and shady please",
+      "expect": {
+        "minutes": 30,
+        "rest_gap_m": null,
+        "prefer": ["flat", "shade"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 30,
+        "rest_gap_m": null,
+        "prefer": ["shade", "flat"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "30 min, bench every 200 m, shade, flat.",
+      "readback_words": 8
+    },
+    {
+      "id": "R05",
+      "hard": null,
+      "text": "I use a walker, 20 minutes, need restrooms",
+      "expect": {
+        "minutes": 20,
+        "rest_gap_m": null,
+        "prefer": ["restrooms"],
+        "avoid_steps": true,
+        "mobility_hint": true
+      },
+      "got": {
+        "minutes": 20,
+        "rest_gap_m": null,
+        "prefer": ["restrooms"],
+        "avoid_steps": true,
+        "mobility_hint": true
+      },
+      "pass": true,
+      "readback": "20 min, bench every 200 m, restrooms, no steps.",
+      "readback_words": 9
+    },
+    {
+      "id": "R06",
+      "hard": null,
+      "text": "45 minutes, rest every 150 meters",
+      "expect": {
+        "minutes": 45,
+        "rest_gap_m": 150,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 45,
+        "rest_gap_m": 150,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "45 min, bench every 150 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R07",
+      "hard": null,
+      "text": "quiet loop, about 50 mins",
+      "expect": {
+        "minutes": 50,
+        "rest_gap_m": null,
+        "prefer": ["quiet"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 50,
+        "rest_gap_m": null,
+        "prefer": ["quiet"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "50 min, bench every 200 m, quiet.",
+      "readback_words": 7
+    },
+    {
+      "id": "R08",
+      "hard": null,
+      "text": "1.5 hours past the pond and through the woods",
+      "expect": {
+        "minutes": 90,
+        "rest_gap_m": null,
+        "prefer": ["trees", "water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 90,
+        "rest_gap_m": null,
+        "prefer": ["trees", "water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "90 min, bench every 200 m, trees, water.",
+      "readback_words": 8
+    },
+    {
+      "id": "R09",
+      "hard": null,
+      "text": "my hip hurts, need to sit often, 25 minutes",
+      "expect": {
+        "minutes": 25,
+        "rest_gap_m": 100,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": true
+      },
+      "got": {
+        "minutes": 25,
+        "rest_gap_m": 100,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": true
+      },
+      "pass": true,
+      "readback": "25 min, bench every 100 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R10",
+      "hard": null,
+      "text": "two hours, steps are fine",
+      "expect": {
+        "minutes": 120,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": false,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 120,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": false,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "120 min, bench every 200 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R11",
+      "hard": null,
+      "text": "pushing a stroller, 40 min, toilets nearby",
+      "expect": {
+        "minutes": 40,
+        "rest_gap_m": null,
+        "prefer": ["restrooms"],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 40,
+        "rest_gap_m": null,
+        "prefer": ["restrooms"],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "40 min, bench every 200 m, restrooms, no steps.",
+      "readback_words": 9
+    },
+    {
+      "id": "R12",
+      "hard": null,
+      "text": "bench at most 300 feet apart, thirty minutes",
+      "expect": {
+        "minutes": 30,
+        "rest_gap_m": 90,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 30,
+        "rest_gap_m": 90,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "30 min, bench every 90 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R13",
+      "hard": null,
+      "text": "20 minutes in the shade away from traffic",
+      "expect": {
+        "minutes": 20,
+        "rest_gap_m": null,
+        "prefer": ["shade", "quiet"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 20,
+        "rest_gap_m": null,
+        "prefer": ["shade", "quiet"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "20 min, bench every 200 m, shade, quiet.",
+      "readback_words": 8
+    },
+    {
+      "id": "R14",
+      "hard": null,
+      "text": "an hour and a half along the river",
+      "expect": {
+        "minutes": 90,
+        "rest_gap_m": null,
+        "prefer": ["water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 90,
+        "rest_gap_m": null,
+        "prefer": ["water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "90 min, bench every 200 m, water.",
+      "readback_words": 7
+    },
+    {
+      "id": "R15",
+      "hard": null,
+      "text": "can't do stairs, 35 minutes",
+      "expect": {
+        "minutes": 35,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 35,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": true,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "35 min, bench every 200 m, no steps.",
+      "readback_words": 8
+    },
+    {
+      "id": "R16",
+      "hard": null,
+      "text": "60 min, lots of benches, trees and water",
+      "expect": {
+        "minutes": 60,
+        "rest_gap_m": 100,
+        "prefer": ["trees", "water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 60,
+        "rest_gap_m": 100,
+        "prefer": ["trees", "water"],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "60 min, bench every 100 m, trees, water.",
+      "readback_words": 8
+    },
+    {
+      "id": "R17",
+      "hard": "negated preference",
+      "text": "no water please, 30 minutes",
+      "expect": {
+        "minutes": 30,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 30,
+        "rest_gap_m": null,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "30 min, bench every 200 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R18",
+      "hard": "two minute numbers",
+      "text": "rest every 4 minutes, 40 minutes total",
+      "expect": {
+        "minutes": 40,
+        "rest_gap_m": 200,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "got": {
+        "minutes": 40,
+        "rest_gap_m": 200,
+        "prefer": [],
+        "avoid_steps": null,
+        "mobility_hint": false
+      },
+      "pass": true,
+      "readback": "40 min, bench every 200 m.",
+      "readback_words": 6
+    },
+    {
+      "id": "R19",
+      "hard": "nothing usable",
+      "text": "sure, sounds good",
+      "expect": null,
+      "got": null,
+      "pass": true,
+      "readback": null,
+      "readback_words": 0
+    },
+    {
+      "id": "R20",
+      "hard": "360 min is out of range (10 to 240), so nothing is usable and the form asks",
+      "text": "a 6 hour walk",
+      "expect": null,
+      "got": null,
+      "pass": true,
+      "readback": null,
+      "readback_words": 0
+    }
+  ]
+}

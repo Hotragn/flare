@@ -1,0 +1,30 @@
+{
+  "task": "photo",
+  "tier": "rules",
+  "date": "2026-10-11T01:13:09.259Z",
+  "n": 20,
+  "prompt": "photo-invite@2",
+  "model": "none (template)",
+  "bars": [
+    {
+      "name": "Usable",
+      "target": "100%",
+      "value": "20/20",
+      "pass": true
+    },
+    {
+      "name": "Person words",
+      "target": "0",
+      "value": "0",
+      "pass": true
+    },
+    {
+      "name": "Invite ≤ 6 words",
+      "target": "yes",
+      "value": "4",
+      "pass": true
+    }
+  ],
+  "notes": ["The template tier writes the same invite for every photo; the scene comes from map-pack facts (FE, OD4)."],
+  "items": []
+}

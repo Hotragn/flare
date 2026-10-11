@@ -31,7 +31,7 @@ export const LadderJob = z.object({
   weather: z.object({ rain_likely: z.boolean(), temp_f: z.number().int() }).optional(),
 });
 
-export const LadderStep = z.object({
+export const HubLadderStep = z.object({
   step: z.number().int().min(1).max(4),
   label: z.string(),
   minutes: z.number().int(),
@@ -42,7 +42,7 @@ export const JobResult = z.object({
   id: z.string().uuid(),
   ok: z.boolean(),
   draft: z.object({ invite: z.string().min(1), alt: z.string().min(1) }).optional(),
-  ladder: z.array(LadderStep).length(4).optional(), // ICR-BE-1
+  ladder: z.array(HubLadderStep).length(4).optional(), // ICR-BE-1
   error: z.enum(["model_unavailable", "unusable_answer", "timeout", "bad_image"]).optional(),
   ms: z.number().int().nonnegative(),
   model: z.string(),

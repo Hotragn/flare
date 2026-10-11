@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "about": "Five lab photos (Wikimedia Commons, licenses in evals/datasheets/photos.md) with the tags a mapper would draft. must = tags that should appear; may = tags that are fine either way. Images are read from lab/data/photos, not copied.",
+  "items": [
+    { "id": "04", "must": { "amenity": "bench" }, "may": ["backrest", "material", "seats", "covered", "lit"] },
+    {
+      "id": "10",
+      "must": { "amenity": "drinking_water" },
+      "may": ["material", "wheelchair", "fee", "access", "drinking_water"],
+      "also_ok": { "amenity": ["fountain"] }
+    },
+    {
+      "id": "18",
+      "must": { "amenity": "shelter" },
+      "may": ["covered", "material", "lit", "backrest", "seats", "wheelchair"]
+    },
+    {
+      "id": "05",
+      "must": {},
+      "may": ["material", "amenity", "seats", "covered", "backrest"],
+      "note": "picnic table: leisure=picnic_table is off the list, so nothing is required"
+    },
+    {
+      "id": "07",
+      "must": {},
+      "may": ["lit", "access", "fee", "amenity", "covered", "material"],
+      "note": "basketball court: no allow-listed feature is required"
+    }
+  ]
+}

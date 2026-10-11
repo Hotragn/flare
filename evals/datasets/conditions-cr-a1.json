@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "source": "ADR-0016 / CR-A1: four min_step phrases added to the conditions eval next to docs/requirements/fixtures/conditions-60.json",
+  "kind": "plan",
+  "group_members": ["Fuego", "Amor", "Shilp", "Ammo"],
+  "time_zone": "America/Detroit",
+  "steps": [
+    { "step": 1, "name": "the full walk" },
+    { "step": 2, "name": "the park loop" },
+    { "step": 3, "name": "a quick lap" },
+    { "step": 4, "name": "just say hi" }
+  ],
+  "rules": "Same format as conditions-60.json. min_step(n) holds when the chosen step number <= n (step 1 is biggest).",
+  "min_step_4": [
+    { "text": "only the long one", "expect": [{ "type": "min_step", "value": 1 }] },
+    { "text": "the full walk or nothing", "expect": [{ "type": "min_step", "value": 1 }] },
+    { "text": "at least the park loop", "expect": [{ "type": "min_step", "value": 2 }] },
+    { "text": "step 2 or bigger", "expect": [{ "type": "min_step", "value": 2 }] }
+  ]
+}

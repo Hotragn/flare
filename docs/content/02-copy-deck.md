@@ -420,6 +420,10 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `ladder.drafting` | Drafting 4 steps from the map and the weather… | status | 9 | 2.3 | P2 |  |
 | `ladder.madeHub` | Made on our laptop from OpenStreetMap and today's sunset. | hint | 9 | 7.6 | P2 |  |
 | `ladder.madeRules` | Made from a template. Edit any step. | hint | 7 | 0.9 | P2 |  |
+| `ladder.template.step1` | The full plan | label | 3 | -2.6 | P2 | FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts |
+| `ladder.template.step2` | A shorter loop | label | 3 | 1.3 | P2 | FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts |
+| `ladder.template.step3` | A quick lap | label | 3 | -2.6 | P2 | FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts |
+| `ladder.template.step4` | A quick hello | label | 3 | 1.3 | P2 | FR-PLAN-4 template; TEMPLATE_LABELS in packages/shared/src/prompts/ladder.ts |
 | `ladder.afterSunset` | Ends after sunset | hint | 3 | 5.2 | Ladder | BR-P-9; owner: Ladder.svelte |
 | `ladder.sunsetOff` | Allow steps after sunset | label | 4 | 6.6 | P2 |  |
 | `ladder.aria` | Plan steps, biggest first | aria | 4 | 0.7 | Ladder | owner: Ladder.svelte |

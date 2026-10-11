@@ -36,7 +36,8 @@
     "hooks": "git config core.hooksPath .githooks",
     "diagrams": "node scripts/check-diagrams.ts",
     "device-check": "node scripts/device-check.ts",
-    "e2e:pwa": "node apps/web/test/pwa/e2e/offline.ts"
+    "e2e:pwa": "node apps/web/test/pwa/e2e/offline.ts",
+    "eval": "node evals/harness/run.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
