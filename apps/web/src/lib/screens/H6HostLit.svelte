@@ -38,7 +38,7 @@
   let sheet = $state<"" | "plusone" | "done">(view === "plusone" || view === "done" ? view : "");
 </script>
 
-<Screen {theme} sound {onclose} title={t("host.lit.title")} stage>
+<Screen {theme} sound {onclose} title={t("host.lit.title")} stage fallbackArt>
   {#snippet hero()}
   <div class="center">
     <Hearth state="lit" size={210} celebrate={view === "lit"} />

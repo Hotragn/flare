@@ -8,6 +8,8 @@
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Flame from "../components/Flame.svelte";
+  import FlameAvatars from "../components/FlameAvatars.svelte";
+  import Icon from "../components/Icon.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Theme } from "../components/parts";
   let {
@@ -16,8 +18,24 @@
     spot = "",
     sunset = "",
     minutes = null,
+    photo = "",
+    people = [],
+    spark = "",
     onclose,
-  }: { view?: "end" | "go"; theme?: Theme; spot?: string; sunset?: string; minutes?: number | null; onclose?: () => void } = $props();
+  }: {
+    view?: "end" | "go";
+    theme?: Theme;
+    spot?: string;
+    sunset?: string;
+    minutes?: number | null;
+    /** The Flare's own photo behind the summary; the outdoor scenery when there is none. */
+    photo?: string;
+    /** Who came, as names this phone already knows (no profiles). */
+    people?: string[];
+    /** The Spark just left, if any. */
+    spark?: string;
+    onclose?: () => void;
+  } = $props();
   let away = $state(false);
   const headline = $derived(
     view === "go" && spot ? t("outside.go", { spot }) : minutes ? t("outside.together", { min: minutes }) : t("outside.thanks"),
@@ -34,11 +52,12 @@
     {#snippet actions()}<Button variant="secondary" onclick={onclose}>{t("gone.close")}</Button>{/snippet}
   </Screen>
 {:else}
-  <Screen stage close={false} heading={headline}>
+  <Screen stage backdrop={photo} fallbackArt close={false} heading={headline}>
     {#snippet hero()}
       <div class="msg">
-        <Flame state="lit" size={110} />
+        {#if people.length}<FlameAvatars people={people.map((name) => ({ name, out: true }))} />{:else}<Flame state="lit" size={96} />{/if}
         <h1 class="t-display">{headline}</h1>
+        {#if spark}<p class="spark"><Icon name="spark" size={20} /><span>{t("invite.sparkQuote", { line: spark })}</span></p>{/if}
       </div>
     {/snippet}
     {#if sunset}<p class="t-muted">{t("outside.quiet", { sunset })}</p>{/if}
@@ -50,7 +69,8 @@
 
 <style>
   .msg { display: flex; flex-direction: column; gap: 10px; }
-  .msg h1 { margin: 0; }
+  .msg h1, .msg p { margin: 0; }
+  .spark { display: flex; gap: 8px; align-items: center; font-weight: 700; font-size: calc(1.125rem * var(--text-scale)); color: var(--c-gold-400); }
   .away { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
   .away p { margin: 0; }
   .away :global(svg) { animation: breathe 6s ease-in-out infinite; }

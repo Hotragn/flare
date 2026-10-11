@@ -61,7 +61,7 @@ try {
     );
   check("30 min later it shrinks to an Ember at a bench, and lights (real engine)", lit);
   await shot("3-ember-lit");
-  await page.getByRole("button", { name: "Be Amor" }).click();
+  await page.getByRole("button", { name: "Find them" }).click();
   await page
     .getByText(/Fuego is straight ahead|Fuego, 120 meters/)
     .first()

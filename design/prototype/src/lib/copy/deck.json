@@ -211,6 +211,81 @@
       "kind": "button",
       "where": "demo"
     },
+    "onb.1.title": {
+      "text": "Snap where you are",
+      "kind": "title",
+      "where": "onboarding"
+    },
+    "onb.1.body": {
+      "text": "Gemma writes six words. Your friends get a link.",
+      "kind": "label",
+      "where": "onboarding"
+    },
+    "onb.2.title": {
+      "text": "Yes, in private",
+      "kind": "title",
+      "where": "onboarding"
+    },
+    "onb.2.body": {
+      "text": "It lights when enough can come. Nobody sees who.",
+      "kind": "label",
+      "where": "onboarding"
+    },
+    "onb.3.title": {
+      "text": "Then it's gone",
+      "kind": "title",
+      "where": "onboarding"
+    },
+    "onb.3.body": {
+      "text": "It all deletes itself 5 minutes after the end.",
+      "kind": "label",
+      "where": "onboarding"
+    },
+    "onb.next": {
+      "text": "Next",
+      "kind": "button",
+      "where": "onboarding"
+    },
+    "onb.skip": {
+      "text": "Skip",
+      "kind": "button",
+      "where": "onboarding"
+    },
+    "onb.name": {
+      "text": "What do friends call you?",
+      "kind": "title",
+      "where": "onboarding"
+    },
+    "onb.nameHint": {
+      "text": "Only your crew sees it.",
+      "kind": "hint",
+      "where": "onboarding"
+    },
+    "onb.go": {
+      "text": "Continue",
+      "kind": "button",
+      "where": "onboarding"
+    },
+    "onb.how": {
+      "text": "How do you want to start?",
+      "kind": "title",
+      "where": "onboarding"
+    },
+    "onb.link": {
+      "text": "Got a link?",
+      "kind": "button",
+      "where": "onboarding"
+    },
+    "onb.linkHelp": {
+      "text": "Open the link your friend sent. It brings you here.",
+      "kind": "hint",
+      "where": "onboarding"
+    },
+    "onb.cardAria": {
+      "text": "Card {n} of 3",
+      "kind": "aria",
+      "where": "onboarding"
+    },
     "app.tier.phone": {
       "text": "Made on this phone",
       "kind": "hint",
@@ -680,7 +755,7 @@
       "where": "H4 I4 I8 P3"
     },
     "sent.shareAgain": {
-      "text": "Share again",
+      "text": "Share",
       "kind": "button",
       "where": "H4"
     },
@@ -711,6 +786,11 @@
       "sample": {
         "min": 2
       }
+    },
+    "host.kindling.justSent": {
+      "text": "Sent a moment ago. Friends answer in private.",
+      "kind": "label",
+      "where": "H5"
     },
     "host.kindling.shrinkIn": {
       "text": "Gets smaller in {min} min if it doesn't catch.",
@@ -746,7 +826,7 @@
       "where": "H5 sheet"
     },
     "host.textYes.open": {
-      "text": "Add text yes",
+      "text": "Text reply",
       "kind": "button",
       "where": "H5 (SRS-CH-6, needs a place in the layout)"
     },

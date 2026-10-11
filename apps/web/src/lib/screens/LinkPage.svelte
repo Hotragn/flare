@@ -144,7 +144,7 @@
 {:else if flow.screen === "gone"}
   {#if v?.kind === "plan"}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{:else}<I10Gone onclose={exit} />{/if}
 {:else if flow.screen === "outside"}
-  <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} minutes={flow.outsideMin} onclose={exit} />
+  <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} minutes={flow.outsideMin} photo={info?.photo ?? ""} people={info?.host ? [info.host, name || "You"] : []} spark={flow.sparkLine} onclose={exit} />
 {:else if flow.screen === "join"}
   <I0Join {host} bind:name error={flow.error} busy={flow.busy} onjoin={(n) => flow.join(n)} onclose={() => flow.notNow()} />
 {:else if info && v}

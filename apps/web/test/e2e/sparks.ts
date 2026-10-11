@@ -66,6 +66,11 @@ const friendCtx = await browser.newContext({
   permissions: ["geolocation"],
   geolocation: { latitude: 42.3232, longitude: -83.2129 },
 });
+await hostCtx.addInitScript(() => {
+  try {
+    localStorage.setItem("flare.onboarded", "1"); // onboarding is tested on its own
+  } catch {}
+});
 const host = await hostCtx.newPage();
 const friend = await friendCtx.newPage();
 for (const [p, who] of [

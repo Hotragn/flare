@@ -20,6 +20,7 @@
   let toast = $state("");
   let bearing = $state(40);
   let litAt = 0;
+  let sparkLine = $state("");
   const timers: ReturnType<typeof setTimeout>[] = [];
   const later = (ms: number, fn: () => void) => timers.push(setTimeout(fn, ms));
   onDestroy(() => timers.forEach(clearTimeout));
@@ -90,7 +91,7 @@
 
 <svelte:head><title>{t("demo.badge")}</title></svelte:head>
 
-<div class="demo">
+<div class="demo" class:coach={step === "kindling" && !!demo.g && (demo.g.state === "ember" || demo.have() > 1)}>
   <p class="badge" role="status">{t("demo.badge")}</p>
   {#if toast}<p class="toast" role="status">{toast}</p>{/if}
 
@@ -108,26 +109,28 @@
   {:else if step === "lit"}
     <div class="layer">
       <I6Lit view={demo.g?.ember_choice ? "smaller" : "lit"} {info} smallerAt={bench} onfind={compass} onhere={here} onclose={() => history.back()} />
-      <div class="control top"><Button variant="secondary" onclick={compass}>{t("demo.asFriend")}</Button></div>
     </div>
   {:else if step === "compass"}
     <I7Compass name="Fuego" status={Math.abs(bearing) <= 15 ? "facing" : "pointing"} meters={120} {bearing} onhere={here} onclose={() => (step = "lit")} />
   {:else if step === "spark"}
-    <I11Spark onsave={outside} onskip={outside} />
+    <I11Spark onsave={(l) => { sparkLine = l; outside(); }} onskip={outside} />
   {:else}
-    <I12Outside view="end" {minutes} onclose={() => (step = "send")} />
+    <I12Outside view="end" {minutes} photo="/demo/pond.jpg" people={["Fuego", "Amor", "Benny"]} spark={sparkLine} onclose={() => (step = "send")} />
   {/if}
 </div>
 
 <style>
   .demo { position: fixed; inset: 0; }
+  /* The badge sits in the header's title slot (fix 1): hide the screen title under it. */
+  .demo :global(.bar-title) { visibility: hidden; }
+  /* While the coach shows, it replaces the action row (fix 5). */
+  .demo.coach :global(.actions) { visibility: hidden; }
   .layer { position: absolute; inset: 0; }
-  .badge { position: fixed; top: calc(env(safe-area-inset-top, 0) + 14px); left: 12px; z-index: 30; margin: 0;
+  .badge { position: fixed; top: calc(env(safe-area-inset-top, 0) + 14px); left: 50%; transform: translateX(-50%); z-index: 30; white-space: nowrap; margin: 0;
     padding: 6px 14px; border-radius: 999px; background: #fff; color: #111; font-weight: 700; font-size: 0.875rem; box-shadow: 0 2px 10px rgb(0 0 0 / 0.25); }
   .toast { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0;
     padding: 10px 18px; border-radius: 999px; background: var(--c-gold-400); color: #111; font-weight: 700; }
-  .control { position: absolute; left: 16px; right: 16px; bottom: 168px; z-index: 25; display: flex; flex-direction: column; gap: 8px; align-items: stretch;
+  .control { position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; border-radius: 28px 28px 0 0 !important; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0)) !important; display: flex; flex-direction: column; gap: 8px; align-items: stretch;
     padding: 14px; border-radius: 20px; background: rgb(255 255 255 / 0.94); color: #111; box-shadow: 0 8px 30px rgb(0 0 0 / 0.3); }
-  .control.top { bottom: auto; top: calc(env(safe-area-inset-top, 0) + 100px); }
   .control p { margin: 0; font-weight: 600; }
 </style>

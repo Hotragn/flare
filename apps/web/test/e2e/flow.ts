@@ -88,6 +88,11 @@ for (let run = 1; run <= RUNS; run++) {
     permissions: ["camera", "geolocation", "clipboard-read", "clipboard-write"],
     geolocation: { latitude: 42.3196, longitude: -83.2129 },
   });
+  await hostCtx.addInitScript(() => {
+    try {
+      localStorage.setItem("flare.onboarded", "1"); // onboarding is tested on its own
+    } catch {}
+  });
   const host = await hostCtx.newPage();
   host.on("pageerror", (e) => fails.push(`host run ${run}: ${e.message}`));
   watchCsp(host, `host run ${run}`);

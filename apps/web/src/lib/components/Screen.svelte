@@ -10,6 +10,7 @@
   import { themeAttrs, type Theme } from "./parts";
   import { net } from "#lib/net/waking.svelte.ts";
   import Waking from "./Waking.svelte";
+  import Scenery from "./Scenery.svelte";
 
   let {
     theme = "light",
@@ -32,6 +33,7 @@
     backdropAlt = "",
     hero,
     backdropArt,
+    fallbackArt = false,
   }: {
     theme?: Theme; title?: string; heading?: string; sound?: boolean; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
     tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; overlay?: Snippet; wire?: boolean;
@@ -39,13 +41,15 @@
     stage?: boolean; backdrop?: string; backdropAlt?: string; hero?: Snippet;
     /** Illustration behind the stage when there's no photo (Home uses the outdoor scenery). */
     backdropArt?: Snippet;
+    /** No photo (typed words): show the outdoor scenery rather than a bare gradient. */
+    fallbackArt?: boolean;
   } = $props();
   const staged = $derived(stage || !!backdrop);
 </script>
 
 <div class="screen" class:grain class:dusk={tone === "dusk"} class:staged {...themeAttrs(staged ? "dark" : theme)} data-wire={wire || undefined}>
   {#if staged}
-    {#if backdrop}<img class="backdrop" src={backdrop} alt={backdropAlt} />{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
+    {#if backdrop}<img class="backdrop" src={backdrop} alt={backdropAlt} />{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><Scenery /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
     <div class="scrim" aria-hidden="true"></div>
   {/if}
   <header class="bar">

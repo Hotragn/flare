@@ -49,6 +49,8 @@ export class LinkFlow {
   view = $state<GatheringView | null>(null);
   /** When this person arrived (server time, ms), for "You were outside N min together". Phone only. */
   outsideSince = $state<number | null>(null);
+  /** The Spark this person just left, for the after-outing summary. Memory only. */
+  sparkLine = $state("");
   /** Minutes from arrival to Gone, or null (not arrived, or not over yet). */
   get outsideMin(): number | null {
     const v = this.view;
@@ -588,6 +590,7 @@ export class LinkFlow {
       this.error = t(errorKey(r.code));
       return;
     }
+    this.sparkLine = line; // shown on the after-outing summary; kept in memory only
     this.sparkTicket = null;
     this.screen = "spark-saved";
   }

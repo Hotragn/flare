@@ -7,6 +7,7 @@
   import Sheet from "../components/Sheet.svelte";
   import Icon from "../components/Icon.svelte";
   import H0Home from "./H0Home.svelte";
+  import H00Onboarding from "./H00Onboarding.svelte";
   import H1Camera from "./H1Camera.svelte";
   import { golden, nearestGreen } from "./flow/home.ts";
   import { planWeather } from "#lib/map/weather.ts";
@@ -37,6 +38,23 @@
   let startLocal = $state("");
   // H0 Home first (2026 direction, B): going outside now, then Light a Flare opens the camera.
   let home = $state(true);
+  // First run: onboarding once (flare.onboarded), then Home.
+  const seen = (() => {
+    try {
+      return localStorage.getItem("flare.onboarded") === "1";
+    } catch {
+      return true;
+    }
+  })();
+  let onboarding = $state(!seen);
+  const finishOnboarding = () => {
+    onboarding = false;
+    try {
+      localStorage.setItem("flare.onboarded", "1");
+    } catch {
+      // private mode: shown again next time
+    }
+  };
   let homeAt = $state<LatLon | null>(null);
   let homePack = $state<MapPack | null>(null);
   let weather = $state<{ temp_f: number; rain_likely: boolean } | null>(null);
@@ -162,7 +180,9 @@
   const exit = () => location.assign("/app/");
 </script>
 
-{#if home && flow.screen === "camera"}
+{#if onboarding && flow.screen === "camera"}
+  <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
+{:else if home && flow.screen === "camera"}
   <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} />
@@ -177,7 +197,7 @@
 {:else if flow.screen === "lit"}
   <H6HostLit coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
-  <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} onclose={exit} />
+  <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} photo={flow.photo} onclose={exit} />
 {:else if flow.screen === "gone"}
   <I10Gone onclose={exit} />
 {:else if flow.screen === "plan-ask"}

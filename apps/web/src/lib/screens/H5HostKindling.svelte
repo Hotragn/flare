@@ -2,12 +2,10 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import Hearth from "../components/Hearth.svelte";
   import CountRing from "../components/CountRing.svelte";
   import Sheet from "../components/Sheet.svelte";
   import TextField from "../components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
-  import { kindlingProgress } from "#lib/motion/core.ts";
   import type { Theme } from "../components/parts";
   let {
     photo = "",
@@ -54,12 +52,11 @@
   let reply = $state("");
 </script>
 
-<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene}>
+<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene} fallbackArt>
   {#snippet hero()}
     <div class="center">
-      <Hearth state="kindling" progress={kindlingProgress(have, quorum)} size={150} />
-      <CountRing {have} {quorum} />
-      <p class="t-muted">{shrinkMin === null || have <= 1 ? t("host.kindling.sentAgo", { min: sentMin }) : t("host.kindling.shrinkIn", { min: shrinkMin })}</p>
+      <CountRing {have} {quorum} size={190} />
+      <p class="t-muted">{shrinkMin === null || have <= 1 ? (sentMin < 1 ? t("host.kindling.justSent") : t("host.kindling.sentAgo", { min: sentMin })) : t("host.kindling.shrinkIn", { min: shrinkMin })}</p>
     </div>
   {/snippet}
   {#if hostLine}<p class="hostline t-small">{hostLine}</p>{/if}

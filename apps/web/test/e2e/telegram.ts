@@ -79,6 +79,11 @@ const ctx = await browser.newContext({
   permissions: ["camera", "geolocation", "clipboard-read", "clipboard-write"],
   geolocation: { latitude: 42.3196, longitude: -83.2129 },
 });
+await ctx.addInitScript(() => {
+  try {
+    localStorage.setItem("flare.onboarded", "1"); // onboarding is tested on its own
+  } catch {}
+});
 const host = await ctx.newPage();
 host.on("pageerror", (e) => fails.push(`host: ${e.message}`));
 host.on("console", (m) => {
