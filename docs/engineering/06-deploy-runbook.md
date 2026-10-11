@@ -8,7 +8,7 @@ Owner: Engineering lead. Every step that touches the founder's accounts waits fo
 git pull && npm ci && npm run ci
 npm run build && node apps/web/test/e2e/flow.ts 5 real
 npm run e2e:hello && npm run e2e:pwa
-npm run e2e:field && npm run e2e:sparks && npm run e2e:loop
+npm run e2e:field && npm run e2e:sparks && npm run e2e:loop && npm run e2e:telegram
 ```
 
 Pass bar: CI green (GitHub Actions too), real flow 5/5 with 0 page errors, e2e-hello tier hub, PWA ALL PASS, field 27/27, sparks and loop all pass.
@@ -61,6 +61,8 @@ Run it twice: the first photo draft after a hub start pays a one-time model cost
 1. Put the chat id from the device check in `.env` as `TELEGRAM_ALLOWED_CHAT_IDS`.
 2. `npm run deploy:render -- --yes` again (updates env, redeploys).
 3. `npm run telegram:webhook -- --yes`, then `npm run telegram:status` (webhook set, 0 pending).
+4. Connect the field group from the app (ADR-0023): the host sends one Flare by link (this makes the group), then Menu, **Post in Telegram**, **Add the bot**, pick "Flare test" in Telegram, tap Start. The screen shows "Connected." Leave **Show photos** off unless the group agrees to photos.
+5. The host sends a test Flare: the group gets the branded card with I'm in, Add a condition, Open in Flare. One person taps **I'm in** (private reply, the card redraws with the count), another taps **Not now**. End it; every bot message deletes within about 20 s.
 
 ## 10:00 Phones
 

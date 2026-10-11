@@ -162,3 +162,9 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Manager approved Lighthouse (median of 3, all runs listed). Decision: /ai/ stays out of search (app page). ML5 resumes after the field test from evals/reports/osm-tags-hub.md next steps.
 
 ## Integration point 3 DONE (Sun ~06:55 ET): all green, details in docs/engineering/qa/01-field-path-qa.md. Next: Telegram branded card plus photo opt-in, then device-check kit ready, then stop and hold the window.
+
+## Status Sun ~07:20 ET
+- Telegram DONE before deploy: server branded card (e545952), phone Post in Telegram + telegram object + photo opt-in + ADR-0023, e2e:telegram 14/14, live card post/edit/delete in "Flare test" ok. Runbook 09:55 now has the in-app connect and tap-through.
+- Device-check kit verified: `npm run device-check` serves https://10.0.0.196:8443/check/ (kit and compass HTTP 200). Stopped; the founder starts it at 08:30 per 05-device-checklist.md (row 5a: one live "Not now" tap).
+- STOP here per the manager: hold the window for iPhone fixes, rc-1 (09:30), deploy on YES, field test. No post-test work.
+- Known risk: apps/server/src/env.ts and apps/hub/src/main.ts load the real .env for unset keys, so other e2e scripts inherit the live Telegram token (harmless today: their groups are link groups). e2e:telegram sets FLARE_ENV_FILE to avoid it. Fix after the test.

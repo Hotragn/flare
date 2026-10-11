@@ -58,3 +58,12 @@ Known limit: Fix the map starts from the usual tags for the thing, not from a ph
 | e2e:loop | All pass (loop, no-loop, Fix the map, photo draft through the hub) |
 | flow.ts 5 real | 5/5 lit, host median 3,211 ms, friend median 291 ms, 0 page errors, CSP on 10 documents |
 | smoke (local server + hub) | Run 1: all required pass, photo draft rules at 6,008 ms (cold model, expected); run 2: photo draft hub in 3,546 ms |
+
+## Telegram from the phone (Sun ~07:15 ET, ADR-0023)
+
+| Check | Result |
+| --- | --- |
+| Server tests (card, opt-in gate, edits, deletion) | 178/178 |
+| `npm run e2e:telegram` (real server and hub, fake Bot API, real .env never read) | 14/14: link group makes no Telegram call; disclosure shown; photos off by default; Add the bot gives a t.me startgroup link; /start connects; next Flare posts the PNG card with caption and 3 buttons, no JPEG; photos on gives the host's JPEG |
+| Live in "Flare test" with the real bot | sendPhoto card ok (1.7 s), editMessageMedia to Lit ok (2.1 s), deleteMessages ok after 60 s |
+| Still to do live after deploy | Connect from the app and tap through (runbook 09:55 steps 4 and 5) |
