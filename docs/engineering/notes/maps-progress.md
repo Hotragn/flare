@@ -7,4 +7,4 @@
 - Tests: scripts/test/map-{pack,places,nature}.test.ts (44 tests).
 
 ## Exact next step
-Compass DONE (apps/web/src/lib/compass, 11 tests). Next: maps index (load + 7-day cache), weather, rest loops + card, Fix the map, docs/maps, handoff.
+Compass, maps index (index.ts, store.ts: load, loadNear, 7-day cache) and weather (weather.ts, live NWS check 65 F in 543 ms) DONE. Next: rest loops (paths pack fairlane-paths.json, loop.ts) + card, Fix the map, docs/maps, handoff.
