@@ -138,3 +138,12 @@ export function mountTelegram(app: Hono, deps: TelegramDeps): Bot {
 
   return bot;
 }
+
+/** When the bot is not configured: the same routes answer 503 not_configured (openapi.yaml). */
+export function mountTelegramOff(app: Hono): void {
+  const off = (c: Context) => c.json({ code: "not_configured", message: "Telegram is not set up" }, 503);
+  app.post("/api/v1/telegram/webhook", off);
+  app.post("/api/v1/groups/:groupId/telegram-link", off);
+  app.post("/api/v1/gatherings/:gatheringId/telegram-bind", off);
+  app.put("/api/v1/gatherings/:gatheringId/telegram-photo", off);
+}

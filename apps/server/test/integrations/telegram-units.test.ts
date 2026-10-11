@@ -1,7 +1,26 @@
 // Small pure pieces of the bot: settings, the secret check, link building, clock format.
+import { Hono } from "hono";
 import { describe, expect, it } from "vitest";
-import { parseChatIds, secretOk, telegramEnv } from "../../src/telegram/index.ts";
+import { mountTelegramOff, parseChatIds, secretOk, telegramEnv } from "../../src/telegram/index.ts";
 import { clock, withQuery } from "../../src/telegram/render.ts";
+
+describe("bot not configured", () => {
+  it("every Telegram route answers 503 not_configured", async () => {
+    const app = new Hono();
+    mountTelegramOff(app);
+    const id = "11111111-1111-4111-8111-111111111111";
+    for (const [method, url] of [
+      ["POST", "/api/v1/telegram/webhook"],
+      ["POST", `/api/v1/groups/${id}/telegram-link`],
+      ["POST", `/api/v1/gatherings/${id}/telegram-bind`],
+      ["PUT", `/api/v1/gatherings/${id}/telegram-photo`],
+    ] as const) {
+      const res = await app.request(url, { method });
+      expect(res.status).toBe(503);
+      expect(await res.json()).toEqual({ code: "not_configured", message: "Telegram is not set up" });
+    }
+  });
+});
 
 const TOKEN = "123456789:AAfakeTokenForTestsOnly_abcdefghijklmn";
 

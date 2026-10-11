@@ -365,6 +365,7 @@ paths:
         "409": { $ref: "#/components/responses/Conflict" }
         "413": { $ref: "#/components/responses/TooLarge" }
         "415": { $ref: "#/components/responses/UnsupportedMedia" }
+        "503": { $ref: "#/components/responses/Unavailable" }
 
   /api/v1/gatherings/{gatheringId}/me:
     parameters:
@@ -870,6 +871,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "410": { $ref: "#/components/responses/Gone" }
         "422": { $ref: "#/components/responses/Unprocessable" }
+        "503": { $ref: "#/components/responses/Unavailable" }
 
   /api/v1/telegram/webhook:
     post:
@@ -896,6 +898,7 @@ paths:
       responses:
         "200": { description: Accepted }
         "401": { $ref: "#/components/responses/Unauthorized" }
+        "503": { $ref: "#/components/responses/Unavailable" }
 
 components:
   securitySchemes:
