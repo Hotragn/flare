@@ -100,3 +100,17 @@ Approved by the manager: plan, CR-E1, CR-E2, MP1. Each specialist runs as a suba
 How to restart one after a usage stop: if its subagent is still listed, SendMessage it "continue from your progress file". Otherwise start a new Agent with isolation "worktree" and the prompt: "You are the <area> specialist for Flare. Run `git fetch origin && git checkout -B wp/<area> origin/wp/<area>` (if the branch exists on origin, else stay on your new branch and rename it), then read docs/engineering/briefs/00-common.md, docs/engineering/briefs/<brief>, and docs/engineering/notes/<area>-progress.md, and continue to done." Work lost is at most the last uncommitted 30 to 45 minutes.
 
 Integration (lead, in the main checkout): at 01:00, 05:00, 08:00 ET merge pushed `wp/*` branches into main in this order: engine, backend, integrations, ml, on-device-ai, maps, pwa, frontend, website; resolve conflicts, swap fakes for real modules, merge docs/engineering/bugs/*.md into docs/BUGLOG.md (renumber BUG-033+), run `npm run ci` and `npm run e2e:hello`, push. RC tag `rc-1` at 09:30 after the device checklist (docs/engineering/05-device-checklist.md, 08:30).
+
+
+## Build order (manager, Sat 21:00 ET): field-test path first
+
+Usage windows are short (nine agents use a 5-hour window in about 1 to 1.5 hours; windows reset about 8:50 PM, 1:50 AM, 6:50 AM ET). We don't cut scope; we order it. Build your part of the Sunday field-test path first, commit it, then the rest:
+1. Create a Flare; private yes plus conditions; Lit / Ember / Gone; a Plan with a deadline and a fade.
+2. iMessage links, the Telegram bot, the plain-text format.
+3. The hub relay with photo drafts, the typed fallback, the rules parser.
+4. The Fairlane pack, access line, compass, Sparks.
+5. Offline save at Lit, the outbox.
+6. The core screens with motion and sound.
+7. Deletion and the audit.
+
+After that (lands Sunday afternoon and evening, before the post): rest-loop routing and the print card, Fix the map, the website, remaining polish and docs depth. Commit after every step above, so a usage stop never costs more than one step.

@@ -30,6 +30,19 @@ Flare: a group invite app for the DEV Hacktoberfest Week 1 "Touch Grass" challen
 - Writing rules for docs and UI copy: plain words, short sentences, a number or proof for every claim. Banned words: seamless, leverage, robust, empower, unlock, elevate, delve, cutting-edge, revolutionize, game-changer, harness, synergy, holistic, paradigm, next-level, supercharge, effortless, ecosystem, tapestry, testament. No em-dash chains, no emoji in docs. Buttons ≤ 3 words, messages ≤ 12 words.
 - Anything public waits for the founder: no deploys, no making things public, no posting, no messaging people, no setWebhook, no OSM uploads. Pushing your branch to the private repo origin (Hotragn/flare) is allowed.
 
+## Build order (manager, Sat 21:00 ET): field-test path first
+
+Usage windows are short (nine agents use a 5-hour window in about 1 to 1.5 hours; windows reset about 8:50 PM, 1:50 AM, 6:50 AM ET). We don't cut scope; we order it. Build your part of the Sunday field-test path first, commit it, then the rest:
+1. Create a Flare; private yes plus conditions; Lit / Ember / Gone; a Plan with a deadline and a fade.
+2. iMessage links, the Telegram bot, the plain-text format.
+3. The hub relay with photo drafts, the typed fallback, the rules parser.
+4. The Fairlane pack, access line, compass, Sparks.
+5. Offline save at Lit, the outbox.
+6. The core screens with motion and sound.
+7. Deletion and the audit.
+
+After that (lands Sunday afternoon and evening, before the post): rest-loop routing and the print card, Fix the map, the website, remaining polish and docs depth. Commit after every step above, so a usage stop never costs more than one step.
+
 ## Working rhythm (usage limits can stop you at any time)
 - Commit early and often on your branch (at least every 30 to 45 minutes of work), message ending with:
   `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`
