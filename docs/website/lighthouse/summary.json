@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-11T01:24:26.808Z",
+  "at": "2026-10-11T01:29:02.945Z",
   "lighthouse": "13.5.0",
   "chrome": "154.0.8037.99",
   "min": 95,
@@ -16,7 +16,7 @@
     {
       "page": "/how/",
       "form": "mobile",
-      "performance": 99,
+      "performance": 98,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
