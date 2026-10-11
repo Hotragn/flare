@@ -22,6 +22,7 @@ The host picks a real photo through the app's own "Pick a photo": Eagle Lake, Ac
 | 10-plan-lit.png | A Plan solved at the deadline: step 3, the biggest step all three can do | e2e plan (real stack) |
 | 11-demo-friend-view.jpg | The demo's friend view | e2e demo |
 | 12-site-home-phone.png, 13-site-feature-cards.png | The website on a phone, and the feature cards on desktop | local build |
+| 14-desktop-qr-note.png | The app on a desktop: the phone column and "Made for your phone" with a QR code | local build |
 | sim/fairlane-sim-42.gif | "A Saturday in Fairlane, played by 48 friends": the simulation (labelled Simulation) | tools/sim |
 
 Still to add: the founder's iPhone screen recording from [shot-list.md](../shot-list.md), and a Sentry trace screenshot from the live project (it needs the founder's Sentry login).

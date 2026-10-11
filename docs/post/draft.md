@@ -143,6 +143,7 @@ Only an allow-list leaves the server: tier, model, timing, ok and error class. R
 - **The website's styles leaked into the app.** On phones, your photo on the Send screen sat under a navy block. SvelteKit keeps the website's CSS after you tap into the app, and its `.hero` rule hit the app's `.hero`. A tester with no context found it, and every website rule is now scoped.
 - **The demo broke its own promise.** It said "Nobody sees who" right above "Amor said yes." Now it says "One more yes. 2 in."
 - **A Plan with no saved name did nothing.** You tapped Send and nothing happened. A new end-to-end test found it.
+- **The compass didn't point.** Testers saw rings and a flame, and nothing that read as an arrow. It now has an arrowhead on the dial's edge that turns on a spring and goes gold when you face the right way. On both real iPhone heading streams it moves less than 30° per 100 ms event and never takes the long way round.
 - **The compass said "close" 49 times** on an iPhone 16 Pro Max walk. It now holds a margin and repeats only when the distance halves.
 - **The compass froze on an exact 180° turn.** The two directions averaged to nothing. It's fixed with shortest-arc smoothing.
 - **Gemma's thinking ate the cloud budget** (21.7 s, no answer) until I set it to minimal.
