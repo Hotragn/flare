@@ -533,3 +533,7 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** The pages take the group as `?g=`; the menu links had none, and on a fresh `/app/` the host flow hasn't loaded its group yet.
 - **Fix:** The menu adds `?g=` when it knows the group; the pages fall back to this phone's own group (`store.groupIds()`).
 - **Proof:** sparks e2e opens Hot spots through the menu and finds the place.
+
+## BUG-065 (P2, open): Ember screen names a bench but says "No benches mapped within 200 m"
+
+Found Sun 07:45 ET while capturing post media. Ember on the friend's page reads "Smaller plan: 15 min at West Road." (a bench named by its street) while the access line says "No benches mapped within 200 m". The access line is likely measured from the original spot, not the Ember bench. Not fixed before the RC: runtime code is frozen for the field test. Screenshot: docs/post/media/06-friend-ember.jpg.

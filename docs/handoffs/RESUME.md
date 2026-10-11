@@ -168,3 +168,9 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - Device-check kit verified: `npm run device-check` serves https://10.0.0.196:8443/check/ (kit and compass HTTP 200). Stopped; the founder starts it at 08:30 per 05-device-checklist.md (row 5a: one live "Not now" tap).
 - STOP here per the manager: hold the window for iPhone fixes, rc-1 (09:30), deploy on YES, field test. No post-test work.
 - Known risk: apps/server/src/env.ts and apps/hub/src/main.ts load the real .env for unset keys, so other e2e scripts inherit the live Telegram token (harmless today: their groups are link groups). e2e:telegram sets FLARE_ENV_FILE to avoid it. Fix after the test.
+
+## Status Sun ~07:50 ET (docs-only work while the founder sleeps)
+- DONE: README quick start a stranger can run; docs/README.md index (0 broken links); docs/post/draft.md (template + What I got wrong + What I didn't do, 19 [FIELD] spots, manager-session disclosure); docs/post/media/ 12 real-app images (1.0 MB).
+- Not done: screen recording. Playwright video needs its ffmpeg binary (npx playwright install ffmpeg, a download that needs a yes), or record on an iPhone during the field test.
+- Logged BUG-065 (P2): Ember screen access line vs Ember bench.
+- Holding the rest of the window for the device check, rc-1 and the deploy.
