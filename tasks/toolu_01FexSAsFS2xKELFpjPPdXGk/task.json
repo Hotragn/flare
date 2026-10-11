@@ -1,0 +1,18 @@
+{
+  "tool_use_id": "toolu_01FexSAsFS2xKELFpjPPdXGk",
+  "agent_id": "aa186bc300e3f9cde",
+  "subagent_type": "general-purpose",
+  "task_description": "S2 Mastra Plan ladder agent",
+  "files": [
+    "apps/server/test/agent-spike.tmp.ts"
+  ],
+  "token_usage": {
+    "input_tokens": 146,
+    "cache_creation_tokens": 138318,
+    "cache_read_tokens": 8706689,
+    "output_tokens": 27969,
+    "api_call_count": 73
+  },
+  "started_at": "2026-10-11T10:37:55.928097-04:00",
+  "completed_at": "2026-10-11T10:56:21.300309-04:00"
+}
