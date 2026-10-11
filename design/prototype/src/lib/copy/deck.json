@@ -1752,6 +1752,36 @@
       "where": "P2 sheet",
       "fixed": "BR-P-4"
     },
+    "ladder.tpl.1": {
+      "text": "Full plan",
+      "kind": "label",
+      "where": "P2 template step 1 when offline (no ladder draft)",
+      "owner": "frontend"
+    },
+    "ladder.tpl.2": {
+      "text": "Half the plan",
+      "kind": "label",
+      "where": "P2 template step 2 when offline",
+      "owner": "frontend"
+    },
+    "ladder.tpl.3": {
+      "text": "Short version",
+      "kind": "label",
+      "where": "P2 template step 3 when offline",
+      "owner": "frontend"
+    },
+    "ladder.tpl.4": {
+      "text": "10 minutes together",
+      "kind": "label",
+      "where": "P2 template step 4 when offline",
+      "owner": "frontend"
+    },
+    "member.telegramFriend": {
+      "text": "A Telegram friend",
+      "kind": "label",
+      "where": "H6 +1 list for a member the bot made (openapi Member.name_ct null)",
+      "owner": "frontend"
+    },
     "planSent.title": {
       "text": "Plan sent.",
       "kind": "title",

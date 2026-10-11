@@ -111,7 +111,6 @@ export const screens: Entry[] = [
     themes: LD,
     load: () => import("./P2Ladder.svelte"),
   },
-  { id: "P3", name: "Plan sent", states: ["success"], themes: LD, load: () => import("./P3PlanSent.svelte") },
   { id: "P4", name: "Plan invite", states: ["open", "need"], themes: LD, load: () => import("./P4PlanInvite.svelte") },
   {
     id: "P5",

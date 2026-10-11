@@ -108,6 +108,7 @@ export function fakeServer(clock: () => number) {
   const gatherings = new Map<string, G>();
   const listeners = new Map<string, Set<(v: GatheringView) => void>>();
   let offline = false;
+  let hub = true;
   const iso = (): Iso => new Date(clock()).toISOString();
 
   const viewOf = (g: G): GatheringView => {
@@ -313,6 +314,27 @@ export function fakeServer(clock: () => number) {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     const path = new URL(url, "http://phone").pathname;
     const hdrs = init?.headers as Record<string, string> | undefined;
+    if (offline) throw new TypeError("Failed to fetch");
+    if (path === "/api/v1/drafts")
+      return hub
+        ? json(200, {
+            invite: "Golden pond, come sit with me",
+            alt: "A pond with yellow trees.",
+            tier: "hub",
+            ms: 2900,
+          })
+        : json(200, { invite: "Outside right now. Come?", alt: "", tier: "rules", ms: 6000 });
+    if (path === "/api/v1/drafts/ladder")
+      return json(200, {
+        steps: [
+          { step: 1, label: "Ford Woods loop", minutes: 60 },
+          { step: 2, label: "Park loop", minutes: 30 },
+          { step: 3, label: "Short walk", minutes: 15 },
+          { step: 4, label: "10 min on the bench", minutes: 10 },
+        ],
+        tier: hub ? "hub" : "rules",
+        ms: 2100,
+      });
     return handle(init?.method ?? "GET", path, null, auth(hdrs));
   };
 
@@ -322,6 +344,9 @@ export function fakeServer(clock: () => number) {
     fetch: fetchFn,
     setOffline(v: boolean) {
       offline = v;
+    },
+    setHub(v: boolean) {
+      hub = v;
     },
     /** Server-side events: someone else answers, the clock moves the state, the host ends it. */
     answerAs(gid: string, member: string) {
