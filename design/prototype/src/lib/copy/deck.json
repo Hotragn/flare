@@ -433,6 +433,12 @@
       "kind": "error",
       "where": "H2"
     },
+    "develop.empty": {
+      "text": "Write up to six words.",
+      "kind": "error",
+      "where": "H2 typed field",
+      "owner": "apps/web/src/lib/ai"
+    },
     "develop.use": {
       "text": "Use these",
       "kind": "button",
@@ -1702,6 +1708,49 @@
       "kind": "error",
       "where": "P2 sheet",
       "fixed": "BR-P-4"
+    },
+    "ladder.err.minutes": {
+      "text": "Each step needs 5 minutes or more.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai",
+      "fixed": "BR-P-4"
+    },
+    "ladder.err.total": {
+      "text": "Step 1 must be 40 to 600 minutes.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.err.name": {
+      "text": "Name each step in four words or fewer.",
+      "kind": "error",
+      "where": "P2 step edit",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.1": {
+      "text": "Full walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 1",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.2": {
+      "text": "Half walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 2",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.3": {
+      "text": "Short walk",
+      "kind": "option",
+      "where": "P2 template ladder, step 3",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.tpl.4": {
+      "text": "Sit nearby",
+      "kind": "option",
+      "where": "P2 template ladder, step 4",
+      "owner": "apps/web/src/lib/ai"
     },
     "planSent.title": {
       "text": "Plan sent.",
