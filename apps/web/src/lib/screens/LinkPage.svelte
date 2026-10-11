@@ -102,7 +102,9 @@
         ? t("perm.locationFriend.denied")
         : guided?.distance_m == null
           ? t("compass.finding")
-          : guided.hint === "flat"
+          : guided.near
+            ? t("compass.apart")
+            : guided.hint === "flat"
             ? t("compass.holdFlat")
             : guided.hint === "figure8"
               ? t("compass.figure8")

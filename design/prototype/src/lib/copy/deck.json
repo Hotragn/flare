@@ -1516,6 +1516,11 @@
       "kind": "message",
       "where": "I7"
     },
+    "compass.apart": {
+      "text": "It points once you're at least 30 m apart.",
+      "kind": "hint",
+      "where": "I7"
+    },
     "compass.figure8": {
       "text": "Move your phone in a figure 8 to fix the compass.",
       "kind": "message",

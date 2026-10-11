@@ -70,6 +70,8 @@ Each phone opens `https://flare-outside.onrender.com/app/`, adds it to the Home 
 
 ## During the test (11:00 to 15:00)
 
+- **Compass:** keep at least 30 m apart for Find them to point. Closer than about twice the GPS accuracy (often 3 to 8 m) it says "{name} is close. Look around." on purpose (device check, Sun 10:15).
+
 - Render log stream filtered to `hub.` and `error`.
 - `curl -s https://flare-outside.onrender.com/api/v1/health` every few minutes: `hub` must stay `connected`.
 - Sentry (if `SENTRY_DSN` is set): AI spans `invoke_agent flare-photo` and `flare-ladder` with tiers.

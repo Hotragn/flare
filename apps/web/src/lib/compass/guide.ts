@@ -11,7 +11,8 @@
 //   the last good heading is kept and the hint says to hold the phone flat.
 // - Walking at 1 m/s or more, the GPS course (direction of travel) replaces the compass.
 // - The bearing to the target only updates while the distance is more than twice the fix's
-//   accuracy; closer than that, the direction is noise, so the guide says you're close.
+//   accuracy; closer than that, the direction is noise, so the guide says you're close. It
+//   leaves "close" only past 2.5x, so a fix wobbling at the edge doesn't flicker it.
 // - Worse fixes (over 50 m) and dropped fixes keep the last good bearing.
 // - "Facing" locks at 15° and lets go at 25°, so a shaky hand doesn't flicker it.
 // - A poor compass (accuracy over 25°, or -1 = uncalibrated) asks for a figure 8.
@@ -56,6 +57,8 @@ export const WALK_ON_MPS = 1.0;
 export const WALK_OFF_MPS = 0.6;
 export const MAX_FIX_M = 50;
 export const NEAR_FACTOR = 2;
+/** Leave "near" only past 2.5x accuracy, so a fix wobbling at the edge doesn't flicker it. */
+export const NEAR_EXIT_FACTOR = 2.5;
 export const FACE_IN_DEG = 15;
 export const FACE_OUT_DEG = 25;
 export const STALE_MS = 10_000;
@@ -131,7 +134,7 @@ export function createGuide(initialTarget: LatLon | null = null): Guide {
     let near = s.near;
     if (fix && target) {
       distance_m = distanceM(fix, target);
-      near = distance_m <= NEAR_FACTOR * fix.accuracy;
+      near = distance_m <= (s.near ? NEAR_EXIT_FACTOR : NEAR_FACTOR) * fix.accuracy;
       if (!near) bearing_deg = bearingDeg(fix, target); // else keep the last good bearing
     }
     const rel = heading === null || bearing_deg === null || near ? null : angleDiff(heading, bearing_deg);

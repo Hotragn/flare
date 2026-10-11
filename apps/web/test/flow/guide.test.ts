@@ -157,3 +157,47 @@ describe("device-check copy of the guide", () => {
     expect(fs.readFileSync(OUT, "utf8")).toBe(generated());
   });
 });
+
+describe("real device streams (Sun 2026-10-11, relative metres only)", () => {
+  type H = { t: number; h: number; a: number | null; b: number; g: number; s: number };
+  type F = { t: number; n: number; e: number; acc: number; v: number | null; c: number | null };
+  const replay = async (file: string) => {
+    const fs = await import("node:fs");
+    const url = new URL(`../fixtures/${file}`, import.meta.url);
+    const { stream } = JSON.parse(fs.readFileSync(url, "utf8")) as { stream: { headings: H[]; fixes: F[] } };
+    const g = createGuide(TARGET);
+    const events = [
+      ...stream.headings.map((x) => ({
+        t: x.t,
+        run: () => g.orientation({ t: x.t, heading: x.h, accuracy: x.a, beta: x.b, gamma: x.g, screen: x.s }),
+      })),
+      ...stream.fixes.map((f) => ({
+        t: f.t,
+        run: () => g.position({ ...at(f.n, f.e), t: f.t, accuracy: f.acc, speed: f.v, course: f.c }),
+      })),
+    ].sort((a, b) => a.t - b.t);
+    let nearFlips = 0;
+    let was: boolean | null = null;
+    let nearFixes = 0;
+    for (const e of events) {
+      const s = e.run();
+      if (s.distance_m === null) continue;
+      if (was !== null && s.near !== was) nearFlips++;
+      was = s.near;
+      if (s.near) nearFixes++;
+    }
+    return { nearFlips, nearFixes, total: events.length, last: g.state() };
+  };
+
+  it("16 Pro Max: never more than 7.5 m out with 3 to 9 m accuracy, so it says close, without flicker", async () => {
+    const r = await replay("compass-iphone16promax-ios26.6.1.json");
+    expect(r.last.near).toBe(true);
+    expect(r.nearFlips).toBeLessThanOrEqual(2); // was a stream of near/far flips at the 2x edge
+  });
+
+  it("iPhone 13 (Safari 27.0): heading events arrived; within 1.6 m the whole run, so close throughout", async () => {
+    const r = await replay("compass-iphone13-safari27.0.json");
+    expect(r.last.heading).not.toBeNull();
+    expect(r.nearFlips).toBe(0);
+  });
+});

@@ -64,6 +64,8 @@ function relative(p) {
 
 function onOrientation(e) {
   events++;
+  totalEvents++;
+  firstEventAt ??= ms();
   let h = null;
   if (typeof e.webkitCompassHeading === "number") {
     h = e.webkitCompassHeading;
@@ -173,16 +175,31 @@ function render(s) {
   const now = Date.now();
   const rel = s.near ? null : s.rel_deg;
   const turned = lastSpoken.rel !== null && rel !== null && Math.abs(angleDiff(lastSpoken.rel, rel)) >= 30;
-  const halved = lastSpoken.dist !== null && s.distance_m <= lastSpoken.dist / 2;
+  // Halving is news on the walk, not inside GPS error (device check: "close" said 49 times).
+  const halved = lastSpoken.dist !== null && lastSpoken.dist >= 20 && s.distance_m <= lastSpoken.dist / 2;
   const nearNow = s.near && lastSpoken.rel !== "near";
-  if (lastSpoken.at === 0 || turned || halved || nearNow || now - lastSpoken.at >= 60000) {
+  const sameNear = s.near && lastSpoken.rel === "near";
+  if (
+    lastSpoken.at === 0 ||
+    turned ||
+    (halved && !sameNear) ||
+    nearNow ||
+    (!sameNear && now - lastSpoken.at >= 60000)
+  ) {
     speak(words);
     if (s.near) R.nearCount++;
     lastSpoken = { at: now, rel: s.near ? "near" : rel, dist: s.distance_m };
   }
 }
 
+let started = false;
+let totalEvents = 0;
+let firstEventAt = null;
 $("start").addEventListener("click", async () => {
+  // One start only: a second tap used to add a second 1 s counter that zeroed the first
+  // (iPhone 13 run: eventsPerSecond 0 with 571 headings recorded).
+  if (started) return;
+  started = true;
   // 1. Orientation first, inside the tap, before any await.
   const ask = R.needsPermission
     ? DeviceOrientationEvent.requestPermission()
@@ -197,6 +214,9 @@ $("start").addEventListener("click", async () => {
     window.addEventListener("deviceorientationabsolute", onOrientation);
     setInterval(() => {
       R.eventsPerSecond = events;
+      R.eventsTotal = totalEvents;
+      R.eventsPerSecondAvg =
+        firstEventAt === null ? 0 : Math.round((totalEvents / Math.max(1, ms() - firstEventAt)) * 10000) / 10;
       events = 0;
       render(guide.tick(ms()));
       show();
