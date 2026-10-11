@@ -1213,10 +1213,11 @@ components:
         telegram_bot_username: { type: [string, "null"] }
         cloud_ai:
           type: object
-          description: DigitalOcean Serverless Inference tier (ADR-0022). All false when no scoped key is configured.
+          description: Cloud Gemma tier (ADR-0022, ADR-0026), DigitalOcean first, then Google AI Studio. All false when no key is configured.
           required: [provider, ladder, photo_opt_in]
           properties:
-            provider: { type: [string, "null"], enum: [digitalocean, null] }
+            provider: { type: [string, "null"], enum: [digitalocean, google, null], description: "The first provider tried" }
+            providers: { type: array, items: { type: string, enum: [digitalocean, google] }, description: "Every configured provider, in the order tried" }
             ladder: { type: boolean, description: "Plan ladders may come from the cloud when the hub is absent" }
             photo_opt_in: { type: boolean, description: "The host may opt in to send this Flare's photo to the cloud when the hub is absent" }
         limits:

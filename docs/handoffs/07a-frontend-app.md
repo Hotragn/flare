@@ -15,7 +15,7 @@ From: Frontend app engineer (stopped at the lead's request, Sun 02:10 ET), finis
   - text yes, cancel, +1 and Done;
   - Plan times and ladder edit.
 - **Added by the lead:**
-  - "Ask DigitalOcean" on H2's fallback (ADR-0022);
+  - "Ask cloud Gemma" on H2's fallback (ADR-0022, ADR-0026);
   - one ladder label set (`ladder.template.step*`);
   - `flow.ts real` mode against the real server and hub, which also checks CSP.
 - CR-PW2 (iOS head tags, splash) and CR-PW3 (`200.html` fallback) done.

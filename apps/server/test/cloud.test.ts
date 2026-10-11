@@ -2,7 +2,7 @@
 // host's opt-in; never with an account-wide token; capped per day.
 import { describe, expect, it } from "vitest";
 import { buildCtx, createApp } from "../src/app.ts";
-import { cloudTier, DO_ENDPOINT } from "../src/cloud.ts";
+import { cloudTier, DO_ENDPOINT, GOOGLE_ENDPOINT, GOOGLE_MODEL } from "../src/cloud.ts";
 import type { HubRelay } from "../src/hub/relay.ts";
 import { fakeJpeg } from "./helpers.ts";
 
@@ -90,8 +90,70 @@ describe("DigitalOcean cloud tier (ADR-0022)", () => {
     const { app: a } = app("absent", PHOTO);
     expect((await (await a.request("/api/v1/config")).json()).cloud_ai).toEqual({
       provider: "digitalocean",
+      providers: ["digitalocean"],
       ladder: true,
       photo_opt_in: true,
     });
+  });
+});
+
+// ADR-0026: Google AI Studio (Gemma 4 on the Gemini API) after DigitalOcean.
+const GKEY = { GEMINI_API_KEY: "test-gemini-key-not-real-0001" };
+function fakeBoth(doStatus: number, reply: string) {
+  const calls: { url: string; headers: Record<string, string>; body: Record<string, unknown> }[] = [];
+  const f = (async (url: string, init: RequestInit) => {
+    calls.push({ url, headers: init.headers as Record<string, string>, body: JSON.parse(String(init.body)) });
+    if (url === DO_ENDPOINT) return new Response('{"error":"This account has been blocked"}', { status: doStatus });
+    return new Response(
+      JSON.stringify({ candidates: [{ content: { parts: [{ text: "planning", thought: true }, { text: reply }] } }] }),
+      { status: 200 },
+    );
+  }) as unknown as typeof fetch;
+  return { f, calls };
+}
+
+describe("Google AI Studio fallback (ADR-0026)", () => {
+  it("runs alone with only a Gemini key, Gemma 4 by name, key in a header", async () => {
+    const d = fakeBoth(200, LADDER);
+    const t = cloudTier(GKEY, d.f);
+    expect(t?.providers).toEqual(["google"]);
+    const l = await t?.ladder({ ask: "Fairlane walk at 11?", total_minutes: 60 });
+    expect(l?.[0]?.label).toBe("Fairlane walk");
+    expect(d.calls[0]?.url).toBe(`${GOOGLE_ENDPOINT}/${GOOGLE_MODEL}:generateContent`);
+    expect(d.calls[0]?.url).not.toContain("key=");
+    expect(d.calls[0]?.headers["x-goog-api-key"]).toBe(GKEY.GEMINI_API_KEY);
+    expect(t?.last()).toEqual({ provider: "google", model: GOOGLE_MODEL });
+    expect(d.calls[0]?.body.generationConfig).toMatchObject({ thinkingConfig: { thinkingLevel: "minimal" } });
+  });
+  it("answers from Google when DigitalOcean refuses, and skips DigitalOcean for an hour", async () => {
+    const d = fakeBoth(402, LADDER);
+    const t = cloudTier({ ...SCOPED, ...GKEY }, d.f);
+    expect(t?.providers).toEqual(["digitalocean", "google"]);
+    expect(await t?.ladder({ ask: "walk", total_minutes: 60 })).not.toBeNull();
+    expect(d.calls.map((c) => c.url === DO_ENDPOINT)).toEqual([true, false]);
+    await t?.ladder({ ask: "walk", total_minutes: 60 });
+    expect(d.calls.filter((c) => c.url === DO_ENDPOINT)).toHaveLength(1);
+    expect(t?.last()?.provider).toBe("google");
+  });
+  it("tries Google after a DigitalOcean server error, without marking DigitalOcean down", async () => {
+    const d = fakeBoth(503, LADDER);
+    const t = cloudTier({ ...SCOPED, ...GKEY }, d.f);
+    await t?.ladder({ ask: "walk", total_minutes: 60 });
+    await t?.ladder({ ask: "walk", total_minutes: 60 });
+    expect(d.calls.filter((c) => c.url === DO_ENDPOINT)).toHaveLength(2);
+  });
+  it("sends an opted-in photo to Google as inline JPEG plus the fixed prompt", async () => {
+    const d = fakeBoth(200, PHOTO);
+    const t = cloudTier(GKEY, d.f);
+    expect((await t?.photo(fakeJpeg()))?.invite).toBe("Sunset at the park bench");
+    const parts = (d.calls[0]?.body.contents as { parts: Record<string, unknown>[] }[])[0]?.parts ?? [];
+    expect(parts.map((p) => Object.keys(p)[0])).toEqual(["text", "inline_data"]);
+  });
+  it("shares one daily cap across providers", async () => {
+    const d = fakeBoth(402, LADDER);
+    const t = cloudTier({ ...SCOPED, ...GKEY, CLOUD_DAILY_MAX_CALLS: "1" }, d.f);
+    await t?.ladder({ ask: "walk", total_minutes: 60 });
+    expect(await t?.ladder({ ask: "walk", total_minutes: 60 })).toBeNull();
+    expect(t?.left()).toBe(0);
   });
 });

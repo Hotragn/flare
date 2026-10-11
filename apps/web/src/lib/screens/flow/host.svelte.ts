@@ -171,7 +171,7 @@ export class HostFlow {
     if (online) await this.#draftWords(jpeg);
   }
 
-  /** The host tapped "Ask DigitalOcean" for this Flare's photo (ADR-0022). Only from H2's fallback. */
+  /** The host tapped "Ask cloud Gemma" for this Flare's photo (ADR-0022). Only from H2's fallback. */
   async askCloud(): Promise<void> {
     if (!this.photoBlob || !this.cloudOptIn) return;
     this.draft = "developing";

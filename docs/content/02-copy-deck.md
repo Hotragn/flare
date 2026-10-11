@@ -28,7 +28,7 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `app.updateReady` | New version. Reload? | status | 3 | 4.7 | Banner when a new service worker is waiting (lib/push/update.ts) |  |
 | `app.updateReload` | Reload | button | 1 | 8.4 | Update banner |  |
 | `app.outboxDropped` | Some taps didn't send. | status | 4 | -2.2 | Once, when the outbox drops items older than 24 h (ADR-0010) |  |
-| `app.tier.cloud` | Made by DigitalOcean | label | 3 | 13.1 | tier note under drafts (ADR-0022) | owner: apps/web/src/lib/ai |
+| `app.tier.cloud` | Made by Gemma, cloud | label | 4 | 0.7 | tier note under drafts (ADR-0022) | owner: apps/web/src/lib/ai |
 
 ## home
 
@@ -233,8 +233,8 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `develop.use` | Use these | button | 2 | -3.0 | H2 |  |
 | `develop.useMine` | Use mine | button | 2 | -3.0 | H2 |  |
 | `develop.writeOwn` | Write my own | button | 3 | -2.6 | H2 |  |
-| `develop.askCloud` | Ask DigitalOcean | button | 2 | 20.6 | H2 typed fallback when the hub is down (ADR-0022) | owner: apps/web/src/lib/screens |
-| `develop.askCloudNote` | Sends this photo to DigitalOcean. Takes about 30 seconds. | message | 9 | 7.1 | H2 under the cloud button (ADR-0022) | owner: apps/web/src/lib/screens |
+| `develop.askCloud` | Ask cloud Gemma | button | 3 | 1.3 | H2 typed fallback when the hub is down (ADR-0022) | owner: apps/web/src/lib/screens |
+| `develop.askCloudNote` | Sends this photo to cloud Gemma. Google may review it. | message | 10 | 2.9 | H2 under the cloud button (ADR-0022) | owner: apps/web/src/lib/screens |
 
 ## send
 
@@ -593,7 +593,7 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `ladder.err.total` | Step 1 must be 40 to 600 minutes. | error | 8 | 0.8 | P2 step edit | owner: apps/web/src/lib/ai |
 | `ladder.err.name` | Name each step in four words or fewer. | error | 8 | 0.8 | P2 step edit | owner: apps/web/src/lib/ai |
 | `ladder.stepMetaShort` | {place} · {min} min | label | 5 | -1.8 | Ladder step line when no access line is known | owner: frontend |
-| `ladder.madeCloud` | Drafted by DigitalOcean. Edit any step. | message | 6 | 9.2 | P2 ladder note (ADR-0022) | owner: apps/web/src/lib/ai |
+| `ladder.madeCloud` | Drafted by Gemma in the cloud. Edit any step. | message | 9 | 1.9 | P2 ladder note (ADR-0022) | owner: apps/web/src/lib/ai |
 
 ## planSent
 
@@ -845,10 +845,10 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `ai.reason.quality` | Wrong about the photo too often. | status | 6 | 4.5 | /ai/ measured list | owner: apps/web/src/routes/ai |
 | `ai.reason.noBetter` | No better than the rules. | status | 5 | 2.9 | /ai/ measured list | owner: apps/web/src/routes/ai |
 | `ai.reason.kernel` | Doesn't run in the browser yet. | status | 6 | 0.5 | /ai/ measured list | owner: apps/web/src/routes/ai |
-| `ai.cloud.title` | When DigitalOcean is used | title | 4 | 9.6 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
+| `ai.cloud.title` | When the cloud is used | title | 5 | -1.8 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
 | `ai.cloud.ladder` | Plan drafts, only when our laptop is off. It gets the ask line only. | prose | 14 | 1.5 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
-| `ai.cloud.photo` | A photo, only if you tap Ask DigitalOcean for that Flare. | prose | 11 | 6.9 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
-| `ai.cloud.off` | Off on this server. Nothing goes to DigitalOcean. | prose | 8 | 6.6 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
+| `ai.cloud.photo` | A photo, only if you tap Ask cloud Gemma for that Flare. Google may keep it and review it. | prose | 19 | 3.0 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
+| `ai.cloud.off` | Off on this server. Nothing goes to a cloud model. | prose | 10 | 1.7 | /ai/ (ADR-0022) | owner: apps/web/src/routes/ai |
 
 ## push
 
@@ -1055,7 +1055,7 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | `site.foot.made` | Made for the DEV Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass. | prose | 12 | 6.8 | site W7 |  |
 | `site.foot.osm` | Map data © OpenStreetMap contributors. | prose | 4 | 18.4 | site W7 | ODbL attribution |
 | `site.privacy.l.sentry` | Our server sends Sentry timings for AI jobs: which tier ran, how long, and whether it worked. Never your photo, words, names, places or ids. Your phone talks to no tracker. | prose | 31 | 2.9 | site W4 | ADR-0021 |
-| `site.privacy.l.cloud` | When our laptop is off, Plan drafts may come from DigitalOcean's Gemma model. They get the ask line only. A photo goes there only if the host taps Ask DigitalOcean for that Flare. | prose | 33 | 5.5 | site W4 | ADR-0022 |
+| `site.privacy.l.cloud` | When our laptop is off, Plan drafts may come from Gemma in the cloud: DigitalOcean first, then Google AI Studio. They get the ask line only. A photo goes there only if the host taps Ask cloud Gemma for that Flare. Google's free tier may keep what it gets to improve its products, and people there may review it. | prose | 59 | 5.4 | site W4 | ADR-0022 |
 | `site.privacy.l.sleep` | Our server runs on a free plan that sleeps when nobody uses it. A Flare that ends while it sleeps is deleted the moment it wakes, not within 5 minutes. | prose | 30 | 5.6 | W3 |  |
 
 ## install

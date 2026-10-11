@@ -134,7 +134,11 @@ export function hubChat<T>(model: string, fn: (span: SpanHandle) => Promise<T>):
 }
 
 /** The DigitalOcean call as a `chat` span (ADR-0022). */
-export function cloudChat<T>(model: string, fn: () => Promise<T>): Promise<T> {
+export function cloudChat<T>(
+  model: string,
+  fn: () => Promise<T>,
+  answered?: () => { provider: string; model: string } | null,
+): Promise<T> {
   if (!enabled) return fn();
   return Sentry.startSpan(
     {
@@ -148,7 +152,12 @@ export function cloudChat<T>(model: string, fn: () => Promise<T>): Promise<T> {
     },
     async (s) => {
       const v = await fn();
-      s.setAttributes({ "flare.ok": v !== null });
+      // Which provider answered (DigitalOcean first, then Google AI Studio, ADR-0026).
+      const who = answered?.();
+      s.setAttributes({
+        "flare.ok": v !== null,
+        ...(who ? { "gen_ai.provider.name": who.provider, "gen_ai.response.model": who.model } : {}),
+      });
       return v;
     },
   );

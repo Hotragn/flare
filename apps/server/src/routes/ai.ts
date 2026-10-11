@@ -78,7 +78,11 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
         // ADR-0022: DigitalOcean only when the hub is absent and the host opted in for this Flare.
         const cloud =
           !guarded && !present && optIn && ctx.cloud
-            ? await cloudChat(ctx.cloud.model, () => (ctx.cloud as NonNullable<typeof ctx.cloud>).photo(buf))
+            ? await cloudChat(
+                ctx.cloud.model,
+                () => (ctx.cloud as NonNullable<typeof ctx.cloud>).photo(buf),
+                () => (ctx.cloud as NonNullable<typeof ctx.cloud>).last(),
+              )
             : null;
         const ms = Math.round(performance.now() - t);
         const res: DraftResponseT = guarded
@@ -142,8 +146,10 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
       // ADR-0022: the ask line is non-personal text; DigitalOcean answers when the hub is absent.
       const cloud =
         !hub && !present && ctx.cloud
-          ? await cloudChat(ctx.cloud.model, () =>
-              (ctx.cloud as NonNullable<typeof ctx.cloud>).ladder({ ask: b.ask, total_minutes: b.total_minutes }),
+          ? await cloudChat(
+              ctx.cloud.model,
+              () => (ctx.cloud as NonNullable<typeof ctx.cloud>).ladder({ ask: b.ask, total_minutes: b.total_minutes }),
+              () => (ctx.cloud as NonNullable<typeof ctx.cloud>).last(),
             )
           : null;
       const steps = hub ?? cloud ?? templateLadder(b.total_minutes);
