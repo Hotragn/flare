@@ -138,7 +138,7 @@ const STORES: { store: string; table: string; per: boolean; total: string; expir
     table: "counters",
     per: false,
     total: "select count(*)::int as n from counters",
-    expired: "select 0 as n where $1::text is not null",
+    expired: "select 0 as n",
   },
   {
     store: "DS7",
@@ -166,9 +166,11 @@ export async function audit(db: Q, now: Date): Promise<{ at: string; pass: boole
   ];
   const stores: AuditStore[] = [];
   for (const s of STORES) {
-    const used = (sql: string) => p.slice(0, Math.max(...[...sql.matchAll(/\$(\d)/g)].map((m) => Number(m[1])), 0));
     const total = (await db.query<{ n: number }>(s.total)).rows[0]?.n ?? 0;
-    const expired = (await db.query<{ n: number }>(s.expired, used(s.expired))).rows[0]?.n ?? 0;
+    // Every query gets all four cut-offs, typed, so unused ones don't break parameter typing.
+    const typed = `select x.n from (${s.expired}) x,
+      (select $1::timestamptz a, $2::timestamptz b, $3::timestamptz c, $4::timestamptz d) p`;
+    const expired = (await db.query<{ n: number }>(typed, p)).rows[0]?.n ?? 0;
     stores.push({ store: s.store, table: s.table, per_gathering: s.per, total_rows: total, expired_rows: expired });
   }
   return { at: now.toISOString(), pass: stores.every((s) => !s.per_gathering || s.expired_rows === 0), stores };
