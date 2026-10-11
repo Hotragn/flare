@@ -1,5 +1,7 @@
 // What each part of Flare needs from the environment. Checks look at shape only;
 // a report never contains a value, a prefix or a length.
+import { accountToken } from "./token-guard.ts";
+
 export type App = "server" | "hub" | "bot" | "deploy" | "test-area";
 export type Rule = {
   key: string;
@@ -109,8 +111,8 @@ export const SPEC: Rule[] = [
     required: false,
     why: "AI-path traces (ADR-0021); off when empty",
     shape: (v) =>
-      /^sntry[us]_/.test(v)
-        ? "this is a Sentry auth token, not a project DSN (https://key@host/id)"
+      accountToken(v)
+        ? `this is ${accountToken(v)}, not a project DSN (https://key@host/id)`
         : /^https:\/\/[A-Za-z0-9]+@[A-Za-z0-9.-]+\/\d+$/.test(v)
           ? null
           : "not a Sentry DSN (https://key@host/id)",
@@ -119,7 +121,11 @@ export const SPEC: Rule[] = [
     key: "DO_MODEL_ACCESS_KEY",
     apps: ["server"],
     required: false,
-    why: "DigitalOcean Serverless Inference cloud tier (ADR-0022); off when empty",
+    why: "DigitalOcean Serverless Inference model access key, cloud tier (ADR-0022); off when empty",
+    shape: (v) => {
+      const t = accountToken(v);
+      return t ? `this is ${t}, not a scoped model access key; the cloud tier stays off` : null;
+    },
   },
   { key: "RENDER_KEY", apps: ["deploy"], required: true, why: "Render API, deploy only" },
   { key: "TEST_AREA_NAME", apps: ["test-area"], required: false, why: "Map pack label" },

@@ -4,7 +4,9 @@
 // never printed; each env var shows only "set" or "missing".
 // Usage: npm run deploy:render            (dry run, offline)
 //        npm run deploy:render -- --yes   (creates or updates on Render)
+
 import { execFileSync } from "node:child_process";
+import { accountToken } from "./lib/token-guard.ts";
 import { hasYes, loadVars, type Vars } from "./telegram-lib.ts";
 
 export const REGION = "ohio";
@@ -21,6 +23,8 @@ export const WEB_KEYS = [
   "VAPID_PUBLIC_KEY",
   "VAPID_PRIVATE_KEY",
   "VAPID_SUBJECT",
+  "SENTRY_DSN",
+  "DO_MODEL_ACCESS_KEY",
 ];
 const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 
@@ -47,6 +51,10 @@ const httpsBase = (vars: Vars) => (vars.PUBLIC_BASE_URL?.startsWith("https://") 
 
 export function deployPlan(vars: Vars, repo: string): DeployPlan {
   const problems = REQUIRED.filter((k) => !vars[k]).map((k) => `${k} is missing`);
+  for (const k of WEB_KEYS) {
+    const t = accountToken(vars[k]);
+    if (t) problems.push(`${k} holds ${t}; refusing to send it to Render`);
+  }
   if (!repo.startsWith("https://github.com/")) problems.push("git remote origin is not a GitHub repo");
   return {
     repo,
@@ -123,6 +131,11 @@ type Listed<K extends string, T> = Record<K, T>[];
 
 /** Runs the plan. Find-or-create by name, so a second run updates instead of duplicating. */
 export async function deploy(vars: Vars, repo: string, base = "https://api.render.com"): Promise<string[]> {
+  // Never ship an account-wide token to the server host, even if the plan step was skipped.
+  for (const k of WEB_KEYS) {
+    const t = accountToken(vars[k]);
+    if (t) throw new Error(`${k} holds ${t}; refusing to send it to Render`);
+  }
   const api = renderApi(vars.RENDER_KEY as string, base);
   const done: string[] = [];
   const owners = await api<Listed<"owner", { id: string }>>("GET", "/v1/owners?limit=1");
