@@ -84,8 +84,11 @@
     {#if view === "drafted"}
       <Button onclick={() => onuse?.(words)}>{t("develop.use")}</Button>
       <Button variant="text" icon="edit" onclick={onwrite}>{t("develop.writeOwn")}</Button>
+    {:else if view === "developing"}
+      <!-- While Gemma writes, writing your own is one tap away (fresh-eyes round 4). -->
+      <Button variant="text" icon="edit" onclick={onwrite}>{t("develop.writeOwn")}</Button>
     {:else}
-      <Button disabled={view === "developing" || !own.trim() || tooLong} onclick={() => onuse?.(own.trim())}>{t("develop.useMine")}</Button>
+      <Button disabled={!own.trim() || tooLong} onclick={() => onuse?.(own.trim())}>{t("develop.useMine")}</Button>
     {/if}
   {/snippet}
   {#snippet overlay()}

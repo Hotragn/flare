@@ -201,3 +201,47 @@ describe("real device streams (Sun 2026-10-11, relative metres only)", () => {
     expect(r.nearFlips).toBe(0);
   });
 });
+
+describe("the arrow on the real iPhone heading streams (target 300 m north)", () => {
+  // The recorded walks stood next to the target, so here the same real heading streams play
+  // against a friend 300 m away: the arrow the screen draws (rel_deg, unwrapped the way
+  // Compass.svelte does) must turn smoothly and never take the long way round, and facing
+  // must lock and let go without flicker.
+  type H = { t: number; h: number; a: number | null; b: number; g: number; s: number };
+  const arrow = async (file: string) => {
+    const fs = await import("node:fs");
+    const url = new URL(`../fixtures/${file}`, import.meta.url);
+    const { stream } = JSON.parse(fs.readFileSync(url, "utf8")) as { stream: { headings: H[] } };
+    const g = createGuide(TARGET);
+    g.position({ ...at(-300, 0), t: stream.headings[0]?.t ?? 0, accuracy: 5, speed: 0, course: null });
+    let shown: number | null = null;
+    let lastT = 0;
+    let maxStep = 0;
+    let flips = 0;
+    let wasFacing: boolean | null = null;
+    let samples = 0;
+    for (const x of stream.headings) {
+      const s = g.orientation({ t: x.t, heading: x.h, accuracy: x.a, beta: x.b, gamma: x.g, screen: x.s });
+      if (s.rel_deg === null) continue;
+      const next = shown === null ? s.rel_deg : unwrapAngle(shown, s.rel_deg);
+      // Between back-to-back events (the phones send one every 100 ms). After a gap (the screen
+      // locked, Safari paused the sensor) the phone really did turn; the needle's 530 ms spring
+      // animates that jump, so it isn't counted.
+      if (shown !== null && x.t - lastT <= 250) maxStep = Math.max(maxStep, Math.abs(next - shown));
+      shown = next;
+      lastT = x.t;
+      if (wasFacing !== null && s.facing !== wasFacing) flips++;
+      wasFacing = s.facing;
+      samples++;
+    }
+    return { maxStep, flips, samples };
+  };
+  for (const file of ["compass-iphone16promax-ios26.6.1.json", "compass-iphone13-safari27.0.json"]) {
+    it(`${file}: under 30° per 100 ms event, never the long way round, facing steady`, async () => {
+      const r = await arrow(file);
+      expect(r.samples).toBeGreaterThan(20);
+      expect(r.maxStep).toBeLessThan(30);
+      expect(r.flips).toBeLessThanOrEqual(Math.ceil(r.samples / 50)); // at most one lock change per ~1.5 s of events
+    });
+  }
+});

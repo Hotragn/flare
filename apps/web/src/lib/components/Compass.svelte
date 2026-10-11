@@ -103,7 +103,10 @@
     else device();
   });
   $effect(() => {
-    if (!speak) voice?.stopWarm();
+    if (!speak) {
+      voice?.stopWarm();
+      if (typeof speechSynthesis !== "undefined") speechSynthesis.cancel(); // muted mid-line
+    }
     return () => voice?.stopWarm();
   });
 </script>
@@ -117,7 +120,11 @@
       <circle class="glow" cx="120" cy="120" r="70" />
       {#key pulse}{#if pulse}<circle class="lock" cx="120" cy="120" r="70" />{/if}{/key}
       {#if status === "pointing" || status === "facing"}
+        <!-- Where the phone points: a fixed mark at the top. Line the arrow up with it. -->
+        <rect class="mark" x="116" y="-16" width="8" height="14" rx="4" />
         <g class="pointer" style:transform="rotate({shown}deg)">
+          <!-- The arrow on the dial's edge (fresh-eyes: "nothing points anywhere"). Same spring. -->
+          <path class="arrow" d="M120 -2 L138 30 L120 21 L102 30 Z" />
           <!-- The pin-flame, tip forward. Its hole sits on the dial's centre. -->
           <g transform="translate(120 120) scale(1.15) translate(-50 -67)">
             <path fill-rule="evenodd" d={flameD} fill="var(--lit)" />
@@ -149,6 +156,10 @@
   .glow { fill: color-mix(in srgb, var(--c-gold-400) 0%, transparent); transition: fill var(--dur-base) var(--ease-out); }
   .facing .glow { fill: color-mix(in srgb, var(--c-gold-400) 30%, transparent); animation: breathe var(--dur-breathe) var(--ease-in-out) var(--dur-slow) infinite; }
   /* The needle follows the bearing on a damped spring (about 530 ms, 1% overshoot). */
+  .arrow { fill: var(--lit); stroke: var(--bg, #000); stroke-width: 2; stroke-linejoin: round; transition: fill var(--dur-base) var(--ease-out); }
+  .facing .arrow { fill: var(--c-gold-400); }
+  .mark { fill: color-mix(in srgb, currentColor 55%, transparent); }
+  .facing .mark { fill: var(--c-gold-400); }
   .pointer { transform-origin: 120px 120px; transition: transform var(--spring-needle-dur) var(--spring-needle); }
   /* Lock on: the gold dot lights (160 ms), one ring of light goes out (480 ms), then the glow breathes. */
   .dot { transform-box: fill-box; transform-origin: center; animation: dot-in var(--dur-quick) var(--ease-spring) both; }

@@ -195,6 +195,9 @@ export class HostFlow {
       const d = (await r.json()) as DraftResponse;
       this.alt = d.alt;
       this.tier = d.tier;
+      // The host may have used their own words while this was writing (fresh-eyes round 4):
+      // a late draft never replaces words already chosen.
+      if (this.screen !== "develop" || this.draft !== "developing") return;
       if (d.tier !== "rules" && d.invite) {
         this.words = d.invite;
         this.draft = "drafted";

@@ -5,6 +5,7 @@
   import Compass from "../components/Compass.svelte";
   import { t } from "#lib/copy/index.ts";
   import Tip from "../components/Tip.svelte";
+  import { isMuted, onMuteChange } from "#lib/motion/sound.ts";
   import type { Theme } from "../components/parts";
   let {
     theme = "dark", // 2026 direction: Find them is dark and full screen
@@ -34,18 +35,21 @@
     ontalk?: (on: boolean) => void;
     onclose?: () => void;
   } = $props();
+  // One mute control (fresh-eyes round 4): the sound button at the top mutes the tones and
+  // the spoken directions together.
+  let muted = $state(isMuted());
+  $effect(() => onMuteChange((m) => (muted = m)));
 </script>
 
 <Screen {theme} sound {onclose} heading={t("compass.heading")} title={t("compass.heading")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""}>
   <div class="center">
-    <Compass {name} {status} {meters} {bearing} cues={live} speak={live && talking} />
+    <Compass {name} {status} {meters} {bearing} cues={live} speak={live && talking && !muted} />
   </div>
   <Tip id="compass" text="tip.compass" />
   {#if note}<p class="note t-small" role="status">{note}</p>{/if}
   <p class="note t-small t-muted">{t("compass.disclaimer")}</p>
   {#snippet actions()}
     <Button icon="here" onclick={onhere}>{t("lit.here")}</Button>
-    <Button variant="text" onclick={() => ontalk?.(!talking)}>{talking ? t("compass.stop") : t("compass.start")}</Button>
   {/snippet}
 </Screen>
 
