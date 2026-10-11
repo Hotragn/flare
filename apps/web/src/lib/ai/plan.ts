@@ -41,7 +41,7 @@ export type PlanAnswerDraft =
 
 /**
  * A Plan answer's conditions (E15-S2 AC1, SRS-PLAN-10): the parser gets the ladder's step names,
- * so "at least the half walk" works. Only the rules leave the phone, after the person says Yes.
+ * so "at least a shorter loop" works. Only the rules leave the phone, after the person says Yes.
  */
 export function planAnswer(
   text: string,

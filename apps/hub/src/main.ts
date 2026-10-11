@@ -2,7 +2,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { startHub } from "./client.ts";
-import { chat } from "./ollama.ts";
+import { warm as warmModel } from "./ollama.ts";
 
 const envFile =
   process.env.FLARE_ENV_FILE ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../.env");
@@ -32,7 +32,7 @@ const serverUrl = process.env.FLARE_SERVER_URL ?? "ws://localhost:8787";
 // gives the hub 6 s per photo (BR-AI-1), so a cold load would always fall to the template.
 const warm = async () => {
   const t = performance.now();
-  await chat(ollama, null).catch(() => "");
+  await warmModel(ollama).catch(() => ""); // system prompt v2 plus an image (ML F16)
   console.info(`hub: model warm in ${Math.round(performance.now() - t)} ms`);
 };
 await warm();

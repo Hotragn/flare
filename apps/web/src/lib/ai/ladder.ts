@@ -26,7 +26,7 @@ export function templateLadder(total: number): LadderStep[] {
     let m = Math.max(MIN_STEP_MINUTES, i === 0 ? total : round5(total * f));
     if (m >= prev) m = prev - MIN_STEP_MINUTES; // only reachable below 40; kept strictly decreasing
     prev = m;
-    steps.push({ step: (i + 1) as LadderStep["step"], label: t(`ladder.tpl.${i + 1}`), minutes: m });
+    steps.push({ step: (i + 1) as LadderStep["step"], label: t(`ladder.template.step${i + 1}`), minutes: m });
   });
   return steps;
 }

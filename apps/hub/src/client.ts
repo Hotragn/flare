@@ -1,9 +1,8 @@
 // Hub side of the relay (ADR-0006, contracts/asyncapi.yaml). Opens one outbound
 // WebSocket to the server, answers pings, runs one job at a time (photo or ladder), reconnects
 // with exponential backoff. Imports no filesystem module: photos never touch disk.
-import { HUB_PROTOCOL, JobHeader, Ping } from "@flare/shared";
+import { HUB_PROTOCOL, type JobResultT, type LadderJobT, ToHubV11 } from "@flare/shared";
 import WebSocket from "ws";
-import { LadderJob, type LadderStep } from "./ladder.ts";
 import { draftFromPhoto, isModelReady, ladderFromAsk, type OllamaConfig } from "./ollama.ts";
 
 export type HubOptions = {
@@ -17,17 +16,8 @@ export type HubOptions = {
   budgetMs?: { photo?: number; ladder?: number };
 };
 
-/** asyncapi `result`: draft for photo jobs, ladder for ladder jobs. */
-export type HubResult = {
-  type: "result";
-  id: string;
-  ok: boolean;
-  draft?: { invite: string; alt: string };
-  ladder?: LadderStep[];
-  error?: "model_unavailable" | "unusable_answer" | "timeout" | "bad_image";
-  ms: number;
-  model: string;
-};
+/** asyncapi `result` (shared JobResult, ICR-BE-1): draft for photo jobs, ladder for ladder jobs. */
+export type HubResult = JobResultT;
 
 const FIRST_RETRY_MS = 250;
 
@@ -95,24 +85,18 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     send(result, "photo-draft");
   };
 
-  const runLadder = async (raw: unknown, arrived: number) => {
+  const runLadder = async (job: LadderJobT, arrived: number) => {
     const t = performance.now();
-    const job = LadderJob.safeParse(raw);
-    const id = (raw as { id?: unknown }).id;
-    if (!job.success) {
-      if (typeof id === "string") send({ ...base(id, t), ok: false, error: "unusable_answer" }, "ladder-draft");
-      return;
-    }
     let result: HubResult;
     try {
       const left = remaining(arrived, "ladder");
       if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
-      const steps = await ladderFromAsk(opts.ollama, job.data, AbortSignal.timeout(left));
+      const steps = await ladderFromAsk(opts.ollama, job, AbortSignal.timeout(left));
       result = steps
-        ? { ...base(job.data.id, t), ok: true, ladder: steps }
-        : { ...base(job.data.id, t), ok: false, error: "unusable_answer" };
+        ? { ...base(job.id, t), ok: true, ladder: steps }
+        : { ...base(job.id, t), ok: false, error: "unusable_answer" };
     } catch (e) {
-      result = { ...base(job.data.id, t), ok: false, error: isTimeout(e) ? "timeout" : "model_unavailable" };
+      result = { ...base(job.id, t), ok: false, error: isTimeout(e) ? "timeout" : "model_unavailable" };
     }
     send(result, "ladder-draft");
   };
@@ -132,21 +116,25 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     ws.on("message", (data, isBinary) => {
       lastHeard = Date.now();
       if (!isBinary) {
-        let raw: { type?: unknown; kind?: unknown };
+        let raw: { type?: unknown; kind?: unknown; id?: unknown };
         try {
           raw = JSON.parse(String(data));
         } catch {
           return;
         }
-        if (raw?.type === "ping") {
-          const p = Ping.safeParse(raw);
-          if (p.success) ws?.send(JSON.stringify({ type: "pong", t: p.data.t }));
-        } else if (raw?.type === "job" && raw.kind === "photo-draft") {
-          const h = JobHeader.safeParse(raw);
-          if (h.success) waitingFor = { id: h.data.id, bytes: h.data.bytes };
-        } else if (raw?.type === "job" && raw.kind === "ladder-draft") {
+        const m = ToHubV11.safeParse(raw); // ICR-BE-1: photo jobs, ladder jobs, pings
+        if (!m.success) {
+          // A ladder job we can't read still gets an answer, so the server needn't wait 8 s.
+          if (raw?.kind === "ladder-draft" && typeof raw.id === "string")
+            send({ ...base(raw.id, performance.now()), ok: false, error: "unusable_answer" }, "ladder-draft");
+          return;
+        }
+        const msg = m.data;
+        if (msg.type === "ping") ws?.send(JSON.stringify({ type: "pong", t: msg.t }));
+        else if (msg.kind === "photo-draft") waitingFor = { id: msg.id, bytes: msg.bytes };
+        else {
           const arrived = performance.now();
-          enqueue(() => runLadder(raw, arrived));
+          enqueue(() => runLadder(msg, arrived));
         }
         return;
       }

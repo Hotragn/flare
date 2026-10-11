@@ -42,7 +42,7 @@ Branch `wp/on-device-ai`, written 2026-10-10 by the on-device AI specialist. Rea
 | Hub ladder + photo jobs | `apps/hub/test/ladder.test.ts`, `budget.test.ts` | ladder end to end, sequential with photo; stale job never reaches Ollama |
 | Real Gemma, tonight's load | `node apps/hub/field/bench.ts --server http://localhost:8843 --photos <dir>` | before the fixes (load 17 to 22): 0/5 photos on the hub, ladder median 8.2 s. After the per-job budget (load 21 to 46): 4/5 photos on the hub, median 4.1 s, the 5th timed out cleanly at 6.0 s. Compact ladder prompt: median 4.9 s, 5/5 usable, 5/5 within 8 s. Details in docs/ai-runtime/performance.md |
 | Rest-loop parser (OD5) | `apps/web/test/ai/rest.test.ts` | 6 tests, including the backlog example |
-| hub:field soak | `npm run hub:field` against a local server on 8843 | SOAK_RESULT |
+| hub:field soak | `npm run hub:field` against a local server on 8843 | 273 min, 0 drops, 1 restart (a deliberate kill, back in 1 s), model loaded on every health line |
 | Copy | `cd design/prototype && node scripts/copy-lint.mjs` | 631 strings, 0 problems |
 
 ## Copy keys added (all new, none changed)
