@@ -67,7 +67,7 @@ export function measure(iterations: number): { p50: number; p99: number; max: nu
 
 if (import.meta.main) {
   const r = measure(10_000);
-  console.log(
-    `solve 12 members x 4 rules x 4 steps, 10000 runs: p50 ${r.p50.toFixed(4)} ms, p99 ${r.p99.toFixed(4)} ms, max ${r.max.toFixed(4)} ms (budget B14: 5 ms)`,
+  process.stdout.write(
+    `solve 12 members x 4 rules x 4 steps, 10000 runs: p50 ${r.p50.toFixed(4)} ms, p99 ${r.p99.toFixed(4)} ms, max ${r.max.toFixed(4)} ms (budget B14: 5 ms)\n`,
   );
 }
