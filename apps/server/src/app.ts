@@ -162,7 +162,8 @@ export function csp(scriptHashes: string[]): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     // api.weather.gov: the host's phone asks for the Plan forecast near it (ADR-0007).
-    "connect-src 'self' https://api.weather.gov",
+    // /sim/ map tiles (OSM raster, Simulation page only); weather for Plans and Home.
+    "connect-src 'self' https://api.weather.gov https://tile.openstreetmap.org",
     "media-src 'self'",
     "font-src 'self'",
     "worker-src 'self'",
