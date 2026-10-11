@@ -1,6 +1,11 @@
 #!/bin/sh
-# Blocks a push that would publish a secret (SRS-SEC-2), in the files and in Entire's recorded
-# agent sessions (refs/entire/*, SRS-SEC-7). Installed by `npm run hooks`; Entire's pre-push
-# hook calls this one after pushing its session logs is prepared.
+# Pre-push gate (about 15 s), run by Entire's pre-push hook after it prepares session logs.
+# 1. No secret in the files (SRS-SEC-2) or in Entire's recorded sessions (SRS-SEC-7).
+# 2. No red build on GitHub for things a local check catches: lint, types, the root tests.
+#    The web svelte-check, flow and site suites and the build stay in CI (`npm run ci`).
 node scripts/secret-scan.ts || exit 1
-exec node scripts/scan-sessions.ts
+node scripts/scan-sessions.ts || exit 1
+npx biome check . >/dev/null 2>&1 || { echo "pre-push: lint failed (run npm run lint)"; exit 1; }
+npx tsc -p tsconfig.json --noEmit || { echo "pre-push: types failed"; exit 1; }
+npx vitest run --reporter=dot >/dev/null 2>&1 || { echo "pre-push: tests failed (run npx vitest run)"; exit 1; }
+echo "pre-push: secrets, sessions, lint, types and tests ok"

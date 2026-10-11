@@ -507,3 +507,29 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** min and max read backwards: the smallest step is step 4, and "only step 4" is `max_step(4)` (BR-C-8: step number ≥ n).
 - **Fix:** `shortOnly()` sends `max_step(4)`; the test asserts it.
 - **Proof:** flow tests 37/37; the engine test for max_step keeps the member out of steps 1 to 3.
+
+## BUG-059: Sparks history and Hot spots never filled in the app
+
+- **Date:** 2026-10-11
+- **Area:** Frontend flows (found in the lead's field-test coverage check)
+- **Symptom:** Nothing wrote the group's Hot spots blob at Gone (BR-K-6 says the host's phone does), so the Hot spots list stayed empty and the invite's "Your group met here N times." line never showed (`met` was always null). The newest Spark was asked for only when the blob had a Spark id, which it never does at the host's update because Sparks come later.
+- **Fix:** `#lib/places/hotspots.ts`: `recordLitAtPlace()` merges +1 for the spot into the sealed blob at Gone after Lit (If-Match, re-merge and retry once on 412), once per gathering; the link page loads `sparkHistory()` for the spot; the newest Spark is fetched by place hash every time.
+- **Proof:** `node apps/web/test/e2e/sparks.ts` (real server, hub, engine): Spark saved, the second invite reads "Your group met here once." and quotes the Spark, Hot spots lists the place.
+
+## BUG-060: Hot spots recorded three times for one Flare
+
+- **Date:** 2026-10-11
+- **Area:** Frontend host flow (found writing BUG-059's fix)
+- **Symptom:** One Done counted the place three times.
+- **Cause:** Gone reaches the host flow from the Done response, the SSE `gone` event and the poll, all before the first update finished, so the localStorage guard saw nothing yet.
+- **Fix:** An in-memory set guards each gathering before the first await; localStorage keeps it across reloads.
+- **Proof:** sparks e2e expects "met here once." and passes.
+
+## BUG-061: Menu opened Hot spots and Forget without the group
+
+- **Date:** 2026-10-11
+- **Area:** Frontend host menu and website group pages
+- **Symptom:** Hot spots said "Open your group's link on this phone first." from the host's own menu.
+- **Cause:** The pages take the group as `?g=`; the menu links had none, and on a fresh `/app/` the host flow hasn't loaded its group yet.
+- **Fix:** The menu adds `?g=` when it knows the group; the pages fall back to this phone's own group (`store.groupIds()`).
+- **Proof:** sparks e2e opens Hot spots through the menu and finds the place.

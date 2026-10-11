@@ -126,6 +126,9 @@
     ["spark", "menu.ai", "menu.aiSub", "/ai/"],
     ["close", "menu.forget", "menu.forgetSub", "/app/forget/"],
   ];
+  /** Group pages take the group id as `?g=` (Hot spots, Forget). */
+  const withGroup = (href: string) =>
+    flow.groupId && (href === "/app/hotspots/" || href === "/app/forget/") ? `${href}?g=${flow.groupId}` : href;
   const exit = () => location.assign("/app/");
 </script>
 
@@ -158,7 +161,7 @@
         {#if href === "#plan"}
           <button class="row" onclick={startPlan}><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="visually-hidden">{t("app.pause")}</span><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></button>
         {:else}
-          <a class="row" {href}><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="visually-hidden">{t("app.pause")}</span><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></a>
+          <a class="row" href={withGroup(href)}><Icon name={icon} /><span class="txt"><b>{t(label)}</b><span class="visually-hidden">{t("app.pause")}</span><span class="t-small t-muted">{t(sub)}</span></span><Icon name="chevron" size={20} /></a>
         {/if}
       </li>
     {/each}

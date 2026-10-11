@@ -2,6 +2,7 @@
 // upload, six words, quorum, host line, Send, the share sheet with the link and the SMS form,
 // then the host controls (+1, cancel, Done, text yes). Everything readable is sealed on this
 // phone before it is sent (ADR-0008); only labels cross for places (ADR-0009).
+
 import type { Label, Step } from "@flare/shared/icd/engine";
 import type { ClientIcd } from "@flare/shared/icd/index";
 import type { LatLon, MapPack, Place } from "@flare/shared/icd/map";
@@ -9,6 +10,7 @@ import { encodePlain, encodePlainPlan } from "@flare/shared/plaintext";
 import type { NoticeTextT, SealedGatheringT } from "@flare/shared/sealed";
 import { t } from "#lib/copy/index.ts";
 import { feedback } from "#lib/motion/feedback.ts";
+import { recordLitAtPlace } from "#lib/places/hotspots.ts";
 import type { Access } from "../../components/parts";
 import { BASE, bearer, codeOf, getJson, write } from "./api.ts";
 import type {
@@ -80,6 +82,7 @@ export class HostFlow {
   #d: Deps;
   #pack: MapPack | null = null;
   #group: ClientIcd.GroupRecord | null = null;
+  #hotDone = new Set<string>();
   #fragment: string | null = null;
   #stopLive: (() => void) | null = null;
   #candidates: { label: Label; place: Place; name: string }[] = [];
@@ -96,6 +99,11 @@ export class HostFlow {
       .catch(() => {
         this.cloudOptIn = false; // offline or old server: no cloud offer
       });
+  }
+
+  /** The current group's id, for the menu's group pages (Hot spots, Forget: `?g=`). */
+  get groupId(): string | null {
+    return this.#group?.groupId ?? null;
   }
 
   get askName(): boolean {
@@ -430,8 +438,38 @@ export class HostFlow {
         } else if (v.state === "ember") feedback("ember");
         else if (v.state === "gone") feedback("gone");
       }
+      if (v.state === "gone") void this.#recordHot(v);
       if (this.screen !== "sent" || v.state !== "kindling") this.#route();
     });
+  }
+
+  /** BR-K-6: at Gone after Lit, the host's phone adds this place to the group's Hot spots, once. */
+  async #recordHot(v: GatheringView): Promise<void> {
+    const g = this.#group;
+    const spot = this.spot;
+    if (!g || !spot?.key || v.ended !== "thanks_for_coming") return;
+    // Gone reaches this from Done, from SSE and from the poll: count it once per gathering.
+    if (this.#hotDone.has(v.id)) return;
+    this.#hotDone.add(v.id);
+    const KEY = "flare.hot.recorded";
+    let done: string[] = [];
+    try {
+      done = JSON.parse(globalThis.localStorage?.getItem(KEY) ?? "[]") as string[];
+    } catch {
+      done = [];
+    }
+    if (done.includes(v.id)) return;
+    const day = new Date(this.serverNow).toISOString().slice(0, 10);
+    const ok = await recordLitAtPlace({ fetch: this.#d.fetch, crypto: this.#d.crypto }, g, spot, day);
+    if (!ok) {
+      this.#hotDone.delete(v.id); // a later Gone signal may try again
+      return;
+    }
+    try {
+      globalThis.localStorage?.setItem(KEY, JSON.stringify([...done, v.id].slice(-200)));
+    } catch {
+      // private mode: a repeat would only add one more count for the same Flare
+    }
   }
 
   #route(): void {
@@ -494,6 +532,7 @@ export class HostFlow {
       return;
     }
     if (r.value) this.view = r.value;
+    if (r.value) void this.#recordHot(r.value);
     this.screen = what === "done" ? "outside" : "gone";
     this.#stopLive?.();
   }

@@ -53,13 +53,20 @@ export function groupIdFrom(url: { searchParams: { get(k: string): string | null
 
 export const idemKey = () => crypto.randomUUID();
 
-/** The group named by `?g=`, with this phone's modules, or null when this phone doesn't have it. */
+/** The group named by `?g=` (else this phone's group), with this phone's modules, or null. */
 export async function openGroup(
   url: Parameters<typeof groupIdFrom>[0],
 ): Promise<{ store: Store; crypto: Crypto; group: GroupRecord } | null> {
-  const id = groupIdFrom(url);
   const { store, crypto: c } = await phoneModules();
-  if (!id || !store || !c) return null;
+  if (!store || !c) return null;
+  // No `?g=` (the menu before the host's group has loaded): this phone's own group, the first
+  // one it joined. Each field-test phone is in one group.
+  let id = groupIdFrom(url);
+  if (!id) {
+    const ids = await (store as Store & { groupIds?: () => Promise<string[]> }).groupIds?.().catch(() => []);
+    id = ids?.[0] ?? null;
+  }
+  if (!id) return null;
   const group = await store.group(id).catch(() => null);
   return group ? { store, crypto: c, group } : null;
 }

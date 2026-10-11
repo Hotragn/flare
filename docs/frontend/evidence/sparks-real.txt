@@ -1,0 +1,9 @@
+PASS flare 1 sent with a link
+PASS flare 1 lit
+PASS the friend's Spark is saved after I'm here (BR-K-1)
+PASS flare 2 sent from the same group
+PASS the second invite says the group met here (SRS-SPK-2, BR-K-5)
+PASS and quotes the newest Spark, opened on the phone
+PASS Hot spots lists the place (SRS-HOT-1)
+
+sparks e2e: all pass

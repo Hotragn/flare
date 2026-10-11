@@ -44,7 +44,8 @@
     "deploy:render": "node scripts/deploy-render.ts",
     "smoke": "node scripts/smoke.ts",
     "scan-sessions": "node scripts/scan-sessions.ts",
-    "e2e:field": "node scripts/e2e-field.ts"
+    "e2e:field": "node scripts/e2e-field.ts",
+    "e2e:sparks": "node apps/web/test/e2e/sparks.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",

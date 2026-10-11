@@ -150,7 +150,9 @@ export async function sparkHistory(
   const places = await loadHotspots(deps, group).catch(() => [] as HotspotEntryT[]);
   const entry = places.find((p) => p.place_key === placeKey);
   if (!entry) return null;
-  const text = entry.spark_id ? await newestSpark(deps, group, placeKey) : null;
+  // Sparks arrive after the host's Gone update, so the newest one is asked for even when the
+  // blob has no spark id yet (the server lists Sparks by place hash).
+  const text = await newestSpark(deps, group, placeKey);
   return historyLine(places, placeKey, text);
 }
 

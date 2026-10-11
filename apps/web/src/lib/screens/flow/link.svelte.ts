@@ -2,12 +2,14 @@
 // Opens the sealed gathering with the key from the fragment, follows the live view, and
 // answers through the outbox. Nothing readable leaves the phone: names, conditions, needs and
 // positions stay here; only rules, labels and pass/fail checks are sent (ADR-0008, ADR-0009).
+
 import type { Label, Rule } from "@flare/shared/icd/engine";
 import type { ClientIcd } from "@flare/shared/icd/index";
 import type { LatLon, Needs } from "@flare/shared/icd/map";
 import { SealedGathering, type SealedGatheringT } from "@flare/shared/sealed";
 import { t } from "#lib/copy/index.ts";
 import { feedback } from "#lib/motion/feedback.ts";
+import { sparkHistory } from "#lib/places/hotspots.ts";
 import type { Access, InviteInfo } from "../../components/parts";
 import { bearer, type FailCode, getBytes, getJson, write } from "./api.ts";
 import type { AnswerBody, ArrivalResult, GatheringView, Me, Member } from "./api-types.ts";
@@ -46,6 +48,9 @@ export class LinkFlow {
   screen = $state<LinkScreen>("loading");
   view = $state<GatheringView | null>(null);
   sealed = $state<SealedGatheringT | null>(null);
+  /** "Your group met here N times." with the newest Spark (BR-K-5); null until loaded or none. */
+  met = $state<{ times: number; line: string } | null>(null);
+  #metFor = "";
   me = $state<Me | null>(null);
   photo = $state("");
   error = $state("");
@@ -113,7 +118,7 @@ export class LinkFlow {
       walkMin: this.walkMin,
       access: (s.access ?? null) as Access | null,
       nature: s.nature_line ?? "",
-      met: null,
+      met: this.met,
     };
   }
   get have(): number {
@@ -216,6 +221,17 @@ export class LinkFlow {
       }
     }
     this.view = v;
+    const g = this.#group;
+    if (g && this.sealed && this.#metFor !== v.id) {
+      this.#metFor = v.id;
+      void sparkHistory({ fetch: this.#d.fetch, crypto: this.#d.crypto }, g, this.sealed.spot.key)
+        .then((h) => {
+          this.met = h ? { times: h.times, line: h.spark ?? "" } : null;
+        })
+        .catch(() => {
+          this.met = null;
+        });
+    }
     if (v.state === "lit" && !this.#wasLit) {
       this.#wasLit = true;
       void this.#saveLit();
