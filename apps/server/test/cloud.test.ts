@@ -146,7 +146,8 @@ describe("Google AI Studio fallback (ADR-0026)", () => {
     const d = fakeBoth(200, PHOTO);
     const t = cloudTier(GKEY, d.f);
     expect((await t?.photo(fakeJpeg()))?.invite).toBe("Sunset at the park bench");
-    const parts = (d.calls[0]?.body.contents as { parts: Record<string, unknown>[] }[])[0]?.parts ?? [];
+    const contents = (d.calls[0]?.body.contents ?? []) as { parts: Record<string, unknown>[] }[];
+    const parts = contents[0]?.parts ?? [];
     expect(parts.map((p) => Object.keys(p)[0])).toEqual(["text", "inline_data"]);
   });
   it("shares one daily cap across providers", async () => {
