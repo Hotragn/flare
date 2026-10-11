@@ -46,7 +46,9 @@
 
 <style>
   p { margin: 0; }
-  .times { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  /* Stacked on phones: a date-time field needs the full width (fresh-eyes round 3). */
+  .times { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 520px) { .times { grid-template-columns: 1fr 1fr; } }
   .time { display: flex; flex-direction: column; gap: 6px; }
   .lbl { font-weight: 700; }
   .pick { min-height: 48px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border-radius: var(--r-md); border: 2px solid var(--text-muted); background: var(--surface); }

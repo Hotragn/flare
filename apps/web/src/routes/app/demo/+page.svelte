@@ -15,8 +15,9 @@
   import I8Here from "#lib/screens/I8Here.svelte";
   import Screen from "#lib/components/Screen.svelte";
   import Flame from "#lib/components/Flame.svelte";
+  import { parse } from "#lib/conditions/index.ts";
   import I12Outside from "#lib/screens/I12Outside.svelte";
-  import { DEMO_BENCHES, DEMO_FRIENDS, DEMO_SCENE, DEMO_SPOT, DEMO_WORDS, DemoEngine } from "#lib/demo/demo.svelte.ts";
+  import { DEMO_BENCHES, DEMO_FRIENDS, DEMO_HOST, DEMO_SCENE, DEMO_SPOT, DEMO_WORDS, DemoEngine } from "#lib/demo/demo.svelte.ts";
   import type { InviteInfo } from "#lib/components/parts.ts";
 
   // You are the host. For one beat you become Amor, a friend (fresh-eyes #4), then come back.
@@ -29,6 +30,24 @@
   let litAt = 0;
   let sparkLine = $state("");
   let condition = $state("");
+  let condRead = $state(""); // the real parser's read-back, as a friend's phone shows it
+  let condError = $state("");
+  // The same parser a friend's phone uses (fresh-eyes round 3: "Check it" checked nothing).
+  function checkCondition(text: string) {
+    const r = parse(text, {
+      members: [{ id: DEMO_HOST, name: me }, ...DEMO_FRIENDS.map((f) => ({ id: f.id, name: f.name }))],
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      now: new Date(demo.now).toISOString(),
+      kind: "flare",
+    });
+    if (!r.ok) {
+      condError = r.reason === "not_in_group" ? t("cond.notInGroup", { name: r.name ?? "" }) : r.reason === "too_many" ? t("cond.tooMany") : t("cond.didntCatch");
+      return;
+    }
+    condError = "";
+    condRead = r.readBack;
+    amorYes();
+  }
   let amorIn = $state(false);
   let typedLine = $state(""); // what you typed for Where you'll be: the demo keeps it (round 2)
   // Friends see the host by first name. In the demo the host is you (fresh-eyes #3).
@@ -59,7 +78,11 @@
   }
   function backToYou() {
     step = "kindling";
-    later(400, say);
+    // Say whose screen this is again (fresh-eyes round 3), with the count, never a name.
+    later(400, () => {
+      toast = t("demo.back", { host: me, n: demo.have() });
+      later(3000, () => (toast = ""));
+    });
     if (demo.g?.state === "lit") toLit();
   }
   function skip() {
@@ -69,9 +92,9 @@
     later(1500, () => {
       demo.yes(DEMO_FRIENDS[1].id);
       demo.advance(61_000);
-      // Straight to "It's lit": no "0 more" beat in between (fresh-eyes #8).
-      if (demo.g?.state === "lit") toLit();
-      else say();
+      // Show the yes that lit it, then "It's lit" (round 3: every yes is seen as a count).
+      say();
+      if (demo.g?.state === "lit") later(1600, toLit);
     });
   }
   function toLit() {
@@ -148,9 +171,9 @@
     <I1Invite info={{ ...info, spot: DEMO_SPOT, hostLine: "" }} have={demo.have()} quorum={demo.g?.quorum ?? 4} onyes={amorYes} oncondition={() => (step = "condition")} onclose={() => (step = "kindling")} />
   {:else if step === "condition"}
     <p class="role" role="status">{t("demo.friendBanner", { host: me })}</p>
-    <I2Condition {info} bind:text={condition} oncheck={amorYes} onclose={() => (step = "friend")} />
+    <I2Condition {info} bind:text={condition} error={condError} oncheck={checkCondition} onclose={() => (step = "friend")} />
   {:else if step === "friendIn"}
-    <p class="role" role="status">{condition.trim() ? t("demo.inIf", { rule: condition.trim() }) : t("demo.friendBanner", { host: me })}</p>
+    <p class="role" role="status">{condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}</p>
     <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
   {:else if step === "lit"}
     <div class="layer">

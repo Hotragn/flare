@@ -5,6 +5,8 @@
      it closes; otherwise it springs back (--spring-sheet). Reduced motion: fades only. -->
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import Icon from "./Icon.svelte";
+  import { t } from "#lib/copy/index.ts";
   let { open = $bindable(false), title, description = "", children, inline = false }: { open?: boolean; title: string; description?: string; children: Snippet; inline?: boolean } = $props();
 
   // Native <dialog> (showModal): focus trap, Escape and the top layer come from the browser.
@@ -66,7 +68,8 @@
       <div class="handle" aria-hidden="true" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={up}>
         <div class="grab"></div>
       </div>
-      <h2 class="t-heading" id="{id}-t">{title}</h2>
+      <!-- A visible way out on every sheet (fresh-eyes round 3: a tall menu left no backdrop). -->
+      <div class="head"><h2 class="t-heading" id="{id}-t">{title}</h2><button class="x" type="button" aria-label={t("app.close")} onclick={() => (open = false)}><Icon name="close" size={22} /></button></div>
       {#if description}<p class="t-muted desc">{description}</p>{/if}
       {@render children()}
     </section>
@@ -87,6 +90,10 @@
   :global(.sheet[data-dragging]) { transition: none; }
   :global(.sheet[data-state="closed"]) { animation: drop var(--dur-quick) var(--ease-in) both; }
   .static { position: absolute; }
+  .native .sheet { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .head h2 { margin: 0; }
+  .x { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text); display: grid; place-items: center; }
   .handle { margin: -10px auto 0; width: 100%; height: 28px; display: grid; place-items: center; touch-action: none; cursor: grab; }
   .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 4px; }
   :global(.desc) { margin: 0; }

@@ -59,7 +59,7 @@ try {
   await shot("2a-friend");
   await page.getByRole("button", { name: "I'm in" }).click();
   await page.getByRole("button", { name: "Pocket it" }).click();
-  await page.getByText("One more yes. 2 in.").waitFor({ timeout: 10_000 });
+  await page.getByText(/One more yes: 2 in/).waitFor({ timeout: 10_000 });
   check("a yes never shows a name", !(await page.getByText(/(Amor|Benny|Kai) said yes/).count()));
   await shot("2-kindling");
   await page.getByRole("button", { name: "Skip 30 min" }).click();
