@@ -9,6 +9,14 @@ export const DraftResponse = z.object({
 });
 export type DraftResponseT = z.infer<typeof DraftResponse>;
 
+/** ICR-ML5: Fix the map tag draft. `rules` means no draft (the phone shows the usual tags). */
+export const TagsDraftResponse = z.object({
+  tags: z.record(z.string(), z.string()),
+  tier: z.enum(["hub", "rules"]),
+  ms: z.number().int().nonnegative(),
+});
+export type TagsDraftResponseT = z.infer<typeof TagsDraftResponse>;
+
 export const Health = z.object({
   ok: z.boolean(),
   version: z.string(),

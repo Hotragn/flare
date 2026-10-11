@@ -115,6 +115,13 @@ export class HubRelay {
     return this.send(id, JSON.stringify(header), photo, this.timeoutMs);
   }
 
+  /** ICR-ML5: one Fix the map photo for an OSM tag draft (asyncapi tagsJob, 8 s). */
+  tags(photo: Buffer, timeoutMs: number): Promise<RelayResult | null> {
+    const id = randomUUID();
+    const header = { type: "job", id, kind: "tags-draft", bytes: photo.length, mime: "image/jpeg" };
+    return this.send(id, JSON.stringify(header), photo, timeoutMs);
+  }
+
   /**
    * Sends a Plan ladder job (asyncapi ladderJob; text only, nothing stored). Resolves null on
    * no hub, timeout (ADR-0007: 8 s) or failure.

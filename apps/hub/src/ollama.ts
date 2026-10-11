@@ -6,10 +6,12 @@ import {
   type Draft,
   enforce,
   enforceLadder,
+  enforceOsmTags,
   LADDER_PROMPT,
   type LadderJobT,
   type LadderT,
   ladderUserPrompt,
+  OSM_PROMPT,
   SYSTEM_PROMPT,
   USER_PROMPT,
 } from "@flare/shared";
@@ -83,6 +85,32 @@ export async function ladderFromAsk(cfg: OllamaConfig, job: LadderJobT, signal?:
     );
     const d = enforceLadder(text, input);
     if (d) return d.ladder;
+  }
+  return null;
+}
+
+/**
+ * ICR-ML5: one photo to a guarded OSM tag draft with ML's osm-tags prompt v1 and
+ * enforceOsmTags(). Retries once when the answer is not JSON. Empty tags is a valid answer.
+ */
+export async function tagsFromPhoto(
+  cfg: OllamaConfig,
+  jpeg: Uint8Array,
+  signal?: AbortSignal,
+): Promise<Record<string, string> | null> {
+  const b64 = Buffer.from(jpeg).toString("base64");
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const text = await post(
+      cfg,
+      [
+        { role: "system", content: OSM_PROMPT.system },
+        { role: "user", content: OSM_PROMPT.user, images: [b64] },
+      ],
+      OSM_PROMPT.numPredict,
+      signal,
+    );
+    const d = enforceOsmTags(text);
+    if (d) return d.tags;
   }
   return null;
 }

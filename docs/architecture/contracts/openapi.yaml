@@ -822,6 +822,33 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "429": { $ref: "#/components/responses/TooMany" }
 
+  /api/v1/drafts/tags:
+    post:
+      tags: [ai]
+      operationId: draftOsmTags
+      summary: OSM tags drafted from a Fix the map photo, on our laptop (SRS-MAP-1, ICR-ML5)
+      description: |
+        The phone sends a 768 px JPEG of a bench, restroom, fountain or steps. The hub drafts
+        allow-listed tags (prompt osm-tags v1), the server runs `enforceOsmTags()` again, then
+        zero-fills the buffer and stores nothing. Hub absent, slow (8 s) or no usable answer:
+        `tags: {}` with `tier: rules`, and the phone starts from the usual tags. A person
+        reviews every tag before any export. Increments `tier_ran.tags.{tier}`.
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, contentMediaType: image/jpeg, maxLength: 1500000 }
+      responses:
+        "200":
+          description: Tag draft
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TagsDraftResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMedia" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
   /api/v1/groups/{groupId}/telegram-link:
     parameters:
       - $ref: "#/components/parameters/GroupId"
@@ -1491,6 +1518,17 @@ components:
         last_member: { type: boolean, description: "true when the group and everything in it was deleted" }
         sparks_deleted: { type: integer }
 
+    TagsDraftResponse:
+      type: object
+      additionalProperties: false
+      required: [tags, tier, ms]
+      properties:
+        tags:
+          type: object
+          description: Allow-listed OSM keys (E17-S1) to allowed values. Empty when tier is rules.
+          additionalProperties: { type: string }
+        tier: { type: string, enum: [hub, rules] }
+        ms: { type: integer, minimum: 0 }
     DraftResponse:
       type: object
       required: [invite, alt, tier, ms]

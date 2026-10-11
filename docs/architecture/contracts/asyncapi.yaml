@@ -57,6 +57,7 @@ channels:
       photoJob: { $ref: "#/components/messages/photoJob" }
       photoBytes: { $ref: "#/components/messages/photoBytes" }
       ladderJob: { $ref: "#/components/messages/ladderJob" }
+      tagsJob: { $ref: "#/components/messages/tagsJob" }
       result: { $ref: "#/components/messages/result" }
       ping: { $ref: "#/components/messages/ping" }
       pong: { $ref: "#/components/messages/pong" }
@@ -116,6 +117,13 @@ operations:
     summary: Server sends a Plan ladder job (text only)
     messages:
       - $ref: "#/channels/hub/messages/ladderJob"
+  serverSendsTagsJob:
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    summary: "ICR-ML5: server sends a Fix the map photo for OSM tags (header, then the photo frame; 8 s)"
+    messages:
+      - $ref: "#/channels/hub/messages/tagsJob"
+      - $ref: "#/channels/hub/messages/photoBytes"
   hubSendsResult:
     security:
       - $ref: "#/components/securitySchemes/hubSecret"
@@ -218,6 +226,22 @@ components:
               rain_likely: { type: boolean }
               temp_f: { type: integer }
 
+    tagsJob:
+      name: job
+      title: Tags job header (ICR-ML5)
+      contentType: application/json
+      description: Like photoJob; the next binary frame is the photo. The hub uses prompt osm-tags v1 and enforceOsmTags().
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, kind, bytes, mime]
+        properties:
+          type: { const: job }
+          id: { type: string, format: uuid }
+          kind: { const: tags-draft }
+          bytes: { type: integer, minimum: 1, maximum: 2000000 }
+          mime: { const: image/jpeg }
+
     result:
       name: result
       contentType: application/json
@@ -248,6 +272,10 @@ components:
                 step: { type: integer, minimum: 1, maximum: 4 }
                 label: { type: string }
                 minutes: { type: integer }
+          tags:
+            description: tags-draft only (ICR-ML5). Allow-listed OSM keys and values; the server runs enforceOsmTags() again.
+            type: object
+            additionalProperties: { type: string }
           error:
             type: string
             enum: [model_unavailable, unusable_answer, timeout, bad_image]

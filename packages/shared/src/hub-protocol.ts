@@ -31,6 +31,10 @@ export const LadderJob = z.object({
   weather: z.object({ rain_likely: z.boolean(), temp_f: z.number().int() }).optional(),
 });
 
+/** ICR-ML5: Fix the map photo to OSM tags (asyncapi `tagsJob`). Header frame, then one JPEG
+ * frame, like a photo job; 8 s budget. The tags are a draft a person reviews one by one. */
+export const TagsJob = JobHeader.extend({ kind: z.literal("tags-draft") });
+
 export const HubLadderStep = z.object({
   step: z.number().int().min(1).max(4),
   label: z.string(),
@@ -43,6 +47,7 @@ export const JobResult = z.object({
   ok: z.boolean(),
   draft: z.object({ invite: z.string().min(1), alt: z.string().min(1) }).optional(),
   ladder: z.array(HubLadderStep).length(4).optional(), // ICR-BE-1
+  tags: z.record(z.string(), z.string()).optional(), // ICR-ML5, after enforceOsmTags
   error: z.enum(["model_unavailable", "unusable_answer", "timeout", "bad_image"]).optional(),
   ms: z.number().int().nonnegative(),
   model: z.string(),
@@ -55,11 +60,12 @@ export const FromHub = z.discriminatedUnion("type", [HelloFromHub, JobResult, Po
 export const ToHub = z.discriminatedUnion("type", [JobHeader, Ping]);
 /** ICR-BE-1: everything the server may send once the hub handles ladder jobs. A hub on
  * plain ToHub ignores ladder jobs, and the server falls back to the template after 8 s. */
-export const ToHubV11 = z.union([JobHeader, LadderJob, Ping]);
+export const ToHubV11 = z.union([JobHeader, LadderJob, TagsJob, Ping]);
 
 export type JobHeaderT = z.infer<typeof JobHeader>;
 export type JobResultT = z.infer<typeof JobResult>;
 export type FromHubT = z.infer<typeof FromHub>;
 export type ToHubT = z.infer<typeof ToHub>;
 export type LadderJobT = z.infer<typeof LadderJob>;
+export type TagsJobT = z.infer<typeof TagsJob>;
 export type ToHubV11T = z.infer<typeof ToHubV11>;

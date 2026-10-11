@@ -5,12 +5,15 @@ import {
   type DraftResponseT,
   enforce,
   enforceLadder,
+  enforceOsmTags,
   MAX_PHOTO_BYTES,
+  TagsDraftResponse,
+  type TagsDraftResponseT,
   TEMPLATE_INVITE,
   templateLadder,
 } from "@flare/shared";
 import { HUB_MODEL } from "@flare/shared/prompts/guard";
-import type { Hono } from "hono";
+import type { Context, Hono } from "hono";
 import type { Ctx } from "../core/deps.ts";
 import { bumpGlobal } from "../core/gatherings.ts";
 import { ApiError } from "../http/errors.ts";
@@ -20,6 +23,23 @@ import { clientIp } from "../http/write.ts";
 import { log } from "../log.ts";
 import { aiJob, cloudChat, guardSpan, hubChat } from "../tracing.ts";
 
+/** The photo routes' checks: JPEG only, 1.5 MB at most. The caller zero-fills the buffer. */
+async function readJpeg(c: Context): Promise<Buffer> {
+  if (c.req.header("content-type") !== "image/jpeg") throw new ApiError(415, "not_jpeg", "Send image/jpeg");
+  if (Number(c.req.header("content-length") ?? "0") > MAX_PHOTO_BYTES)
+    throw new ApiError(413, "too_large", "1.5 MB at most");
+  const buf = Buffer.from(await c.req.arrayBuffer());
+  if (buf.length === 0 || buf.length > MAX_PHOTO_BYTES) {
+    buf.fill(0);
+    throw new ApiError(413, "too_large", "1.5 MB at most");
+  }
+  if (buf[0] !== 0xff || buf[1] !== 0xd8 || buf[2] !== 0xff) {
+    buf.fill(0);
+    throw new ApiError(400, "not_jpeg", "Not a JPEG");
+  }
+  return buf;
+}
+
 export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
   const count = (name: string, tier: string) => {
     if (ctx.db) bumpGlobal(ctx.db, name, tier).catch(() => log.warn({ event: "counter.failed" }, "counter failed"));
@@ -27,14 +47,9 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
 
   app.post("/api/v1/drafts", async (c) => {
     limitWrite(rl, { anon: clientIp(c) });
-    if (c.req.header("content-type") !== "image/jpeg") throw new ApiError(415, "not_jpeg", "Send image/jpeg");
-    if (Number(c.req.header("content-length") ?? "0") > MAX_PHOTO_BYTES)
-      throw new ApiError(413, "too_large", "1.5 MB at most");
     const optIn = c.req.query("cloud") === "1"; // the host's per-Flare choice (ADR-0022)
-    const buf = Buffer.from(await c.req.arrayBuffer());
+    const buf = await readJpeg(c);
     try {
-      if (buf.length === 0 || buf.length > MAX_PHOTO_BYTES) throw new ApiError(413, "too_large", "1.5 MB at most");
-      if (buf[0] !== 0xff || buf[1] !== 0xd8 || buf[2] !== 0xff) throw new ApiError(400, "not_jpeg", "Not a JPEG");
       const out = await aiJob("photo", async (job) => {
         const t = performance.now();
         const present = ctx.relay.status === "connected";
@@ -113,5 +128,47 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
     });
     count("tier_ran.ladder", out.tier);
     return c.json(out);
+  });
+
+  // ICR-ML5: Fix the map. The hub drafts OSM tags; the guard runs again here; a person reviews
+  // every tag on the phone. No cloud tier: the photo is of a street feature, but ADR-0022 sends
+  // photos only on a per-Flare opt-in, and there is no Flare here. The photo is never stored.
+  app.post("/api/v1/drafts/tags", async (c) => {
+    limitWrite(rl, { anon: clientIp(c) });
+    const buf = await readJpeg(c);
+    try {
+      const out = await aiJob("tags", async (job) => {
+        const t = performance.now();
+        const present = ctx.relay.status === "connected";
+        const r = await hubChat(HUB_MODEL, async (chat) => {
+          const res = await ctx.relay.tags(buf, ctx.ladderTimeoutMs); // same 8 s budget as the ladder
+          chat.set({ "flare.ok": !!res?.ok, ...(res?.model ? { "gen_ai.response.model": res.model } : {}) });
+          if (res?.error) chat.set({ "flare.error": res.error });
+          return res;
+        });
+        const tags =
+          r?.ok && r.tags
+            ? guardSpan("enforce_osm_tags", (g) => {
+                const d = enforceOsmTags(JSON.stringify({ tags: r.tags }));
+                g.set({ "flare.valid": !!d, ...(d ? { "flare.dropped": d.dropped.length } : {}) });
+                return d?.tags ?? null;
+              })
+            : null;
+        const fallback = !present ? "hub_absent" : !r ? "timeout" : !r.ok ? "hub_error" : "invalid";
+        const res: TagsDraftResponseT = tags
+          ? { tags, tier: "hub", ms: Math.round(performance.now() - t) }
+          : { tags: {}, tier: "rules", ms: Math.round(performance.now() - t) };
+        job.set({
+          "flare.tier": res.tier,
+          "flare.ok": res.tier === "hub",
+          ...(tags ? {} : { "flare.fallback": fallback }),
+        });
+        return res;
+      });
+      count("tier_ran.tags", out.tier);
+      return c.json(TagsDraftResponse.parse(out));
+    } finally {
+      buf.fill(0);
+    }
   });
 }

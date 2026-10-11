@@ -23,6 +23,7 @@ export const ALLOWED = new Set([
   "flare.fallback", // why the template ran: "hub_absent" | "timeout" | "invalid" | "hub_error"
   "flare.valid", // enforce() result
   "flare.repaired", // count of repaired fields, a number
+  "flare.dropped", // count of OSM tags the guard dropped, a number (ICR-ML5)
   "sentry.op",
   "sentry.origin",
   "sentry.source",
@@ -104,7 +105,7 @@ export type SpanHandle = { set(attrs: Attrs): void };
 const noop: SpanHandle = { set() {} };
 
 /** An AI job as a Sentry `invoke_agent` span. Runs fn directly when tracing is off. */
-export function aiJob<T>(job: "photo" | "ladder", fn: (span: SpanHandle) => Promise<T>): Promise<T> {
+export function aiJob<T>(job: "photo" | "ladder" | "tags", fn: (span: SpanHandle) => Promise<T>): Promise<T> {
   if (!enabled) return fn(noop);
   return Sentry.startSpan(
     {

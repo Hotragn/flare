@@ -688,6 +688,26 @@ describe("draftLadder", () => {
   });
 });
 
+describe("draftOsmTags", () => {
+  it("200 empty rules draft with no hub (ICR-ML5), 400, 413, 415", async () => {
+    const jpeg = Buffer.alloc(100);
+    jpeg[0] = 0xff;
+    jpeg[1] = 0xd8;
+    jpeg[2] = 0xff;
+    const r = await h.call("POST", "/api/v1/drafts/tags", { raw: jpeg, type: "image/jpeg", key: null });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ tags: {}, tier: "rules" });
+    const bad = (raw: Buffer, type = "image/jpeg") => h.call("POST", "/api/v1/drafts/tags", { raw, type, key: null });
+    expect((await bad(Buffer.alloc(10))).status).toBe(400);
+    expect((await bad(Buffer.alloc(1_500_001))).status).toBe(413);
+    expect((await bad(jpeg, "image/png")).status).toBe(415);
+    const c = await h.db.query<{ value: string }>(
+      "select value::text from global_counters where name = 'tier_ran.tags' and bucket = 'rules'",
+    );
+    expect(Number(c.rows[0]?.value)).toBeGreaterThanOrEqual(1);
+  });
+});
+
 describe("coverage of the contract", () => {
   it("has a describe block for every BE operation in openapi.yaml", () => {
     const spec = YAML.parse(fs.readFileSync(OPENAPI, "utf8")) as {

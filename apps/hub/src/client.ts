@@ -1,9 +1,9 @@
 // Hub side of the relay (ADR-0006, contracts/asyncapi.yaml). Opens one outbound
-// WebSocket to the server, answers pings, runs one job at a time (photo or ladder), reconnects
+// WebSocket to the server, answers pings, runs one job at a time (photo, ladder or tags), reconnects
 // with exponential backoff. Imports no filesystem module: photos never touch disk.
 import { HUB_PROTOCOL, type JobResultT, type LadderJobT, ToHubV11 } from "@flare/shared";
 import WebSocket from "ws";
-import { draftFromPhoto, isModelReady, ladderFromAsk, type OllamaConfig } from "./ollama.ts";
+import { draftFromPhoto, isModelReady, ladderFromAsk, type OllamaConfig, tagsFromPhoto } from "./ollama.ts";
 
 export type HubOptions = {
   serverUrl: string;
@@ -12,8 +12,8 @@ export type HubOptions = {
   onLog?: (e: Record<string, unknown>) => void;
   /** Drop the socket if the server sends nothing (not even a ping) for this long. Default 15 s (3 missed pings). */
   silenceMs?: number;
-  /** Per-job budget, matching the server's wait (asyncapi: 6 s photo, 8 s ladder). */
-  budgetMs?: { photo?: number; ladder?: number };
+  /** Per-job budget, matching the server's wait (asyncapi: 6 s photo, 8 s ladder, 8 s tags). */
+  budgetMs?: { photo?: number; ladder?: number; tags?: number };
 };
 
 /** asyncapi `result` (shared JobResult, ICR-BE-1): draft for photo jobs, ladder for ladder jobs. */
@@ -37,7 +37,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     }
   }, 1000);
   watchdog.unref();
-  let waitingFor: { id: string; bytes: number } | null = null;
+  let waitingFor: { id: string; bytes: number; kind: "photo-draft" | "tags-draft" } | null = null;
   // One model call at a time: Ollama is shared on this Mac, and order keeps results simple.
   let queue: Promise<void> = Promise.resolve();
   const enqueue = (fn: () => Promise<void>) => {
@@ -57,24 +57,37 @@ export function startHub(opts: HubOptions): { stop: () => void } {
   // The server stops waiting after 6 s (photo) or 8 s (ladder) and answers with the template
   // (BR-AI-1). Past that, the hub's answer is useless and only delays the next job behind it,
   // so each job gets the rest of its budget, counted from when it arrived, and is dropped at 0.
-  const budget = { photo: opts.budgetMs?.photo ?? 6000, ladder: opts.budgetMs?.ladder ?? 8000 };
+  const budget = {
+    photo: opts.budgetMs?.photo ?? 6000,
+    ladder: opts.budgetMs?.ladder ?? 8000,
+    tags: opts.budgetMs?.tags ?? 8000,
+  };
   // Whole milliseconds: AbortSignal.timeout() rejects fractions.
-  const remaining = (arrived: number, kind: "photo" | "ladder") =>
+  const remaining = (arrived: number, kind: "photo" | "ladder" | "tags") =>
     Math.floor(budget[kind] - (performance.now() - arrived));
   const isTimeout = (e: unknown) => ["TimeoutError", "AbortError"].includes((e as { name?: string }).name ?? "");
 
-  const runPhoto = async (job: { id: string; bytes: number }, photo: Buffer, arrived: number) => {
+  // Photo jobs (invite words, or OSM tags for Fix the map): same frames, different prompt.
+  const runPhoto = async (job: NonNullable<typeof waitingFor>, photo: Buffer, arrived: number) => {
     const t = performance.now();
+    const tags = job.kind === "tags-draft";
     let result: HubResult;
     try {
       if (photo.length !== job.bytes || photo[0] !== 0xff || photo[1] !== 0xd8)
         throw Object.assign(new Error("bad image"), { code: "bad_image" });
-      const left = remaining(arrived, "photo");
+      const left = remaining(arrived, tags ? "tags" : "photo");
       if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
-      const d = await draftFromPhoto(opts.ollama, photo, AbortSignal.timeout(left));
-      result = d
-        ? { ...base(job.id, t), ok: true, draft: { invite: d.invite, alt: d.alt } }
-        : { ...base(job.id, t), ok: false, error: "unusable_answer" };
+      if (tags) {
+        const d = await tagsFromPhoto(opts.ollama, photo, AbortSignal.timeout(left));
+        result = d
+          ? { ...base(job.id, t), ok: true, tags: d }
+          : { ...base(job.id, t), ok: false, error: "unusable_answer" };
+      } else {
+        const d = await draftFromPhoto(opts.ollama, photo, AbortSignal.timeout(left));
+        result = d
+          ? { ...base(job.id, t), ok: true, draft: { invite: d.invite, alt: d.alt } }
+          : { ...base(job.id, t), ok: false, error: "unusable_answer" };
+      }
     } catch (e) {
       const code =
         (e as { code?: string }).code === "bad_image" ? "bad_image" : isTimeout(e) ? "timeout" : "model_unavailable";
@@ -82,7 +95,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     } finally {
       photo.fill(0); // clear the photo bytes as soon as the job ends
     }
-    send(result, "photo-draft");
+    send(result, job.kind);
   };
 
   const runLadder = async (job: LadderJobT, arrived: number) => {
@@ -122,7 +135,7 @@ export function startHub(opts: HubOptions): { stop: () => void } {
         } catch {
           return;
         }
-        const m = ToHubV11.safeParse(raw); // ICR-BE-1: photo jobs, ladder jobs, pings
+        const m = ToHubV11.safeParse(raw); // ICR-BE-1, ICR-ML5: photo, ladder and tags jobs, pings
         if (!m.success) {
           // A ladder job we can't read still gets an answer, so the server needn't wait 8 s.
           if (raw?.kind === "ladder-draft" && typeof raw.id === "string")
@@ -131,7 +144,8 @@ export function startHub(opts: HubOptions): { stop: () => void } {
         }
         const msg = m.data;
         if (msg.type === "ping") ws?.send(JSON.stringify({ type: "pong", t: msg.t }));
-        else if (msg.kind === "photo-draft") waitingFor = { id: msg.id, bytes: msg.bytes };
+        else if (msg.kind === "photo-draft" || msg.kind === "tags-draft")
+          waitingFor = { id: msg.id, bytes: msg.bytes, kind: msg.kind };
         else {
           const arrived = performance.now();
           enqueue(() => runLadder(msg, arrived));
