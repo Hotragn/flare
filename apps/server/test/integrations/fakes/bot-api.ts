@@ -25,7 +25,8 @@ export async function startFakeBotApi() {
     else if (type.startsWith("multipart/form-data")) {
       const form = await new Response(raw, { headers: { "content-type": type } }).formData();
       for (const [k, v] of form.entries()) {
-        if (typeof v === "string") params[k] = k === "reply_markup" ? JSON.parse(v) : v;
+        // multipart turns \n into \r\n on the wire (WHATWG form data); Telegram shows both as a line break.
+        if (typeof v === "string") params[k] = k === "reply_markup" ? JSON.parse(v) : v.replace(/\r\n/g, "\n");
         else photoBytes = v.size;
       }
       if (params.chat_id !== undefined) params.chat_id = Number(params.chat_id);
