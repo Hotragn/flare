@@ -4,132 +4,178 @@ published: false
 tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
-<!-- DRAFT. Every [FIELD: …] spot is filled from the Sunday field test tonight. Every number
-     without a FIELD marker is measured and linked to its proof in the repo. Remove this
-     comment before publishing. -->
+<!-- DRAFT for the founder's review. [FIELD: ...] marks what only the founder can fill:
+     a quote, the video, image uploads, Entire links, a Sentry screenshot, the repo going public.
+     [PENDING DO BILLING] marks the DigitalOcean claim, held until billing is fixed.
+     Every number here is measured; the proof is named next to it. Remove this comment
+     before publishing. -->
 
-*This is a submission for the [Hacktoberfest Open-Source AI Challenge Week 1: Touch Grass](https://dev.to/challenges/hacktoberfest-week1-2026-10-05).*
+*This is a submission for the [Hacktoberfest Open-Source AI Challenge Week 1: Touch Grass](https://dev.to/challenges/hf26).*
 
 ## What I Built
 
-[FIELD: one or two sentences in a tester's own words about the problem, quoted with their OK. Example shape: "We all say 'we should hang out' in the chat, and then nobody goes."]
+[FIELD: one or two sentences in the founder's own words about the problem. Shape: "My friends and I say 'we should go for a walk' in the group chat every week, and then nobody goes."]
 
-Flare is a web app for a small group of friends, 2 to 12 people. The host takes a photo of where they are. An open model on our laptop looks at it and writes a six-word invite, like "Bench by the pond, sun out." Friends get a link and say yes **in private**, with conditions if they want: "after 2", "only if Amor comes", "back by 5", "10 minutes' walk at most". Nobody sees who said yes, only the count.
+Flare is a free web app for a small group of friends. You take a photo of where you are. Gemma 4, an open model running on our own laptop, looks at it and writes a short invite ("Meet by the quiet water's edge"). Your friends get a link and tap **I'm in**, in private. Everyone sees the count, never who.
 
-It lights only when enough people can actually come. If not enough can, it shrinks to a smaller plan instead of failing (a bench closer by, a shorter walk). When it lights, everyone gets the spot and a compass that points to it. Then the screen gets out of the way.
+It goes ahead only if enough people can actually come. If not enough say yes within 30 minutes, it doesn't fail: it shrinks to a smaller plan, such as 15 minutes at a bench nearby. When it lights, everyone gets the spot and a compass that talks them there. Afterwards it says how long you were outside together, and then it deletes itself.
 
-A few more things it does:
-
-- **Works with Telegram or plain links.** In a Telegram group the bot posts a Flare card and counts taps; in iMessage, WhatsApp or SMS it's just a link. There's a plain-text form for friends with no data.
-- **Sparks and Hot spots.** After a meetup, people leave a one-line memory. The next invite from the same spot says "Your group met here once." and shows it.
-- **Bench to Bench.** A walking loop that never goes too far between seats, read back first ("40 min, a bench every 200 m, under trees") and printed as a large-print card.
-- **Fix the map.** When a bench or fountain is missing from OpenStreetMap, the model drafts the tags from a photo, a person checks every one, and the app exports a note. It never posts to OSM itself.
-- **It forgets.** Every Flare, its photo and every yes are deleted within 5 minutes of ending. Worst case measured: 90 s ([spike E2](https://github.com/Hotragn/flare/blob/main/docs/engineering/03-spikes.md)).
-
-Who it's for: friends who mean to meet up and don't, including a friend with low vision (VoiceOver, large text), a friend who can't walk far (seat-to-seat routes, step-free checks), and a friend with a weak signal (it queues and sends later).
+It's for friends who mean to meet up and don't. That includes the friend with low vision (the compass talks, buzzes and has a warm recorded voice, and you can *say* a Flare instead of photographing one), the friend who can't walk far (benches, step-free checks, loops from bench to bench), and the friend with a weak signal (it queues and sends later).
 
 ## Demo
 
-- Live app: [FIELD: Render URL after deploy, e.g. https://flare-outside.onrender.com/app/]
-- Website: [FIELD: Render URL]/ (Lighthouse 100 on all four categories, mobile and desktop, median of 3 runs: [reports](https://github.com/Hotragn/flare/tree/main/docs/website/lighthouse))
-- Video: [FIELD: 60 to 90 s screen recording from docs/post/media/, uploaded]
+- **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). Three demo friends run on a demo clock, and nothing is sent. You send a Flare, become your friend Amor for one tap, skip 30 minutes to watch it shrink, then follow the compass. The demo runs the real rules engine in your browser.
+- **The live app:** [flare-outside.onrender.com/app/](https://flare-outside.onrender.com/app/). The site is [flare-outside.onrender.com](https://flare-outside.onrender.com/) and scores Lighthouse 100 in all four categories, mobile and desktop, on all five pages.
+- **Video:** [FIELD: 60 to 90 s screen recording, docs/post/shot-list.md]
 
-[FIELD: screenshots from docs/post/media/: send, lit, compass, Ember, Spark, Telegram card]
+[FIELD: upload these from docs/post/media/ and replace the paths]
 
-### The field test
+![The photo, with the invite Gemma 4 wrote from it](docs/post/media/01-host-words.jpg)
+![The friend's invite: the count, never names](docs/post/media/02-friend-invite.jpg)
+![It's lit](docs/post/media/03-friend-lit.jpg)
+![Too few in 30 minutes: it shrinks to a smaller plan](docs/post/media/06-friend-ember.jpg)
+![A Voice Flare: Gemma 4 heard "I'm at the pond in Ford Woods Park, come sit on the bench with me"](docs/post/media/08-voice-flare-send.png)
+![The Crew Atlas, drawn on the phone](docs/post/media/09-crew-atlas.png)
 
-We tested it for real on Sunday, October 11, near Fairlane Town Center in Dearborn, Michigan, with four iPhones [FIELD: number of people, and who used Telegram vs links].
+### How I tested it
 
-| Run | What happened | Measured |
+I haven't run a group meetup with it yet, so I won't claim one. [FIELD: replace this line if a real outing happens before posting.] Here is what was tested:
+
+| What | How | Result |
 | --- | --- | --- |
-| [FIELD] | [FIELD] | [FIELD: send to lit time, walk time, compass error] |
-
-[FIELD: the best moment, in plain words. The worst moment, in plain words.]
+| The whole loop on the real stack | Chrome at iPhone size against the real server, the real Gemma 4 hub on this Mac, the engine and Postgres | 10 end-to-end suites pass, including the field run (27/27), Plans, Voice Flares, Sparks, Telegram and offline |
+| Two real iPhones | A device-check page on an iPhone 16 Pro Max and an iPhone 13, for the compass, haptics and sound | Found 3 bugs, all fixed (below) |
+| A simulated Saturday | 48 made-up friends in 4 groups play Flares and Plans against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif), labelled Simulation) | 11 of 12 lit (91.7%); median time to Lit 14.75 min for Flares; 1 of 2 Embers saved a plan; all 12 gatherings deleted afterwards, and the deletion audit passes |
+| Strangers | 4 rounds of a "fresh eyes" tester with no context using the live site | Scores 5, 6, 5, [FIELD: round 4]/10. Every round's issues were fixed and redeployed |
+| Accessibility | axe on 22 pages × 2 widths × light and dark | 0 findings, and every target at least 44 px |
 
 ## Code
 
 {% github Hotragn/flare %}
 
-AGPL-3.0. The README has a 3-step quick start (server, hub, phone), and [docs/README.md](https://github.com/Hotragn/flare/blob/main/docs/README.md) indexes the rest.
+[FIELD: the repo is private until the founder makes it public.] AGPL-3.0. The README has a 3-step quick start (server, hub, phone), and `docs/README.md` indexes the rest: 30 architecture decision records, the requirements and the evals.
 
 ## How I Built It
 
-### The model: Gemma 4 E4B on a laptop, not in the cloud
+### One open model with three senses: Gemma 4 E4B on a laptop
 
-The photo goes to a Mac running **Gemma 4 E4B** (`gemma4:e4b-it-q4_K_M`, 7.5B parameters, 6.58 GB) on **Ollama**. The Mac dials out to our server over a WebSocket, so nothing on it is exposed to the internet. The photo is held in memory and zero-filled after the call; it's never written to disk on either end.
+The phone sends the photo to a Mac running **Gemma 4 E4B** (`gemma4:e4b-it-q4_K_M`) on **Ollama**. The Mac dials out to the server over a WebSocket, so nothing on it is open to the internet. The photo stays in memory and is zero-filled after the call.
 
-Why that model: I measured the options before picking one ([model selection](https://github.com/Hotragn/flare/blob/main/docs/ml/model-selection.md)):
+Gemma 4 does three jobs in Flare:
+
+| Sense | Job | Measured |
+| --- | --- | --- |
+| Vision | Photo → a short invite and a one-line scene for friends who can't see the photo | 20/20 valid JSON, 39/40 scenes right, 3.0 s median |
+| Audio | **Voice Flare:** you say where you are and what you want to do, and the invite is written from that | "Meet at the pond bench" in 3.3 to 3.7 s, from audio alone |
+| Text | Plan "ladders": a big plan and three smaller versions | 13/13 valid, p95 5.5 s; Fix the map tags, 0 off the allow-list |
+
+The audio part surprised me. Ollama 0.40.2 reports `audio` as a capability for this model, and it hears WAV passed in the same `images` field a photo uses. A field named `audio` is ignored. The phone records up to 10 s and converts it to 16 kHz mono WAV, and the hub writes the same `{invite, alt}` a photo would get. The voice never leaves our laptop and is never stored. The words it heard aren't sent back, only the invite.
+
+I picked the model by measuring the options on the same test set:
 
 | Model | Where | Result | Shipped? |
 | --- | --- | --- | --- |
-| Gemma 4 E4B, Q4_K_M | Ollama on the Mac | 20/20 valid JSON, 39/40 scenes right, 3.0 s median | Yes |
-| Gemma 4 E2B, ONNX q4f16 | Chrome, WebGPU | 20/20 JSON, 2.3 s, but scenes 29/40, and it invents water and sunsets | No: needs a 1.17 GB GPU buffer; iPhone Safari caps buffers at 1 GiB |
-| SmolVLM-500M | Chrome and Safari | Scenes 16/40, 6/20 misleading | No |
-| Qwen3-0.6B (for conditions) | Safari | 26/40 | No: rules got 40/40 in under 1 ms, and the model hung Safari |
+| Gemma 4 E4B, Q4_K_M | Ollama on the Mac | 20/20 JSON, 39/40 scenes, 3.0 s | Yes |
+| Gemma 4 E2B, ONNX q4f16 | Chrome, WebGPU | 2.3 s, but 29/40 scenes; it invents water and sunsets | No: it needs a 1.17 GB GPU buffer, and iPhone Safari caps buffers at 1 GiB |
+| SmolVLM-500M | Chrome and Safari | 16/40 scenes, 6/20 misleading | No |
+| Qwen3-0.6B (for conditions) | Safari | 26/40 | No: the rules got 40/40 in under 1 ms, and the model hung Safari |
 
-**The model picks the words; code owns the facts.** Every answer goes through `enforce()` before anyone sees it: six words or fewer, no names of people, no invented places. If the model is slow (over 6 s for a photo) or its answer fails the check, the app shows typed words instead. Nobody waits on the AI.
+**The model picks the words; code owns the facts.** Every answer goes through `enforce()` before anyone sees it: six words or fewer, no names, no invented places. If the model is slow or the answer fails the check, the app shows typed words instead. Nobody waits on the AI.
 
-The same model drafts Plan "ladders" (a big plan and three smaller versions, 12/12 valid, p95 6.5 s) and Fix the map tags (11 photos in the eval; 0 tags off the allow-list after the guard).
+### When the laptop is off: Gemma 4 in the cloud
 
-### What doesn't use a model, on purpose
+Our laptop isn't always on, so the server has a cloud tier: Gemma 4 26B A4B on **Google AI Studio**. Plan drafts use it when the hub is away. A photo goes there only if the host taps "Ask cloud Gemma" for that one Flare, and the note under the button says Google's free tier may review it.
 
-Conditions ("after 2, only with Amor") are parsed on the phone by rules: 40/40 on the core test set, 15/20 on the hard set, under 1 ms, and the words never leave the phone. The only thing sent to the server is the rule, like `{"type": "after", "at": "…T18:00:00Z"}`, never the words. Bench to Bench requests are parsed the same way (16/16 plain requests).
+One finding saved this tier. Gemma 4 on that API thinks before it answers by default. A Plan draft took 21.7 s and spent all 1,021 thought tokens without answering. With `thinkingLevel: "minimal"` it answers in 1.4 s, and a photo in 1.6 s.
+
+**DigitalOcean** Serverless Inference is wired in as the first cloud provider, with Gemma 4 31B: a Plan draft took 20.9 s and a photo 27.2 s in the probe. A provider that refuses (401/402/403) is skipped for an hour. [PENDING DO BILLING: our account is blocked for billing, so Google answers today; the fallback is tested.]
+
+### An agent that never lets a plan die: Mastra
+
+The Plan ladder can be drafted by a **Mastra** agent with four local tools: sunset time, a weather window for the plan's hours, nearby places from the map pack, and step templates. Measured on 13 asks against the current route: p95 5.1 s vs 5.5 s, and the weather tool matched the plan's window 7/7. The agent adds a median of 12 ms. It ships behind a switch (`LADDER_AGENT=1`), and whatever the agent says still goes through the same guard.
+
+### A measured failure, and what fine-tuning taught the rules: Tinker
+
+Conditions like "after 2, only if Amor comes, back by 5" are parsed **on the phone by rules**, so the words never leave it. The rules missed new phrasings: 15/40 on a fresh hard set. I fine-tuned a Qwen3.5-4B LoRA on **Tinker** (3,000 synthetic examples, rank 32, about $2.40). It read 38/40.
+
+I couldn't ship it. It runs on Tinker's servers, and conditions must stay on the phone. So I used its errors to teach the rules new phrasing families. On a blind set written *before* the rules changed, the rules went from 20/40 to 30/40, still under 1 ms with no network. The LoRA's 38/40 shows the gap that's left.
+
+### A warm voice that sends nothing: ElevenLabs
+
+The compass talks: "150 meters, slightly left." The phone's own voice can sound flat, so the compass can use a warm voice instead.
+
+A live voice would have had to send the spot's name to a cloud service. So I recorded 54 fixed lines once with **ElevenLabs** (distances, directions, "You're close. Look around."). That cost 698 characters of the free 10,000, and the clips ship with the app as 684 KB of MP3. No names and no places are in them, they work offline, and the phone's own voice is the fallback. Scribe read the clips back word for word in 420 to 492 ms.
+
+**Voice Spark:** after a meetup you can *say* your one-line memory instead of typing it. Up to 10 s of your own voice goes once to ElevenLabs Scribe, the words come back for you to edit, and no audio is kept (live: 0.72 s). Flare never records anyone else or a conversation.
+
+### Debugging without seeing anyone's words: Sentry
+
+**Sentry Agent Tracing** covers the AI path on the server:
+- every job (`invoke_agent flare-photo`, `flare-voice`, `flare-ladder`);
+- every model call (`chat gemma4:e4b`, with the provider that actually answered: hub, Google or DigitalOcean);
+- every guard and agent tool (`execute_tool enforce`, `nearby_places`, `weather_window`).
+
+The same tracing also covers sampled route performance and server errors.
+
+The design rule is an allow-list. Only tier, model, timing, ok and error class leave the server. Route names are tokens like `PUT:gatherings`, never paths, and error messages are dropped. A test runs the real routes with marker phrases and UUIDs in the inputs, captures every envelope, and fails if any of them shows up.
+
+[FIELD: one trace screenshot from the live project, showing a Plan draft where the hub was away and `gen_ai.provider.name` says google, with its latency.]
 
 ### Privacy, built in
 
-- The group key lives in the link's `#fragment`, which browsers never send to servers. Names, places, photos and Sparks are sealed on the phone (AES-256-GCM) before upload. The server sees counts and opaque labels like `c3` or `step:2`.
-- Telegram groups are the one disclosed exception: the bot needs readable text to post. By default it posts a Flare card, not the photo. A group can turn on real photos, and the setting says plainly that Telegram keeps a copy until the post is deleted.
+- **The group key lives in the link's `#fragment`,** which browsers never send to servers. Names, places, photos and Sparks are sealed on the phone (AES-256-GCM). The server sees counts and labels like `c3`.
+- **The Crew Atlas is drawn on the phone.** It's a map of where your crew meets, made from the sealed Hot spots and the map pack already on the phone. No map tiles and no requests. I didn't let Gemma write a caption for it, because that would mean sending the decrypted places to our laptop.
+- **Within 5 minutes of the end, the Flare, its photo and every yes are deleted.** The worst case measured was 90 s.
 
-### Stack
+### Stack and process
 
-SvelteKit 5 (installable PWA, works offline), Hono on Node 24, Postgres, an outbound WebSocket relay to the Mac, Web Push, a Telegram bot, OpenStreetMap packs for places and loops. [FIELD: Render web service and Render Postgres, if deployed there.]
+- **Stack:** SvelteKit (an installable PWA that works offline), Hono on Node 24, Postgres on Render, the WebSocket relay to the Mac, Web Push, a Telegram bot, and OpenStreetMap packs. The JS budget is 150 KB gzipped per page, and the app is at 146.
+- **Process:** I ran it like a small software company, one role at a time: research, product, requirements, design, architecture, then specialists building against frozen interfaces, then QA. Each role left a handoff in the repo. There are 769 unit and contract tests and 10 end-to-end suites.
 
-### How it was built
-
-I ran it like a small software company, one role at a time: research, product, requirements, brand, design, architecture, engineering lead, then nine specialists building in parallel against frozen interfaces, then integration and QA. Every role left a handoff in the repo. The test suite is over 650 tests plus 7 end-to-end suites on the real server and engine.
-
-**Disclosure:** I built this with Claude Code. A separate "manager" Claude session, acting as the CTO for me, sent many of the prompts in the build sessions: it relayed my decisions and set the order of work. Product and privacy decisions were mine; the manager session asked before anything public.
+**Disclosure:** I built this with Claude Code. A separate "manager" Claude session, acting as CTO for me, sent many of the prompts: it relayed my decisions and set the order of work. Product and privacy decisions were mine, and anything public waited for my yes.
 
 ## What I got wrong
 
-- **The Telegram path didn't exist in the app until the morning of the test.** The server side was built and tested, but no screen on the phone connected a group to Telegram. I found it while building the Telegram card, about four hours before the field test, and built the missing screen with a real-server test.
-- **Sparks never reached Hot spots.** Three bugs together: the Hot spots record was never written, "met here" was always empty, and the record fired three times. The field-path coverage check caught all three (BUG-058 to 060).
-- **"Short one only" asked for the long one.** The button sent `min_step` instead of `max_step` (BUG-057).
-- **A dead Wi-Fi link looked alive forever.** A half-open socket kept the hub "connected" and every photo waited out the full 6 s. Fixed with a heartbeat; measured recovery on a real half-open link: 16.1 s (BUG-030, BUG-031).
-- **The website scored 61 on mobile.** WebGL flames ran in software. CSS flames got it to the high 90s; deferring hydration until after the first paint and a 10 KB grain texture got it to 100.
-- **Bench to Bench finds no loop at our own test spot.** The benches at Ford Woods are mapped too close together. The app says "No loop keeps benches that close. Try 400 m?" instead of inventing one. [FIELD: did we fix the map there?]
-- **The tag drafter makes things up on empty photos.** On 4 of 6 photos with nothing to tag (a playground, a skate park), it drafted a shelter. The app throws away the model's guess of what the thing is, and a person still checks every tag.
-- [FIELD: anything that broke on the iPhones]
+- **The website's styles leaked into the app.** On a phone, your photo on the Send screen sat under a navy block, and the onboarding photo was squashed to 230 px. The cause: SvelteKit keeps the website's CSS after you tap from the website into the app, and its `.hero` and `.art` rules hit the app's own. A tester with no context found it. Every website rule is now scoped.
+- **The demo broke its own promise.** It said "Nobody sees who" and, right under that, "Amor said yes." It now says "One more yes. 2 in."
+- **A Plan with no saved first name did nothing.** You tapped Send and nothing happened. The new Plan end-to-end test found it; the screen now asks for the name.
+- **The compass said "close" 49 times** on a real iPhone 16 Pro Max walk. It now waits for a margin before it says "close" again, and only repeats when the distance halves.
+- **The compass froze on an exact 180° turn.** The smoothing averaged the two directions to nothing. It's fixed with shortest-arc smoothing and a replay test.
+- **The device check read 0 compass events a second on an iPhone 13.** A second Start tap had attached a second counter.
+- **Gemma's thinking ate the cloud budget** (21.7 s, no answer) until I turned it to minimal.
+- **Sparks never reached Hot spots.** Three bugs: the record was never written, "met here" was always empty, and it fired three times.
+- **"Short one only" asked for the long one.** A `min_step` should have been `max_step`.
 
 ## What I didn't do
 
-- **No model on the phone.** Gemma 4 E2B runs in Chrome on a Mac, but not inside iPhone Safari's memory limits. Measured, not shipped.
-- **No cloud model by default.** A DigitalOcean fallback exists for when the laptop is off, but photos go there only if the host opts in for that Flare.
-- **Not tested on Android.** All four test phones were iPhones.
-- **Not a native app.** It's a web app you add to the Home Screen.
-- **Fix the map is slow.** The slowest tag drafts take 13.8 s, over the 8 s budget, in the eval with full-size photos. Not fixed yet.
-- [FIELD: anything we cut on the day]
+- **No model on the phone.** Gemma 4 E2B runs in Chrome on a Mac, but not inside iPhone Safari's memory limit. Measured, not shipped.
+- **No golden-hour push, no weekly recap push.** Home shows "Golden hour in 47 min", and the crew page shows this week's time outside. A push would need the server to know where a crew is and what time zone it's in, and it never knows either.
+- **The invite isn't read in the warm voice.** That would send the sealed invite text off the phone.
+- **Not tested on Android,** and not a native app: it's a web app you add to the Home Screen.
 
 ## Why Does Open Innovation Matter?
 
-For this app, open weights are the whole design, not a preference.
+For this app, open weights are the design, not a preference.
 
-- **The photo never leaves our hands.** It's a picture of exactly where someone is standing, right now. With an open model on our own laptop, it goes there in memory and is gone after the call. With a closed API, it would be on someone else's servers under someone else's retention policy.
-- **It costs nothing per photo.** [FIELD: number of photos drafted during the test] drafts on the laptop cost $0. That matters for a free app with no business model.
-- **We could measure it, and we could pick the size.** I ran five open models side by side on the same 20 photos and chose by measured results. I could see exactly why the small one failed on an iPhone (a 1.17 GB buffer). With a closed model I'd get an answer and no way to look inside.
-- **Open data too.** Places, benches and walking paths come from OpenStreetMap. When the map is wrong, Fix the map gives back a reviewed note instead of just taking.
+- **A photo of where you're standing, or your voice saying it, is about as personal as data gets.** With an open model on our own laptop, it goes there in memory and is gone after the call. With a closed API, it would sit on someone else's servers under their retention rules. The one closed service in Flare, ElevenLabs Scribe, gets your voice only when you tap "Say it", and the privacy page says so.
+- **It costs nothing per photo.** A free app with no business model can't pay per call. The laptop costs $0 per draft, and the cloud fallback runs on a free tier with a daily cap.
+- **I could measure it and pick the size.** I ran five open models on the same photos and chose by results. I could see exactly why the small one failed on an iPhone (a 1.17 GB buffer). I could fine-tune one in 6 minutes for $2.40 to learn what the rules were missing.
+- **Open data too.** Benches, restrooms and paths come from OpenStreetMap. When the map is wrong, Fix the map drafts a reviewed note to give back.
 
-Where open beat closed for us: privacy of location photos, zero cost per use, and being able to check the work. Where it didn't: speed. A large hosted model would be faster than a laptop on a busy afternoon.
+Where open beat closed for us: privacy, cost, and being able to check the work. Where it didn't: speed on a busy laptop, which is why there's a cloud fallback.
 
 ## My Agent Session
 
-[FIELD: Entire session links for the key build sessions, scrubbed of emails before publishing (scripts/scan-sessions.ts --public found 100 to remove)]
+[FIELD: Entire checkpoint links for the key build sessions, made public after the scrub (scripts/scan-sessions.ts --public). Suggested: the Voice Flare session (Gemma hearing audio for the first time) and the round-3 fresh-eyes fix (finding the CSS leak).]
 
 ## Prize Categories
 
-- **Gemma:** Gemma 4 E4B runs locally on Ollama for photo invites, Plan ladders and map tags, chosen against Gemma 4 E2B and three other open models on the same test set, with code checking every answer ([eval results](https://github.com/Hotragn/flare/blob/main/docs/ml/eval-results.md)).
-- **Entire:** [FIELD: one line, with the session links above]
-- **Sentry Agent Tracing:** [FIELD: one line plus a trace screenshot from the deployed server: hub vs fallback tiers, latency]
-- [FIELD: Render, only if the deploy runs there; the category asks for the model or agent to run on Render, and ours runs on the laptop, so likely leave it out]
+- **Gemma:** Gemma 4 E4B sees (photo to invite), hears (Voice Flare: 3.3 s from audio to invite on our laptop) and writes (Plan ladders), chosen against four other open models on one test set, with code checking every answer. Gemma 4 26B A4B is the cloud fallback.
+- **ElevenLabs:** 54 compass lines recorded once (698 characters) so the compass's warm voice sends nothing, and Scribe turns a person's own 10-second Spark into words with no audio kept.
+- **Sentry Agent Tracing:** every AI job, model call and guard traced, plus route performance and server errors, under an allow-list a test proves. [FIELD: trace screenshot]
+- **Mastra:** a Plan agent with four local tools: p95 5.1 s vs 5.5 s for the old route, and weather matched 7/7, behind a switch.
+- **Tinker:** a measured failure (15/40), a $2.40 LoRA that read 38/40, and the rules it taught: 20/40 to 30/40 on a blind set, on the phone.
+- **Entire:** [FIELD: one line with the session links above]
+- **DigitalOcean:** [PENDING DO BILLING]
 
-[FIELD: team handles if any; thanks to the testers, with their OK]
+[FIELD: thanks, with permission, to anyone who tried it]
