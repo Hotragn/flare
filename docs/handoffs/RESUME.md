@@ -179,3 +179,8 @@ Open items: ladder label keys duplicated (ladder.tmpl.*, ladder.template.step*, 
 - BUG-065 fixed (small, tested): Ember's access line follows the Ember bench. The screenshot case was correct (Ember at the spot, named West Road). e2e:field 27/27, flow.ts real 5/5 on the final build. Media recaptured.
 - Video: the founder records on the iPhone during the field test, per docs/post/shot-list.md (8 shots, about 10 s each, portrait).
 - STOPPED again: holding the window for the device check, rc-1 and the deploy.
+
+## DEPLOYED Sun ~11:55 ET: https://flare-outside.onrender.com (Render free; main 340970d)
+- smoke x2: all required checks pass (health, db ok, hub connected, push, telegram, cloud tier, pages with CSP, HSTS, traversal refused, safe previews, deletion audit). Photo draft fell to rules both runs at 6.0 s: the hub's model call itself hit 6 s (Ollama shared with subagent evals); recheck when S2 is done.
+- Hub running on this Mac against the live server (keeps it awake). setWebhook done: webhook https://flare-outside.onrender.com/api/v1/telegram/webhook, 0 pending, no error. Live tap still needs a human in "Flare test".
+- scripts/telegram-lib.ts: process env now overrides .env (so PUBLIC_BASE_URL=https://... works for setWebhook).
