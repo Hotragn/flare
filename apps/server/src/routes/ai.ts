@@ -40,6 +40,13 @@ async function readJpeg(c: Context): Promise<Buffer> {
   return buf;
 }
 
+/** Loaded on the first agent request only, so LADDER_AGENT off costs nothing at boot. */
+let agentModule: Promise<typeof import("../agent/ladder-agent.ts")> | null = null;
+const loadAgent = () => {
+  agentModule ??= import("../agent/ladder-agent.ts");
+  return agentModule;
+};
+
 export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
   const count = (name: string, tier: string) => {
     if (ctx.db) bumpGlobal(ctx.db, name, tier).catch(() => log.warn({ event: "counter.failed" }, "counter failed"));
@@ -98,6 +105,25 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
     const b = await body(c, LadderRequest);
     const out = await aiJob("ladder", async (job) => {
       const t = performance.now();
+      if (ctx.ladderAgent) {
+        // ADR-0025: the Mastra agent, same contract and guard; any failure shows the template.
+        const r = await loadAgent()
+          .then((m) =>
+            m.runLadderAgent(
+              { relay: ctx.relay, cloud: ctx.cloud, budgetMs: ctx.ladderTimeoutMs, now: () => ctx.clock.now() },
+              b,
+              job,
+            ),
+          )
+          .catch(() => null);
+        const tier = r?.steps && r.tier ? r.tier : "rules";
+        job.set({
+          "flare.tier": tier,
+          "flare.ok": tier !== "rules",
+          ...(tier === "rules" ? { "flare.fallback": r?.fallback ?? "invalid" } : {}),
+        });
+        return { steps: r?.steps ?? templateLadder(b.total_minutes), tier, ms: Math.round(performance.now() - t) };
+      }
       const present = ctx.relay.status === "connected";
       const r = await hubChat(HUB_MODEL, async (chat) => {
         const res = await ctx.relay.ladder(b, ctx.ladderTimeoutMs);

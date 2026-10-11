@@ -24,6 +24,8 @@ export const ALLOWED = new Set([
   "flare.valid", // enforce() result
   "flare.repaired", // count of repaired fields, a number
   "flare.dropped", // count of OSM tags the guard dropped, a number (ICR-ML5)
+  "flare.agent", // true when the Mastra Plan agent drafted the ladder (ADR-0025)
+  "flare.weather", // where the ladder's weather came from: "phone" | "tool" | "none"
   "sentry.op",
   "sentry.origin",
   "sentry.source",

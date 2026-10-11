@@ -54,6 +54,8 @@ export type Deps = {
   effects?: EffectSink;
   /** Ladder hub budget, ms (ADR-0007: 8 s). */
   ladderTimeoutMs?: number;
+  /** LADDER_AGENT=1: draft Plan ladders with the Mastra agent (ADR-0025). Default off. */
+  ladderAgent?: boolean;
   /** DigitalOcean cloud tier (ADR-0022); null when no scoped key is configured. */
   cloud?: CloudTier | null;
 };
@@ -68,5 +70,6 @@ export type Ctx = {
   config: Config;
   effects: EffectSink;
   ladderTimeoutMs: number;
+  ladderAgent: boolean;
   cloud: CloudTier | null;
 };
