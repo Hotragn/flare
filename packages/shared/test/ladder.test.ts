@@ -96,7 +96,7 @@ describe("enforceLadder (SRS-PLAN-2, SRS-AI-2)", () => {
   });
   it("replaces a repeated label with the template label", () => {
     const d = enforceLadder('{"labels":["Walk","Loop","Sit","walk"],"minutes":[60,30,15,10]}', input);
-    expect(d?.ladder[3]?.label).toBe("Just say hi");
+    expect(d?.ladder[3]?.label).toBe("A quick hello");
   });
   it("names in the ask are not invented", () => {
     expect(inventsNames("Walk to Fairlane", "Fairlane walk at 11?")).toBe(false);

@@ -1,0 +1,321 @@
+{
+  "task": "ladder",
+  "tier": "rules",
+  "date": "2026-10-11T01:13:09.087Z",
+  "n": 12,
+  "prompt": "ladder-draft@2",
+  "model": "none (template)",
+  "bars": [
+    {
+      "name": "Valid ladder (BR-P-4)",
+      "target": "12/12",
+      "value": "12/12",
+      "pass": true
+    }
+  ],
+  "notes": [
+    "Template minutes: total × 1, 0.5, 0.25, 0.125 rounded to 5; labels from copy keys ladder.template.*."
+  ],
+  "items": [
+    {
+      "id": "L01",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 60
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 30
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 15
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "id": "L02",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 90
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 45
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 25
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "id": "L03",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 120
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 60
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 30
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 15
+        }
+      ]
+    },
+    {
+      "id": "L04",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 45
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 25
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 10
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "id": "L05",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 60
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 30
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 15
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "id": "L06",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 150
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 75
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 40
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 20
+        }
+      ]
+    },
+    {
+      "id": "L07",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 40
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 20
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 10
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "id": "L08",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 240
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 120
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 60
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 30
+        }
+      ]
+    },
+    {
+      "id": "L09",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 75
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 40
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 20
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "id": "L10",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 50
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 25
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 15
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "id": "L11",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 60
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 30
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 15
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "id": "L12",
+      "ladder": [
+        {
+          "step": 1,
+          "label": "The full plan",
+          "minutes": 60
+        },
+        {
+          "step": 2,
+          "label": "A shorter loop",
+          "minutes": 30
+        },
+        {
+          "step": 3,
+          "label": "A quick lap",
+          "minutes": 15
+        },
+        {
+          "step": 4,
+          "label": "A quick hello",
+          "minutes": 10
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import { clipWords, countWords, extractJson, hasPersonWords, type PromptSpec } f
 export const LADDER_PROMPT_VERSION = 2;
 
 /** Fixed labels for the template tier. Same text as copy keys ladder.template.step1 to step4. */
-export const TEMPLATE_LABELS = ["The full plan", "A shorter loop", "A quick lap", "Just say hi"] as const;
+export const TEMPLATE_LABELS = ["The full plan", "A shorter loop", "A quick lap", "A quick hello"] as const;
 
 export const LADDER_SYSTEM = [
   "You plan short outings for Flare, an app that gets close friends outside.",
@@ -132,7 +132,7 @@ export function enforceLadder(text: string, input: LadderInputT): LadderDraft | 
   let templateSteps = 0;
   const seen = new Set<string>();
   const labels = items.map((it, i) => {
-    const fallback = TEMPLATE_LABELS[i] ?? "Just say hi";
+    const fallback = TEMPLATE_LABELS[i] ?? "A quick hello";
     if (typeof it?.label !== "string") {
       templateSteps++;
       repaired.push(`step${i + 1}:label template`);

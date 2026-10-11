@@ -1,0 +1,110 @@
+{
+  "task": "osm-tags",
+  "tier": "hub",
+  "date": "2026-10-11T01:10:45.530Z",
+  "n": 5,
+  "prompt": "osm-tags@1",
+  "model": "gemma4:e4b-it-q4_K_M",
+  "latency": {
+    "median_ms": 9025,
+    "p95_ms": 18696,
+    "max_ms": 18696
+  },
+  "bars": [
+    {
+      "name": "Parsed answers",
+      "target": "5/5",
+      "value": "5/5",
+      "pass": true
+    },
+    {
+      "name": "Off-list tags after the guard",
+      "target": "0",
+      "value": "0",
+      "pass": true
+    },
+    {
+      "name": "Required tags drafted",
+      "target": "≥ 4/5",
+      "value": "5/5",
+      "pass": true
+    },
+    {
+      "name": "Person words in the answer",
+      "target": "0",
+      "value": "0",
+      "pass": true
+    },
+    {
+      "name": "p95 latency",
+      "target": "≤ 8000 ms",
+      "value": "18696 ms",
+      "pass": false
+    }
+  ],
+  "notes": [
+    "Answers with at least one off-list or bad-value key before the guard: 0/5 (dropped, never shown).",
+    "Mac 1-min load average: 37.8 at start, 72.2 at end (10 cores; other agents share this Mac and its Ollama)."
+  ],
+  "items": [
+    {
+      "id": "04",
+      "ms": 18696,
+      "tags": {
+        "amenity": "bench",
+        "material": "stone"
+      },
+      "dropped": [],
+      "must": {
+        "amenity": "bench"
+      },
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"bench\", \"material\": \"stone\"}}"
+    },
+    {
+      "id": "10",
+      "ms": 18539,
+      "tags": {
+        "amenity": "fountain"
+      },
+      "dropped": [],
+      "must": {
+        "amenity": "drinking_water"
+      },
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"fountain\"}}"
+    },
+    {
+      "id": "18",
+      "ms": 9025,
+      "tags": {
+        "amenity": "shelter",
+        "covered": "yes"
+      },
+      "dropped": [],
+      "must": {
+        "amenity": "shelter"
+      },
+      "must_ok": true,
+      "raw": "{\"tags\": {\"amenity\": \"shelter\", \"covered\": \"yes\"}}"
+    },
+    {
+      "id": "05",
+      "ms": 7862,
+      "tags": {},
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {}}"
+    },
+    {
+      "id": "07",
+      "ms": 8713,
+      "tags": {},
+      "dropped": [],
+      "must": {},
+      "must_ok": true,
+      "raw": "{\"tags\": {}}"
+    }
+  ]
+}

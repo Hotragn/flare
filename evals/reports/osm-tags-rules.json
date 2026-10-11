@@ -1,0 +1,20 @@
+{
+  "task": "osm-tags",
+  "tier": "rules",
+  "date": "2026-10-11T01:13:09.416Z",
+  "n": 5,
+  "prompt": "osm-tags@1",
+  "model": "none (manual tag picker)",
+  "bars": [
+    {
+      "name": "Picker offers only allow-list keys",
+      "target": "yes",
+      "value": "yes",
+      "pass": true
+    }
+  ],
+  "notes": [
+    "The floor is the manual picker built from OSM_ALLOW; it cannot produce an off-list key."
+  ],
+  "items": []
+}
