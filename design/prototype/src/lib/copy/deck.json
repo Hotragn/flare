@@ -3633,6 +3633,46 @@
       "text": "Turn sounds on",
       "kind": "aria",
       "where": "SoundToggle (sound is muted)"
+    },
+    "app.updateReady": {
+      "text": "New version. Reload?",
+      "kind": "status",
+      "where": "Banner when a new service worker is waiting (lib/push/update.ts)"
+    },
+    "app.updateReload": {
+      "text": "Reload",
+      "kind": "button",
+      "where": "Update banner"
+    },
+    "app.outboxDropped": {
+      "text": "Some taps didn't send.",
+      "kind": "status",
+      "where": "Once, when the outbox drops items older than 24 h (ADR-0010)"
+    },
+    "install.title": {
+      "text": "Add Flare to your Home Screen?",
+      "kind": "title",
+      "where": "Install sheet (lib/permissions/install.ts)"
+    },
+    "install.body": {
+      "text": "It opens full screen and can buzz you when it's lit.",
+      "kind": "message",
+      "where": "Install sheet"
+    },
+    "install.cta": {
+      "text": "Add to Home",
+      "kind": "button",
+      "where": "Install sheet, browsers with an install prompt"
+    },
+    "install.later": {
+      "text": "Not now",
+      "kind": "button",
+      "where": "Install sheet"
+    },
+    "install.done": {
+      "text": "Flare is on your Home Screen.",
+      "kind": "status",
+      "where": "After the install prompt is accepted"
     }
   }
 }

@@ -8,6 +8,7 @@ export default defineConfig({
       "apps/hub/test/**/*.test.ts",
       "apps/web/test/**/*.test.ts",
       "scripts/test/**/*.test.ts",
+      "apps/web/test/pwa/**/*.test.ts",
     ],
     testTimeout: 20000,
   },

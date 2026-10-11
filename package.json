@@ -17,7 +17,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit && npm run -w apps/web check",
-    "test": "vitest run",
+    "test": "npm exec -w apps/web -- svelte-kit sync && vitest run",
     "build": "npm run -w apps/web build",
     "contracts": "node scripts/check-contracts.ts",
     "dev:server": "node --watch apps/server/src/main.ts",
@@ -32,7 +32,8 @@
     "budget": "node scripts/budget.ts",
     "hooks": "git config core.hooksPath .githooks",
     "diagrams": "node scripts/check-diagrams.ts",
-    "device-check": "node scripts/device-check.ts"
+    "device-check": "node scripts/device-check.ts",
+    "e2e:pwa": "node apps/web/test/pwa/e2e/offline.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
