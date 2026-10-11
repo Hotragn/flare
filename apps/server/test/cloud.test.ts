@@ -150,6 +150,17 @@ describe("Google AI Studio fallback (ADR-0026)", () => {
     const parts = contents[0]?.parts ?? [];
     expect(parts.map((p) => Object.keys(p)[0])).toEqual(["text", "inline_data"]);
   });
+  it("retries Google once after a 500", async () => {
+    let n = 0;
+    const f = (async () =>
+      ++n === 1
+        ? new Response("{}", { status: 500 })
+        : new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: LADDER }] } }] }), {
+            status: 200,
+          })) as unknown as typeof fetch;
+    expect(await cloudTier(GKEY, f)?.ladder({ ask: "walk", total_minutes: 60 })).not.toBeNull();
+    expect(n).toBe(2);
+  });
   it("shares one daily cap across providers", async () => {
     const d = fakeBoth(402, LADDER);
     const t = cloudTier({ ...SCOPED, ...GKEY, CLOUD_DAILY_MAX_CALLS: "1" }, d.f);

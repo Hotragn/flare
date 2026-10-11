@@ -77,17 +77,21 @@ function google(key: string, model: string, fetchImpl: typeof fetch): Backend {
       // Gemma on the Gemini API takes no separate system instruction: it leads the user turn.
       const parts: unknown[] = [{ text: `${system}\n\n${user}` }];
       if (jpeg) parts.push({ inline_data: { mime_type: "image/jpeg", data: Buffer.from(jpeg).toString("base64") } });
-      const r = await fetchImpl(`${GOOGLE_ENDPOINT}/${model}:generateContent`, {
-        method: "POST",
-        headers: { "x-goog-api-key": key, "content-type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts }],
-          // Gemma 4 here thinks by default (22 s and an empty answer at 200 tokens, probe
-          // 2026-10-11); "minimal" answered the ladder in 1.4 s.
-          generationConfig: { temperature: 0, maxOutputTokens: 400, thinkingConfig: { thinkingLevel: "minimal" } },
-        }),
-        signal: AbortSignal.timeout(CLOUD_BUDGET_MS),
-      });
+      const send = () =>
+        fetchImpl(`${GOOGLE_ENDPOINT}/${model}:generateContent`, {
+          method: "POST",
+          headers: { "x-goog-api-key": key, "content-type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts }],
+            // Gemma 4 here thinks by default (22 s and an empty answer at 200 tokens, probe
+            // 2026-10-11); "minimal" answered the ladder in 1.4 s.
+            generationConfig: { temperature: 0, maxOutputTokens: 400, thinkingConfig: { thinkingLevel: "minimal" } },
+          }),
+          signal: AbortSignal.timeout(CLOUD_BUDGET_MS),
+        });
+      // "minimal" thinking now and then answers 500 in under a second; one retry is cheap.
+      let r = await send();
+      if (r.status >= 500) r = await send();
       if (!r.ok) return { text: null, refused: [401, 402, 403].includes(r.status) };
       const j = (await r.json()) as { candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[] };
       const text = (j.candidates?.[0]?.content?.parts ?? [])
