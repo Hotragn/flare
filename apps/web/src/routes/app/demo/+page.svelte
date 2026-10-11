@@ -150,11 +150,14 @@
 <svelte:head><title>{t("demo.badge")}</title><link rel="preload" as="image" href="/demo/pond.jpg" /></svelte:head>
 
 <div class="demo" class:coach={step === "kindling" && !!demo.g && demo.g.state !== "lit"}>
-  <p class="badge" role="status">{t("demo.badge")}</p>
-  {#if toast}<p class="toast" role="status">{toast}</p>{/if}
+  <!-- The demo's own notes sit in a labelled landmark of their own (axe: region). -->
+  <aside class="notes" aria-label={t("demo.badge")}>
+    <p class="badge" role="status">{t("demo.badge")}</p>
+    {#if toast}<p class="toast" role="status">{toast}</p>{/if}
+  </aside>
 
   {#if step === "send"}
-    <p class="role" role="status">{t("demo.intro", { host: me })}</p>
+    <aside class="notes" aria-label={t("demo.intro", { host: me })}><p class="role" role="status">{t("demo.intro", { host: me })}</p></aside>
     <H3Send bind:hostLine={typedLine} words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
   {:else if step === "kindling"}
     <div class="layer">
@@ -168,13 +171,13 @@
       {/if}
     </div>
   {:else if step === "friend"}
-    <p class="role" role="status">{t("demo.friendBanner", { host: me })}</p>
+    <aside class="notes" aria-label={t("demo.friendBanner", { host: me })}><p class="role" role="status">{t("demo.friendBanner", { host: me })}</p></aside>
     <I1Invite info={{ ...info, spot: DEMO_SPOT, hostLine: "" }} have={demo.have()} quorum={demo.g?.quorum ?? 4} onyes={amorYes} oncondition={() => (step = "condition")} onclose={() => (step = "kindling")} />
   {:else if step === "condition"}
-    <p class="role" role="status">{t("demo.friendBanner", { host: me })}</p>
+    <aside class="notes" aria-label={t("demo.friendBanner", { host: me })}><p class="role" role="status">{t("demo.friendBanner", { host: me })}</p></aside>
     <I2Condition {info} bind:text={condition} error={condError} oncheck={checkCondition} onclose={() => (step = "friend")} />
   {:else if step === "friendIn"}
-    <p class="role" role="status">{condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}</p>
+    <aside class="notes" aria-label={condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}><p class="role" role="status">{condRead ? t("demo.inIf", { rule: condRead }) : t("demo.friendBanner", { host: me })}</p></aside>
     <I4YoureIn have={demo.have()} quorum={demo.g?.quorum ?? 4} canTakeBack={false} ondone={backToYou} />
   {:else if step === "lit"}
     <div class="layer">
@@ -206,6 +209,7 @@
   /* While the coach shows, it replaces the action row (fix 5). */
   .demo.coach :global(.actions) { visibility: hidden; }
   .layer { position: absolute; inset: 0; }
+  .notes { display: contents; }
   .badge { position: fixed; top: calc(env(safe-area-inset-top, 0) + 14px); left: 50%; transform: translateX(-50%); z-index: 30; white-space: nowrap; margin: 0;
     padding: 6px 14px; border-radius: 999px; background: #fff; color: #111; font-weight: 700; font-size: 0.875rem; box-shadow: 0 2px 10px rgb(0 0 0 / 0.25); }
   .toast { position: fixed; top: calc(env(safe-area-inset-top, 0) + 56px); left: 50%; transform: translateX(-50%); z-index: 30; margin: 0;

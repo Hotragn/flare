@@ -25,6 +25,6 @@
 <style>
   .built { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
   .built li { display: grid; gap: 2px; padding: 12px 14px; border-radius: 16px; border: 1.5px solid var(--line); }
-  .built a { font-weight: 800; }
+  .built a { font-weight: 800; display: inline-flex; align-items: center; min-height: 44px; align-self: flex-start; }
   @media (min-width: 700px) { .built { grid-template-columns: repeat(3, 1fr); } }
 </style>

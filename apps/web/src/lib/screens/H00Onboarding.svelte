@@ -49,12 +49,13 @@
   }
 </script>
 
-<div class="onb">
+<main class="onb">
   <div class="art" aria-hidden="true"><ScenicHero slugs={["pictured-rocks-cliffs", "sleeping-bear-dunes", "acadia-eagle-lake"]} start={step} everyMs={60000} /></div>
   <div class="veil" aria-hidden="true"></div>
   {#if step < 3}
     <button class="skip" onclick={() => (step = 3)}>{t("onb.skip")}</button>
-    <div class="track" bind:this={track} onscroll={onScroll}>
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex (keyboard scroll, axe scrollable-region-focusable) -->
+    <div class="track" bind:this={track} onscroll={onScroll} tabindex="0" role="group" aria-label={t("onb.cardAria", { n: step + 1 })}>
       {#each cards as c, i}
         <section class="card" aria-label={t("onb.cardAria", { n: i + 1 })}>
           <Flame state={i === 2 ? "gone" : "lit"} size={84} />
@@ -85,7 +86,7 @@
       {/if}
     </div>
   {/if}
-</div>
+</main>
 
 <style>
   .onb { position: fixed; inset: 0; color: #fff; display: flex; flex-direction: column; background: #120806; }

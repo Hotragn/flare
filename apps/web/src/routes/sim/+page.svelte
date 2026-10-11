@@ -220,6 +220,11 @@
 </main>
 
 <style>
+  /* Page audit: 44 px targets for the replay controls and the map's own buttons. */
+  input[type="range"] { min-height: 44px; }
+  select { min-height: 44px; }
+  :global(.maplibregl-ctrl-group button) { width: 44px !important; height: 44px !important; }
+  :global(.maplibregl-ctrl-attrib a) { display: inline-block; padding: 12px 4px; }
   main {
     max-width: 1100px;
     margin: 0 auto;
@@ -335,7 +340,7 @@
     width: 100%;
   }
   .speed select {
-    min-height: 36px;
+    min-height: 44px;
     margin-left: 6px;
   }
   .panels {

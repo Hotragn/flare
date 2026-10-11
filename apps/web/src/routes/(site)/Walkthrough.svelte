@@ -2,7 +2,31 @@
 <script lang="ts">
   import { t, type CopyKey } from "#lib/copy/site.ts";
   const steps = ["send", "friend", "count", "lit", "find", "after"] as const;
+  // Screens after the first load when they come within 300 px, so they don't compete with the
+  // first paint on a phone (Lighthouse 100).
+  function near(img: HTMLImageElement) {
+    const go = () => {
+      img.srcset = img.dataset.srcset ?? "";
+      img.src = img.dataset.src ?? "";
+    };
+    if (typeof IntersectionObserver === "undefined") return go();
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          go();
+          io.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px" },
+    );
+    io.observe(img);
+    return { destroy: () => io.disconnect() };
+  }
 </script>
+
+<svelte:head>
+  <link rel="preload" as="image" href="/site/how/send-240.webp" imagesrcset="/site/how/send-240.webp 240w, /site/how/send.webp 400w" imagesizes="(min-width: 900px) 240px, 120px" fetchpriority="high" />
+</svelte:head>
 
 <h1 class="t-title">{t("site.walk.title")}</h1>
 <p class="lead">{t("site.walk.lead")}</p>
@@ -10,7 +34,11 @@
   {#each steps as s, i}
     {@const title = t(`site.walk.${s}.t` as CopyKey)}
     <li>
-      <img src="/site/how/{s}.webp" srcset="/site/how/{s}-240.webp 240w, /site/how/{s}.webp 400w" sizes="(min-width: 900px) 240px, 120px" width="260" height="563" loading={i < 1 ? "eager" : "lazy"} decoding="async" alt={t("site.walk.alt", { step: title })} />
+      {#if i === 0}
+        <img src="/site/how/{s}.webp" srcset="/site/how/{s}-240.webp 240w, /site/how/{s}.webp 400w" sizes="(min-width: 900px) 240px, 120px" width="260" height="563" fetchpriority="high" decoding="async" alt={t("site.walk.alt", { step: title })} />
+      {:else}
+        <img use:near data-src="/site/how/{s}.webp" data-srcset="/site/how/{s}-240.webp 240w, /site/how/{s}.webp 400w" sizes="(min-width: 900px) 240px, 120px" width="260" height="563" decoding="async" alt={t("site.walk.alt", { step: title })} />
+      {/if}
       <div>
         <h2 class="t-heading"><span class="n" aria-hidden="true">{i + 1}</span> {title}</h2>
         <p>{t(`site.walk.${s}.b` as CopyKey)}</p>

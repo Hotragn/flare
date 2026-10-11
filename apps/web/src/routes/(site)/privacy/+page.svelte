@@ -73,7 +73,8 @@
           </tbody>
         </table>
       {:else}
-        <pre><code>{t("site.privacy.audit1")}
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex (keyboard scroll, axe scrollable-region-focusable) -->
+        <pre tabindex="0"><code>{t("site.privacy.audit1")}
 {t("site.privacy.audit2")}</code></pre>
         {#if audit?.s === "down"}<p>{t("site.privacy.audit.down")}</p>{/if}
       {/if}

@@ -19,8 +19,10 @@ npm run hub`;
   <p class="lead">{t("site.run.body")}</p>
   <p>{t("site.run.needs")}</p>
   <ol class="run-steps">
-    <li><p>{t("site.run.s1")}</p><pre><code>{install}</code></pre></li>
-    <li><p>{t("site.run.s2")}</p><pre><code>{hub}</code></pre></li>
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex (keyboard scroll, axe scrollable-region-focusable) -->
+    <li><p>{t("site.run.s1")}</p><pre tabindex="0"><code>{install}</code></pre></li>
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex (keyboard scroll, axe scrollable-region-focusable) -->
+    <li><p>{t("site.run.s2")}</p><pre tabindex="0"><code>{hub}</code></pre></li>
     <li><p>{t("site.run.s3")}</p></li>
   </ol>
   <p>{t("site.run.db")}</p>

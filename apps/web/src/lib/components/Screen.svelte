@@ -49,7 +49,9 @@
 
 <div class="screen" class:grain class:dusk={tone === "dusk"} class:staged {...themeAttrs(staged ? "dark" : theme)} data-wire={wire || undefined}>
   {#if staged}
-    {#if backdrop}<img class="backdrop" src={backdrop} alt={backdropAlt} />{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><Scenery /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
+    <!-- The photo is content (its alt is the scene for friends who can't see it), so it sits in a
+         labelled region, not loose outside every landmark (page audit, axe region). -->
+    {#if backdrop}<section class="lm" aria-label={backdropAlt || heading || title}><img class="backdrop" src={backdrop} alt={backdropAlt} /></section>{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><Scenery /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
     <div class="scrim" aria-hidden="true"></div>
   {/if}
   <header class="bar">
@@ -68,7 +70,7 @@
   <!-- tabindex lets keyboard users scroll long content (WCAG 2.1.1, axe scrollable-region-focusable) -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   {#if staged}
-    <div class="hero">{#if hero}{@render hero()}{/if}</div>
+    <section class="hero" aria-label={heading || title || t("app.name")}>{#if hero}{@render hero()}{/if}</section>
     <section class="sheet">
       <span class="grab" aria-hidden="true"></span>
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -119,6 +121,7 @@
   .scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background: linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, rgb(0 0 0 / 0) 22%, rgb(0 0 0 / 0) 40%, rgb(0 0 0 / 0.55) 70%, rgb(0 0 0 / 0.8) 100%); }
   .staged > .bar, .staged > .offline, .staged > .hero, .staged > .sheet { position: relative; z-index: 1; }
+  .lm { display: contents; }
   .staged .icon-btn { background: rgb(255 255 255 / 0.18); color: #fff; backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); }
   .staged .bar-title { color: rgb(255 255 255 / 0.9); }
   .hero { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--l-gutter) 16px; color: #fff; text-shadow: 0 1px 12px rgb(0 0 0 / 0.5); min-height: 0; }
