@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4P2N9C7SVVJDS3GAMRKE7DK",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/design/redesign/after/demo-2-kindling.jpg",
+    "docs/design/redesign/after/demo-3-ember-lit.jpg",
+    "docs/design/redesign/after/demo-7-away.jpg",
+    "docs/design/redesign/after/demo-8-done.jpg"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 3630,
+    "cache_creation_tokens": 5699111,
+    "cache_read_tokens": 889336760,
+    "output_tokens": 1760259,
+    "api_call_count": 1791
+  }
+}
