@@ -16,7 +16,7 @@ export function suspectNames(text: string, ok: string[]): string[] {
   const allow = new Set(ok.map((w) => w.toLowerCase()));
   const out: string[] = [];
   for (const sentence of text.split(/(?<=[.!?])\s+/)) {
-    const words = sentence.match(/[\p{L}']+/gu) ?? [];
+    const words = (sentence.match(/[\p{L}']+/gu) ?? []).map((w) => w.replace(/^'+|'+$/g, ""));
     words.forEach((w, i) => {
       if (i > 0 && /^\p{Lu}/u.test(w) && !allow.has(w.toLowerCase().replace(/'s$/, ""))) out.push(w);
     });

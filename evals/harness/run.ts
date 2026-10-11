@@ -1,5 +1,6 @@
 // npm run eval -- <task> [--tier hub|rules] [--limit n] [--parser path] [--strict]
 // Tasks: photo, ladder, conditions, rest-loop, osm-tags, all. Model calls are sequential.
+import { loadavg } from "node:os";
 import { parseArgs } from "node:util";
 import { MODEL, modelReady, warm } from "./ollama.ts";
 import { allPass, type Report, writeReport } from "./report.ts";
@@ -51,12 +52,17 @@ for (const t of list) {
     console.info(`warm-up ${ms} ms (not counted)`);
     warmed = true;
   }
+  const load0 = loadavg()[0] ?? 0;
   let r: Report;
   if (t === "photo") r = await runPhoto(tier, limit);
   else if (t === "ladder") r = await runLadder(tier, limit);
   else if (t === "conditions") r = await runConditions(tier, values.parser);
   else if (t === "rest-loop") r = await runRestLoop(tier, values.parser, limit);
   else r = await runOsmTags(tier, limit);
+  if (MODEL_TIERS.has(tier))
+    r.notes.push(
+      `Mac 1-min load average: ${load0.toFixed(1)} at start, ${(loadavg()[0] ?? 0).toFixed(1)} at end (10 cores; other agents share this Mac and its Ollama).`,
+    );
   const out = writeReport(r);
   console.info(`\n${r.task} (${r.tier}) n=${r.n}${r.latency ? ` median ${r.latency.median_ms} ms` : ""}`);
   for (const b of r.bars) console.info(`  ${b.pass ? "pass" : "FAIL"}  ${b.name}: ${b.value} (target ${b.target})`);

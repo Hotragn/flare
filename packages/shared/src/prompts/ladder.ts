@@ -4,7 +4,8 @@
 import { z } from "zod";
 import { clipWords, countWords, extractJson, hasPersonWords, type PromptSpec } from "./guard.ts";
 
-export const LADDER_PROMPT_VERSION = 1;
+/** v1 used {"steps":[{step,label,minutes}...]} and took 6.4 to 8.8 s; v2 asks for two short arrays (docs/ml/model-cards.md). */
+export const LADDER_PROMPT_VERSION = 2;
 
 /** Fixed labels for the template tier. Same text as copy keys ladder.template.step1 to step4. */
 export const TEMPLATE_LABELS = ["The full plan", "A shorter loop", "A quick lap", "Just say hi"] as const;
@@ -13,9 +14,9 @@ export const LADDER_SYSTEM = [
   "You plan short outings for Flare, an app that gets close friends outside.",
   "A Plan has 4 steps. Step 1 is the biggest version, step 4 the smallest. Friends pick the biggest step everyone can do.",
   "Reply with one JSON object only. No code fences, no other text.",
-  '{"steps": [{"step": 1, "label": "...", "minutes": 60}, {"step": 2, "label": "...", "minutes": 30}, {"step": 3, "label": "...", "minutes": 15}, {"step": 4, "label": "...", "minutes": 10}]}',
-  "label: 2 to 4 plain words, lower case except the first letter. Say what the group does, like a walk, a loop or a sit.",
-  "minutes: whole numbers. Step 1 uses the total minutes given. Each step is shorter than the one before. Step 4 is at least 5.",
+  '{"labels": ["...", "...", "...", "..."], "minutes": [60, 30, 15, 10]}',
+  "labels: 4 labels, biggest first. Each is 2 to 4 plain words, lower case except the first letter. Say what the group does, like a walk, a loop or a sit.",
+  "minutes: 4 whole numbers in the same order. Step 1 uses the total minutes given. Each step is shorter than the one before. Step 4 is at least 5.",
   "Use only places named in the ask. Never invent place names, shops, food or events.",
   "If rain is likely, prefer covered or short steps. Never mention people, names, faces, age or gender.",
 ].join("\n");
@@ -66,7 +67,7 @@ export const LADDER_PROMPT: PromptSpec = {
   version: LADDER_PROMPT_VERSION,
   system: LADDER_SYSTEM,
   budgetMs: 8000,
-  numPredict: 160,
+  numPredict: 80,
 };
 
 const round5 = (n: number) => Math.max(5, Math.round(n / 5) * 5);
@@ -100,6 +101,19 @@ export function inventsNames(label: string, ask: string): boolean {
   return words.some((w, i) => i > 0 && /^\p{Lu}/u.test(w) && !STOP.has(w) && !askWords.has(w.toLowerCase()));
 }
 
+/** Accept v2 {labels, minutes}, v1 {steps: [...]}, or a bare array of steps. */
+function toSteps(raw: unknown): unknown[] | null {
+  if (Array.isArray(raw)) return raw;
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as { steps?: unknown; labels?: unknown; minutes?: unknown };
+  if (Array.isArray(o.steps)) return o.steps;
+  if (Array.isArray(o.labels)) {
+    const mins = Array.isArray(o.minutes) ? o.minutes : [];
+    return o.labels.map((label, i) => ({ label, minutes: mins[i] }));
+  }
+  return null;
+}
+
 export type LadderDraft = { ladder: LadderT; repaired: string[]; templateSteps: number };
 
 /**
@@ -110,12 +124,13 @@ export type LadderDraft = { ladder: LadderT; repaired: string[]; templateSteps: 
  */
 export function enforceLadder(text: string, input: LadderInputT): LadderDraft | null {
   const raw = extractJson(text);
-  const list = Array.isArray(raw) ? raw : (raw as { steps?: unknown } | null)?.steps;
+  const list = toSteps(raw);
   if (!Array.isArray(list) || list.length < 4) return null;
   const repaired: string[] = [];
   if (list.length > 4) repaired.push(`steps:clipped ${list.length}->4`);
   const items = list.slice(0, 4) as { label?: unknown; minutes?: unknown }[];
   let templateSteps = 0;
+  const seen = new Set<string>();
   const labels = items.map((it, i) => {
     const fallback = TEMPLATE_LABELS[i] ?? "Just say hi";
     if (typeof it?.label !== "string") {
@@ -124,7 +139,11 @@ export function enforceLadder(text: string, input: LadderInputT): LadderDraft | 
       return fallback;
     }
     const l = clipWords(it.label, 4, `step${i + 1}`, repaired).replace(/[.!]+$/, "");
-    if (!l || hasPersonWords(l) || inventsNames(l, input.ask)) {
+    const key = l.toLowerCase();
+    const dup = seen.has(key);
+    seen.add(key);
+    // A repeated label would make two steps look the same on the ladder.
+    if (!l || dup || hasPersonWords(l) || inventsNames(l, input.ask)) {
       templateSteps++;
       repaired.push(`step${i + 1}:label template`);
       return fallback;

@@ -82,6 +82,22 @@ describe("enforceLadder (SRS-PLAN-2, SRS-AI-2)", () => {
     expect(enforceLadder("Sure! Here is a plan.", input)).toBeNull();
     expect(enforceLadder('[{"label":"Walk","minutes":60}]', input)).toBeNull();
   });
+  it("accepts the v2 shape {labels, minutes}", () => {
+    const d = enforceLadder(
+      '{"labels":["Long walk","Park loop","Short lap","Quick hello"],"minutes":[60,30,15,10]}',
+      input,
+    );
+    expect(d?.ladder.map((s) => s.label)).toEqual(["Long walk", "Park loop", "Short lap", "Quick hello"]);
+    expect(d?.repaired).toEqual([]);
+  });
+  it("uses template minutes when the answer has none", () => {
+    const d = enforceLadder('{"labels":["Long walk","Park loop","Short lap","Quick hello"]}', input);
+    expect(d?.ladder.map((s) => s.minutes)).toEqual([60, 30, 15, 10]);
+  });
+  it("replaces a repeated label with the template label", () => {
+    const d = enforceLadder('{"labels":["Walk","Loop","Sit","walk"],"minutes":[60,30,15,10]}', input);
+    expect(d?.ladder[3]?.label).toBe("Just say hi");
+  });
   it("names in the ask are not invented", () => {
     expect(inventsNames("Walk to Fairlane", "Fairlane walk at 11?")).toBe(false);
     expect(inventsNames("Walk to Dearborn Mall", "Fairlane walk")).toBe(true);

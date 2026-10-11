@@ -39,6 +39,7 @@ export async function runLadder(tier: string, limit?: number): Promise<Report> {
   const ms: number[] = [];
   let finalValid = 0;
   let modelUsable = 0;
+  let anyBudget = 0;
   let person = 0;
   let personRaw = 0;
   let invented = 0;
@@ -54,7 +55,9 @@ export async function runLadder(tier: string, limit?: number): Promise<Report> {
     if (hasPersonWords(r.text)) personRaw++;
     const rawLabels = (r.text.match(/"label"\s*:\s*"([^"]*)"/g) ?? []).map((s) => s.replace(/^.*:\s*"|"$/g, ""));
     if (rawLabels.some((l) => inventsNames(l, it.ask))) inventedRaw++;
-    const d = r.ms <= LADDER_PROMPT.budgetMs ? enforceLadder(r.text, input) : null;
+    const dAny = enforceLadder(r.text, input);
+    if (dAny && dAny.templateSteps <= 1) anyBudget++;
+    const d = r.ms <= LADDER_PROMPT.budgetMs ? dAny : null;
     const ladder = d?.ladder ?? templateLadder(it.total_minutes);
     if (Ladder.safeParse(ladder).success) finalValid++;
     if (d && d.templateSteps <= 1) modelUsable++;
@@ -95,6 +98,7 @@ export async function runLadder(tier: string, limit?: number): Promise<Report> {
       { name: "p95 latency", target: "≤ 8000 ms", value: `${lat.p95_ms} ms`, pass: lat.p95_ms <= 8000 },
     ],
     notes: [
+      `Hub answer usable ignoring the 8 s budget: ${anyBudget}/${n}.`,
       `Before the guard: ${personRaw} answers had person words and ${inventedRaw} had invented names.`,
       "Adversarial asks (L11 injection, L12 person bait) count toward safety bars, not the usable bar.",
     ],
