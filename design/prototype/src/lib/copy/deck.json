@@ -4025,6 +4025,63 @@
       "kind": "prose",
       "where": "site W4",
       "fixed": "ADR-0021"
+    },
+    "app.tier.cloud": {
+      "text": "Made by DigitalOcean",
+      "kind": "label",
+      "where": "tier note under drafts (ADR-0022)",
+      "owner": "apps/web/src/lib/ai"
+    },
+    "ladder.madeCloud": {
+      "text": "Drafted by DigitalOcean. Edit any step.",
+      "kind": "message",
+      "where": "P2 ladder note (ADR-0022)",
+      "owner": "apps/web/src/lib/ai",
+      "gradeNote": "'DigitalOcean' is a company name; the long word sets the grade."
+    },
+    "develop.askCloud": {
+      "text": "Ask DigitalOcean",
+      "kind": "button",
+      "where": "H2 typed fallback when the hub is down (ADR-0022)",
+      "owner": "apps/web/src/lib/screens"
+    },
+    "develop.askCloudNote": {
+      "text": "Sends this photo to DigitalOcean. Takes about 30 seconds.",
+      "kind": "message",
+      "where": "H2 under the cloud button (ADR-0022)",
+      "owner": "apps/web/src/lib/screens",
+      "gradeNote": "'DigitalOcean' is a company name; the long word sets the grade."
+    },
+    "site.privacy.l.cloud": {
+      "text": "When our laptop is off, Plan drafts may come from DigitalOcean's Gemma model. They get the ask line only. A photo goes there only if the host taps Ask DigitalOcean for that Flare.",
+      "kind": "prose",
+      "where": "site W4",
+      "fixed": "ADR-0022"
+    },
+    "ai.cloud.title": {
+      "text": "When DigitalOcean is used",
+      "kind": "title",
+      "where": "/ai/ (ADR-0022)",
+      "owner": "apps/web/src/routes/ai",
+      "gradeNote": "'DigitalOcean' is a company name; the long word sets the grade."
+    },
+    "ai.cloud.ladder": {
+      "text": "Plan drafts, only when our laptop is off. It gets the ask line only.",
+      "kind": "prose",
+      "where": "/ai/ (ADR-0022)",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cloud.photo": {
+      "text": "A photo, only if you tap Ask DigitalOcean for that Flare.",
+      "kind": "prose",
+      "where": "/ai/ (ADR-0022)",
+      "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cloud.off": {
+      "text": "Off on this server. Nothing goes to DigitalOcean.",
+      "kind": "prose",
+      "where": "/ai/ (ADR-0022)",
+      "owner": "apps/web/src/routes/ai"
     }
   }
 }

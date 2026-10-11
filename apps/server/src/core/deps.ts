@@ -1,6 +1,7 @@
 // What the server's pieces share, and the `deps` INT's mount functions receive
 // (url-map.md: mountTelegram(app, deps), mountPreview(app, deps), createPush(deps)).
 import type { Engine, Id, Label, Step } from "@flare/shared/icd/engine";
+import type { CloudTier } from "../cloud.ts";
 import type { Db } from "../db/db.ts";
 import type { HubRelay } from "../hub/relay.ts";
 import type { EventBus } from "./events.ts";
@@ -53,6 +54,8 @@ export type Deps = {
   effects?: EffectSink;
   /** Ladder hub budget, ms (ADR-0007: 8 s). */
   ladderTimeoutMs?: number;
+  /** DigitalOcean cloud tier (ADR-0022); null when no scoped key is configured. */
+  cloud?: CloudTier | null;
 };
 
 /** The resolved deps every route and INT module gets. */
@@ -65,4 +68,5 @@ export type Ctx = {
   config: Config;
   effects: EffectSink;
   ladderTimeoutMs: number;
+  cloud: CloudTier | null;
 };

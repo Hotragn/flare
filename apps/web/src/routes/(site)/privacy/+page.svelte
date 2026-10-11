@@ -21,6 +21,7 @@
     "site.privacy.l.hub",
     "site.privacy.l.weather",
     "site.privacy.l.sentry",
+    "site.privacy.l.cloud",
     "site.privacy.l.push",
   ];
 

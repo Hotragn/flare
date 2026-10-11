@@ -99,7 +99,7 @@ export type CreateGathering = {
 export type ArrivalBody = { for: "self" | "member" | "someone_else"; member_id?: string; recorded_at: Iso };
 export type ArrivalResult = { gathering: GatheringView; counted: boolean; spark_ticket?: string | null };
 
-export type DraftResponse = { invite: string; alt: string; tier: "hub" | "rules"; ms: number };
+export type DraftResponse = { invite: string; alt: string; tier: "hub" | "rules" | "cloud"; ms: number };
 export type LadderResponse = {
   steps: { step: Step; label: string; minutes: number }[];
   tier: "hub" | "rules";

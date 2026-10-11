@@ -132,7 +132,7 @@
 {#if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} />
 {:else if flow.screen === "develop"}
-  <H2Develop view={flow.draft} photo={flow.photo} scene={flow.alt} spot={flow.spot?.name ?? ""} words={flow.words} tier={flow.tier} chips={flow.chips} bind:own askLocation={flow.askLocation} bind:typedSpot onuse={(w) => flow.useWords(w)} onwrite={() => (flow.draft = "hub-unreachable")} onallowlocation={locate} onskiplocation={() => flow.typeSpot(typedSpot)} />
+  <H2Develop view={flow.draft} photo={flow.photo} scene={flow.alt} spot={flow.spot?.name ?? ""} words={flow.words} tier={flow.tier} cloud={flow.cloudOptIn} onaskcloud={() => flow.askCloud()} chips={flow.chips} bind:own askLocation={flow.askLocation} bind:typedSpot onuse={(w) => flow.useWords(w)} onwrite={() => (flow.draft = "hub-unreachable")} onallowlocation={locate} onskiplocation={() => flow.typeSpot(typedSpot)} />
 {:else if flow.screen === "send"}
   <H3Send view={flow.sending ? "sending" : flow.error ? "error" : "ready"} photo={flow.photo} scene={flow.alt} words={flow.words} spot={flow.spot?.name ?? ""} bind:quorum={flow.quorum} bind:hostLine={flow.hostLine} bind:hostName={flow.hostName} askName={flow.askName} askSpot={!flow.spot?.name} bind:typedSpot access={flow.access} nature={flow.nature} error={flow.error} onsend={send} onclose={exit} />
 {:else if flow.screen === "sent"}

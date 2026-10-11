@@ -1,6 +1,14 @@
 <!-- "AI on this phone" (/ai/): what runs where, what never leaves the phone, the last tier used,
      and the models we measured but don't ship (SRS-AI-4, CR-E2). Reads only local state. -->
 <script lang="ts">
+  // ADR-0022: say exactly when DigitalOcean is used, from the server's own /config.
+  let cloudOn = $state(false);
+  $effect(() => {
+    fetch("/api/v1/config")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((c: { cloud_ai?: { ladder?: boolean } } | null) => (cloudOn = !!c?.cloud_ai?.ladder))
+      .catch(() => (cloudOn = false));
+  });
   import { onMount } from "svelte";
   import { detect } from "#lib/capabilities/index.ts";
   import { t } from "#lib/ai/copy.ts";
@@ -87,6 +95,18 @@
       <li>{t("ai.never.place")}</li>
       <li>{t("ai.never.photo")}</li>
     </ul>
+  </section>
+
+  <section aria-labelledby="cloud">
+    <h2 id="cloud">{t("ai.cloud.title")}</h2>
+    {#if cloudOn}
+      <ul>
+        <li>{t("ai.cloud.ladder")}</li>
+        <li>{t("ai.cloud.photo")}</li>
+      </ul>
+    {:else}
+      <p>{t("ai.cloud.off")}</p>
+    {/if}
   </section>
 
   <section aria-labelledby="try">

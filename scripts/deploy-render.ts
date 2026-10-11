@@ -6,7 +6,7 @@
 //        npm run deploy:render -- --yes   (creates or updates on Render)
 
 import { execFileSync } from "node:child_process";
-import { accountToken } from "./lib/token-guard.ts";
+import { accountToken } from "../packages/shared/src/token-guard.ts";
 import { hasYes, loadVars, type Vars } from "./telegram-lib.ts";
 
 export const REGION = "ohio";

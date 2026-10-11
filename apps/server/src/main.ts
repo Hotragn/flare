@@ -4,6 +4,7 @@ import { engine } from "@flare/engine";
 import { serve } from "@hono/node-server";
 import { WebSocketServer } from "ws";
 import { buildCtx, createApp } from "./app.ts";
+import { cloudTier } from "./cloud.ts";
 import { startScheduler } from "./core/scheduler.ts";
 import { type Db, memoryDb, migrate, pgDb } from "./db/db.ts";
 import { env } from "./env.ts";
@@ -27,6 +28,7 @@ if (env.databaseUrl) {
 const ints = integrations(process.env, env.webBuildDir);
 const deps = {
   mounts: [ints.mount],
+  cloud: cloudTier(),
   relay,
   db,
   version: env.version,

@@ -1,6 +1,6 @@
 // What each part of Flare needs from the environment. Checks look at shape only;
 // a report never contains a value, a prefix or a length.
-import { accountToken } from "./token-guard.ts";
+import { accountToken } from "../../packages/shared/src/token-guard.ts";
 
 export type App = "server" | "hub" | "bot" | "deploy" | "test-area";
 export type Rule = {

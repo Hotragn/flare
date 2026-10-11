@@ -18,7 +18,7 @@ import { body, limitWrite, type RateLimiter } from "../http/middleware.ts";
 import { LadderRequest } from "../http/schemas.ts";
 import { clientIp } from "../http/write.ts";
 import { log } from "../log.ts";
-import { aiJob, guardSpan, hubChat } from "../tracing.ts";
+import { aiJob, cloudChat, guardSpan, hubChat } from "../tracing.ts";
 
 export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
   const count = (name: string, tier: string) => {
@@ -30,6 +30,7 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
     if (c.req.header("content-type") !== "image/jpeg") throw new ApiError(415, "not_jpeg", "Send image/jpeg");
     if (Number(c.req.header("content-length") ?? "0") > MAX_PHOTO_BYTES)
       throw new ApiError(413, "too_large", "1.5 MB at most");
+    const optIn = c.req.query("cloud") === "1"; // the host's per-Flare choice (ADR-0022)
     const buf = Buffer.from(await c.req.arrayBuffer());
     try {
       if (buf.length === 0 || buf.length > MAX_PHOTO_BYTES) throw new ApiError(413, "too_large", "1.5 MB at most");
@@ -52,10 +53,22 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
               })
             : null;
         const fallback = !present ? "hub_absent" : !r ? "timeout" : !r.ok ? "hub_error" : "invalid";
+        // ADR-0022: DigitalOcean only when the hub is absent and the host opted in for this Flare.
+        const cloud =
+          !guarded && !present && optIn && ctx.cloud
+            ? await cloudChat(ctx.cloud.model, () => (ctx.cloud as NonNullable<typeof ctx.cloud>).photo(buf))
+            : null;
+        const ms = Math.round(performance.now() - t);
         const res: DraftResponseT = guarded
-          ? { invite: guarded.invite, alt: guarded.alt, tier: "hub", ms: Math.round(performance.now() - t) }
-          : { invite: TEMPLATE_INVITE, alt: "", tier: "rules", ms: Math.round(performance.now() - t) };
-        job.set({ "flare.tier": res.tier, "flare.ok": !!guarded, ...(guarded ? {} : { "flare.fallback": fallback }) });
+          ? { invite: guarded.invite, alt: guarded.alt, tier: "hub", ms }
+          : cloud
+            ? { invite: cloud.invite, alt: cloud.alt, tier: "cloud", ms }
+            : { invite: TEMPLATE_INVITE, alt: "", tier: "rules", ms };
+        job.set({
+          "flare.tier": res.tier,
+          "flare.ok": res.tier !== "rules",
+          ...(res.tier === "hub" ? {} : { "flare.fallback": fallback }),
+        });
         return res;
       });
       count("tier_ran.photo", out.tier);
@@ -85,10 +98,17 @@ export function mountAi(app: Hono, ctx: Ctx, rl: RateLimiter): void {
               return d?.ladder ?? null;
             })
           : null;
-      const steps = hub ?? templateLadder(b.total_minutes);
-      const tier = hub ? "hub" : "rules";
+      // ADR-0022: the ask line is non-personal text; DigitalOcean answers when the hub is absent.
+      const cloud =
+        !hub && !present && ctx.cloud
+          ? await cloudChat(ctx.cloud.model, () =>
+              (ctx.cloud as NonNullable<typeof ctx.cloud>).ladder({ ask: b.ask, total_minutes: b.total_minutes }),
+            )
+          : null;
+      const steps = hub ?? cloud ?? templateLadder(b.total_minutes);
+      const tier = hub ? "hub" : cloud ? "cloud" : "rules";
       const fallback = !present ? "hub_absent" : !r ? "timeout" : !r.ok ? "hub_error" : "invalid";
-      job.set({ "flare.tier": tier, "flare.ok": !!hub, ...(hub ? {} : { "flare.fallback": fallback }) });
+      job.set({ "flare.tier": tier, "flare.ok": tier !== "rules", ...(hub ? {} : { "flare.fallback": fallback }) });
       return { steps, tier, ms: Math.round(performance.now() - t) };
     });
     count("tier_ran.ladder", out.tier);

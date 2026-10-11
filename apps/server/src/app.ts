@@ -54,6 +54,7 @@ export function buildCtx(d: BaseDeps): Ctx {
     },
     effects: d.effects ?? {},
     ladderTimeoutMs: d.ladderTimeoutMs ?? 8000,
+    cloud: d.cloud ?? null,
   };
 }
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { accountToken } from "../../packages/shared/src/token-guard.ts";
 import { check } from "../lib/env-spec.ts";
-import { accountToken } from "../lib/token-guard.ts";
 
 // Built at run time so the secret scan never matches this file.
 const pat = ["dop", "v1", "a".repeat(64)].join("_");

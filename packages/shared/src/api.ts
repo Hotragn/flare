@@ -4,7 +4,7 @@ import { z } from "zod";
 export const DraftResponse = z.object({
   invite: z.string().min(1),
   alt: z.string(),
-  tier: z.enum(["hub", "rules"]),
+  tier: z.enum(["hub", "rules", "cloud"]), // cloud: DigitalOcean (ADR-0022)
   ms: z.number().int().nonnegative(),
 });
 export type DraftResponseT = z.infer<typeof DraftResponse>;

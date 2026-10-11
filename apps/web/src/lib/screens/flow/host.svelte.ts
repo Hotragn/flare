@@ -41,6 +41,7 @@ export type Spot = { name: string; key: string; lat: number; lon: number };
 
 const HOST_GROUP = "flare.hostGroup"; // id only; the key stays in IndexedDB
 const DRAFT_BUDGET_MS = 6000; // the server answers with the template after 6 s (openapi drafts)
+const CLOUD_WAIT_MS = 40_000; // DigitalOcean answers in about 30 s; the server gives up at 35 s (ADR-0022)
 
 export class HostFlow {
   screen = $state<HostScreen>("camera");
@@ -49,7 +50,9 @@ export class HostFlow {
   draft = $state<DraftView>("developing");
   words = $state("");
   alt = $state("");
-  tier = $state<"hub" | "rules">("hub");
+  tier = $state<"hub" | "rules" | "cloud">("hub");
+  /** /config: the host may opt in to DigitalOcean for this photo when the hub is down (ADR-0022). */
+  cloudOptIn = $state(false);
   spot = $state<Spot | null>(null);
   askLocation = $state(false);
   quorum = $state("2");
@@ -84,6 +87,15 @@ export class HostFlow {
   constructor(d: Deps) {
     this.#d = d;
     this.hostName = storedName();
+    void this.#d
+      .fetch(`${BASE}/config`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((c: { cloud_ai?: { photo_opt_in?: boolean } } | null) => {
+        this.cloudOptIn = !!c?.cloud_ai?.photo_opt_in;
+      })
+      .catch(() => {
+        this.cloudOptIn = false; // offline or old server: no cloud offer
+      });
   }
 
   get askName(): boolean {
@@ -141,11 +153,18 @@ export class HostFlow {
     if (online) await this.#draftWords(jpeg);
   }
 
-  async #draftWords(jpeg: Blob): Promise<void> {
+  /** The host tapped "Ask DigitalOcean" for this Flare's photo (ADR-0022). Only from H2's fallback. */
+  async askCloud(): Promise<void> {
+    if (!this.photoBlob || !this.cloudOptIn) return;
+    this.draft = "developing";
+    await this.#draftWords(this.photoBlob, true);
+  }
+
+  async #draftWords(jpeg: Blob, cloud = false): Promise<void> {
     const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), DRAFT_BUDGET_MS + 2000);
+    const timer = setTimeout(() => ctl.abort(), cloud ? CLOUD_WAIT_MS : DRAFT_BUDGET_MS + 2000);
     try {
-      const r = await this.#d.fetch(`${BASE}/drafts`, {
+      const r = await this.#d.fetch(`${BASE}/drafts${cloud ? "?cloud=1" : ""}`, {
         method: "POST",
         headers: { "content-type": "image/jpeg" },
         body: jpeg,
@@ -155,7 +174,7 @@ export class HostFlow {
       const d = (await r.json()) as DraftResponse;
       this.alt = d.alt;
       this.tier = d.tier;
-      if (d.tier === "hub" && d.invite) {
+      if (d.tier !== "rules" && d.invite) {
         this.words = d.invite;
         this.draft = "drafted";
       } else this.draft = "hub-unreachable"; // the template tier: the host writes six words (BR-AI-1)

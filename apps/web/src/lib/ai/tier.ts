@@ -9,7 +9,8 @@ import { z } from "zod";
 import { t } from "./copy.ts";
 
 export type Feature = "photo" | "ladder" | "conditions";
-export type Tier = "hub" | "rules";
+/** cloud = DigitalOcean Serverless Inference, used only when the hub is absent (ADR-0022). */
+export type Tier = "hub" | "rules" | "cloud";
 /** Why the hub tier didn't run. Only these words are stored; never content. */
 export type FallbackWhy = "offline" | "network" | "timeout" | "hub_down" | "unusable" | "server_error";
 
@@ -18,6 +19,8 @@ export type TierRecord = { feature: Feature; tier: Tier; at: string; ms: number;
 /** The server waits 6 s for the hub (photo) and 8 s (ladder); the phone allows upload time on top. */
 export const HUB_BUDGET_MS = { photo: 6000, ladder: 8000 } as const;
 export const PHONE_TIMEOUT_MS = { photo: 7500, ladder: 9500 } as const;
+/** When /config says the cloud tier is on, the server may take up to 35 s (ADR-0022). */
+export const CLOUD_TIMEOUT_MS = 40_000;
 
 export type TierDeps = {
   fetch: typeof fetch;
@@ -30,7 +33,8 @@ export type TierDeps = {
 };
 
 /** "Made on our laptop" / "Made from a template" (copy deck app.tier.*). */
-export const tierLabel = (tier: Tier): string => t(tier === "hub" ? "app.tier.hub" : "app.tier.rules");
+export const tierLabel = (tier: Tier): string =>
+  t(tier === "hub" ? "app.tier.hub" : tier === "cloud" ? "app.tier.cloud" : "app.tier.rules");
 
 // ---------- last tier used, for the /ai/ status screen ----------
 
@@ -45,7 +49,7 @@ export type TierStore = {
 
 const RecordSchema = z.object({
   feature: z.enum(["photo", "ladder", "conditions"]),
-  tier: z.enum(["hub", "rules"]),
+  tier: z.enum(["hub", "rules", "cloud"]),
   at: z.string(),
   ms: z.number().int().nonnegative(),
   why: z.enum(["offline", "network", "timeout", "hub_down", "unusable", "server_error"]).optional(),
@@ -91,7 +95,9 @@ function safeLocalStorage(): KV | null {
 
 // ---------- calling the hub through the server ----------
 
-export type HubCall<T> = { ok: true; value: T; ms: number } | { ok: false; why: FallbackWhy; ms: number };
+export type HubCall<T> =
+  | { ok: true; value: T; ms: number; tier: "hub" | "cloud" }
+  | { ok: false; why: FallbackWhy; ms: number };
 
 /**
  * One POST with a hard phone-side timeout. Offline short-circuits without a request.
@@ -131,8 +137,8 @@ export async function callHub<T>(
   }
   const p = parse(json);
   if (!p) return { ok: false, why: "unusable", ms: ms() };
-  if (p.tier !== "hub") return { ok: false, why: "hub_down", ms: ms() };
-  return { ok: true, value: p.value, ms: ms() };
+  if (p.tier === "rules") return { ok: false, why: "hub_down", ms: ms() };
+  return { ok: true, value: p.value, ms: ms(), tier: p.tier };
 }
 
 // ---------- photo draft ----------
@@ -140,12 +146,12 @@ export async function callHub<T>(
 const DraftResponse = z.object({
   invite: z.string(),
   alt: z.string(),
-  tier: z.enum(["hub", "rules"]),
+  tier: z.enum(["hub", "rules", "cloud"]),
   ms: z.number().int().nonnegative(),
 });
 
 export type PhotoOutcome =
-  | { tier: "hub"; invite: string; alt: string; ms: number; label: string }
+  | { tier: "hub" | "cloud"; invite: string; alt: string; ms: number; label: string }
   | { tier: "rules"; invite: ""; alt: ""; ms: number; label: string; why: FallbackWhy; message: string };
 
 /** Why-to-message for the typed fallback screen (H2). */
@@ -159,24 +165,26 @@ export function fallbackMessage(why: FallbackWhy): string {
  * Photo to six words. Hub when it answers in time with a usable draft; otherwise the typed
  * fallback (rules tier). The phone runs enforce() again, so a bad answer never shows (SRS-AI-2).
  */
-export async function draftPhoto(jpeg: Blob, deps: TierDeps): Promise<PhotoOutcome> {
+export async function draftPhoto(jpeg: Blob, deps: TierDeps, opts: { cloud?: boolean } = {}): Promise<PhotoOutcome> {
+  // `cloud`: the host opted in to DigitalOcean for this Flare (ADR-0022); the server uses it only
+  // when the hub is absent, so the longer wait applies only to that request.
   const r = await callHub(
-    "/api/v1/drafts",
+    opts.cloud ? "/api/v1/drafts?cloud=1" : "/api/v1/drafts",
     { body: jpeg, contentType: "image/jpeg" },
     (json) => {
       const d = DraftResponse.safeParse(json);
       if (!d.success) return null;
-      if (d.data.tier !== "hub") return { tier: "rules", value: null };
+      if (d.data.tier === "rules") return { tier: "rules", value: null };
       const guarded = enforce(JSON.stringify({ invite: d.data.invite, alt: d.data.alt }));
-      return guarded ? { tier: "hub", value: { invite: guarded.invite, alt: guarded.alt } } : null;
+      return guarded ? { tier: d.data.tier, value: { invite: guarded.invite, alt: guarded.alt } } : null;
     },
     deps,
-    deps.timeoutMs ?? PHONE_TIMEOUT_MS.photo,
+    deps.timeoutMs ?? (opts.cloud ? CLOUD_TIMEOUT_MS : PHONE_TIMEOUT_MS.photo),
   );
   const at = new Date(Date.now()).toISOString();
   if (r.ok && r.value) {
-    deps.store?.record({ feature: "photo", tier: "hub", at, ms: r.ms });
-    return { tier: "hub", invite: r.value.invite, alt: r.value.alt, ms: r.ms, label: tierLabel("hub") };
+    deps.store?.record({ feature: "photo", tier: r.tier, at, ms: r.ms });
+    return { tier: r.tier, invite: r.value.invite, alt: r.value.alt, ms: r.ms, label: tierLabel(r.tier) };
   }
   const why: FallbackWhy = r.ok ? "unusable" : r.why;
   deps.store?.record({ feature: "photo", tier: "rules", at, ms: r.ms, why });

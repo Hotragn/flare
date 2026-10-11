@@ -34,6 +34,8 @@ export function mountSystem(app: Hono, ctx: Ctx, rl: RateLimiter): void {
       version: ctx.config.version,
       vapid_public_key: ctx.config.vapidPublicKey,
       telegram_bot_username: ctx.config.telegramBotUsername,
+      // ADR-0022: tells the phone it may wait for the slower cloud tier, and may offer the photo opt-in.
+      cloud_ai: { provider: ctx.cloud ? "digitalocean" : null, ladder: !!ctx.cloud, photo_opt_in: !!ctx.cloud },
       limits: {
         max_members: MAX_MEMBERS,
         max_photo_bytes: 1_500_000,

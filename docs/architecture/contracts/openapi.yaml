@@ -777,6 +777,12 @@ paths:
         zero-fills the buffer after the job, and stores nothing. If the hub is absent, slow
         (6 s) or its answer fails `enforce()`, the response is the template (`tier: rules`)
         and the phone shows the typed fallback (BR-AI-1). Increments `tier_ran.photo.{tier}`.
+      parameters:
+        - name: cloud
+          in: query
+          required: false
+          description: "1 = the host opted in to DigitalOcean for this Flare's photo; used only when the hub is absent (ADR-0022)"
+          schema: { type: string, enum: ["1"] }
       requestBody:
         required: true
         content:
@@ -1102,13 +1108,21 @@ components:
 
     Config:
       type: object
-      required: [version, vapid_public_key, telegram_bot_username, limits]
+      required: [version, vapid_public_key, telegram_bot_username, limits, cloud_ai]
       properties:
         version: { type: string }
         vapid_public_key:
           type: [string, "null"]
           description: null when push is not configured; the app then relies on the bot or the open page.
         telegram_bot_username: { type: [string, "null"] }
+        cloud_ai:
+          type: object
+          description: DigitalOcean Serverless Inference tier (ADR-0022). All false when no scoped key is configured.
+          required: [provider, ladder, photo_opt_in]
+          properties:
+            provider: { type: [string, "null"], enum: [digitalocean, null] }
+            ladder: { type: boolean, description: "Plan ladders may come from the cloud when the hub is absent" }
+            photo_opt_in: { type: boolean, description: "The host may opt in to send this Flare's photo to the cloud when the hub is absent" }
         limits:
           type: object
           required: [max_members, max_photo_bytes, flare_quorum, plan_quorum]
@@ -1483,7 +1497,7 @@ components:
       properties:
         invite: { type: string, description: "At most 6 words, no emoji, no person words (enforce())" }
         alt: { type: string, description: "At most 20 words; the photo's accessible name (SRS-ACC-5). Empty on the rules tier." }
-        tier: { type: string, enum: [hub, rules] }
+        tier: { type: string, enum: [hub, rules, cloud], description: "cloud = DigitalOcean (ADR-0022)" }
         ms: { type: integer, minimum: 0 }
 
     LadderRequest:
@@ -1517,7 +1531,7 @@ components:
               step: { type: integer, minimum: 1, maximum: 4 }
               label: { type: string, maxLength: 40, description: "At most 4 words" }
               minutes: { type: integer, minimum: 5 }
-        tier: { type: string, enum: [hub, rules] }
+        tier: { type: string, enum: [hub, rules, cloud], description: "cloud = DigitalOcean (ADR-0022)" }
         ms: { type: integer, minimum: 0 }
 
     SealedGathering:

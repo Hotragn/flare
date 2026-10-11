@@ -4,7 +4,15 @@
 import { countWords, enforce } from "@flare/shared";
 import { z } from "zod";
 import { t } from "./copy.ts";
-import { callHub, type FallbackWhy, PHONE_TIMEOUT_MS, type Tier, type TierDeps, tierLabel } from "./tier.ts";
+import {
+  CLOUD_TIMEOUT_MS,
+  callHub,
+  type FallbackWhy,
+  PHONE_TIMEOUT_MS,
+  type Tier,
+  type TierDeps,
+  tierLabel,
+} from "./tier.ts";
 
 export type LadderStep = { step: 1 | 2 | 3 | 4; label: string; minutes: number };
 export type LadderRequest = { ask: string; total_minutes: number; weather?: { rain_likely: boolean; temp_f: number } };
@@ -75,7 +83,7 @@ export const stepNames = (steps: LadderStep[]) => steps.map((s) => ({ step: s.st
 
 const LadderResponse = z.object({
   steps: z.array(z.object({ step: z.number().int(), label: z.string(), minutes: z.number().int() })).length(4),
-  tier: z.enum(["hub", "rules"]),
+  tier: z.enum(["hub", "rules", "cloud"]),
   ms: z.number().int().nonnegative(),
 });
 
@@ -89,7 +97,12 @@ export type LadderOutcome = {
 };
 
 /** Ask line to four steps. Never throws: the template is the floor. */
-export async function draftLadder(req: LadderRequest, deps: TierDeps): Promise<LadderOutcome> {
+/** `cloudOn`: /config says the DigitalOcean tier may answer (ADR-0022), so wait for it. */
+export async function draftLadder(
+  req: LadderRequest,
+  deps: TierDeps,
+  opts: { cloudOn?: boolean } = {},
+): Promise<LadderOutcome> {
   const ask = req.ask.trim().slice(0, MAX_ASK_CHARS);
   const total = Math.min(MAX_TOTAL, Math.max(MIN_TOTAL, Math.round(req.total_minutes)));
   const body = JSON.stringify({ ask, total_minutes: total, ...(req.weather ? { weather: req.weather } : {}) });
@@ -101,17 +114,23 @@ export async function draftLadder(req: LadderRequest, deps: TierDeps): Promise<L
           const d = LadderResponse.safeParse(json);
           if (!d.success) return null;
           const steps = d.data.steps as LadderStep[];
-          if (d.data.tier === "hub" && !checkLadder(steps).ok) return null;
+          if (d.data.tier !== "rules" && !checkLadder(steps).ok) return null;
           return { tier: d.data.tier, value: steps };
         },
         deps,
-        deps.timeoutMs ?? PHONE_TIMEOUT_MS.ladder,
+        deps.timeoutMs ?? (opts.cloudOn ? CLOUD_TIMEOUT_MS : PHONE_TIMEOUT_MS.ladder),
       )
     : ({ ok: false, why: "unusable", ms: 0 } as const);
   const at = new Date(Date.now()).toISOString();
   if (r.ok) {
-    deps.store?.record({ feature: "ladder", tier: "hub", at, ms: r.ms });
-    return { tier: "hub", steps: r.value, ms: r.ms, label: tierLabel("hub"), note: t("ladder.madeHub") };
+    deps.store?.record({ feature: "ladder", tier: r.tier, at, ms: r.ms });
+    return {
+      tier: r.tier,
+      steps: r.value,
+      ms: r.ms,
+      label: tierLabel(r.tier),
+      note: t(r.tier === "cloud" ? "ladder.madeCloud" : "ladder.madeHub"),
+    };
   }
   deps.store?.record({ feature: "ladder", tier: "rules", at, ms: r.ms, why: r.why });
   return {

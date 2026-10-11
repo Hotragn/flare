@@ -130,6 +130,27 @@ export function hubChat<T>(model: string, fn: (span: SpanHandle) => Promise<T>):
   );
 }
 
+/** The DigitalOcean call as a `chat` span (ADR-0022). */
+export function cloudChat<T>(model: string, fn: () => Promise<T>): Promise<T> {
+  if (!enabled) return fn();
+  return Sentry.startSpan(
+    {
+      op: "gen_ai.chat",
+      name: `chat ${model}`,
+      attributes: {
+        "gen_ai.operation.name": "chat",
+        "gen_ai.provider.name": "digitalocean",
+        "gen_ai.request.model": model,
+      },
+    },
+    async (s) => {
+      const v = await fn();
+      s.setAttributes({ "flare.ok": v !== null });
+      return v;
+    },
+  );
+}
+
 /** enforce() and other guards as an `execute_tool` span. */
 export function guardSpan<T>(tool: string, fn: (span: SpanHandle) => T): T {
   if (!enabled) return fn(noop);

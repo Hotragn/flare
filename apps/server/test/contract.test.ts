@@ -43,6 +43,7 @@ describe("getConfig", () => {
       vapid_public_key: null,
       telegram_bot_username: null,
       limits: { max_members: 12, max_photo_bytes: 1_500_000, flare_quorum: [2, 3, 4], plan_quorum: [2, 3, 4, 5, 6] },
+      cloud_ai: { provider: null, ladder: false, photo_opt_in: false }, // ADR-0022: off without a scoped key
     });
   });
 });
