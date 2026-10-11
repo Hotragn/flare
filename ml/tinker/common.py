@@ -12,7 +12,7 @@ OUT = HERE / "out"
 # The founder's .env lives in the main checkout, not in worktrees.
 ENV_CANDIDATES = [REPO / ".env", Path("/Users/hotragn/Documents/Claude Code/HacktoberFest/flare/.env")]
 
-BASE_MODEL = os.environ.get("FLARE_TINKER_BASE", "Qwen/Qwen3-4B-Instruct-2507")
+BASE_MODEL = os.environ.get("FLARE_TINKER_BASE", "Qwen/Qwen3.5-4B")
 MEMBERS = ["Fuego", "Amor", "Shilp", "Ammo"]
 STEPS = [(1, "the full walk"), (2, "the park loop"), (3, "a quick lap"), (4, "just say hi")]
 
@@ -86,6 +86,9 @@ def decode_answer(s: str):
                 ok, v = _try_json(s[i : j + 1])
                 if ok:
                     break
+    # Lenient on one wrapper: ["error:not_in_group"] or ["unparsed"] reads as the bare string.
+    if ok and isinstance(v, list) and len(v) == 1 and isinstance(v[0], str):
+        v = v[0]
     if not ok or v == "unparsed":
         return None
     if isinstance(v, str):
