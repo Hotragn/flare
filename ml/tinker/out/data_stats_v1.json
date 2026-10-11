@@ -1,0 +1,395 @@
+{
+  "seed": 7,
+  "examples": 3000,
+  "dropped": {
+    "near_eval_item_jaccard_0.6": 98,
+    "duplicate": 370,
+    "equals_eval_item": 56
+  },
+  "rule_counts": {
+    "back_by": 978,
+    "unparsed": 142,
+    "with": 1311,
+    "max_walk": 590,
+    "after": 1011,
+    "max_step": 469,
+    "min_step": 176,
+    "error:not_in_group": 50,
+    "plain_yes": 15
+  },
+  "rules_parser_cross_check": {
+    "agrees": 1308,
+    "differs": 1692
+  },
+  "rules_parser_agree_rate": 0.436,
+  "held_out_texts": 104,
+  "differs_examples": [
+    {
+      "text": "as long as Fuego's there, need to be back for dinner at 12",
+      "template": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        },
+        {
+          "type": "back_by",
+          "value": "12:00"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "Down till half three max.",
+      "template": [
+        {
+          "type": "back_by",
+          "value": "15:30"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "After I finish work at 3:10.",
+      "template": [
+        {
+          "type": "after",
+          "value": "15:10"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "Starting 1:10 :)",
+      "template": [
+        {
+          "type": "after",
+          "value": "13:10"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "I can do it not before 10 but only if Amor drives and I need to be gone by 4!",
+      "template": [
+        {
+          "type": "after",
+          "value": "10:00"
+        },
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "back_by",
+          "value": "16:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "after",
+          "value": "10:00"
+        }
+      ]
+    },
+    {
+      "text": "earliest quarter past 8",
+      "template": [
+        {
+          "type": "after",
+          "value": "08:15"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "yes but must leave at 9 - need Fuego there",
+      "template": [
+        {
+          "type": "back_by",
+          "value": "09:00"
+        },
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "Within 30 minutes walking",
+      "template": [
+        {
+          "type": "max_walk",
+          "value": 30
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "WITHIN 20 MINUTES WALKING PLS",
+      "template": [
+        {
+          "type": "max_walk",
+          "value": 20
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "when Shilp comes. gotta be home at 12 pls",
+      "template": [
+        {
+          "type": "with",
+          "value": "Shilp"
+        },
+        {
+          "type": "back_by",
+          "value": "12:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "back_by",
+          "value": "12:00"
+        }
+      ]
+    },
+    {
+      "text": "yeah can't walk too far - have to go at 1 pls",
+      "template": [
+        {
+          "type": "max_walk",
+          "value": 10
+        },
+        {
+          "type": "back_by",
+          "value": "13:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "max_walk",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "text": "Ok with Amor. after my shift ends at 7. at most 15 min walking I'm in",
+      "template": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "after",
+          "value": "19:00"
+        },
+        {
+          "type": "max_walk",
+          "value": 15
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "max_walk",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "text": "Fuego has to come :)",
+      "template": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "I'll come after the gym around 5am",
+      "template": [
+        {
+          "type": "after",
+          "value": "05:00"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "yes but not before quarter past five pls",
+      "template": [
+        {
+          "type": "after",
+          "value": "17:15"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "When Fuego comes lol",
+      "template": [
+        {
+          "type": "with",
+          "value": "Fuego"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "I'M IN BUSY TILL 9",
+      "template": [
+        {
+          "type": "after",
+          "value": "09:00"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "Quick one only, noon at the earliest pls",
+      "template": [
+        {
+          "type": "max_step",
+          "value": 3
+        },
+        {
+          "type": "after",
+          "value": "12:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "max_step",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "text": "ok busy until 6, have to be out by 7 o'clock.",
+      "template": [
+        {
+          "type": "after",
+          "value": "18:00"
+        },
+        {
+          "type": "back_by",
+          "value": "19:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "back_by",
+          "value": "19:00"
+        }
+      ]
+    },
+    {
+      "text": "Yes but need Amor there, from 5 am on.",
+      "template": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "after",
+          "value": "05:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "after",
+          "value": "05:00"
+        }
+      ]
+    },
+    {
+      "text": "sounds fun, curfew is 6",
+      "template": [
+        {
+          "type": "back_by",
+          "value": "18:00"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "I'm in curfew is 1:40, and once I'm done with my errands around 11:45, and if amor is in!",
+      "template": [
+        {
+          "type": "back_by",
+          "value": "13:40"
+        },
+        {
+          "type": "after",
+          "value": "11:45"
+        },
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ]
+    },
+    {
+      "text": "I work till half two. provided Amor comes lol",
+      "template": [
+        {
+          "type": "after",
+          "value": "14:30"
+        },
+        {
+          "type": "with",
+          "value": "Amor"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "count me in 20 min walk tops. can stay until 6 am",
+      "template": [
+        {
+          "type": "max_walk",
+          "value": 20
+        },
+        {
+          "type": "back_by",
+          "value": "06:00"
+        }
+      ],
+      "rules_parser": null
+    },
+    {
+      "text": "I'll come as long as Amor's there but not before noon lol",
+      "template": [
+        {
+          "type": "with",
+          "value": "Amor"
+        },
+        {
+          "type": "after",
+          "value": "12:00"
+        }
+      ],
+      "rules_parser": [
+        {
+          "type": "after",
+          "value": "12:00"
+        }
+      ]
+    }
+  ]
+}

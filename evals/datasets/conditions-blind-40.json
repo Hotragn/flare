@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "note": "Second blind paraphrase set, written without seeing the rules parser, the training templates, or conditions-fresh-40. Never used to tune anything.",
+  "items": [
+    { "text": "yeah if fuego's coming too", "expect": [{ "type": "with", "value": "Fuego" }] },
+    { "text": "im down as long as Shilp is there", "expect": [{ "type": "with", "value": "Shilp" }] },
+    { "text": "only going if ammo shows up lol", "expect": [{ "type": "with", "value": "Ammo" }] },
+    { "text": "is Amor in? then me too", "expect": [{ "type": "with", "value": "Amor" }] },
+    { "text": "need Shilp there or I'm out", "expect": [{ "type": "with", "value": "Shilp" }] },
+    { "text": "count me in if Ammo can make it", "expect": [{ "type": "with", "value": "Ammo" }] },
+    {
+      "text": "sure, as long as fuego and shilp both come",
+      "expect": [{ "type": "with", "value": "Fuego" }, { "type": "with", "value": "Shilp" }]
+    },
+    { "text": "wont go without amor tbh", "expect": [{ "type": "with", "value": "Amor" }] },
+    { "text": "cant leave the house till 2", "expect": [{ "type": "after", "value": "14:00" }] },
+    { "text": "im free from 4 on", "expect": [{ "type": "after", "value": "16:00" }] },
+    { "text": "gotta finish laundry first so 3:15 at the earliest", "expect": [{ "type": "after", "value": "15:15" }] },
+    { "text": "anytime past 1:45 works", "expect": [{ "type": "after", "value": "13:45" }] },
+    { "text": "after 10am is good", "expect": [{ "type": "after", "value": "10:00" }] },
+    { "text": "start no earlier than 12:30 pls", "expect": [{ "type": "after", "value": "12:30" }] },
+    { "text": "in, but not till after 5", "expect": [{ "type": "after", "value": "17:00" }] },
+    { "text": "have to be home by 7 for my sister", "expect": [{ "type": "back_by", "value": "19:00" }] },
+    { "text": "need to be done by 3:45", "expect": [{ "type": "back_by", "value": "15:45" }], "debatable": true },
+    { "text": "gotta head back no later than 2:30", "expect": [{ "type": "back_by", "value": "14:30" }] },
+    {
+      "text": "have a shift at 6 so back before then",
+      "expect": [{ "type": "back_by", "value": "18:00" }],
+      "debatable": true
+    },
+    { "text": "home by 11am pls", "expect": [{ "type": "back_by", "value": "11:00" }] },
+    { "text": "must be back at my place by half past 5", "expect": [{ "type": "back_by", "value": "17:30" }] },
+    { "text": "back by 1 latest", "expect": [{ "type": "back_by", "value": "13:00" }] },
+    { "text": "my knee's bad, 5 min walk tops", "expect": [{ "type": "max_walk", "value": 5 }] },
+    { "text": "dont wanna walk more than 25 mins", "expect": [{ "type": "max_walk", "value": 25 }] },
+    { "text": "keep it under 15 min on foot", "expect": [{ "type": "max_walk", "value": 15 }] },
+    { "text": "somewhere not far pls", "expect": [{ "type": "max_walk", "value": 10 }] },
+    { "text": "half hour walking max", "expect": [{ "type": "max_walk", "value": 30 }] },
+    { "text": "quick lap is my limit", "expect": [{ "type": "max_step", "value": 3 }] },
+    { "text": "just wanna say hi, nothing bigger", "expect": [{ "type": "max_step", "value": 4 }] },
+    { "text": "full walk only pls", "expect": [{ "type": "min_step", "value": 1 }] },
+    { "text": "park loop at minimum, not doing the tiny stuff", "expect": [{ "type": "min_step", "value": 2 }] },
+    {
+      "text": "after 1 but back by 4",
+      "expect": [{ "type": "after", "value": "13:00" }, { "type": "back_by", "value": "16:00" }]
+    },
+    {
+      "text": "if amor comes, 10 min walk max",
+      "expect": [{ "type": "with", "value": "Amor" }, { "type": "max_walk", "value": 10 }]
+    },
+    {
+      "text": "quick lap only and I need to be home by 5:30",
+      "expect": [{ "type": "max_step", "value": 3 }, { "type": "back_by", "value": "17:30" }]
+    },
+    {
+      "text": "after 3 and only if Ammo's coming",
+      "expect": [{ "type": "after", "value": "15:00" }, { "type": "with", "value": "Ammo" }]
+    },
+    {
+      "text": "not before 11am, 20 min walk max",
+      "expect": [{ "type": "after", "value": "11:00" }, { "type": "max_walk", "value": 20 }]
+    },
+    { "text": "yesss lets go", "expect": [] },
+    { "text": "in if jake's coming", "expect": "error:not_in_group" },
+    { "text": "back by 4 or 5 depending", "expect": null },
+    { "text": "depends how i feel tbh", "expect": null }
+  ]
+}
