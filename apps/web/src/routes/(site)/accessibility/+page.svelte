@@ -2,7 +2,7 @@
      why benches, and how to report a barrier. -->
 <script lang="ts">
   import Icon from "#lib/components/Icon.svelte";
-  import { t, type CopyKey } from "#lib/copy/index.ts";
+  import { t, type CopyKey } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
   import { reveal } from "../reveal.ts";
 

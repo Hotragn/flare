@@ -2,7 +2,7 @@
 <script lang="ts">
   import Scenery from "#lib/components/Scenery.svelte";
   import Icon from "#lib/components/Icon.svelte";
-  import { t, type CopyKey } from "#lib/copy/index.ts";
+  import { t, type CopyKey } from "#lib/copy/site.ts";
   import Seo from "./Seo.svelte";
   import Steps from "./Steps.svelte";
   import Shrink from "./Shrink.svelte";

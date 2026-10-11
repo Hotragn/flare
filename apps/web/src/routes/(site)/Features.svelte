@@ -1,7 +1,7 @@
 <!-- W1 feature cards (backlog #14): one card per feature that exists today, each with a small
      real screen from the app and a way into the demo. Features still being built get no card. -->
 <script lang="ts">
-  import { t, type CopyKey } from "#lib/copy/index.ts";
+  import { t, type CopyKey } from "#lib/copy/site.ts";
   // The screens load when the cards come within 400 px, not with the page: Chrome's own lazy
   // margin on phones is a whole screen or more, and they would compete with the hero (LCP).
   function near(img: HTMLImageElement) {

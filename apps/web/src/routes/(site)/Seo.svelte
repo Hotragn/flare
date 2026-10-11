@@ -1,7 +1,7 @@
 <!-- Head tags for one website page: title, description, canonical, Open Graph, Twitter card,
      and on the home page the JSON-LD SoftwareApplication record. -->
 <script lang="ts">
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
   import { ORIGIN, OG_IMAGE, ldJson, page, softwareApplication, type SitePage } from "./seo.ts";
   let { path }: { path: SitePage["path"] } = $props();
   const p = $derived(page(path));

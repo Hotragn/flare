@@ -1,7 +1,7 @@
 <!-- W1 "Built with" (backlog #14): each tool and what it does in Flare, in one line. Plain links,
      no logos fetched from other sites. -->
 <script lang="ts">
-  import { t, type CopyKey } from "#lib/copy/index.ts";
+  import { t, type CopyKey } from "#lib/copy/site.ts";
   const tools: [string, string, CopyKey][] = [
     ["Gemma 4", "https://ai.google.dev/gemma", "site.built.gemma"],
     ["Google AI Studio", "https://aistudio.google.com/", "site.built.google"],

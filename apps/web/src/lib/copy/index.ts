@@ -13,6 +13,11 @@ type Entry = { text: string; one?: string; kind: string };
 
 const strings = deck.strings as Record<CopyKey, Entry>;
 
+/** #lib/copy/site.ts adds the website's lines, which the app bundle leaves out (vite.config.ts). */
+export function addStrings(more: Record<string, Entry>): void {
+  Object.assign(strings, more);
+}
+
 export function t(key: CopyKey, vars: Vars = {}): string {
   const entry = strings[key];
   if (!entry) throw new Error(`copy: unknown key "${key}"`);

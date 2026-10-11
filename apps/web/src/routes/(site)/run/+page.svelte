@@ -1,6 +1,6 @@
 <!-- Run it yourself (W6), the README's setup steps. Commands are code, not copy. -->
 <script lang="ts">
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
 
   const install = `git clone https://github.com/Hotragn/flare-outside && cd flare-outside

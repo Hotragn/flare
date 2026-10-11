@@ -1,7 +1,7 @@
 <!-- W3 It shrinks instead of dying: Kindling, Lit, Ember, Gone, and the Plan ladder. -->
 <script lang="ts">
   import Flame from "#lib/components/Flame.svelte";
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
 </script>
 
 <h2 class="t-title">{t("site.shrink.title")}</h2>

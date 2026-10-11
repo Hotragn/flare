@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "#lib/components/Icon.svelte";
-  import { t, variant, type CopyKey } from "#lib/copy/index.ts";
+  import { t, variant, type CopyKey } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
   import { reveal } from "../reveal.ts";
   import { fetchAudit, type AuditView } from "../audit.ts";

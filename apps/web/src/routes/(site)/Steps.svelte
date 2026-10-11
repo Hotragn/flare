@@ -3,7 +3,7 @@
   import PhotoPrint from "#lib/components/PhotoPrint.svelte";
   import FlameMeter from "#lib/components/FlameMeter.svelte";
   import Flame from "#lib/components/Flame.svelte";
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
   import { flare } from "#lib/sample.ts";
   let { heading = "h2" }: { heading?: "h1" | "h2" } = $props();
   const sub = $derived(heading === "h1" ? "h2" : "h3");

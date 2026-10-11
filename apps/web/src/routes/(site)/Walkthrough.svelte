@@ -1,6 +1,6 @@
 <!-- /how/ in full (fresh-eyes #18): the real demo screens in order, one line each, then Try the demo. -->
 <script lang="ts">
-  import { t, type CopyKey } from "#lib/copy/index.ts";
+  import { t, type CopyKey } from "#lib/copy/site.ts";
   const steps = ["send", "friend", "count", "lit", "find", "after"] as const;
 </script>
 

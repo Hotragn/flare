@@ -1,6 +1,6 @@
 <!-- How it works in full: the real screens step by step (fresh-eyes #18), the shrink rule (W3), and the Gemma attribution (docs/ml/model-selection.md). -->
 <script lang="ts">
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
   import Walkthrough from "../Walkthrough.svelte";
   import Shrink from "../Shrink.svelte";

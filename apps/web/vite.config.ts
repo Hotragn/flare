@@ -7,19 +7,31 @@ import { defineConfig, type Plugin } from "vite";
  * only the text, the `one` form and the variants, so the bundle gets just those (deck.json
  * 85 KB raw; the shipped part is about a third). Keys and strings are unchanged.
  */
-function slimDeck(): Plugin {
+/** Website keys the app also shows (the OpenStreetMap credit on the loop page and card). */
+const APP_SITE_KEYS = new Set(["site.foot.osm"]);
+
+export function slimDeck(): Plugin {
   return {
     name: "flare-slim-deck",
     enforce: "pre",
     transform(code, id) {
-      if (!id.replace(/\\/g, "/").endsWith("design/prototype/src/lib/copy/deck.json")) return null;
+      const path = id.replace(/\\/g, "/");
+      const site = path.endsWith("design/prototype/src/lib/copy/deck.json?site");
+      if (!site && !path.endsWith("design/prototype/src/lib/copy/deck.json")) return null;
       const deck = JSON.parse(code) as {
         meta: { variants: Record<string, string> };
         strings: Record<string, { text: string; one?: string }>;
       };
+      // The website's own lines (site.*, og.*) ship only with the website: #lib/copy/site.ts
+      // imports deck.json?site and adds them. The app keeps the few it shows (JS budget).
+      const isSite = (k: string) => (k.startsWith("site.") || k.startsWith("og.")) && !APP_SITE_KEYS.has(k);
       const strings = Object.fromEntries(
-        Object.entries(deck.strings).map(([k, e]) => [k, e.one ? { text: e.text, one: e.one } : { text: e.text }]),
+        Object.entries(deck.strings)
+          .filter(([k]) => (site ? isSite(k) : !isSite(k)))
+          .map(([k, e]) => [k, e.one ? { text: e.text, one: e.one } : { text: e.text }]),
       );
+      // With the ?site query Vite's JSON plugin skips the file, so that one is emitted as a module.
+      if (site) return { code: `export default ${JSON.stringify({ strings })};`, map: null };
       return { code: JSON.stringify({ meta: { variants: deck.meta.variants }, strings }), map: null };
     },
   };

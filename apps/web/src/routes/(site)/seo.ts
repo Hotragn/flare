@@ -1,7 +1,7 @@
 // SEO for the five prerendered website pages: canonical URLs, Open Graph, and the JSON-LD
 // SoftwareApplication record. The site is prerendered, so the origin is fixed at build time:
 // the production server from openapi.yaml `servers`, or SITE_ORIGIN when building elsewhere.
-import { t } from "#lib/copy/index.ts";
+import { t } from "#lib/copy/site.ts";
 
 export const ORIGIN = (import.meta.env.SITE_ORIGIN as string | undefined) ?? "https://flare-outside.onrender.com";
 

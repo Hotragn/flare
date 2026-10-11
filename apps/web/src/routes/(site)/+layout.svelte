@@ -4,7 +4,7 @@
   import "#lib/styles/app.css";
   import "./site.css";
   import { page } from "$app/state";
-  import { t } from "#lib/copy/index.ts";
+  import { t } from "#lib/copy/site.ts";
   import { onDestroy } from "svelte";
   let { children } = $props();
 
