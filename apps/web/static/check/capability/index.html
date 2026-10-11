@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#1b1b1f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Flare check">
@@ -25,7 +26,8 @@
   .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); } .muted { color: var(--muted); }
   pre { margin: 6px 0 0; font: 12px/1.35 ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-word; }
   button { font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); margin: 4px 6px 4px 0; min-height: 44px; }
-  button.primary { background: #ff6a2b; color: #fff; border-color: #ff6a2b; }
+  /* BUG-056: brand maple-700 with white text, 6.3:1 in both themes (was #ff6a2b, 2.85:1). */
+  button.primary { background: #A93C12; color: #fff; border-color: #A93C12; }
   .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); display: flex; gap: 8px; }
   .bar button { flex: 1; margin: 0; }
   label.sw { display: flex; align-items: center; gap: 10px; min-height: 44px; }
@@ -34,6 +36,7 @@
 </style>
 </head>
 <body>
+<main>
 <h1>Flare phone check</h1>
 <p class="lead">Tap each button once. Results stay on screen. Use “Copy results” at the bottom and paste them in the Flare test chat.</p>
 
@@ -52,7 +55,7 @@
   <button type="button" class="primary" data-run="geo">Start 20 s location test</button><pre></pre></section>
 
 <section id="s-camera"><h2>Camera <span class="st"></span></h2>
-  <input id="file" type="file" accept="image/*" capture="environment">
+  <input id="file" type="file" accept="image/*" capture="environment" aria-label="Take or pick a photo">
   <button type="button" data-run="cameraStream">Test live camera</button>
   <video id="video" playsinline muted></video><pre></pre></section>
 
@@ -90,7 +93,8 @@
   <button type="button" data-run="shader">Run shader gate</button><pre></pre></section>
 
 
-<div class="bar"><button type="button" class="primary" id="copy">Copy results</button><button type="button" id="send">Send to laptop</button></div>
+</main>
+<div class="bar" role="region" aria-label="Results"><button type="button" class="primary" id="copy">Copy results</button><button type="button" id="send">Send to laptop</button></div>
 
 <script type="module">
 const R = {}; // section id -> {status, lines[]}

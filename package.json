@@ -48,7 +48,8 @@
     "e2e:sparks": "node apps/web/test/e2e/sparks.ts",
     "e2e:loop": "node apps/web/test/e2e/loop.ts",
     "e2e:telegram": "node apps/web/test/e2e/telegram.ts",
-    "gen:guide": "node scripts/gen-guide.ts"
+    "gen:guide": "node scripts/gen-guide.ts",
+    "e2e:kit-a11y": "node apps/web/test/e2e/kit-a11y.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",

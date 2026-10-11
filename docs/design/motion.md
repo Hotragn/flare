@@ -308,6 +308,17 @@ Levels are measured from the samples by the generator (`design/motion/sounds.jso
 
 ## 6. Haptics
 
+### Device result (Sun 2026-10-11, iPhone 16 Pro Max, iOS 26.6.1)
+
+| Path | Felt? | What Flare does now |
+| --- | --- | --- |
+| Native switch toggled by the tester's own finger (capability page) | No | Still attached (it is the only path that can work on 26.5+), never relied on |
+| Script click on a hidden switch | Not tested on this phone; WebKit made it untrusted in 26.5 | Skipped on iOS 26.5+ (`scriptSwitchWorks()`), so the code no longer claims a haptic it can't give |
+| `navigator.vibrate` | Not in Safari | Android only |
+| Sound | Heard, also with the silent switch on (`audioSession` playback) | Every haptic moment plays its sound too, facing included |
+
+[FIELD: the haptics page's per-test results (tests 1 to 4) from the founder's copy, if they differ.] Possible cause for the switch: System Haptics off in Settings, Sounds & Haptics; the checklist asks to turn it on.
+
 ### What the research says (Oct 10, 2026)
 
 - **`navigator.vibrate`:** Chrome on Android supports it. No version of Safari does, desktop or iOS, and Firefox removed it in version 129 ([caniuse "Vibration API"](https://caniuse.com/vibration)). It needs sticky user activation ([MDN, Navigator.vibrate()](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)).

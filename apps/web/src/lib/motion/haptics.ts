@@ -42,6 +42,18 @@ export function support() {
   };
 }
 
+/** iOS major.minor from Safari's "Version/26.6.1", or null elsewhere. */
+export function iosSafariVersion(ua = typeof navigator === "undefined" ? "" : navigator.userAgent): number | null {
+  if (!/iPhone|iPad|iPod/.test(ua)) return null;
+  const m = ua.match(/Version\/(\d+)\.(\d+)/);
+  return m ? Number(m[1]) + Number(m[2]) / 100 : null;
+}
+/** WebKit made script clicks on a switch untrusted in 26.5: they toggle but never buzz. */
+export function scriptSwitchWorks(ua?: string): boolean {
+  const v = iosSafariVersion(ua);
+  return v === null || v < 26.05;
+}
+
 function activeGesture() {
   const ua = (navigator as Navigator & { userActivation?: { isActive: boolean } }).userActivation;
   return ua ? ua.isActive : true;
@@ -84,8 +96,8 @@ export function haptic(kind: HapticKind): "vibrate" | "switch" | "none" {
       return "vibrate";
     }
   }
-  if (s.switchInput && activeGesture()) {
-    hiddenSwitch().click(); // iOS 17.4 to 26.4; ignored as untrusted on 26.5+
+  if (s.switchInput && activeGesture() && scriptSwitchWorks()) {
+    hiddenSwitch().click(); // iOS 17.4 to 26.4 only; skipped on 26.5+ where it is untrusted
     last = now;
     hlog.push(`switch click ${kind}`);
     return "switch";

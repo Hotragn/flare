@@ -488,6 +488,7 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Symptom:** axe: color contrast (6 nodes), an unlabelled control, no main landmark, content outside regions; the file input and the switch are under 44 px.
 - **Cause:** The lab page was built as a quick tool, before the design system.
 - **Fix:** Not fixed: an internal tool the team uses for 15 minutes Sunday, not a product page. The other kit pages were fixed (dark contrast, focusable results box, 44 px checkbox).
+- **Update Sun 09:30 ET, fixed:** the founder found the card text unreadable on the iPhone. Primary buttons now brand maple-700 with white (6.3:1, was 2.85:1), `color-scheme: light dark` on all kit pages, a main landmark, a labelled file input. `npm run e2e:kit-a11y`: 0 axe violations on /check/, /check/capability/ and /check/compass.html in light and dark, with every status colour applied as after a run.
 - **Proof:** a11y pass: 0 serious or critical findings outside `/check/` over 64 page views.
 
 ## BUG-057: PWA offline test expected the old home heading
