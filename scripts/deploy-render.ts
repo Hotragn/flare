@@ -120,8 +120,15 @@ function renderApi(key: string, base: string): Api {
     } catch {
       throw new Error(`${method} ${path}: network error`);
     }
-    // The error text never echoes the request body (it holds env values).
-    if (!res.ok) throw new Error(`${method} ${path}: ${res.status}`);
+    // The error text never echoes the request body (it holds env values); Render's own
+    // message is kept (it says which field is wrong), cut to 200 characters.
+    if (!res.ok) {
+      const why = await res.json().then(
+        (j: { message?: unknown }) => (typeof j.message === "string" ? `: ${j.message.slice(0, 200)}` : ""),
+        () => "",
+      );
+      throw new Error(`${method} ${path}: ${res.status}${why}`);
+    }
     return (await res.json().catch(() => ({}))) as never;
   };
 }
