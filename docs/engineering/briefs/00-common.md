@@ -5,12 +5,12 @@ Read this first, then your own brief. Written by the engineering lead, Sat 2026-
 ## The project
 Flare: a group invite app for the DEV Hacktoberfest Week 1 "Touch Grass" challenge. Release candidate (RC) Sun 2026-10-11 10:00 ET; field test 11:00 to 15:00 ET near Fairlane Town Center, Dearborn MI, on four iPhones (13, 16 Pro Max, 17 Pro, 17 Pro Max); DEV deadline Mon 06:59 UTC.
 
-## Read before you write code
-1. docs/handoffs/ (01 to 08), especially 07-architect.md and 08-engineering-lead.md.
-2. docs/architecture/README.md and the docs it lists that touch your area; contracts in docs/architecture/contracts/.
-3. docs/engineering/01-work-breakdown.md (your WPs), 02-interface-control.md (frozen interfaces), 04-dependencies-and-process.md (definition of done).
-4. docs/requirements/01-srs.md and 03-business-rules.md for the rules you implement.
-5. lab/reports/ for evidence (read-only; never edit or commit lab/).
+## Read only this, then start coding within 10 minutes
+1. Your own brief (and url-map.md).
+2. The ICD types for your interfaces (packages/shared/src/icd/*.ts, and openapi.yaml/asyncapi.yaml sections for your endpoints).
+3. Only the SRS, BR and ADR sections your brief cites, looked up when you need them.
+
+Do not read the full handoffs, research, product or design doc sets. Look things up only when a specific question comes up.
 
 ## Setup in your worktree
 - You are in your own git worktree. First: `git branch -m wp/<your-area>` (names in RESUME.md), then `npm ci`.

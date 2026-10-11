@@ -1,6 +1,6 @@
 # Flare: Interface control document
 
-Version 1.0, frozen Sat 2026-10-10 19:30 ET. Owner: Engineering lead. Every boundary between two work packages is listed here with its single source of truth. A specialist builds against these and nothing else, so all nine can work at once.
+Version 1.1, Sat 2026-10-10 22:30 ET (ICR-1: counter effect gains optional `by` and `op`). First frozen 19:30 ET. Owner: Engineering lead. Every boundary between two work packages is listed here with its single source of truth. A specialist builds against these and nothing else, so all nine can work at once.
 
 ## 1. The interfaces
 

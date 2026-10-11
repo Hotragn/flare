@@ -54,6 +54,10 @@ export interface Store {
   lit<T>(gatheringId: string): Promise<T | null>;
   needs<T>(): Promise<T | null>;
   saveNeeds(n: unknown): Promise<void>;
+  /** CR-PW4 (ICD-5 v1.1, additive): the group's raw key fragment, for building the next link. */
+  fragment(groupId: string): Promise<string | null>;
+  /** CR-PW4: lets the service worker find a gathering's group key for a push. */
+  rememberGathering(gatheringId: string, groupId: string): Promise<void>;
 }
 
 /** Live view: SSE plus a 30 s poll, server-time offset (07-offline-sync-and-ai.md A4). */

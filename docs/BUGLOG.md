@@ -296,3 +296,38 @@ Format: ID, date, area, symptom, cause, fix, proof.
 - **Cause:** The fault proxy gave each chunk its own timer; timers with different delays can fire out of order, which corrupted the TCP stream it was forwarding. A tool bug, not a relay bug.
 - **Fix:** One ordered queue and one timer per direction.
 - **Proof:** Latency case after the fix: 60/60 from the hub, p95 703 ms.
+
+## BUG-033 (was BUG-ENGINE-1): Ember picked c1 before anyone reported
+- Date: 2026-10-10. Area: engine (CE4).
+- Symptom: entering Ember with candidates and no yes records set `ember_choice = c1` at once (test "F4: timer ember at t0+30:00 enters Ember" expected null).
+- Cause: `pickEmber` checked "every voter has reported" over an empty list, which is vacuously true; the host was not required to report.
+- Fix: the host always votes; before the 60 s default the pick waits until the host's record exists and every voter has a result for every candidate.
+- Proof: `npx vitest run packages/engine/test/flare.test.ts` 56/56 after the fix, 5 failing before.
+
+## BUG-034 (was BUG-ENGINE-2): Lit push after Ember named the original spot
+- Date: 2026-10-10. Area: engine (CE2, CE4).
+- Symptom: a Flare lit in Ember pushed `label: "spot"` instead of the chosen bench (`c2`).
+- Cause: `flareLabel` read the label only while `state === "ember"`; `light()` changes the state before building the push.
+- Fix: `flareLabel` returns `ember_choice ?? "spot"`; `ember_choice` is only ever set in Ember and kept at Lit.
+- Proof: test "F5: picks the first candidate every yes passed once all have reported" checks the push label `c2`.
+
+## BUG-035 (was BUG-PWA-1): build fails on `$service-worker`
+- Date: 2026-10-10. Area: PWA.
+- Symptom: `vite build` stopped with `module_removed_service_worker`.
+- Cause: SvelteKit 3.0.1 removed `$service-worker`. Lists now come from `$app/manifest` (`immutable`, `assets`, `prerendered`, as `{ path }` relative to the base) and `version` from `$app/env`.
+- Fix: service-worker.ts imports the new modules and makes the paths absolute.
+- Proof: `npm run build` builds `service-worker.js`; e2e check 3 finds `/`, `/hello/` and the map pack in the cache.
+
+## BUG-036 (was BUG-PWA-2): zod made the service worker 31 KB
+- Date: 2026-10-10. Area: PWA.
+- Symptom: web JS went from 62.7 KB to 93.2 KB gzipped after the service worker landed.
+- Cause: `NoticeText.safeParse` pulled all of zod into the worker bundle.
+- Fix: `isNoticeText` in lib/push/notice.ts mirrors the schema; a test checks it agrees with zod on 12 samples.
+- Proof: service worker 6,356 bytes gzipped; `npm run budget` 68.8 KB of 150.
+
+## BUG-037 (was BUG-PWA-3): web unit tests can't load without a SvelteKit sync
+- Date: 2026-10-10. Area: PWA.
+- Symptom: vitest failed with `Failed to load tsconfig '$app/tsconfig'` for files under apps/web.
+- Cause: apps/web/tsconfig.json extends `$app/tsconfig`, which exists only after `svelte-kit sync`.
+- Fix: run `npx -w apps/web svelte-kit sync` first (the root `typecheck` already does); apps/web/test/pwa has its own tsconfig for types.
+- Proof: 54 tests pass after a sync.
