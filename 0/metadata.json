@@ -1,0 +1,108 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4P0ZE73SD7A279Q0R1X2V4X",
+  "session_id": "904c52d9-f200-4552-8ce5-05e400952efa",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T17:43:12.28132Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 2,
+  "files_touched": [
+    "apps/web/src/lib/screens/H5HostKindling.svelte",
+    "docs/design/redesign/after/demo-1-send.jpg",
+    "docs/design/redesign/after/demo-2-kindling.jpg",
+    "docs/design/redesign/after/demo-2a-friend.jpg",
+    "docs/design/redesign/after/demo-3-ember-lit.jpg",
+    "docs/design/redesign/after/demo-4-compass.jpg",
+    "docs/design/redesign/after/demo-7-away.jpg",
+    "docs/design/redesign/after/demo-8-done.jpg"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "806b023319a6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 3414,
+    "cache_creation_tokens": 5566472,
+    "cache_read_tokens": 850755542,
+    "output_tokens": 1683263,
+    "api_call_count": 1684,
+    "subagent_tokens": {
+      "input_tokens": 390,
+      "cache_creation_tokens": 1230140,
+      "cache_read_tokens": 29343132,
+      "output_tokens": 23212,
+      "api_call_count": 193
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01K5oYFU2by1FRk7GrsqUAy3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "devrelay-challenges"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a11c1af9d124",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 37,
+        "end": 38,
+        "entry_ids": [
+          "219d1cf9-150e-432d-8d93-0420f58175a9"
+        ],
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01K5oYFU2by1FRk7GrsqUAy3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: devrelay-challenges",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 12
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-11T17:43:11.385589Z",
+    "agent_lines": 2,
+    "agent_removed": 0,
+    "human_added": 107,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 109,
+    "total_lines_changed": 173,
+    "agent_percentage": 1.1560693641618496,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 1319,
+      "user_lines_removed": 0,
+      "agent_lines_added": 2,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "apps/web/static/scenic/manifest.json": 44,
+        "evals/reports/conditions-rules.json": 1258,
+        "evals/reports/conditions-rules.md": 17
+      }
+    }
+  ]
+}
