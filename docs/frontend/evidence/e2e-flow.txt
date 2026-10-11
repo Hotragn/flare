@@ -1,6 +1,6 @@
-2026-10-11T14:40:02.091Z
+2026-10-11T16:20:44.850Z
 runs 3/3
-host open to Sent (ms): 6308, 3427, 3551; median 3551 (target 15000)
-link open to You're in (ms): 675, 755, 594; median 675 (target 10000)
+host open to Sent (ms): 7480, 3872, 3894; median 3894 (target 15000)
+link open to You're in (ms): 678, 674, 705; median 678 (target 10000)
 lit on both phones: 3/3
 page errors: 0
