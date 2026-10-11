@@ -6,6 +6,8 @@
   import LinkPage from "#lib/screens/LinkPage.svelte";
   import type { Deps } from "#lib/screens/flow/deps.ts";
   import { wire } from "#lib/screens/flow/wire.ts";
+  import { keyFromHash } from "#lib/crypto/index.ts";
+  import { takeBindToken } from "#lib/outbox/bind.ts";
 
   let deps: Deps | null = null;
   let failed = false;
@@ -14,13 +16,14 @@
   } catch {
     failed = true; // a phone module is missing: say so plainly instead of a broken page
   }
-  const fragment = new URLSearchParams(location.hash.replace(/^#/, "")).get("k");
+  const fragment = keyFromHash(location.hash);
+  const bindToken = takeBindToken(); // single use; removed from the address bar at once
 </script>
 
 <svelte:head><title>{t("app.name")}</title></svelte:head>
 
 {#if deps}
-  <LinkPage {deps} gatheringId={page.params.id ?? ""} {fragment} />
+  <LinkPage {deps} gatheringId={page.params.id ?? ""} {fragment} {bindToken} />
 {:else if failed}
   <Screen close={false}><p class="t-title" role="alert">{t("err.oldBrowser")}</p></Screen>
 {/if}

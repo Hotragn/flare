@@ -26,10 +26,17 @@
   import { bearingDeg, distanceM, type Reading, relative, roundMeters, type SensorState, startSensors } from "./flow/compass.ts";
   import { clock } from "./flow/format.ts";
 
-  let { deps, gatheringId, fragment, area = "fairlane", onexit }: { deps: Deps; gatheringId: string; fragment: string | null; area?: string; onexit?: () => void } = $props();
+  let {
+    deps,
+    gatheringId,
+    fragment,
+    bindToken = null,
+    area = "fairlane",
+    onexit,
+  }: { deps: Deps; gatheringId: string; fragment: string | null; bindToken?: string | null; area?: string; onexit?: () => void } = $props();
 
   // svelte-ignore state_referenced_locally
-  const flow = new LinkFlow(deps, gatheringId);
+  const flow = new LinkFlow(deps, gatheringId, bindToken);
   let name = $state(rememberedName());
   let condText = $state("");
   let sparkLine = $state("");

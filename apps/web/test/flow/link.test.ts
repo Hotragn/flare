@@ -50,6 +50,7 @@ describe("link page (FE3)", () => {
     expect(flow.screen).toBe("join");
     await flow.join("Amor");
     const rec = await f.store.group(s.groupId);
+    expect(f.store.remembered.get(s.id)).toBe(s.groupId); // the service worker finds the key for push
     expect(rec?.memberId).toMatch(/^[0-9a-f-]{36}$/);
     const join = f.outbox.sent.find((x) => x.path.endsWith("/members"));
     expect(JSON.stringify(join?.body)).not.toContain("Amor"); // only ciphertext leaves the phone

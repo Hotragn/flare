@@ -4,9 +4,15 @@
 import type { CapabilitiesIcd, ClientIcd, ConditionsIcd, MapIcd } from "@flare/shared/icd/index";
 import type { GatheringView } from "./api-types.ts";
 
+/** ICD-5 Store plus the two FlareStore methods FE needs (CR-PW4 proposes adding them to the ICD). */
+export type StoreExtras = ClientIcd.Store & {
+  fragment(groupId: string): Promise<string | null>;
+  rememberGathering(gatheringId: string, groupId: string): Promise<void>;
+};
+
 export type Deps = {
   crypto: ClientIcd.Crypto; // ICD-5, PWA
-  store: ClientIcd.Store; // ICD-5, PWA
+  store: StoreExtras; // ICD-5, PWA
   outbox: ClientIcd.Outbox; // ICD-5, PWA
   live: ClientIcd.Live<GatheringView>; // ICD-5, PWA
   // Optional: until they land the flows hide what needs them (no condition link, no walk

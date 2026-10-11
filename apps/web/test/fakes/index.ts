@@ -3,7 +3,7 @@
 import type { Iso, Rule, State } from "@flare/shared/icd/engine";
 import type { CapabilitiesIcd, ClientIcd, ConditionsIcd, MapIcd } from "@flare/shared/icd/index";
 import type { GatheringView, Me } from "../../src/lib/screens/flow/api-types.ts";
-import type { Deps } from "../../src/lib/screens/flow/deps.ts";
+import type { Deps, StoreExtras } from "../../src/lib/screens/flow/deps.ts";
 
 const b64 = (b: Uint8Array) => Buffer.from(b).toString("base64url");
 const unb64 = (s: string) => new Uint8Array(Buffer.from(s, "base64url"));
@@ -53,16 +53,25 @@ export function fakeCrypto(): ClientIcd.Crypto & { keyOf(fragment: string): Cryp
   };
 }
 
-export function fakeStore(): ClientIcd.Store & {
+export function fakeStore(): StoreExtras & {
   lits: Map<string, unknown>;
   groups: Map<string, ClientIcd.GroupRecord>;
+  remembered: Map<string, string>;
 } {
   const groups = new Map<string, ClientIcd.GroupRecord>();
   const lits = new Map<string, unknown>();
+  const remembered = new Map<string, string>();
   let needs: unknown = null;
   return {
     groups,
     lits,
+    remembered,
+    async fragment(id) {
+      return groups.has(id) ? `fragment-of-${id}` : null;
+    },
+    async rememberGathering(gid, groupId) {
+      remembered.set(gid, groupId);
+    },
     async group(id) {
       return groups.get(id) ?? null;
     },

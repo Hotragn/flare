@@ -74,9 +74,13 @@ export class LinkFlow {
   #position: LatLon | null = null;
   #wasLit = false;
 
-  constructor(d: Deps, gatheringId: string) {
+  #bind: string | null;
+
+  /** `bindToken` comes from a Telegram personal link (?bind=, telegram.md), already taken off the address. */
+  constructor(d: Deps, gatheringId: string, bindToken: string | null = null) {
     this.#d = d;
     this.#id = gatheringId;
+    this.#bind = bindToken;
   }
 
   get id(): string {
@@ -172,6 +176,7 @@ export class LinkFlow {
     if (!(await this.#apply(res.value))) return;
     this.#group = await d.store.group(res.value.group_id);
     if (this.#group) {
+      await this.#remember();
       await this.#loadMe();
       void this.#loadNames();
     }
@@ -216,6 +221,22 @@ export class LinkFlow {
       void this.#saveLit();
     }
     return true;
+  }
+
+  /** Ties this gathering to its group for the service worker and the outbox, then sends a Telegram bind once. */
+  async #remember(): Promise<void> {
+    const g = this.#group;
+    if (!g) return;
+    try {
+      await this.#d.store.rememberGathering(this.#id, g.groupId);
+    } catch {
+      // Storage blocked: push notices for this gathering fall back to the open page.
+    }
+    const token = this.#bind;
+    if (!token) return;
+    this.#bind = null;
+    const r = await write<Me>(this.#d, "POST", `/gatherings/${this.#id}/telegram-bind`, { token });
+    if (r.ok && r.value) this.me = r.value;
   }
 
   async #saveLit(): Promise<void> {
@@ -361,6 +382,7 @@ export class LinkFlow {
     await d.store.saveGroup(g);
     this.#group = g;
     rememberName(name);
+    await this.#remember();
     const p = this.#pending ?? { rules: [], emberOnly: false };
     this.yes(p.rules, p.emberOnly);
   }
