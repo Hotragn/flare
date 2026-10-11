@@ -1,0 +1,14 @@
+Flare
+Copyright 2026 the Flare authors. Licensed under AGPL-3.0-or-later (see LICENSE).
+
+Third-party material:
+
+- Map data © OpenStreetMap contributors, available under the Open Database License (ODbL 1.0).
+  https://www.openstreetmap.org/copyright
+- Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms.
+  Model weights are run locally on the hub machine and are not redistributed.
+- Scenic photographs (apps/web/static/scenery/): CC0 or public-domain images from Wikimedia
+  Commons, including US National Park Service works (public domain). Titles, authors, licences
+  and sources: docs/credits/photos.md.
+- Fonts: Fraunces (SIL Open Font License 1.1) and Atkinson Hyperlegible Next (SIL Open Font
+  License 1.1), via Fontsource.

@@ -9,7 +9,18 @@ export const NAV_TIMEOUT_MS = 4000;
 
 /** Static files not worth phone storage: splash images (iOS reads them at install time),
  * the device-check kit, large or duplicate icons, and source maps. */
-const SKIP = [/^\/splash\//, /^\/check\//, /^\/icons\/icon-(1024|384|256)\.png$/, /\.map$/, /^\/\.well-known\//];
+// Scenic photos and the simulation replay are decorative or heavy: loaded when shown, never
+// precached (backlog #6). /scenic/ is an earlier output folder kept off the cache too.
+const SKIP = [
+  /^\/scenery\//,
+  /^\/scenic\//,
+  /^\/sim\//,
+  /^\/splash\//,
+  /^\/check\//,
+  /^\/icons\/icon-(1024|384|256)\.png$/,
+  /\.map$/,
+  /^\/\.well-known\//,
+];
 
 export function precacheList(build: string[], files: string[], prerendered: string[]): string[] {
   const keep = files.filter((f) => !SKIP.some((re) => re.test(f)));

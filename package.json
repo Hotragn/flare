@@ -50,7 +50,8 @@
     "e2e:telegram": "node apps/web/test/e2e/telegram.ts",
     "gen:guide": "node scripts/gen-guide.ts",
     "e2e:kit-a11y": "node apps/web/test/e2e/kit-a11y.ts",
-    "e2e:demo": "node apps/web/test/e2e/demo.ts"
+    "e2e:demo": "node apps/web/test/e2e/demo.ts",
+    "scenic": "node scripts/scenic.ts"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.3",
@@ -59,6 +60,7 @@
     "@types/node": "24.19.2",
     "mermaid": "12.1.0",
     "playwright-core": "1.64.0",
+    "sharp": "0.35.4",
     "typescript": "6.0.3",
     "vitest": "5.0.3",
     "yaml": "2.9.1"

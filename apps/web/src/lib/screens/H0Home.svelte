@@ -7,6 +7,7 @@
   import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
   import Scenery from "../components/Scenery.svelte";
+  import ScenicHero from "../components/ScenicHero.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Golden, Green } from "./flow/home.ts";
   let {
@@ -42,7 +43,7 @@
 </script>
 
 <Screen stage menu {onmenu} close={false} heading={headline}>
-  {#snippet backdropArt()}<Scenery />{/snippet}
+  {#snippet backdropArt()}<ScenicHero />{/snippet}
   {#snippet hero()}
     <div class="hero">
       <Flame state="lit" size={96} />

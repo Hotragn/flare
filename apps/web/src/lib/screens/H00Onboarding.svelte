@@ -4,6 +4,7 @@
   import Button from "../components/Button.svelte";
   import Flame from "../components/Flame.svelte";
   import Scenery from "../components/Scenery.svelte";
+  import ScenicHero from "../components/ScenicHero.svelte";
   import TextField from "../components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
   let { onlight, ondemo }: { onlight?: () => void; ondemo?: () => void } = $props();
@@ -36,7 +37,7 @@
 </script>
 
 <div class="onb">
-  <div class="art" aria-hidden="true"><Scenery /></div>
+  <div class="art" aria-hidden="true"><ScenicHero slugs={["pictured-rocks-cliffs", "sleeping-bear-dunes", "acadia-eagle-lake"]} start={step} everyMs={60000} /></div>
   <div class="veil" aria-hidden="true"></div>
   {#if step < 3}
     <button class="skip" onclick={() => (step = 3)}>{t("onb.skip")}</button>

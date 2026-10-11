@@ -10,6 +10,7 @@
   import FlameAvatars from "#lib/components/FlameAvatars.svelte";
   import Icon from "#lib/components/Icon.svelte";
   import Scenery from "#lib/components/Scenery.svelte";
+  import ScenicHero from "#lib/components/ScenicHero.svelte";
   import Sheet from "#lib/components/Sheet.svelte";
   import TextField from "#lib/components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -89,7 +90,7 @@
 <svelte:head><title>{name || t("crew.title")}</title></svelte:head>
 
 <Screen stage onclose={back} menu={false} title={name || t("crew.title")} heading={name || t("crew.title")}>
-  {#snippet backdropArt()}<Scenery />{/snippet}
+  {#snippet backdropArt()}<ScenicHero start={2} />{/snippet}
   {#snippet hero()}
     {#if view.s === "ready"}
       <div class="hero">
