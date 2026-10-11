@@ -216,7 +216,10 @@ export class HostFlow {
   /** Spot from the phone's location (SRS-CRE-3): nearest named feature, else the street. */
   setPosition(at: LatLon): void {
     const m = this.#d.maps;
-    const named = m && this.#pack ? m.nameSpot(this.#pack, at) : null;
+    let named = m && this.#pack ? m.nameSpot(this.#pack, at) : null;
+    // Named from a street, not a park or a bench: say "Near West Road" (fresh-eyes round 5).
+    if (named && this.#pack && packPlaces(this.#pack).find((p) => p.osm_id === named?.key)?.kind === "street")
+      named = { ...named, name: t("spot.nearStreet", { street: named.name }) };
     this.spot = named ? { ...named, ...at } : { name: "", key: "", ...at };
     this.askLocation = !named; // no name from the map: the host types where they are
     if (m && this.#pack) {

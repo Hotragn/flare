@@ -29,6 +29,7 @@
   let toast = $state("");
   let bearing = $state(40);
   let litAt = 0;
+  let sentAt = $state(0); // the demo clock when you sent it, so "Sent 30 min ago" follows the skip
   let sparkLine = $state("");
   let condition = $state("");
   let condRead = $state(""); // the real parser's read-back, as a friend's phone shows it
@@ -73,6 +74,7 @@
   };
   function send() {
     demo.start(Number(quorum));
+    sentAt = demo.now;
     step = "kindling";
   }
   // Amor's yes, given by you on Amor's screen. With 4 needed it stays Kindling until you skip ahead.
@@ -172,6 +174,8 @@
   <aside class="notes" aria-label={t("demo.badge")}>
     <p class="badge" role="status">{t("demo.badge")}</p>
     <!-- Whose screen this is, all the way through (fresh-eyes round 5). -->
+    <!-- A way out on every step, also where the screen itself has no X (fresh-eyes round 5). -->
+    {#if ["friendIn", "here", "spark", "outside", "done"].includes(step)}<button class="out" aria-label={t("demo.leave")} onclick={leave}>✕</button>{/if}
     {#if step !== "send" && step !== "done"}<p class="who">{["friend", "condition", "readback", "friendIn"].includes(step) ? t("demo.youFriend") : t("demo.youHost", { host: me })}</p>{/if}
     {#if toast}<p class="toast" role="status">{toast}</p>{/if}
   </aside>
@@ -181,7 +185,7 @@
     <H3Send bind:hostLine={typedLine} words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
   {:else if step === "kindling"}
     <div class="layer">
-      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={0} hostLine={typedLine || t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />
+      <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={sentAt ? Math.floor((demo.now - sentAt) / 60_000) : 0} hostLine={typedLine || t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />
       {#if demo.g?.state === "kindling" && !amorIn}
         <div class="control"><p>{t("demo.friendCoach")}</p><Button onclick={() => (step = "friend")}>{t("demo.asFriend")}</Button></div>
       {:else if demo.g?.state === "kindling" && demo.have() > 1}
@@ -238,9 +242,10 @@
   /* The badge sits in the header's title slot (fix 1): hide the screen title under it. */
   .demo :global(.bar-title) { visibility: hidden; }
   /* While the coach shows, it replaces the action row (fix 5). */
-  .demo.coach :global(.actions) { visibility: hidden; }
+  .demo.coach :global(.actions) { display: none; } /* out of the page, not only out of sight */
   .layer { position: absolute; inset: 0; }
   .notes { display: contents; }
+  .out { position: fixed; top: calc(env(safe-area-inset-top, 0) + 10px); right: 12px; z-index: 31; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgb(0 0 0 / 0.45); color: #fff; font-size: 1.1rem; }
   .who { position: fixed; top: calc(env(safe-area-inset-top, 0) + 52px); left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 30; margin: 0; padding: 6px 12px; border-radius: 999px; background: rgb(0 0 0 / 0.55); color: #fff; font-weight: 700; font-size: 0.8125rem; }
   .coach-low { top: auto !important; bottom: calc(env(safe-area-inset-bottom, 0) + 150px); }
   .badge { position: fixed; top: calc(env(safe-area-inset-top, 0) + 14px); left: 50%; transform: translateX(-50%); z-index: 30; white-space: nowrap; margin: 0;

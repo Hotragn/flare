@@ -256,6 +256,11 @@
       "kind": "button",
       "where": "demo (fresh-eyes round 5)"
     },
+    "demo.leave": {
+      "text": "Leave the demo",
+      "kind": "aria",
+      "where": "demo, the X on its last screens"
+    },
     "demo.shrinkHint": {
       "text": "Not enough yet. Skip ahead to see it shrink.",
       "kind": "hint",
@@ -901,6 +906,16 @@
       "text": "Add where you are to send it.",
       "kind": "hint",
       "where": "H3 typed place (fresh-eyes round 4)"
+    },
+    "send.hostLineSeen": {
+      "text": "Friends will see",
+      "kind": "label",
+      "where": "H3 read-only host line (fresh-eyes round 5: no third person on your own screen)"
+    },
+    "spot.nearStreet": {
+      "text": "Near {street}",
+      "kind": "label",
+      "where": "Spot named from a street, not a park (fresh-eyes round 5)"
     },
     "send.hostLineEdit": {
       "text": "Edit where you'll be",
@@ -4284,6 +4299,16 @@
       "text": "ElevenLabs gives the compass its warm voice and turns a said Spark into words.",
       "kind": "prose",
       "where": "W1 home, feature cards and Built with (backlog #14)"
+    },
+    "site.built.tinker": {
+      "text": "Tinker trained a LoRA that showed what our phone rules missed. The rules it taught went from 20/40 to 30/40 on a blind set.",
+      "kind": "prose",
+      "where": "W1 home, Built with"
+    },
+    "site.built.entire": {
+      "text": "Entire saves the agent sessions behind each change, so you can see why code exists.",
+      "kind": "prose",
+      "where": "W1 home, Built with"
     },
     "site.built.sentry": {
       "text": "Sentry times the AI path and never sees your words.",

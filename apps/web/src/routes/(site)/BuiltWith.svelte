@@ -9,6 +9,8 @@
     ["ElevenLabs", "https://elevenlabs.io/", "site.built.eleven"],
     ["Sentry", "https://sentry.io/", "site.built.sentry"],
     ["Mastra", "https://mastra.ai/", "site.built.mastra"],
+    ["Tinker", "https://thinkingmachines.ai/tinker/", "site.built.tinker"],
+    ["Entire", "https://entire.io/", "site.built.entire"],
     ["OpenStreetMap", "https://www.openstreetmap.org/copyright", "site.built.osm"],
     ["Render", "https://render.com/", "site.built.render"],
     ["SvelteKit", "https://svelte.dev/docs/kit", "site.built.sveltekit"],

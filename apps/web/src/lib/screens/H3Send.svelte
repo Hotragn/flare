@@ -71,7 +71,7 @@
   {:else}
     <!-- Fresh-eyes #12: a labelled row with its value and a visible Edit, never a lone pencil. -->
     <div class="hostline">
-      <div><p class="lbl t-small">{t("send.hostLineLabel")}</p><p class="val">{shownLine || t("send.hostLineEmpty")}</p></div>
+      <div><p class="lbl t-small">{t("send.hostLineSeen")}</p><p class="val">{shownLine || t("send.hostLineEmpty")}</p></div>
       <button class="edit" aria-label={t("send.hostLineEdit")} onclick={() => {
           if (!hostLine) hostLine = shownLine; // edit the line you see, not an empty box (fresh-eyes round 4)
           editing = true;

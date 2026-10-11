@@ -83,6 +83,17 @@ try {
   check("a yes never shows a name", !(await page.getByText(/(Amor|Benny|Kai) said yes/).count()));
   await shot("2-kindling");
   await page.getByRole("button", { name: "Skip 30 min" }).click();
+  check(
+    "the host's line follows the demo clock",
+    await page
+      .getByText(/Sent 30 min ago|30 min/)
+      .first()
+      .waitFor({ timeout: 5_000 })
+      .then(
+        () => true,
+        () => false,
+      ),
+  );
   const lit = await page
     .getByText(/Smaller plan: 15 min at the (bench by the willow|picnic table on the hill)/)
     .first()
@@ -121,6 +132,7 @@ try {
   check("then Phone away", await page.getByText("Phone away.").first().isVisible());
   await shot("7-away");
   await page.getByRole("button", { name: "Close" }).click();
+  check("the last screens keep a way out", (await page.getByRole("button", { name: "Leave the demo" }).count()) > 0);
   check("ends on Light a Flare", await page.getByRole("button", { name: "Light a Flare" }).isVisible());
   await shot("8-done");
   check("no API calls at all", api.length === 0, api.join(", "));

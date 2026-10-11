@@ -181,6 +181,9 @@
   font-weight: 700;
 }
 
+.site .band.feat {
+  padding-top: 8px; /* follows a band of the same colour: no doubled gap (fresh-eyes round 5) */
+}
 .site .band {
   padding: 56px 20px;
   max-width: 1080px;
