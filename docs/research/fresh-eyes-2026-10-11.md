@@ -53,3 +53,23 @@ Rounds were capped at 3 by the manager (time). Next round after the feature work
 6. The menu shows 10 items on a first visit; "Forget this group" before joining one.
 7. Phone home: "Open Flare" twice above the fold; the tagline says little; the sticky header lets text show through.
 8. Duplicate headings in the DOM on Home and after an outing (screen readers may read them twice).
+
+## Round 4 (6/10, on 1d318fb, after the feature work)
+Fixed in the next commit:
+- The demo's counts didn't add up: 2 in, then a smaller plan, then "3 of you are here" with an unseen Benny. The bench was 40 m on one screen and the compass said 150 m.
+- The condition read-back asked "Right?" with no way to answer, and the banner doubled to "You're in if: Got it: ...".
+- Placeholders named the demo characters.
+- The demo's X went to about:blank from a fresh tab.
+- Edit emptied the place field.
+- Finishing the demo led into three more intro slides.
+- The greyed Send had no hint.
+- Two buttons were both named "Close".
+- The site header let text show through.
+
+Left:
+- The compass has no rotating arrow.
+- "Mute sounds" and "Mute voice" sit on one screen.
+- The menu has 10 items and two share an icon.
+- "Use my words" is disabled while the draft develops.
+- Pre-filling the place from location, which only happens on H2's location step today.
+- A "best on your phone" note on desktop.
