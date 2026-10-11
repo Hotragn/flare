@@ -3841,6 +3841,70 @@
       "text": "Flare is on your Home Screen.",
       "kind": "status",
       "where": "After the install prompt is accepted"
+    },
+    "err.fadeUsed": {
+      "text": "You already made this one smaller.",
+      "kind": "error",
+      "where": "P5 fade, code fade_used",
+      "owner": "frontend"
+    },
+    "err.fadeClosed": {
+      "text": "Too late to make it smaller now.",
+      "kind": "error",
+      "where": "P5 fade, code fade_window_closed",
+      "owner": "frontend"
+    },
+    "err.wrongState": {
+      "text": "This changed a moment ago. Look again.",
+      "kind": "error",
+      "where": "any write, codes wrong_state, already_lit, version_conflict",
+      "owner": "frontend"
+    },
+    "err.tooLarge": {
+      "text": "That photo is too big. Try another.",
+      "kind": "error",
+      "where": "H3 photo upload, code too_large",
+      "owner": "frontend"
+    },
+    "err.notMember": {
+      "text": "This phone isn't in this group yet.",
+      "kind": "error",
+      "where": "any member write, codes unauthorized, forbidden, unknown_member",
+      "owner": "frontend"
+    },
+    "place.benchNear": {
+      "text": "the bench {m} m away",
+      "kind": "fragment",
+      "where": "Ember place name for an unnamed bench (BR-E-1), sealed on the host's phone",
+      "owner": "frontend",
+      "sample": {
+        "m": 80
+      }
+    },
+    "place.tableNear": {
+      "text": "the picnic table {m} m away",
+      "kind": "fragment",
+      "where": "Ember place name for an unnamed picnic table (BR-E-1)",
+      "owner": "frontend",
+      "sample": {
+        "m": 120
+      }
+    },
+    "ladder.stepMetaShort": {
+      "text": "{place} · {min} min",
+      "kind": "label",
+      "where": "Ladder step line when no access line is known",
+      "owner": "frontend",
+      "sample": {
+        "place": "Ford Woods Park",
+        "min": 30
+      }
+    },
+    "member.telegramFriend": {
+      "text": "A Telegram friend",
+      "kind": "label",
+      "where": "H6 +1 list for a member the bot made (openapi Member.name_ct null)",
+      "owner": "frontend"
     }
   }
 }
