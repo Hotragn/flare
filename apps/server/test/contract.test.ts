@@ -697,7 +697,7 @@ describe("draftOsmTags", () => {
     const r = await h.call("POST", "/api/v1/drafts/tags", { raw: jpeg, type: "image/jpeg", key: null });
     expect(r.status).toBe(200);
     expect(r.body).toMatchObject({ tags: {}, tier: "rules" });
-    const bad = (raw: Buffer, type = "image/jpeg") => h.call("POST", "/api/v1/drafts/tags", { raw, type, key: null });
+    const bad = (raw: typeof jpeg, type = "image/jpeg") => h.call("POST", "/api/v1/drafts/tags", { raw, type, key: null });
     expect((await bad(Buffer.alloc(10))).status).toBe(400);
     expect((await bad(Buffer.alloc(1_500_001))).status).toBe(413);
     expect((await bad(jpeg, "image/png")).status).toBe(415);
