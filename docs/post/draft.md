@@ -5,9 +5,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
-     FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), FIELD (outdoor test),
-     VIDEO, AGENT SESSION, ENTIRE, THANKS, and the repo line.
-     Prose is 1,765 words without the holes: keep everything you add under about 135 words.
+     FOUNDER WHY (about 60 words), AGENT SESSION, ENTIRE (3 places), and the repo line.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
 
@@ -23,19 +21,21 @@ It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a wa
 >
 > A friend, after field test 2
 
-Almost every entry this week is one person on one walk. Flare gets a group out. You take a photo of where you are, and Gemma 4, an open model on our own laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan, like 15 minutes at a bench nearby, instead of dying. Afterwards it shows your minutes outside together and deletes itself.
+Almost every entry this week is one person on one walk. Flare gets a group out. You take a photo of where you are, and Gemma 4, an open model on our own laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan nearby instead of dying. Then it deletes itself.
 
-For a friend with low vision, Gemma turns the photo into a line their screen reader speaks. When it lights, the compass talks them in, and if a photo isn't possible, they say where they are instead.
+For a friend with low vision, Gemma turns the photo into a line their screen reader speaks, and the compass talks them in.
 
 **Nothing to install.** You and your friends open a link. Gemma runs on our laptop, so nobody needs a GPU, a key or an account.
 
-[HERO GIF: Kindling, Lit, Ember, Gone]
+![A Flare lights on a friend's phone](docs/post/media/app-motion/after/3-lit.gif)
 
 ### Why it matters
 
 A plan in a group chat dies when nobody wants to be the one who says yes first, and Flare's private count is built for exactly that.
 
-[WHY IT MATTERS: one chart and its sources, from the site's verified section]
+![Time with friends fell by two thirds from 2003 to 2020: 60 to 20 minutes a day, while time alone rose from 285 to 333](docs/post/media/22-why-friends.png)
+
+*Source: Kannan and Veazie, 2023, [SSM Population Health](https://doi.org/10.1016/j.ssmph.2022.101331), from the American Time Use Survey. More on the [site](https://flare-outside.onrender.com/).*
 
 ### At a glance
 
@@ -53,7 +53,6 @@ A plan in a group chat dies when nobody wants to be the one who says yes first, 
 - **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). Nothing is sent. In 60 seconds: tap I'm in as Amor, Skip 30 min to watch it shrink, then Find them.
 - **The app:** [flare-outside.onrender.com/app/](https://flare-outside.onrender.com/app/). **The site:** [flare-outside.onrender.com](https://flare-outside.onrender.com/), Lighthouse 100 on all five pages.
 - **Telegram:** [@FairlaneFlareBot](https://t.me/FairlaneFlareBot).
-- **Video:** [VIDEO: 60 to 90 s screen recording, see docs/post/shot-list.md]
 
 One evening, in four frames:
 
@@ -141,7 +140,7 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 
 - **The count, never who.** The server sees counts and labels like `c3`.
 - **The key lives in the link.** It sits in the `#fragment`, which browsers never send. Names, places, photos and Sparks are sealed on the phone with AES-256-GCM.
-- **Gone within 5 minutes.** The Flare, its photo and every yes; worst case 90 s, checked by an audit route.
+- **Gone within 5 minutes:** the Flare, its photo and every yes, checked by an audit route.
 - **Preview cards carry nothing.** The brand card and a count: no photo, place or words.
 
 ### New tonight
@@ -192,7 +191,7 @@ Field test 1 found these:
 
 ## Why Does Open Innovation Matter?
 
-A photo of where you stand, or your voice, is about as personal as data gets; with an open model it goes only to our laptop and is gone after the call. It costs $0 a photo, and open let me see why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
+A photo of where you stand, or your voice, is as personal as data gets; with an open model it goes only to our laptop and is gone after the call, at $0 a photo. Open lost on speed on a busy laptop, which is what the fallback is for.
 
 ## My Agent Session
 
@@ -209,4 +208,3 @@ A photo of where you stand, or your voice, is about as personal as data gets; wi
 - **Sentry Agent Tracing:** every AI job traced; a test proves our words never leave. [Details](#the-rest-of-the-stack)
 - **Entire:** [ENTIRE: one line with the session links]
 
-[THANKS: name anyone who tried it, with their OK, or delete this line]
