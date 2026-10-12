@@ -23,8 +23,14 @@ const MAX_NOTE_BYTES = 24_000;
 
 export function mountRemember(app: Hono, ctx: Ctx, rl: RateLimiter): void {
   const gid = (c: Context) => groupParam(c.req.param("gatheringId"));
+  app.use("/api/v1/gatherings/:gatheringId/remember/*", async (c, next) => {
+    if (!ctx.rememberThis) throw new ApiError(404, "not_found", "No such route");
+    await next();
+  });
 
   async function context(c: Context) {
+    // Parked behind REMEMBER_THIS=1 (ADR-0031): off, the routes don't exist for the phones.
+    if (!ctx.rememberThis) throw new ApiError(404, "not_found", "No such route");
     const db = needDb(ctx);
     const m = await requireMember(c, db);
     const row = await loadRow(db, gid(c));

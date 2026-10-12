@@ -61,6 +61,7 @@ export function buildCtx(d: BaseDeps): Ctx {
     ladderAgent: d.ladderAgent ?? false,
     cloud: d.cloud ?? null,
     voice: d.voice ?? null,
+    rememberThis: d.rememberThis ?? false,
   };
 }
 

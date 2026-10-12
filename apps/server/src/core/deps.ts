@@ -57,6 +57,8 @@ export type Deps = {
   ladderTimeoutMs?: number;
   /** LADDER_AGENT=1: draft Plan ladders with the Mastra agent (ADR-0025). Default off. */
   ladderAgent?: boolean;
+  /** REMEMBER_THIS=1: Remember this (ADR-0031). Default off: its routes answer 404. */
+  rememberThis?: boolean;
   /** DigitalOcean cloud tier (ADR-0022); null when no scoped key is configured. */
   cloud?: CloudTier | null;
   /** Voice Spark via ElevenLabs Scribe (ADR-0027); null without ELEVENLABS_API_KEY. */
@@ -76,4 +78,5 @@ export type Ctx = {
   ladderAgent: boolean;
   cloud: CloudTier | null;
   voice: VoiceTier | null;
+  rememberThis: boolean;
 };

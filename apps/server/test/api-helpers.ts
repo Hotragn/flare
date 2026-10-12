@@ -54,7 +54,16 @@ export async function harness(opts: { db?: Db; clock?: TestClock; failEffects?: 
       await boom();
     },
   };
-  const deps = { relay, db, version: "test", engine: opts.engine ?? realEngine, clock, effects, ladderTimeoutMs: 200 };
+  const deps = {
+    relay,
+    db,
+    version: "test",
+    engine: opts.engine ?? realEngine,
+    clock,
+    effects,
+    ladderTimeoutMs: 200,
+    rememberThis: true,
+  };
   const ctx: Ctx = buildCtx(deps);
   const app = createApp(deps, ctx);
 

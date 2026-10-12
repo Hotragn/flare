@@ -53,6 +53,7 @@ describe("getConfig", () => {
       limits: { max_members: 12, max_photo_bytes: 1_500_000, flare_quorum: [2, 3, 4], plan_quorum: [2, 3, 4, 5, 6] },
       cloud_ai: { provider: null, providers: [], ladder: false, photo_opt_in: false }, // ADR-0022: off without a scoped key
       voice: { spark: false }, // ADR-0027: off without an ElevenLabs key
+      remember: true, // ADR-0031: this test harness turns REMEMBER_THIS on
     });
   });
 });

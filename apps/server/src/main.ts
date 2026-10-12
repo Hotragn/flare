@@ -50,6 +50,7 @@ const deps = {
   engine,
   ladderTimeoutMs: env.ladderTimeoutMs,
   ladderAgent: env.ladderAgent,
+  rememberThis: env.rememberThis,
   config: {
     publicBaseUrl: env.publicBaseUrl,
     vapidPublicKey: env.vapidPublicKey,

@@ -1,7 +1,8 @@
 // mountPreview(app, deps): safe link previews for /g/{id} (ADR-0017, SRS-CH-7).
-// iMessage, WhatsApp and Telegram fetch the link on their own servers and cache what they
-// read, where our deletion can't reach. So the tags carry only the brand card, a fixed
-// title and the count: no photo, no words, no place, no host.
+// Telegram fetches the link on its own servers; iMessage and WhatsApp build the preview on the
+// sender's phone. Either way the preview then sits in the chat, where our deletion can't reach.
+// So the tags carry only the brand card, a fixed title and the count: no photo, no words, no
+// place, no host.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

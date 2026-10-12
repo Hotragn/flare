@@ -21,6 +21,7 @@ export const env = {
   hubPingMs: Number(str("HUB_PING_MS", "5000")), // silent hub dropped after 2.5 pings (spike E1)
   ladderTimeoutMs: Number(str("HUB_LADDER_TIMEOUT_MS", "8000")), // ADR-0007: ladder 8 s
   ladderAgent: str("LADDER_AGENT") === "1", // ADR-0025: the Mastra Plan agent, off by default
+  rememberThis: str("REMEMBER_THIS") === "1", // ADR-0031: parked behind this flag, off by default
   vapidPublicKey: str("VAPID_PUBLIC_KEY") || null, // public by design; served by /config
   telegramBotUsername: str("TELEGRAM_BOT_USERNAME") || null,
 };

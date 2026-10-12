@@ -1501,6 +1501,7 @@ components:
             providers: { type: array, items: { type: string, enum: [digitalocean, google] }, description: "Every configured provider, in the order tried" }
             ladder: { type: boolean, description: "Plan ladders may come from the cloud when the hub is absent" }
             photo_opt_in: { type: boolean, description: "The host may opt in to send this Flare's photo to the cloud when the hub is absent" }
+        remember: { type: boolean, description: "ADR-0031: Remember this is on for this server (REMEMBER_THIS=1); off by default" }
         voice:
           type: object
           description: ElevenLabs features (ADR-0027). spark is false without ELEVENLABS_API_KEY.

@@ -107,3 +107,24 @@ describe("transcript lines and the summary guard", () => {
     expect(enforceSummary("no json")).toBeNull();
   });
 });
+
+describe("parked behind REMEMBER_THIS (off by default)", () => {
+  it("every Remember this route is 404 and /config says false", async () => {
+    const { buildCtx, createApp } = await import("../src/app.ts");
+    const relay = { status: "absent", draft: async () => null, ladder: async () => null, close() {} } as never;
+    const deps = { relay, db: null, version: "t" };
+    const a = createApp(deps, buildCtx(deps));
+    const g = "0b1c2d3e-0000-4000-8000-000000000001";
+    for (const [m, p] of [
+      ["GET", ""],
+      ["PUT", ""],
+      ["PUT", "/consent"],
+      ["POST", "/record"],
+      ["POST", "/transcribe"],
+      ["POST", "/summary"],
+      ["PUT", "/note"],
+    ] as const)
+      expect((await a.request(`/api/v1/gatherings/${g}/remember${p}`, { method: m })).status, `${m} ${p}`).toBe(404);
+    expect((await (await a.request("/api/v1/config")).json()).remember).toBe(false);
+  });
+});

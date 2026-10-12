@@ -24,7 +24,7 @@ const check = (name: string, ok: boolean, detail = "") => {
 const env = { ...process.env, LOG_LEVEL: "warn", SENTRY_DSN: "" };
 const server = spawn(process.execPath, ["apps/server/src/main.ts"], {
   cwd: ROOT,
-  env: { ...env, PORT: String(PORT), DATABASE_URL: "pglite:memory", PUBLIC_BASE_URL: URL0 },
+  env: { ...env, PORT: String(PORT), DATABASE_URL: "pglite:memory", PUBLIC_BASE_URL: URL0, REMEMBER_THIS: "1" },
   stdio: "ignore",
 });
 const hub = spawn(process.execPath, ["apps/hub/src/main.ts"], {
