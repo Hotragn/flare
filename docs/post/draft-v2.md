@@ -381,9 +381,7 @@ Sounds of the spot, where Gemma names what you can hear nearby, was cut: it hear
 
 The agent span's input panel reads "No input for this span". That's the point: Sentry gets names and times, never what people wrote.
 
-**What it caught.** The 10.6 s cold start, 271% over the 2.85 s average. And agent spans sharing a parent trace: the root shows as `http.server GET:health` with 110 spans, because the keep-warm ping and the agent jobs ended up under one trace. Giving each AI job its own trace is in the next steps.
-
-In my live trace, Sentry Agent Tracing shows each tool, the Gemma call and the guard, with timings, and the agent span's input panel reads "No input for this span": our words never reach Sentry.
+**What it caught.** The 10.6 s cold start, 271% over the 2.85 s average. And agent spans sharing a parent trace: the root shows as `http.server GET:health` with 110 spans, so the agent jobs ended up inside one long-lived trace. Giving each AI job its own trace is in the next steps.
 
 ### Telegram
 
@@ -416,7 +414,7 @@ Entire-Checkpoint: 01M4QFQCN2SGWV1CPXVJGGSE2F
 
 **Cost accounting.** The 828M tokens and 99.2% cache replay above came from `entire checkpoint tokens`. They explain why the nine parallel subagents had burned my usage limit early on.
 
-**A privacy gate for sessions.** Sessions are full of things that shouldn't be public. [scripts/scan-sessions.ts](https://github.com/Hotragn/flare/blob/main/scripts/scan-sessions.ts) runs in the pre-push hook. Its public dry run found 1,539 email and 22 phone-number matches in 101 of 166 checkpoints, and 0 secrets. Tonight a scrubber rewrote all 263 checkpoints and recomputed each `content_hash`, and `entire configure --skip-push-sessions` stops uncleaned sessions being pushed ([da538c0](https://github.com/Hotragn/flare/commit/da538c0)).
+**A privacy gate for sessions.** Sessions are full of things that shouldn't be public. [scripts/scan-sessions.ts](https://github.com/Hotragn/flare/blob/main/scripts/scan-sessions.ts) runs in the pre-push hook. Its public dry run found 1,539 email and 22 phone-number matches in 101 of 166 checkpoints, and 0 secrets. Tonight a scrubber rewrote all 266 checkpoints and recomputed each `content_hash`, and `entire configure --skip-push-sessions` stops uncleaned sessions being pushed ([da538c0](https://github.com/Hotragn/flare/commit/da538c0)).
 
 ### DevRelay
 
@@ -494,13 +492,14 @@ Four of my structured prompts (the idea, the brainstorm brief, the night re-plan
 
 ## Prize Categories
 
+- **Overall:** Flare is entered for the overall prize too.
 - **Best Use of Gemma:** Gemma 4 sees (39/40), hears (3.3 s) and writes the Plan ladder (13/13), with code checking every answer. [Details](#gemma-4)
 - **Best Use of Tinker:** a $2.40 LoRA read 38/40, and its mistakes taught the phone's rules from 20/40 to 30/40, blind. [Details](#tinker)
 - **Best Use of ElevenLabs:** a compass voice for 698 characters that plays offline and sends nothing. [Details](#elevenlabs)
 - **Best Use of Mastra:** a four-tool Plan agent, live, with p95 within 0.3 s of the old route and the weather right 7/7. [Details](#mastra)
 - **Best Use of Sentry Agent Tracing:** every tool, model call and guard timed, our words never sent, and a cold start caught. [Details](#sentry-agent-tracing)
 - **Best Use of Render:** the server, agent, sweeper, Postgres and Telegram webhook on the free tier, with deletion that survives sleep. [Details](#render)
-- **Best Use of Entire:** (pending my confirmation) provenance on every commit, the token count that explains how I staffed the build, and a privacy gate for sessions. [Details](#entire)
+- **Best Use of Entire:** provenance on every commit, the token count that explains how I staffed the build, and a privacy gate for sessions. [Details](#entire)
 
 ## Updated after the deadline (Oct 12, 3 AM ET)
 
