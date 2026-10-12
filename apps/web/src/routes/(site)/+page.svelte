@@ -1,6 +1,6 @@
-<!-- Home: W1 hero (with the sunset line), the scroll story (was W2 steps and W3 shrink), Start in a
-     minute, Your crew space, At the spot (was the 10-card grid), Try it on your photo, Running now,
-     then short W4 to W6 with links to the full pages. -->
+<!-- Home, clarity first: W1 hero (with the sunset line), Why it matters, Start in a minute, Your crew
+     space, Running now and Try it on your photo (both load near view), then the scroll story (was W2
+     steps and W3 shrink) and At the spot (was the 10-card grid), then short W4 to W6 with links. -->
 <script lang="ts">
   import Scenery from "#lib/components/Scenery.svelte";
   import Icon from "#lib/components/Icon.svelte";
@@ -11,8 +11,8 @@
   import Start from "./Start.svelte";
   import Crew from "./Crew.svelte";
   import Spot from "./Spot.svelte";
-  import TryPhoto from "./TryPhoto.svelte";
-  import Live from "./Live.svelte";
+  import Why from "./Why.svelte";
+  import Lazy from "./Lazy.svelte";
   import BuiltWith from "./BuiltWith.svelte";
   import { reveal } from "./reveal.ts";
 
@@ -42,9 +42,8 @@
   </div>
 </section>
 
-<section class="band story-band">
-  <Story />
-  <p class="more"><a href="/how/">{t("site.home.readHow")}</a></p>
+<section class="band" use:reveal>
+  <Why />
 </section>
 
 <section class="band alt" use:reveal>
@@ -55,16 +54,30 @@
   <Crew />
 </section>
 
+<section class="band live-band">
+  <Lazy load={() => import("./Live.svelte")}>
+    <div class="live-fallback">
+      <h2 class="t-heading">{t("site.live.title")}</h2>
+      <p>{t("site.live.note")}</p>
+      <p class="more"><a href="/privacy/">{t("site.live.more")}</a></p>
+    </div>
+  </Lazy>
+</section>
+
+<section class="band alt">
+  <Lazy load={() => import("./TryPhoto.svelte")}>
+    <h2 class="t-title">{t("site.try.title")}</h2>
+    <p class="lead">{t("site.try.lead")}</p>
+  </Lazy>
+</section>
+
+<section class="band story-band">
+  <Story />
+  <p class="more"><a href="/how/">{t("site.home.readHow")}</a></p>
+</section>
+
 <section class="band alt" use:reveal>
   <Spot />
-</section>
-
-<section class="band" use:reveal>
-  <TryPhoto />
-</section>
-
-<section class="band live-band" use:reveal>
-  <Live />
 </section>
 
 <section class="band" use:reveal>
@@ -95,5 +108,8 @@
 </section>
 
 <style>
+  .live-fallback { border-radius: var(--r-lg); padding: 18px 20px; background: var(--c-dusk-900); color: var(--c-birch-100); display: flex; flex-direction: column; gap: 10px; }
+  .live-fallback h2 { margin: 0; color: var(--c-gold-300); }
+  .live-fallback a { color: var(--c-gold-300) !important; }
   .judge { color: var(--c-birch-50) !important; font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
 </style>

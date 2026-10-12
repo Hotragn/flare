@@ -4387,36 +4387,6 @@
       "kind": "message",
       "where": "site home At the spot, compass card"
     },
-    "site.spot.soon": {
-      "text": "Coming in this build",
-      "kind": "label",
-      "where": "site home At the spot, cards not live yet"
-    },
-    "site.spot.rem.t": {
-      "text": "Remember this",
-      "kind": "title",
-      "where": "site home At the spot"
-    },
-    "site.spot.rem.b": {
-      "text": "Everyone there taps yes before the mic turns on. One no, and it stays off.",
-      "kind": "prose",
-      "where": "site home At the spot"
-    },
-    "site.spot.rem.aria": {
-      "text": "3 friends each show a check, then the mic appears",
-      "kind": "aria",
-      "where": "site home At the spot"
-    },
-    "site.spot.snd.t": {
-      "text": "Sounds of the spot",
-      "kind": "title",
-      "where": "site home At the spot"
-    },
-    "site.spot.snd.b": {
-      "text": "The sound of the place, saved with your crew's Spark.",
-      "kind": "prose",
-      "where": "site home At the spot"
-    },
     "site.live.title": {
       "text": "Running now",
       "kind": "title",
@@ -4676,6 +4646,129 @@
       "text": "The sweep deletes each Flare's records at its end. The live audit counts what is left.",
       "kind": "prose",
       "where": "/how/ Under the hood"
+    },
+    "site.why.title": {
+      "text": "Why it matters",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.lead": {
+      "text": "Most of our hours happen indoors, and fewer of them with friends. Time outside together helps.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.t": {
+      "text": "A day, mostly indoors",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.b": {
+      "text": "People in the US spent 87% of their time in buildings and 6% in vehicles.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.bld": {
+      "text": "Buildings 87%",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.car": {
+      "text": "Vehicles 6%",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.rest": {
+      "text": "The rest, about 7%",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.src": {
+      "text": "Klepeis et al., 2001, NHAPS: 9,386 people, 1992 to 1994",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.t": {
+      "text": "Less time with friends",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.b": {
+      "text": "Time with friends fell from 60 min a day in 2003 to 34 in 2019 and 20 in 2020.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.alone.t": {
+      "text": "More time alone",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.alone.b": {
+      "text": "Time alone rose from 285 min a day in 2003 to 309 in 2019 and 333 in 2020.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.min": {
+      "text": "{n} min",
+      "kind": "label",
+      "where": "site home Why it matters",
+      "sample": {
+        "n": 60
+      }
+    },
+    "site.why.atus.src": {
+      "text": "Kannan and Veazie, 2023, from the American Time Use Survey",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.lonely.t": {
+      "text": "1 in 4 feel lonely",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.lonely.b": {
+      "text": "In 142 countries, 24% of people said they feel lonely. For ages 19 to 29 it was 27%.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.lonely.src": {
+      "text": "Gallup and Meta, Global State of Social Connections, 2022 to 2023",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.lonely.aria": {
+      "text": "4 people, 1 of them lonely",
+      "kind": "aria",
+      "where": "site home Why it matters"
+    },
+    "site.why.nature.t": {
+      "text": "120 minutes a week",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.nature.b": {
+      "text": "People who spent 120 min or more a week in nature were likelier to report good health. How they split it up didn't matter.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.nature.src": {
+      "text": "White et al., 2019, Scientific Reports: 19,806 people in England",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.end": {
+      "text": "So start small: 15 minutes outside with people you like. Eight of those make 120.",
+      "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.year": {
+      "text": "Year",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.minDay": {
+      "text": "Minutes a day",
+      "kind": "label",
+      "where": "site home Why it matters"
     },
     "site.how.title": {
       "text": "How it works",
