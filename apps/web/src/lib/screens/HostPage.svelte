@@ -23,6 +23,8 @@
   import type { Deps } from "./flow/deps.ts";
   import { clock } from "./flow/format.ts";
   import { HostFlow } from "./flow/host.svelte.ts";
+  import { buzzMode, installed, pushLive, showState } from "#lib/push/buzz.ts";
+  import { play } from "#lib/motion/sound.ts";
 
   let { deps, area = "fairlane" }: { deps: Deps; area?: string } = $props();
   // svelte-ignore state_referenced_locally
@@ -58,6 +60,39 @@
   $effect(() => {
     if (onboarding && (flow.screen !== "camera" || !home)) finishOnboarding();
   });
+  // Live bug 5: say only what this device will do, and catch the host up when they come back.
+  let pushOn = $state(false);
+  let backNote = $state("");
+  let awayState = "";
+  onMount(() => {
+    void pushLive().then((v) => (pushOn = v));
+    const vis = () => {
+      if (document.visibilityState === "hidden") {
+        awayState = flow.view?.state ?? "";
+        return;
+      }
+      void pushLive().then((v) => (pushOn = v));
+      // The live layer refreshes on visible; give it a moment, then say what changed while away.
+      setTimeout(() => {
+        const v = flow.view;
+        if (v && awayState && awayState !== "lit" && v.state === "lit") {
+          backNote = t("sent.backLit", { n: Math.max(1, flow.have - 1) });
+          play("lit");
+          setTimeout(() => (backNote = ""), 6000);
+        }
+        awayState = "";
+      }, 800);
+    };
+    document.addEventListener("visibilitychange", vis);
+    return () => document.removeEventListener("visibilitychange", vis);
+  });
+  $effect(() => {
+    const st = flow.view?.state;
+    if (!st || home) return;
+    const lit = st === "lit";
+    showState(lit, st === "gone" ? "Flare" : t(lit ? "sent.titleLit" : "sent.titleWaiting"));
+  });
+
   // Back from the demo, a page restored from the back/forward cache can bring old layers with
   // it; start clean instead.
   onMount(() => {
@@ -212,7 +247,7 @@
 {:else if flow.screen === "send"}
   <H3Send view={flow.sending ? "sending" : flow.error ? "error" : "ready"} photo={flow.photo} scene={flow.alt} words={flow.words} spot={flow.spot?.name ?? ""} bind:quorum={flow.quorum} bind:hostLine={flow.hostLine} bind:hostName={flow.hostName} askName={flow.askName} askSpot={!flow.spot?.name} bind:typedSpot access={flow.access} nature={flow.nature} error={flow.error} onsend={send} onclose={exit} />
 {:else if flow.screen === "sent"}
-  <H4Sent kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
+  <H4Sent buzz={buzzMode({ push: pushOn, telegram: flow.postedToTelegram })} installed={installed()} kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
 {:else if flow.screen === "kindling"}
   <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} onclose={exit} />
 {:else if flow.screen === "lit"}
@@ -246,6 +281,7 @@
   <p class="t-small t-muted foot">{t("menu.foot")}</p>
 </Sheet>
 
+{#if backNote}<p class="posted" role="status">{backNote}</p>{/if}
 {#if flow.screen === "sent" && flow.postedToTelegram}
   <p class="posted" role="status">{t("sent.telegram")}</p>
 {/if}

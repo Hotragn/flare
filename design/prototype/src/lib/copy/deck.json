@@ -1002,6 +1002,46 @@
       "kind": "message",
       "where": "H4"
     },
+    "sent.bodyOpen": {
+      "text": "Keep this open and the sound on.",
+      "kind": "message",
+      "where": "H4 Sent, no push on this device (live bug 5)"
+    },
+    "sent.bodyTelegram": {
+      "text": "Telegram will ping the group when it's lit.",
+      "kind": "message",
+      "where": "H4 Sent, crew linked to Telegram, no push here"
+    },
+    "sent.homeTitle": {
+      "text": "Add Flare to your Home Screen for a buzz",
+      "kind": "label",
+      "where": "H4 Sent, the install steps (iPhone)"
+    },
+    "sent.homeStep1": {
+      "text": "Tap Share, then Add to Home Screen.",
+      "kind": "message",
+      "where": "H4 Sent, install step 1"
+    },
+    "sent.homeStep2": {
+      "text": "Open Flare from there and allow alerts.",
+      "kind": "message",
+      "where": "H4 Sent, install step 2"
+    },
+    "sent.backLit": {
+      "text": "{n} friends said yes. It's lit.",
+      "kind": "message",
+      "where": "Host, back on the page after it lit while away"
+    },
+    "sent.titleLit": {
+      "text": "It's lit \u00b7 Flare",
+      "kind": "label",
+      "where": "Tab title once lit"
+    },
+    "sent.titleWaiting": {
+      "text": "Waiting \u00b7 Flare",
+      "kind": "label",
+      "where": "Tab title while it waits"
+    },
     "sent.shrinkNote": {
       "text": "If it doesn't catch in 30 min, it gets smaller.",
       "kind": "hint",
@@ -3787,6 +3827,12 @@
         "mb": 570,
         "reason": "No better than the rules."
       }
+    },
+    "ai.measured.sounds": {
+      "text": "Gemma 4 E4B, sounds: birds in nearly every clip; 8/12 voices caught.",
+      "kind": "status",
+      "where": "/ai/ measured list (lab report 10)",
+      "owner": "apps/web/src/routes/ai"
     },
     "ai.reason.buffer": {
       "text": "Needs a GPU buffer over the iPhone's 1 GB limit.",

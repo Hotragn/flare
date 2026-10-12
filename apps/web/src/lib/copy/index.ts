@@ -22,11 +22,16 @@ export function t(key: CopyKey, vars: Vars = {}): string {
   const entry = strings[key];
   if (!entry) throw new Error(`copy: unknown key "${key}"`);
   const template = vars.n === 1 && entry.one ? entry.one : entry.text;
-  return template.replace(/\{(\w+)\}/g, (_, name: string) => {
-    if (!(name in vars)) throw new Error(`copy: "${key}" needs {${name}}`);
-    return String(vars[name]);
-  });
+  return nearSpot(
+    template.replace(/\{(\w+)\}/g, (_, name: string) => {
+      if (!(name in vars)) throw new Error(`copy: "${key}" needs {${name}}`);
+      return String(vars[name]);
+    }),
+  );
 }
+
+/** Live bug (Oct 11): a "Near Heather Drive" spot reads "is near Heather Drive", not "is at Near". */
+export const nearSpot = (s: string): string => s.replace(/\b(is|are|meet|be) at [Nn]ear\b/g, "$1 near");
 
 /** Joins two or more strings with the deck's middle-dot separator. */
 export const dot = (...parts: string[]) => parts.filter(Boolean).join(strings["app.dot"].text);

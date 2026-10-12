@@ -61,5 +61,7 @@ const STRINGS = load();
 
 /** The deck string for `key` with `{name}` slots filled. Unknown slots stay visible in tests. */
 export function t(key: BotKey, vars: Record<string, string | number> = {}): string {
-  return STRINGS[key].replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
+  return STRINGS[key]
+    .replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m))
+    .replace(/\b(is|are|meet|be) at [Nn]ear\b/g, "$1 near"); // "is near Heather Drive", not "is at Near"
 }

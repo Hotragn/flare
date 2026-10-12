@@ -25,11 +25,13 @@ const EVENTS = new Set(["lit", "ember", "plan_on", "plan_ember", "plan_smaller",
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function t(key: CopyKey, vars: Record<string, string> = {}): string {
-  return copy[key].replace(/\{(\w+)\}/g, (_, name: string) => {
-    const v = vars[name];
-    if (v === undefined) throw new Error(`push copy ${key} needs ${name}`);
-    return v;
-  });
+  return copy[key]
+    .replace(/\{(\w+)\}/g, (_, name: string) => {
+      const v = vars[name];
+      if (v === undefined) throw new Error(`push copy ${key} needs ${name}`);
+      return v;
+    })
+    .replace(/\b(is|are|meet|be) at [Nn]ear\b/g, "$1 near"); // "is near Heather Drive", not "is at Near"
 }
 
 /** Checks the asyncapi pushNotice shape; anything else gets the generic notice. */

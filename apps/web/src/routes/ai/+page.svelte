@@ -144,6 +144,7 @@
         {#each MEASURED as m (m.model)}
           <li>{t("ai.measured.row", { model: m.model, mb: m.mb, reason: t(`ai.reason.${m.reason}`) })}</li>
         {/each}
+        <li>{t("ai.measured.sounds")}</li>
       </ul>
     {/if}
   </section>

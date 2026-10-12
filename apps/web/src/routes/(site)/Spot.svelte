@@ -1,6 +1,6 @@
 <!-- "At the spot" (brief items 7 and 8): a sideways rail in place of the old 10-card grid.
      The compass card plays the real ElevenLabs clips on a tap only (never on load) while the
-     Compass arrow turns. Remember this and Sounds of the spot get cards once they ship. -->
+     Compass arrow turns. Remember this gets a card if it ships; Sounds of the spot was measured and cut (lab 10). -->
 <script lang="ts">
   import Compass from "#lib/components/Compass.svelte";
   import Icon from "#lib/components/Icon.svelte";
