@@ -68,7 +68,7 @@ Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrom
 
 ### How I tested it
 
-**Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below.
+**Field test 1, Sun Oct 11, 8:20 PM:** 2 real friends on the live app: 3 responses, 1 Spark, 6 bugs, all fixed below.
 
 **Field test 2, Mon Oct 12, 12:38 AM,** the first real meetup: sent, a nearby friend's yes at 12:39 (it needed 2, so it lit), I'm here at 12:40. We met in person and talked; We're done at 12:43, and it was gone from the public audit within 2 minutes ([notes](https://github.com/Hotragn/flare/blob/main/docs/research/field-test-2.md)).
 
@@ -79,7 +79,7 @@ Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrom
 | Simulation: 48 friends | 48 made-up friends in 4 groups against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif)) | 11 of 12 lit; median 14.75 min to Lit; all 12 deleted after, audit pass |
 | Accessibility | axe on 88 page views (22 pages, 2 widths, light and dark) | 0 findings; every target 44 px or more |
 
-The fresh-eyes testers are AI agents, not people: a new one with no context each round, on the live site as a phone.
+The fresh-eyes testers are AI agents with no context, not people.
 
 | Round | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -132,7 +132,7 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 
 - **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`.
 - **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; its first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
-- **Tinker.** A Qwen3.5-4B LoRA cost about $2.40 to train and read 38 of 40 new phrasings, but it's too big for a phone. Its mistakes showed me how to fix the phone's rules: 20/40 to 30/40 on a blind set.
+- **Tinker.** A $2.40 Qwen3.5-4B LoRA read 38 of 40 new phrasings but is too big for a phone; its mistakes lifted the phone's rules from 20/40 to 30/40, blind.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names.
 - **Sentry.** Agent Tracing follows every AI job, model call and guard. A test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing one parent trace.
 - **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone.
@@ -147,7 +147,7 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 - **The count, never who.** The server sees counts and labels like `c3`.
 - **The key lives in the link.** It sits in the `#fragment`, which browsers never send. Names, places, photos and Sparks are sealed on the phone with AES-256-GCM.
 - **Gone within 5 minutes of the end** (the sweeper's worst case is 90 s by design): the Flare, its photo and every yes, checked by an audit route. On Render's free plan, a server that's asleep deletes it the moment it wakes.
-- **Preview cards carry nothing.** The brand card and a count: no photo, place or words.
+- **Preview cards** show the brand and a count, nothing else.
 
 ## What I got wrong
 
@@ -157,6 +157,10 @@ My own test found the hardest ones:
 - **"Pocket it" felt like a button I had to press.** Nothing said to wait until my friend arrives, or that the app should stay open even in my pocket.
 - **On the friend's side, it showed the place and buttons to finish fast,** without saying what each step is for.
 - **Remember this passed every automated check, then failed on my iPhone:** "Couldn't write it down." The logs show no upload. My tests had faked the mic. "Say it" for a Spark failed the same way in Safari, so both are off. I expected a card of the day, with the voice only by choice.
+
+  ![A Remember this card from a 46 s recording in Telugu and English](docs/post/media/23-day-card.png)
+
+  *The phone's recorder failed, so here is what the same server code makes from a 46 s recording of me in Telugu and English: Scribe 1.5 s, Gemma's line 2.8 s. Gemma's line is close but calls it a discussion and a device.*
 
 Field test 1 found these:
 
