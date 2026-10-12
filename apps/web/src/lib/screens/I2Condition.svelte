@@ -15,6 +15,7 @@
     listening = false,
     canDictate = false,
     sample = false,
+    suggest = [],
     oncheck,
     ondictate,
     onclose,
@@ -26,6 +27,8 @@
     listening?: boolean;
     canDictate?: boolean;
     sample?: boolean;
+    /** Tap-to-fill rules after a miss: one tap fills and checks it. */
+    suggest?: { label: string; text: string }[];
     oncheck?: (text: string) => void;
     ondictate?: () => void;
     onclose?: () => void;
@@ -37,7 +40,17 @@
   {#snippet overlay()}
     <Sheet inline title={t("cond.title")} description={t("cond.body")}>
       <TextField label={t("cond.label")} bind:value={text} placeholder={t("cond.placeholder")} mic={canDictate} {listening} onmic={ondictate} {error} multiline max={120} />
+      {#if suggest.length}
+        <ul class="chips" aria-label={t("cond.chipsAria")}>
+          {#each suggest as c (c.text)}<li><button type="button" onclick={() => { text = c.text; oncheck?.(c.text); }}>{c.label}</button></li>{/each}
+        </ul>
+      {/if}
       <Button onclick={() => oncheck?.(text)} disabled={!text.trim()}>{t("cond.check")}</Button>
     </Sheet>
   {/snippet}
 </Screen>
+
+<style>
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chips button { min-height: 44px; padding: 0 14px; border-radius: var(--r-pill); background: var(--bg); border: 2px solid var(--line); color: inherit; font: inherit; font-weight: 700; }
+</style>

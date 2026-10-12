@@ -9,13 +9,16 @@ export type ParseContext = {
   now: Iso; // server-corrected now
   kind: "flare" | "plan";
   steps?: { step: Step; name: string }[]; // Plans: for "the short one", "step 3 or smaller"
+  host?: string; // the host's name: "only with you" means them (live bug, Oct 11)
 };
 
 export type ParseResult =
-  | { ok: true; rules: Rule[]; readBack: string } // ≤ 12 words (SRS-COND-5)
+  | { ok: true; rules: Rule[]; readBack: string; missed?: string } // ≤ 12 words (SRS-COND-5); missed: words it couldn't read
   | { ok: false; reason: "didnt_catch" | "not_in_group" | "too_many"; name?: string };
 
 export interface Conditions {
   parse(text: string, ctx: ParseContext): ParseResult;
   readBack(rules: Rule[], ctx: ParseContext): string;
+  /** Tap-to-fill rules after a miss (optional; live bug, Oct 11). */
+  suggestions?(ctx: ParseContext): { label: string; text: string }[];
 }

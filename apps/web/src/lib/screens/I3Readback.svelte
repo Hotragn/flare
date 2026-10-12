@@ -13,6 +13,7 @@
     chips = [],
     busy = false,
     sample = false,
+    missed = "",
     onyes,
     onfix,
     onclose,
@@ -23,6 +24,8 @@
     chips?: string[];
     busy?: boolean;
     sample?: boolean;
+    /** Words that made no rule: said back, never dropped quietly. */
+    missed?: string;
     onyes?: () => void;
     onfix?: () => void;
     onclose?: () => void;
@@ -34,6 +37,7 @@
   {#snippet overlay()}
     <Sheet inline title={t("readback.title")}>
       <p class="t-title readback" aria-live="polite">{line}</p>
+      {#if missed}<p class="missed">{t("readback.missed", { words: missed })}</p>{/if}
       {#if chips.length}
         <ul class="chips" aria-label={t("readback.chipsAria")}>
           {#each chips as c (c)}<li>{c}</li>{/each}
@@ -47,6 +51,7 @@
 
 <style>
   .readback { margin: 0; }
+  .missed { margin: 0; font-weight: 700; }
   .chips { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
   .chips li { padding: 8px 14px; border-radius: var(--r-pill); background: var(--bg); border: 2px solid var(--line); font-weight: 700; }
 </style>

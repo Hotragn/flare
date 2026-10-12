@@ -71,6 +71,10 @@ export class LinkFlow {
   walkMin = $state<number | null>(null);
   /** Read-back of the parsed condition (I3). */
   readBack = $state("");
+  /** Words the read-back couldn't turn into a rule, named back to the friend (live bug, Oct 11). */
+  missed = $state("");
+  /** Tap-to-fill rules after a miss, from the time of day and the host's name. */
+  suggest = $state<{ label: string; text: string }[]>([]);
   chips = $state<string[]>([]);
   condError = $state("");
   notSuit = $state<{ icon: string; text: string }[]>([]);
@@ -502,22 +506,29 @@ export class LinkFlow {
     const c = this.#d.conditions;
     if (!c || !this.view) return;
     const steps = this.view.plan?.steps.map((s) => ({ step: s.step, name: this.stepName(s.step) }));
-    const res = c.parse(text, {
+    const ctx = {
       members: Object.entries(this.#names).map(([id, name]) => ({ id, name })),
       tz: this.#d.tz,
       now: new Date(this.serverNow).toISOString(),
       kind: this.view.kind,
       steps,
-    });
+      host: this.sealed?.host_name ?? "",
+    };
+    const res = c.parse(text, ctx);
+    this.suggest = [];
     if (!res.ok) {
-      this.condError =
-        res.reason === "not_in_group"
-          ? t("cond.notInGroup", { name: res.name ?? "" })
-          : res.reason === "too_many"
-            ? t("cond.tooMany")
-            : t("cond.didntCatch");
+      if (res.reason === "not_in_group") this.condError = t("cond.notInGroup", { name: res.name ?? "" });
+      else if (res.reason === "too_many") this.condError = t("cond.tooMany");
+      else {
+        // Examples for this moment and this host, never the reader's own name; one tap fills one.
+        this.suggest = c.suggestions?.(ctx) ?? [];
+        const [a, b] = this.suggest;
+        this.condError =
+          a && b ? t("cond.didntCatchNow", { a: `"${a.text}"`, b: `"${b.text}"` }) : t("cond.didntCatch");
+      }
       return;
     }
+    this.missed = res.missed ?? "";
     this.#parsed = res.rules;
     this.readBack = res.readBack;
     this.chips = res.rules.map((r) => ruleChip(r, this.#d.tz, this.#names));

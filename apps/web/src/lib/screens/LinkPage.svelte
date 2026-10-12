@@ -185,9 +185,9 @@
   {#if flow.screen === "invite"}
     <I1Invite view={v.state === "lit" ? "lit" : "kindling"} {info} have={flow.have} quorum={v.quorum} error={flow.error} busy={flow.busy} canCondition={flow.canCondition} onyes={() => flow.yes()} oncondition={() => flow.startCondition()} onclose={exit} />
   {:else if flow.screen === "condition"}
-    <I2Condition {info} bind:text={condText} error={flow.condError} oncheck={(x) => flow.check(x)} onclose={() => flow.notNow()} />
+    <I2Condition {info} bind:text={condText} error={flow.condError} suggest={flow.suggest} oncheck={(x) => flow.check(x)} onclose={() => flow.notNow()} />
   {:else if flow.screen === "readback"}
-    <I3Readback {info} line={flow.readBack} chips={flow.chips} busy={flow.busy} onyes={() => flow.confirmReadBack()} onfix={() => flow.fix()} onclose={() => flow.notNow()} />
+    <I3Readback {info} line={flow.readBack} missed={flow.missed} chips={flow.chips} busy={flow.busy} onyes={() => flow.confirmReadBack()} onfix={() => flow.fix()} onclose={() => flow.notNow()} />
   {:else if flow.screen === "not-suit"}
     <I5NotSuit {info} reasons={flow.notSuit} busy={flow.busy} onyes={() => flow.closerOne()} onno={() => flow.notNow()} />
   {:else if flow.screen === "in"}

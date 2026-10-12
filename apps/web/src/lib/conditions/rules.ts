@@ -6,7 +6,8 @@
 
 export type RawRule =
   | { type: "with"; value: string } // canonical member name as the group knows it
-  | { type: "after" | "back_by"; value: string } // "HH:MM", 24 h, group time zone
+  | { type: "after" | "back_by"; value: string; bare?: boolean } // "HH:MM", 24 h, group time zone; bare: no am/pm said
+  | { type: "after_in"; value: number } // a delay from now in minutes: "in 10 min", "10min", "give me 10"
   | { type: "max_walk"; value: number }
   | { type: "max_step" | "min_step"; value: 1 | 2 | 3 | 4 };
 
@@ -67,7 +68,36 @@ export function parseTime(raw: string): string | null {
   return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
 }
 
-const TIME = String.raw`(noon|midday|(?:quarter|half) (?:past|after|to) \w+|half \w+|\d{1,2}(?::\d{2})?\s*(?:am|pm|o'?clock)?)`;
+/** True when a spoken time names an hour with no am or pm ("after 10"), so the next upcoming one is meant. */
+export const isBareTime = (raw: string): boolean => {
+  const s = raw.trim().toLowerCase().replace(/\./g, "");
+  if (/(am|pm)\b|\b(noon|midday)\b/.test(s)) return false;
+  const h = Number(s.match(/(\d{1,2})/)?.[1] ?? WORD_NUM[s.split(" ").at(-1) ?? ""] ?? 0);
+  return h >= 1 && h <= 12;
+};
+
+// A number followed by a minutes unit is a length of time, never a clock time ("after 10min").
+const TIME = String.raw`(noon|midday|(?:quarter|half) (?:past|after|to) \w+|half \w+|\d{1,2}(?::\d{2})?(?!\s*(?:m|mins?|minutes?)\b)\s*(?:am|pm|o'?clock)?)`;
+// Delays from now (live bug, Oct 11): "after 10min", "can come in 10", "give me 10", "in half an hour".
+const UNIT = String.raw`(?:m|mins?|minutes?)`;
+const DELAY = [
+  new RegExp(
+    String.raw`\b(?:in|after|give me|gimme|there in|here in)\s+(?:about\s+|like\s+)?(\d{1,3})\s*${UNIT}\b(?!\s*(?:walk|away|on foot|of walk))`,
+    "gi",
+  ),
+  new RegExp(
+    String.raw`\b(?:in|give me|gimme)\s+(?:about\s+|like\s+)?(\d{1,3})\b(?!\s*(?::|am\b|pm\b|o'?clock|${UNIT}\b|walk|step))`,
+    "gi",
+  ),
+  // A bare "10min" opening a sentence or clause: "10min only with you".
+  new RegExp(
+    String.raw`(?:^|[,;.!]\s*)(\d{1,3})\s*${UNIT}\b(?!\s*(?:walk|away|on foot|of walk|max|tops|at most|or less|no more))`,
+    "gi",
+  ),
+];
+// "with you", "only if you come", "you and me": the friend is talking to the host.
+const WITH_YOU =
+  /\b(?:only with|with|only if|if|as long as)\s+you\b(?!\s+(?:guys|all|two|lot))|\b(?:you and me|me and you|you and i)\b/i;
 const AFTER = [
   new RegExp(String.raw`\b(?:after|not before|earliest|from)\s+${TIME}`, "gi"),
   new RegExp(String.raw`\bafter my\s+${TIME}`, "gi"),
@@ -136,7 +166,9 @@ const softName = (n: string) =>
 // Step words that need no Plan context (fixture core_40 and hard_20).
 // S1 (fine-tune): sitting or saying hi is the smallest step ("sit somewhere close", "just wanna say hi").
 const SMALLEST = /\b(porch|smallest|tiniest|only the small one|the small one|say (?:hi|hello)|sit(?:ting)?)\b/;
-const SHORT = /\b(short one|quick (one|version|lap)|shortest|short (?:lap|version))\b/;
+// Short-stay words (live bug, Oct 11) read as the shorter steps on a Plan; a Flare has no steps.
+const SHORT =
+  /\b(short one|quick (one|version|lap|visit|stop)|shortest|short (?:lap|version|visit)|for a bit|stopping by|pop(?:ping)? by|swing by)\b/;
 const LONGEST = /\b(long one|longest|full walk|full loop|whole (walk|loop|thing)|biggest|big one)\b/;
 
 const MIN_WORD: Record<string, number> = { five: 5, ten: 10, fifteen: 15, twenty: 20, thirty: 30 };
@@ -187,7 +219,7 @@ function stepRules(low: string, steps: StepName[]): RawRule[] {
  * Text to raw rules. `members` are display names already decrypted on this phone (BR-C-3).
  * Returns [] for a plain yes, didnt_catch for anything it can't read (SRS-COND-8).
  */
-export function parseRaw(text: string, members: string[], steps: StepName[] = []): RawResult {
+export function parseRaw(text: string, members: string[], steps: StepName[] = [], host = ""): RawResult {
   // M0 (fine-tune): spoken durations to minutes before anything else, so "half hour" never reads as a time.
   const t = text
     .trim()
@@ -195,17 +227,29 @@ export function parseRaw(text: string, members: string[], steps: StepName[] = []
     .replace(/\b(?:an|one) hour\b/gi, "60 min")
     .replace(/\b(five|ten|fifteen|twenty|thirty)(?:\s+|-)min/gi, (_, w: string) => `${MIN_WORD[w.toLowerCase()]} min`);
   if (!t) return { ok: false, reason: "didnt_catch" };
+  const delays: number[] = [];
+  let rest = t;
+  for (const re of DELAY)
+    rest = rest.replace(re, (_, n: string) => {
+      delays.push(Number(n));
+      return " ";
+    });
   if (PLAIN_YES.test(t)) return { ok: true, rules: [] };
   if (OR_ALTERNATIVE.test(t)) return { ok: false, reason: "didnt_catch" };
   const out: RawRule[] = [];
-  const low = t.toLowerCase();
+  const low = rest.toLowerCase();
   const add = (r: RawRule) => {
     if (!out.some((x) => x.type === r.type && x.value === r.value)) out.push(r);
   };
+  for (const n of delays) {
+    if (n < 1 || n > 240) return { ok: false, reason: "didnt_catch" };
+    add({ type: "after_in", value: n });
+  }
+  if (host && WITH_YOU.test(rest)) add({ type: "with", value: host });
 
   // with(X): names after with / if / only if, joined by "and".
   const byLower = new Map(members.map((n) => [n.toLowerCase(), n]));
-  for (const m of t.matchAll(NAME_RE)) {
+  for (const m of rest.matchAll(NAME_RE)) {
     for (const cand of [m[1], m[2]]) {
       if (!cand) continue;
       const k = cand.toLowerCase();
@@ -214,22 +258,22 @@ export function parseRaw(text: string, members: string[], steps: StepName[] = []
       else if (/^[A-Z]/.test(cand) && !NOT_NAMES.has(k)) return { ok: false, reason: "not_in_group", name: cand };
     }
   }
-  for (const name of members) if (softName(escapeRe(name)).test(t)) add({ type: "with", value: name });
+  for (const name of members) if (softName(escapeRe(name)).test(rest)) add({ type: "with", value: name });
 
   for (const re of AFTER)
-    for (const m of t.matchAll(re)) {
+    for (const m of rest.matchAll(re)) {
       const v = parseTime(m[1] ?? "");
       if (!v) return { ok: false, reason: "didnt_catch" };
-      add({ type: "after", value: v });
+      add({ type: "after", value: v, ...(isBareTime(m[1] ?? "") ? { bare: true } : {}) });
     }
   for (const re of BACK_BY)
-    for (const m of t.matchAll(re)) {
+    for (const m of rest.matchAll(re)) {
       const v = parseTime(m[1] ?? "");
       if (!v) return { ok: false, reason: "didnt_catch" };
-      add({ type: "back_by", value: v });
+      add({ type: "back_by", value: v, ...(isBareTime(m[1] ?? "") ? { bare: true } : {}) });
     }
   if (!out.some((r) => r.type === "back_by") && EVENT_BACK.test(low) && !/\bafter\b/.test(low)) {
-    const m = t.match(EVENT_AT);
+    const m = rest.match(EVENT_AT);
     const v = m?.[1] ? parseTime(m[1]) : null;
     if (v) add({ type: "back_by", value: v });
   }

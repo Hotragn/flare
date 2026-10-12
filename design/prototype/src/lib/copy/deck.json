@@ -1374,6 +1374,36 @@
       "where": "I2 bot",
       "fixed": "SRS-COND-8"
     },
+    "cond.didntCatchNow": {
+      "text": "I didn't catch that. Try {a} or {b}.",
+      "kind": "message",
+      "where": "I2 error, examples from the time of day and the host (live bug, Oct 11)"
+    },
+    "cond.chipsAria": {
+      "text": "Rules you can tap",
+      "kind": "label",
+      "where": "I2 tap-to-fill rules"
+    },
+    "cond.chip.in": {
+      "text": "Come in {min} min",
+      "kind": "option",
+      "where": "I2 tap-to-fill rule"
+    },
+    "cond.chip.with": {
+      "text": "Only if {name}'s there",
+      "kind": "option",
+      "where": "I2 tap-to-fill rule, the host"
+    },
+    "cond.chip.after": {
+      "text": "After {time}",
+      "kind": "option",
+      "where": "I2 tap-to-fill rule, the next full hour"
+    },
+    "cond.chip.walk": {
+      "text": "{min} min walk max",
+      "kind": "option",
+      "where": "I2 tap-to-fill rule"
+    },
     "cond.notInGroup": {
       "text": "{name} isn't in this group.",
       "kind": "error",
@@ -1417,6 +1447,11 @@
       "where": "I3 bot",
       "fixed": "FR-COND-2, SRS-COND-5"
     },
+    "readback.missed": {
+      "text": "I didn't catch: {words}",
+      "kind": "message",
+      "where": "I3 read-back, words that made no rule (never dropped quietly)"
+    },
     "readback.rule.with": {
       "text": "only with {name}",
       "kind": "fragment",
@@ -1426,6 +1461,11 @@
       "text": "after {time}",
       "kind": "fragment",
       "where": "I3 bot"
+    },
+    "readback.rule.afterIn": {
+      "text": "you can come in {min} min",
+      "kind": "fragment",
+      "where": "I3 read-back, a delay from now (\"10min\", \"in 10\")"
     },
     "readback.rule.backBy": {
       "text": "back by {time}",
