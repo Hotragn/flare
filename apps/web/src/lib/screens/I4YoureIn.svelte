@@ -1,7 +1,7 @@
 <!-- I4 You're in. Shown within 500 ms of the tap (SRS-RES-3); take it back before Lit (SRS-RES-6). -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { inBodyKey, pushLive } from "#lib/push/buzz.ts";
+  import { inBodyKey, installed, pushLive } from "#lib/push/buzz.ts";
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
@@ -45,6 +45,13 @@
       <Hearth state="kindling" progress={kindlingProgress(have, quorum)} size={200} intro />
       <h1 class="t-display">{t("in.title")}</h1>
       <p class="t-sun">{t(inBodyKey(push))}</p>
+      {#if !push && !installed()}
+        <!-- The same honest choice the host gets: a buzz needs the Home Screen and alerts. -->
+        <details class="home">
+          <summary>{t("sent.homeTitle")}</summary>
+          <ol><li>{t("sent.homeStep1")}</li><li>{t("sent.homeStep2")}</li></ol>
+        </details>
+      {/if}
       <NeedCount {have} {quorum} />
       <p class="t-muted t-small">{t("in.private")}</p>
     {/if}
@@ -57,6 +64,9 @@
 </Screen>
 
 <style>
+  .home { max-width: 30ch; text-align: left; margin: 0 auto; }
+  .home summary { min-height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; }
+  .home ol { margin: 0; padding-left: 1.2em; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; }
   .center h1, .center p { margin: 0; }
   .err { font-weight: 700; }

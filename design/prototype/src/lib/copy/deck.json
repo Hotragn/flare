@@ -6279,6 +6279,11 @@
       "kind": "prose",
       "where": "W3"
     },
+    "ai.anywhere": {
+      "text": "It works from anywhere. My laptop answers over the internet. When it's off, cloud Gemma does.",
+      "kind": "prose",
+      "where": "/ai/ cloud section (founder, final review)"
+    },
     "ai.cloud.title": {
       "text": "When the cloud is used",
       "kind": "title",

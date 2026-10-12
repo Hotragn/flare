@@ -99,6 +99,7 @@
 
   <section aria-labelledby="cloud">
     <h2 id="cloud">{t("ai.cloud.title")}</h2>
+    <p>{t("ai.anywhere")}</p>
     {#if cloudOn === null}
       <p role="status">{t("ai.cloud.checking")}</p>
     {:else if cloudOn}
