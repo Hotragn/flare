@@ -7,9 +7,15 @@ cover_image: https://flare-outside.onrender.com/post/cover.png
 
 *This is a submission for the [Hacktoberfest Open-Source AI Challenge Week 1: Touch Grass](https://dev.to/challenges/hacktoberfest-week1-2026-10-05).*
 
-## The log first
+## What I Built
 
-Here is the first real meetup Flare made, from my notes and the public audit ([field test 2](https://github.com/Hotragn/flare/blob/main/docs/research/field-test-2.md)). Times are ET on Monday, Oct 12.
+It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a walk". Three people react with a thumbs up. Nobody goes.
+
+The thumbs up is not the problem. Everyone meant it. What happens next is friction: someone has to pick a time, a place, and who's in. Someone has to be the one who says "OK, I'm actually going", and then wait to see if anyone else does.
+
+Under that friction sits a quieter fear: being the only one who actually wants to show up. If you suggest the walk and nobody comes, that's a small rejection, in front of everyone. Most of us have learned to avoid it. So the weight of asking wins over the wish to see each other, and the afternoon goes by in the chat.
+
+Here's what happened the first time it worked, from my notes and the public audit ([field test 2](https://github.com/Hotragn/flare/blob/main/docs/research/field-test-2.md)). Times are ET on Monday, Oct 12.
 
 | Time | What happened |
 | --- | --- |
@@ -24,27 +30,7 @@ You can check the deletion side yourself: [flare-outside.onrender.com/api/v1/aud
 
 **TL;DR.** Flare turns one photo into a plan to meet. Gemma 4, an open model, runs on my laptop and writes the invite. Friends say yes in private, and it lights only if enough can come. Honest numbers: two field tests with real friends, one short meetup in person, 6 bugs found and fixed from the first test, 39 of 40 photo scenes read right, and the AI testers I used scored it 5/10 at first and 7/10 at the end.
 
-## What I Built
-
-It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a walk". Three people react with a thumbs up. Nobody goes.
-
 **Live demo (no install, 60 s):** https://flare-outside.onrender.com/app/demo/ · **The app:** https://flare-outside.onrender.com/app/ · **Code:** https://github.com/Hotragn/flare · **Telegram bot:** https://t.me/FairlaneFlareBot
-
-**Cold start:** the server is on Render's free plan, which sleeps when nobody uses it. The first load can take up to a minute while "Waking up" shows. After that it's quick.
-
-**Run it locally** (from the [README](https://github.com/Hotragn/flare/blob/main/README.md), Node and npm needed):
-
-```sh
-git clone https://github.com/Hotragn/flare && cd flare && npm ci
-cp .env.example .env        # set HUB_SECRET to any 32+ random characters
-npm run build && npm start  # server and web app on http://localhost:8787
-```
-
-For Gemma on your own machine, add `ollama pull gemma4:e4b-it-q4_K_M` and `npm run hub`.
-
-The thumbs up is not the problem. Everyone meant it. What happens next is friction: someone has to pick a time, a place, and who's in. Someone has to be the one who says "OK, I'm actually going", and then wait to see if anyone else does.
-
-Under that friction sits a quieter fear: being the only one who actually wants to show up. If you suggest the walk and nobody comes, that's a small rejection, in front of everyone. Most of us have learned to avoid it. So the weight of asking wins over the wish to see each other, and the afternoon goes by in the chat.
 
 Flare is for:
 
@@ -66,7 +52,7 @@ Most of us have people close by, in group chats and small communities, and we st
 
 That's the metric that mattered. Lighthouse 100 and a 3.0 s photo read are nice to have. The number that counted was one: a friend who hadn't felt free to go out all week, meeting up in person and talking. Every table below is there to explain how that happened, and where it still breaks.
 
-## Try it in 60 seconds
+## Demo
 
 Open [the demo](https://flare-outside.onrender.com/app/demo/). Nothing is sent anywhere.
 
@@ -74,7 +60,7 @@ Open [the demo](https://flare-outside.onrender.com/app/demo/). Nothing is sent a
 2. Tap **Skip 30 min** and watch it shrink to an Ember.
 3. Tap **Find them** and hear the compass.
 
-## How a Flare works
+### How a Flare works
 
 ![Kindling, Lit, Ember, Gone: one evening in Flare](https://flare-outside.onrender.com/post/storyboard.png)
 
@@ -92,11 +78,38 @@ A Flare has four states. Each rule exists because of a way plans die in a group 
 
 *Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrome.*
 
-**Gone.** When the host taps We're done, or the Ember runs out, the Flare, its photo and every yes are deleted within 5 minutes. The grace is a constant in [sweep.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/sweep.ts) (`GONE_GRACE_MS = 5 * 60_000`), and the sweeper's worst case is 90 s past that by design. A plan to meet is not something a server should keep.
+**Gone.** When the host taps We're done, or the Ember runs out, the Flare, its photo and every yes are deleted. A delete job removes it about a minute after the end ([`DELETE_AFTER_MS`](https://github.com/Hotragn/flare/blob/main/packages/engine/src/time.ts), 60 s), and a sweeper deletes anything still there at 5 minutes, which is the promise ([`GONE_GRACE_MS`](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/sweep.ts)). In field test 2 it was gone from the public audit within 2 minutes. A plan to meet is not something a server should keep.
 
 Together, these rules are about dignity more than data. The private count means nobody is turned down in public. If not enough can come, the Flare doesn't fail out loud: after 30 minutes it quietly offers a smaller version nearby. If even that doesn't catch, it goes out on its own, with "Not this time", and then it's deleted. Nobody is left on read, and there's no record of who didn't come. That's what makes it safe to ask in the first place.
 
 Gemma 4 on my laptop does the AI work. I call that laptop the hub: a small program on my Mac that runs the model and dials out to the server, so the phone never talks to it directly.
+
+## Code
+
+[github.com/Hotragn/flare](https://github.com/Hotragn/flare), AGPL-3.0.
+
+**Cold start:** the server is on Render's free plan, which sleeps when nobody uses it. The first load can take up to a minute while "Waking up" shows. After that it's quick.
+
+**Run it locally** (from the [README](https://github.com/Hotragn/flare/blob/main/README.md), Node and npm needed):
+
+```sh
+git clone https://github.com/Hotragn/flare && cd flare && npm ci
+cp .env.example .env        # set HUB_SECRET to any 32+ random characters
+npm run build && npm start  # server and web app on http://localhost:8787
+```
+
+For Gemma on your own machine, add `ollama pull gemma4:e4b-it-q4_K_M` and `npm run hub`.
+
+### Read these 6 files
+
+| File | Its job |
+| --- | --- |
+| [packages/shared/src/photo.ts](https://github.com/Hotragn/flare/blob/main/packages/shared/src/photo.ts) | `enforce()`: what any model answer must pass |
+| [apps/server/src/agent/ladder-agent.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/agent/ladder-agent.ts) | The Mastra agent and its four tools |
+| [apps/server/src/core/sweep.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/sweep.ts) | Deletion within 5 minutes of the end |
+| [apps/server/src/core/launch.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/launch.ts) | The six "Since launch" totals the site shows, with no ids, names or groups |
+| [apps/web/src/lib/conditions/rules.ts](https://github.com/Hotragn/flare/blob/main/apps/web/src/lib/conditions/rules.ts) | The phone's conditions parser, taught by Tinker |
+| [packages/shared/src/plaintext.ts](https://github.com/Hotragn/flare/blob/main/packages/shared/src/plaintext.ts) | The 200-byte text for SMS and satellite texting |
 
 ## Why it matters
 
@@ -104,7 +117,7 @@ Gemma 4 on my laptop does the AI work. I call that laptop the hub: a small progr
 
 *Source: Kannan and Veazie, 2023, [SSM Population Health](https://doi.org/10.1016/j.ssmph.2022.101331), from the American Time Use Survey.*
 
-I see that chart in my own crew. We live close to each other and talk every day in chats, and we still go weeks without meeting. Nobody lacks friends; what's missing is a cheap way to say "now, nearby" that doesn't put anyone on the spot. Of the 813 Week 1 entries I scanned, fewer than 1% get a group out together ([field scan](https://github.com/Hotragn/flare/blob/main/docs/research/00-challenge-and-field.md)). Most help one person go outside. Flare is about getting two or more people to the same spot.
+I see that chart around me: people close by, in the same chats, still staying in. Nobody lacks friends; what's missing is a cheap way to say "now, nearby" that doesn't put anyone on the spot. Of the 813 Week 1 entries I scanned, fewer than 1% get a group out together ([field scan](https://github.com/Hotragn/flare/blob/main/docs/research/00-challenge-and-field.md)). Most help one person go outside. Flare is about getting two or more people to the same spot.
 
 ## Taking it outside
 
@@ -121,7 +134,7 @@ The log at the top. A nearby friend said yes, it lit at quorum 2, I tapped I'm h
 | What broke | Where | The fix | Commit |
 | --- | --- | --- | --- |
 | The headline and sheet covered the photo (73% covered) | Test 1 | The photo shows whole above the words; dark photos brightened for display; a gate checks it | [f9a7653](https://github.com/Hotragn/flare/commit/f9a7653), [958d073](https://github.com/Hotragn/flare/commit/958d073) |
-| "Fuego is at Near Maple Road" | Test 1 | "is near" grammar in every template | [6e251ec](https://github.com/Hotragn/flare/commit/6e251ec), [3462ae2](https://github.com/Hotragn/flare/commit/3462ae2) |
+| "Fuego is at Near Maple Road" (street changed for privacy) | Test 1 | "is near" grammar in every template | [6e251ec](https://github.com/Hotragn/flare/commit/6e251ec), [3462ae2](https://github.com/Hotragn/flare/commit/3462ae2) |
 | "After 10min" read as 10 AM | Test 1 | 10min is a delay, bare hours pick the next one | [2751410](https://github.com/Hotragn/flare/commit/2751410) |
 | "only with you" not understood | Test 1 | "with you" means the host; missed words are said back | [2751410](https://github.com/Hotragn/flare/commit/2751410) |
 | Share and WhatsApp did nothing in Brave | Test 1 | Share runs inside the tap, with a Copy link fallback | [bdf2b6c](https://github.com/Hotragn/flare/commit/bdf2b6c), [538afb5](https://github.com/Hotragn/flare/commit/538afb5) |
@@ -146,7 +159,7 @@ These are the measurements that changed the design. I put them up front because 
 
 The fresh-eyes testers are AI agents with no context, not people. Each one used the live site as a phone, read no source, and had to say whether they'd understand and use it in under a minute. Round 6 scored 6/10. That tester liked the private yes and the "only if enough come" rule, but would still use a WhatsApp poll for a normal meetup. A recheck after its fixes scored 7/10. I agree with it: Flare is for "anyone free right now?", and a poll still wins for a planned meetup.
 
-## How I built it
+## How I Built It
 
 ![How Flare was built: a planning sprint, then short build sprints](https://flare-outside.onrender.com/post/sprints.png)
 
@@ -192,7 +205,7 @@ The pre-push hook ([.githooks/pre-push.pre-entire](https://github.com/Hotragn/fl
 
 ### What it cost, and why I changed the setup
 
-Entire records each agent session (more in [its section](#entire)). Its token count for one checkpoint, `entire checkpoint tokens 01M4NXQZFTTGWVNDECY5S75K0E`, shows 828M tokens over 1,546 API calls, and 99.2% of them were cache replay: the same context sent again on each call. That number is why I moved from 9 parallel specialist subagents to one session plus narrow subagents. Nine agents each carrying the whole project mostly paid to re-read it.
+Early on, nine parallel specialist subagents burned through my usage limit, mostly re-reading the project, so I switched to one session plus narrow subagents. Entire's token count for one checkpoint later showed why (`entire checkpoint tokens 01M4NXQZFTTGWVNDECY5S75K0E`): 828M tokens over 1,546 calls, 99.2% of it cache replay, the same context sent again on each call. More in [its section](#entire).
 
 **How I used AI:** Claude Code wrote the code and drafted this post from the repo's evidence, and a separate review session checked its numbers against that evidence. One session acted as my project manager: it wrote the build session's prompts, reviewed the work and made day-to-day calls while I slept, and anything that got posted or published waited for my yes. I chose the idea and set the direction, I ran both field tests with my friends, and the why is mine.
 
@@ -313,7 +326,7 @@ Sounds of the spot, where Gemma names what you can hear nearby, was cut: it hear
 
 **How it's wired.** [apps/server/src/agent/ladder-agent.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/agent/ladder-agent.ts), behind a flag, with the decision in [ADR-0025](https://github.com/Hotragn/flare/blob/main/docs/architecture/adr/0025-mastra-plan-agent.md). Live since Oct 12.
 
-**Measured** ([ladder-agent-hub.md](https://github.com/Hotragn/flare/blob/main/evals/reports/ladder-agent-hub.md)). Two runs of 13 asks against the old route: p95 5.1 vs 5.5 s, then 5.6 vs 5.3 s. The weather was right 7/7. So the agent costs about nothing in speed and adds the weather.
+**Measured** ([ladder-agent-hub.md](https://github.com/Hotragn/flare/blob/main/evals/reports/ladder-agent-hub.md)). Two runs of 13 asks, agent vs old route: 5.1 vs 5.5 s p95, then 5.6 vs 5.3 s. The weather was right 7/7. So the agent costs about nothing in speed and adds the weather.
 
 **What it caught.** The first live draft took 10.6 s, a cold start. Sentry flagged it as 271% over its 2.85 s average.
 
@@ -335,7 +348,7 @@ Sounds of the spot, where Gemma names what you can hear nearby, was cut: it hear
 
 **How it's wired.** 54 compass lines recorded once, 698 characters, shipped as files and played offline ([ADR-0027](https://github.com/Hotragn/flare/blob/main/docs/architecture/adr/0027-elevenlabs-voice.md), [compass/voice.ts](https://github.com/Hotragn/flare/blob/main/apps/web/src/lib/compass/voice.ts)). No user data goes to ElevenLabs.
 
-**What went wrong.** Voice input with Scribe (ElevenLabs' speech to text) is off, because the iPhone recorder failed before any upload. The server code works; here is what it makes from recordings made on a desktop:
+**What went wrong.** Voice input with Scribe (ElevenLabs' speech to text) is off, because the iPhone recorder failed before any upload. The server code works: here is what it makes from a clip I recorded on my phone (Voice Memos) and ran through the same server code on my laptop, and from a public meeting recording:
 
 ![A Remember this card from a 46 s recording in Telugu and English](https://flare-outside.onrender.com/post/day-card.png)
 
@@ -366,13 +379,11 @@ Sounds of the spot, where Gemma names what you can hear nearby, was cut: it hear
 | flare-photo, gemma4:e4b chat | 6.00 s |
 | flare-ladder (whole job) | 10.58 s |
 
-Each span says "No input for this span". That's the point: Sentry gets names and times, never what people wrote.
+The agent span's input panel reads "No input for this span". That's the point: Sentry gets names and times, never what people wrote.
 
 **What it caught.** The 10.6 s cold start, 271% over the 2.85 s average. And agent spans sharing a parent trace: the root shows as `http.server GET:health` with 110 spans, because the keep-warm ping and the agent jobs ended up under one trace. Giving each AI job its own trace is in the next steps.
 
-![Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings](media/sentry-agent-trace.png)
-
-*Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings. "No input for this span": our words never reach Sentry.*
+In my live trace, Sentry Agent Tracing shows each tool, the Gemma call and the guard, with timings, and the agent span's input panel reads "No input for this span": our words never reach Sentry.
 
 ### Telegram
 
@@ -401,9 +412,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Entire-Checkpoint: 01M4QFQCN2SGWV1CPXVJGGSE2F
 ```
 
-**Provenance.** 221 commits on main carry an Entire-Checkpoint trailer: every commit since Entire was turned on at 2:27 AM on Oct 11, except merges. So for most of the code, you can trace a line back to the session that wrote it.
+**Provenance.** 224 commits on main carry an Entire-Checkpoint trailer, starting at 2:27 AM on Oct 11. So for most of the code, you can trace a line back to the session that wrote it.
 
-**Cost accounting.** The 828M tokens and 99.2% cache replay above came from `entire checkpoint tokens`. It changed how I staffed the build.
+**Cost accounting.** The 828M tokens and 99.2% cache replay above came from `entire checkpoint tokens`. They explain why the nine parallel subagents had burned my usage limit early on.
 
 **A privacy gate for sessions.** Sessions are full of things that shouldn't be public. [scripts/scan-sessions.ts](https://github.com/Hotragn/flare/blob/main/scripts/scan-sessions.ts) runs in the pre-push hook. Its public dry run found 1,539 email and 22 phone-number matches in 101 of 166 checkpoints, and 0 secrets. Tonight a scrubber rewrote all 263 checkpoints and recomputed each `content_hash`, and `entire configure --skip-push-sessions` stops uncleaned sessions being pushed ([da538c0](https://github.com/Hotragn/flare/commit/da538c0)).
 
@@ -416,20 +427,9 @@ DevRelay hosts the agent sessions embedded [below](#my-agent-sessions).
 - **DigitalOcean**: wired in as a cloud tier ([ADR-0022](https://github.com/Hotragn/flare/blob/main/docs/architecture/adr/0022-digitalocean-cloud-tier.md)), but the account's billing is paused, so it isn't live.
 - **MongoDB**: not used. Flare stores its data in Postgres.
 
-## Read these 6 files
+## Why Does Open Innovation Matter?
 
-| File | Its job |
-| --- | --- |
-| [packages/shared/src/photo.ts](https://github.com/Hotragn/flare/blob/main/packages/shared/src/photo.ts) | `enforce()`: what any model answer must pass |
-| [apps/server/src/agent/ladder-agent.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/agent/ladder-agent.ts) | The Mastra agent and its four tools |
-| [apps/server/src/core/sweep.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/sweep.ts) | Deletion within 5 minutes of the end |
-| [apps/server/src/core/launch.ts](https://github.com/Hotragn/flare/blob/main/apps/server/src/core/launch.ts) | The six "Since launch" totals the site shows, with no ids, names or groups |
-| [apps/web/src/lib/conditions/rules.ts](https://github.com/Hotragn/flare/blob/main/apps/web/src/lib/conditions/rules.ts) | The phone's conditions parser, taught by Tinker |
-| [packages/shared/src/plaintext.ts](https://github.com/Hotragn/flare/blob/main/packages/shared/src/plaintext.ts) | The 200-byte text for SMS and satellite texting |
-
-## Why open matters
-
-There's an irony in this stack. All of it, the models, the agent, the sealing, the sweeper, exists to remove one small anxiety: asking a friend to come out. Open AI let me build something complex enough that the technology disappears and only the meetup is left. And it let me put each piece where it belongs:
+There's an irony in this stack. All of it, the models, the agent, the sealing, the sweeper, exists to remove one small anxiety: asking a friend to come out. Open models let me build something complex enough that the technology disappears and only the meetup is left. And it let me put each piece where it belongs:
 
 - Gemma 4 E4B (about 4B effective parameters) runs on my laptop and does the photo and voice work.
 - Gemma 4 26B A4B runs in Google's cloud, only as the fallback when my laptop is off.
@@ -476,7 +476,7 @@ Next steps:
 - "My usual" conditions, repeating Plans, in-app golden-hour nudges.
 - Give each AI job its own Sentry trace.
 
-## My agent sessions
+## My Agent Session
 
 All three were scrubbed before upload: emails, phone numbers, local file paths, a street name and chat ids removed, and long tool output trimmed.
 
@@ -488,9 +488,9 @@ The build session, 153 messages.
 
 The Lab's risk spikes, 20 messages: where the browser models failed and the 1.17 GB buffer showed up.
 
-{% agent_session flare-manager-the-cto-sessions-work-orders-and-team-reports-oawgpi %}
+{% agent_session flare-manager-my-prompts-the-cto-sessions-work-orders-and-the-team-reports-f0aprm %}
 
-The manager/CTO session, curated to the work orders and the reports that came back (the founder chat is left out), 149 messages.
+My prompts, marked Me:, the work orders the manager session sent, and the reports that came back, 214 messages. Small talk and anything private were left out.
 
 ## Prize Categories
 
@@ -500,7 +500,7 @@ The manager/CTO session, curated to the work orders and the reports that came ba
 - **Best Use of Mastra:** a four-tool Plan agent, live, with p95 within 0.3 s of the old route and the weather right 7/7. [Details](#mastra)
 - **Best Use of Sentry Agent Tracing:** every tool, model call and guard timed, our words never sent, and a cold start caught. [Details](#sentry-agent-tracing)
 - **Best Use of Render:** the server, agent, sweeper, Postgres and Telegram webhook on the free tier, with deletion that survives sleep. [Details](#render)
-- **Best Use of Entire:** provenance on every commit, the token count that changed how I built, and a privacy gate for sessions. [Details](#entire)
+- **Best Use of Entire:** (pending my confirmation) provenance on every commit, the token count that explains how I staffed the build, and a privacy gate for sessions. [Details](#entire)
 
 ## Updated after the deadline (Oct 12, 3 AM ET)
 
