@@ -101,6 +101,23 @@ paths:
               schema: { $ref: "#/components/schemas/Audit" }
         "429": { $ref: "#/components/responses/TooMany" }
 
+  /api/v1/stats:
+    get:
+      tags: [system]
+      operationId: getLaunchStats
+      summary: Since launch, six totals only
+      description: |
+        Increment-only totals for the website's Running now strip: Flares sent, lit, shrank to an
+        Ember, yeses, crews made, deleted on time. No ids, names, groups or event times. Groups
+        made with the header `x-flare-test: 1` (smoke and e2e) never count. Cached for 60 s.
+      responses:
+        "200":
+          description: Totals
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LaunchStats" }
+        "429": { $ref: "#/components/responses/TooMany" }
+
   /api/v1/groups:
     post:
       tags: [groups]
@@ -1517,6 +1534,18 @@ components:
             flare_quorum: { type: array, items: { type: integer }, const: [2, 3, 4] }
             plan_quorum: { type: array, items: { type: integer }, const: [2, 3, 4, 5, 6] }
 
+    LaunchStats:
+      type: object
+      additionalProperties: false
+      required: [since, flares_sent, lit, embers, yeses, crews, deleted_on_time]
+      properties:
+        since: { type: string, format: date-time, description: When counting began }
+        flares_sent: { type: integer, minimum: 0 }
+        lit: { type: integer, minimum: 0 }
+        embers: { type: integer, minimum: 0 }
+        yeses: { type: integer, minimum: 0 }
+        crews: { type: integer, minimum: 0 }
+        deleted_on_time: { type: integer, minimum: 0 }
     Audit:
       type: object
       required: [at, pass, stores]

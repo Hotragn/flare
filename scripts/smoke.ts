@@ -16,7 +16,13 @@ const say = (ok: boolean | "warn", name: string, detail = "") => {
   if (ok === false) failed++;
   console.log(`${ok === "warn" ? "warn" : ok ? "ok  " : "FAIL"} ${name}${detail ? `: ${detail}` : ""}`);
 };
-const get = (p: string, init?: RequestInit) => fetch(`${base}${p}`, { redirect: "manual", ...init });
+// x-flare-test: smoke traffic never counts in Since launch (core/launch.ts).
+const get = (p: string, init?: RequestInit) =>
+  fetch(`${base}${p}`, {
+    redirect: "manual",
+    ...init,
+    headers: { "x-flare-test": "1", ...((init?.headers as Record<string, string>) ?? {}) },
+  });
 
 const health = (await (await get("/api/v1/health")).json()) as {
   ok: boolean;

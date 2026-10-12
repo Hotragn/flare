@@ -2,6 +2,7 @@
 import type { HealthT } from "@flare/shared";
 import type { Context, Hono } from "hono";
 import type { Ctx } from "../core/deps.ts";
+import { launchStats } from "../core/launch.ts";
 import { audit } from "../core/sweep.ts";
 import { ApiError } from "../http/errors.ts";
 import { LIMITS, type RateLimiter } from "../http/middleware.ts";
@@ -51,6 +52,18 @@ export function mountSystem(app: Hono, ctx: Ctx, rl: RateLimiter): void {
         plan_quorum: [2, 3, 4, 5, 6],
       },
     });
+  });
+
+  // Since launch: six totals and when counting began. No ids, names, groups or event times.
+  let launchCached: { at: number; body: unknown } | null = null;
+  app.get("/api/v1/stats", async (c) => {
+    readLimit(c);
+    if (!ctx.db) throw new ApiError(503, "not_configured", "Database not configured");
+    const now = ctx.clock.now().getTime();
+    if (!launchCached || now - launchCached.at > AUDIT_CACHE_MS)
+      launchCached = { at: now, body: await launchStats(ctx.db) };
+    c.header("cache-control", "public, max-age=60");
+    return c.json(launchCached.body as object);
   });
 
   let cached: { at: number; body: unknown } | null = null;

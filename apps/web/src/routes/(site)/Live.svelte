@@ -9,6 +9,8 @@
 
   let health: HealthView | null = $state(null);
   let audit: AuditView | null = $state(null);
+  type Launch = { since: string; flares_sent: number; lit: number; embers: number; yeses: number; crews: number; deleted_on_time: number };
+  let launch: Launch | null = $state(null);
   let now = $state(new Date());
 
   let root: HTMLElement;
@@ -19,6 +21,10 @@
     const go = () => {
       fetchHealth(fetch).then((h) => (health = h));
       fetchAudit(fetch).then((a) => (audit = a));
+      fetch("/api/v1/stats")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((v: Launch | null) => (launch = v && typeof v.flares_sent === "number" ? v : null))
+        .catch(() => {});
       tick = setInterval(() => (now = new Date()), 1000);
     };
     if (typeof IntersectionObserver === "undefined") go();
@@ -64,6 +70,19 @@
       <span>{audit === null ? t("site.live.checking") : audit.s === "down" ? t("site.live.down") : auditLine}</span>
     </li>
   </ul>
+  {#if launch}
+    <div class="since">
+      <h3>{t("site.live.since", { date: new Date(launch.since).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) })}</h3>
+      <ul>
+        <li>{t("site.live.sent", { n: launch.flares_sent })}</li>
+        <li>{t("site.live.lit", { n: launch.lit })}</li>
+        <li>{t("site.live.embers", { n: launch.embers })}</li>
+        <li>{t("site.live.yeses", { n: launch.yeses })}</li>
+        <li>{t("site.live.crews", { n: launch.crews })}</li>
+        <li>{t("site.live.deleted", { n: launch.deleted_on_time })}</li>
+      </ul>
+    </div>
+  {/if}
   <p class="note">
     {t("site.live.note")}
     {#if health?.s === "ok"}{t("site.live.build", { v: health.version.slice(0, 7) })}.{/if}
@@ -74,6 +93,9 @@
 <style>
   .live { border-radius: var(--r-lg); padding: 18px 20px; background: var(--c-dusk-900); color: var(--c-birch-100); display: flex; flex-direction: column; gap: 10px; }
   .live h2 { margin: 0; color: var(--c-gold-300); }
+  .since h3 { margin: 0 0 6px; font-size: 1rem; color: var(--c-gold-300); }
+  .since ul { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .since li { min-height: 0; }
   ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 1rem; }
   li { display: flex; gap: 10px; align-items: center; min-height: 28px; }
   .dot { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #8a93a3; flex: none; }

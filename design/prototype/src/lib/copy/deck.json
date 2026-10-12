@@ -1033,12 +1033,12 @@
       "where": "Host, back on the page after it lit while away"
     },
     "sent.titleLit": {
-      "text": "It's lit \u00b7 Flare",
+      "text": "It's lit · Flare",
       "kind": "label",
       "where": "Tab title once lit"
     },
     "sent.titleWaiting": {
-      "text": "Waiting \u00b7 Flare",
+      "text": "Waiting · Flare",
       "kind": "label",
       "where": "Tab title while it waits"
     },
@@ -1990,12 +1990,12 @@
       "where": "Crew space, Crew Atlas (ADR-0029)"
     },
     "atlas.fact": {
-      "text": "Met {n} times \u00b7 last {date}",
+      "text": "Met {n} times · last {date}",
       "kind": "label",
       "where": "Crew space, Crew Atlas (ADR-0029)"
     },
     "atlas.factOne": {
-      "text": "Met once \u00b7 {date}",
+      "text": "Met once · {date}",
       "kind": "label",
       "where": "Crew space, Crew Atlas (ADR-0029)"
     },
@@ -2086,7 +2086,7 @@
       "where": "Remember this sheet, when everyone agreed"
     },
     "remember.recording": {
-      "text": "Recording \u00b7 {s} s left",
+      "text": "Recording · {s} s left",
       "kind": "status",
       "where": "On every phone while someone records"
     },
@@ -2096,7 +2096,7 @@
       "where": "On every phone while someone records"
     },
     "remember.working": {
-      "text": "Writing it down\u2026",
+      "text": "Writing it down…",
       "kind": "status",
       "where": "After recording, before the note"
     },
@@ -2346,12 +2346,12 @@
       "where": "I11 Voice Spark (ADR-0027)"
     },
     "spark.listening": {
-      "text": "Listening\u2026 {s} s left",
+      "text": "Listening… {s} s left",
       "kind": "status",
       "where": "I11 Voice Spark (ADR-0027)"
     },
     "spark.working": {
-      "text": "Turning it into words\u2026",
+      "text": "Turning it into words…",
       "kind": "status",
       "where": "I11 Voice Spark (ADR-0027)"
     },
@@ -2376,7 +2376,7 @@
       "where": "H1 camera, Voice Flare (ADR-0028)"
     },
     "voiceFlare.working": {
-      "text": "Writing your invite\u2026",
+      "text": "Writing your invite…",
       "kind": "status",
       "where": "H1 camera, Voice Flare (ADR-0028)"
     },
@@ -4664,6 +4664,41 @@
         "m": 3
       }
     },
+    "site.live.since": {
+      "text": "Since launch, {date}",
+      "kind": "label",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.sent": {
+      "text": "{n} Flares sent",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.lit": {
+      "text": "{n} lit",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.embers": {
+      "text": "{n} shrank to an Ember",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.yeses": {
+      "text": "{n} yeses",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.crews": {
+      "text": "{n} crews made",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.deleted": {
+      "text": "{n} deleted on time",
+      "kind": "status",
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
     "site.live.build": {
       "text": "Server build {v}",
       "kind": "label",
@@ -4678,7 +4713,7 @@
       "where": "site home live strip, link to /privacy/"
     },
     "site.live.note": {
-      "text": "Counts only, from GET /api/v1/health and /api/v1/audit. No personal data.",
+      "text": "Counts only, from GET /api/v1/health, /api/v1/audit and /api/v1/stats. No personal data.",
       "kind": "prose",
       "where": "site home live strip"
     },
@@ -6109,6 +6144,11 @@
       "text": "Remember this records a conversation only with everyone's consent. It is off unless the host turns it on for one Flare or Plan. Each person who said yes agrees on their own phone. If anyone doesn't, or someone joins later without agreeing, it stays off for everyone, and nobody sees who. Anyone can stop a recording for everyone, and every phone shows when it's on. Up to 60 seconds goes once to ElevenLabs, which turns it into words with speaker numbers, not names. We keep no audio; ElevenLabs may keep it under its own terms. The words are sealed on your phones with the Flare key. Gemma on our laptop writes one line, never a cloud model. All of it is deleted with the Flare.",
       "kind": "prose",
       "where": "site W4 (ADR-0031)"
+    },
+    "site.privacy.l.launch": {
+      "text": "The website shows six totals since launch: Flares sent, lit, shrank to an Ember, yeses, crews made, and deleted on time. Each is one number. They hold no ids, names, groups or times, and our own tests never count. Counting began when they shipped on Sun Oct 11, 2026, so the test traffic from before isn't in them.",
+      "kind": "prose",
+      "where": "site W4, Since launch"
     },
     "ai.remember": {
       "text": "Remember this: when everyone says OK, up to 60 s is written down and our laptop sums it up.",

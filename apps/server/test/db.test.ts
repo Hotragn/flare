@@ -18,6 +18,7 @@ describe("schema", () => {
       "0004_telegram_photos.sql",
       "0005_plan_reminder.sql",
       "0006_remember.sql",
+      "0007_launch.sql",
     ]);
     expect(await migrate(db)).toEqual([]);
   });

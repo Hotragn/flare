@@ -2,6 +2,7 @@
 // the delete job: it removes every row past its storage expiry, Gone gatherings older than
 // 5 min, and the long-lived stores past their retention (BR-D-5). See docs/backend/03-deletion.md.
 import type { Q } from "../db/db.ts";
+import { bumpLaunch } from "./launch.ts";
 
 const DAY = 24 * 3600_000;
 export const GONE_GRACE_MS = 5 * 60_000; // BR-D-1
@@ -21,10 +22,15 @@ export async function sweep(db: Q, now: Date): Promise<SweepResult> {
   const n = async (sql: string, p: unknown[]) => (await db.query(`${sql} returning 1`, p)).rows.length;
   const out: SweepResult = {};
   // Uses the partial index gatherings_gone for the Gone half (spike E2).
-  out.gatherings = await n("delete from gatherings where (state = 'gone' and state_since < $2) or expires_at < $1", [
-    t,
-    graceCut,
-  ]);
+  const swept = (
+    await db.query<{ group_id: string }>(
+      "delete from gatherings where (state = 'gone' and state_since < $2) or expires_at < $1 returning group_id",
+      [t, graceCut],
+    )
+  ).rows;
+  out.gatherings = swept.length;
+  // Since launch: the safety net deletes on time too (BR-D-1: within 5 min of Gone, or at expiry).
+  for (const r of swept) await bumpLaunch(db, "deleted_on_time", r.group_id);
   for (const table of ["photos", "responses", "jobs", "bot_messages", "live_locations", "telegram_binds"])
     out[table] = await n(`delete from ${table} where expires_at < $1`, [t]);
   out.spark_tickets = await n("delete from spark_tickets where expires_at < $1", [t]);

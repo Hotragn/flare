@@ -7,6 +7,7 @@ import { ApiError, ENGINE_STATUS } from "../http/errors.ts";
 import { sha256 } from "../http/middleware.ts";
 import { log } from "../log.ts";
 import type { Ctx, Notify } from "./deps.ts";
+import { bumpLaunch, launchNameFor } from "./launch.ts";
 
 export const b64u = (b: Uint8Array | null): string => (b ? Buffer.from(b).toString("base64url") : "");
 export const unb64u = (s: string): Buffer => Buffer.from(s, "base64url");
@@ -276,6 +277,8 @@ export async function applyCounter(
   groupId: string,
   e: { name: string; bucket?: string; by?: number; op?: "add" | "max" },
 ): Promise<void> {
+  const launch = launchNameFor(e.name);
+  if (launch) await bumpLaunch(q, launch, groupId); // Since launch (core/launch.ts)
   let bucket = e.bucket ?? "";
   let by = e.by ?? 1;
   let op = e.op ?? "add";
@@ -354,6 +357,10 @@ export async function runEvent(
     if (res.gathering.version === row.version && res.effects.length === 0) return null;
     await saveGathering(q, res.gathering);
     await saveAnswers(q, gid, res.answers, row.expires_at);
+    // Since launch: a yes counts once per person per Flare (a take-back and yes again doesn't add).
+    const wasYes = new Set(answers.filter((a) => a.status === "yes").map((a) => a.member_id));
+    const newYes = res.answers.filter((a) => a.status === "yes" && !wasYes.has(a.member_id)).length;
+    if (newYes) await bumpLaunch(q, "yeses", row.group_id, newYes);
     const goneNow = res.gathering.state === "gone";
     for (const e of res.effects) {
       if (e.type === "schedule") await scheduleJob(q, gid, e.job, e.at, row.expires_at);

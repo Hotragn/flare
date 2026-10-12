@@ -25,6 +25,7 @@
     "site.privacy.l.voice",
     "site.privacy.l.voiceFlare",
     "site.privacy.l.remember",
+    "site.privacy.l.launch",
     "site.privacy.l.sleep",
     "site.privacy.l.push",
   ];

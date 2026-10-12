@@ -1,10 +1,12 @@
 // Timers that survive restarts: every job is a row in `jobs`; a 1 s tick runs the due ones.
 // After a crash the next boot's first tick runs anything overdue, in due order (SRS-REL-*).
+
 import type { JobKind } from "@flare/shared/icd/engine";
 import { ApiError } from "../http/errors.ts";
 import { log } from "../log.ts";
 import type { Ctx } from "./deps.ts";
 import { runEvent } from "./gatherings.ts";
+import { bumpLaunch } from "./launch.ts";
 import { sweep } from "./sweep.ts";
 
 type JobRow = { id: string; gathering_id: string; kind: JobKind };
@@ -55,12 +57,16 @@ export async function deleteGathering(ctx: Ctx, gatheringId: string, jobId?: str
       const j = await q.query("delete from jobs where id = $1 returning id", [jobId]);
       if (!j.rows[0]) return null;
     }
-    return (
-      await q.query<{ id: string; state: string; ended: "not_this_time" | "thanks_for_coming" | null }>(
-        "delete from gatherings where id = $1 returning id, state, ended",
-        [gatheringId],
-      )
+    const gone = (
+      await q.query<{
+        id: string;
+        state: string;
+        ended: "not_this_time" | "thanks_for_coming" | null;
+        group_id: string;
+      }>("delete from gatherings where id = $1 returning id, state, ended, group_id", [gatheringId])
     ).rows[0];
+    if (gone) await bumpLaunch(q, "deleted_on_time", gone.group_id); // the delete job: 60 s after Gone
+    return gone;
   });
   if (r) {
     ctx.events.publish(r.id, { type: "gone", id: r.id, ended: r.ended ?? "not_this_time" });

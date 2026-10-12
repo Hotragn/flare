@@ -3,6 +3,7 @@
 import type { Hono } from "hono";
 import type { Ctx } from "../core/deps.ts";
 import { b64u, isoWeek, runEvent, unb64u } from "../core/gatherings.ts";
+import { bumpLaunch, TEST_HEADER } from "../core/launch.ts";
 import type { Q } from "../db/db.ts";
 import { ApiError } from "../http/errors.ts";
 import { body, isUuid, type RateLimiter, requireMember, sha256 } from "../http/middleware.ts";
@@ -59,7 +60,9 @@ export function mountGroups(app: Hono, ctx: Ctx, rl: RateLimiter): void {
           b.member.id,
         ]);
         if (dup.rows.length) throw new ApiError(409, "wrong_state", "That id is taken");
-        await q.query("insert into groups (id) values ($1)", [b.id]);
+        const test = c.req.header(TEST_HEADER) === "1"; // smoke and e2e: never in Since launch
+        await q.query("insert into groups (id, is_test) values ($1, $2)", [b.id, test]);
+        await bumpLaunch(q, "crews", b.id);
         await q.query("insert into members (id, group_id, name_ct, write_token_hash) values ($1, $2, $3, $4)", [
           b.member.id,
           b.id,

@@ -68,6 +68,24 @@ describe("getDeletionAudit", () => {
   });
 });
 
+describe("getLaunchStats", () => {
+  it("200 with only the six totals and since; a test-header group never counts", async () => {
+    const before = (await h.call("GET", "/api/v1/stats")).body;
+    expect(Object.keys(before).sort()).toEqual([
+      "crews",
+      "deleted_on_time",
+      "embers",
+      "flares_sent",
+      "lit",
+      "since",
+      "yeses",
+    ]);
+    for (const [k, v] of Object.entries(before))
+      if (k !== "since") expect(Number.isInteger(v) && (v as number) >= 0).toBe(true);
+    expect(JSON.stringify(before)).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-/); // no ids
+  });
+});
+
 describe("createGroup", () => {
   it("201, 400 bad_request, 409 on a taken id, repeat with the same key returns the first response", async () => {
     const m = newMember();
