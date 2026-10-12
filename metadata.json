@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4PX3P6EYWWVXP00NRX73EZW",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/src/lib/push/cache-plan.ts",
+    "apps/web/src/lib/push/update.ts",
+    "apps/web/src/routes/+layout.svelte",
+    "apps/web/src/service-worker.ts",
+    "apps/web/test/pwa/cache-plan.test.ts",
+    "docs/pwa/evidence/e2e-offline.txt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4690,
+    "cache_creation_tokens": 7367810,
+    "cache_read_tokens": 1191242051,
+    "output_tokens": 2184440,
+    "api_call_count": 2317,
+    "subagent_tokens": {
+      "input_tokens": 1022,
+      "cache_creation_tokens": 1000116,
+      "cache_read_tokens": 95482590,
+      "output_tokens": 112553,
+      "api_call_count": 511
+    }
+  }
+}
