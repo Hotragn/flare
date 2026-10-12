@@ -61,7 +61,7 @@ One evening, in four frames:
 
 **Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below. [FIELD: met in person?]
 
-**Field test 2, Mon Oct 12, 12:38 AM:** sent, a yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone, We're done at 12:43, deleted on time. [FIELD: outdoor meetup?]
+**Field test 2, Mon Oct 12, 12:38 AM:** sent, a yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone, We're done at 12:43; the public audit showed it gone within about 90 seconds. [FIELD: outdoor meetup?]
 
 | What | How | Result |
 | --- | --- | --- |
