@@ -8,7 +8,7 @@
   import { t } from "#lib/copy/site.ts";
   import { onDestroy } from "svelte";
   import { onNavigate } from "$app/navigation";
-  import { version } from "$app/environment";
+  import { version } from "$app/env";
   let { children } = $props();
 
   // Website flames use the CSS renderer (Flame.svelte's "forced css"): same look and motion,
