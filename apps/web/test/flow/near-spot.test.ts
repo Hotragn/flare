@@ -22,6 +22,8 @@ describe("spot names read as English in every template", () => {
         t("sms.lit" as never, { host: "Fuego", spot, code: "ABC" }),
         botT("lit.notice", { host: "Fuego", spot }),
       ];
+      // Live, 12:20 AM: the friend's lit screen said "Fuego is waiting at Near West Road."
+      expect(t("send.hostLine", { host: "Fuego", spot })).not.toMatch(/at [Nn]ear/);
       for (const l of lines) {
         expect(l).toContain(`Fuego is ${want}`);
         expect(l).not.toMatch(/at [Nn]ear/);

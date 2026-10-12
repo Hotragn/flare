@@ -15,26 +15,33 @@ import { chromium, type Page } from "playwright-core";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const OUT = path.join(ROOT, "docs/frontend/evidence");
 const PORT = 8879;
-const URL0 = `http://localhost:${PORT}`;
+// E2E_BASE=https://... runs against a live server (no local stack); all traffic is marked x-flare-test.
+const LIVE = process.env.E2E_BASE ?? "";
+const URL0 = LIVE || `http://localhost:${PORT}`;
+const testHeaders = LIVE ? { extraHTTPHeaders: { "x-flare-test": "1" } } : {};
 const fails: string[] = [];
 const check = (name: string, ok: boolean, detail = "") => {
   if (!ok) fails.push(name);
   console.info(`${ok ? "PASS" : "FAIL"} ${name}${detail ? `: ${detail}` : ""}`);
 };
 const env = { ...process.env, LOG_LEVEL: "warn", SENTRY_DSN: "" };
-const server = spawn(process.execPath, ["apps/server/src/main.ts"], {
-  cwd: ROOT,
-  env: { ...env, PORT: String(PORT), DATABASE_URL: "pglite:memory", PUBLIC_BASE_URL: URL0, REMEMBER_THIS: "1" },
-  stdio: "ignore",
-});
-const hub = spawn(process.execPath, ["apps/hub/src/main.ts"], {
-  cwd: ROOT,
-  env: { ...env, FLARE_SERVER_URL: `ws://localhost:${PORT}` },
-  stdio: "ignore",
-});
+const server = LIVE
+  ? null
+  : spawn(process.execPath, ["apps/server/src/main.ts"], {
+      cwd: ROOT,
+      env: { ...env, PORT: String(PORT), DATABASE_URL: "pglite:memory", PUBLIC_BASE_URL: URL0, REMEMBER_THIS: "1" },
+      stdio: "ignore",
+    });
+const hub = LIVE
+  ? null
+  : spawn(process.execPath, ["apps/hub/src/main.ts"], {
+      cwd: ROOT,
+      env: { ...env, FLARE_SERVER_URL: `ws://localhost:${PORT}` },
+      stdio: "ignore",
+    });
 process.on("exit", () => {
-  hub.kill("SIGTERM");
-  server.kill("SIGTERM");
+  hub?.kill("SIGTERM");
+  server?.kill("SIGTERM");
 });
 for (let i = 0; i < 240; i++) {
   const h = await fetch(`${URL0}/api/v1/health`).then(
@@ -47,7 +54,13 @@ for (let i = 0; i < 240; i++) {
 const clip = fs.readFileSync(path.join(ROOT, "apps/web/test/fixtures/remember-two-voices.wav"));
 const photo = path.join(ROOT, "scripts/fixtures/media-eagle-lake.jpg");
 const browser = await chromium.launch({ channel: "chrome" });
-const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true };
+const phone = {
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 2,
+  hasTouch: true,
+  isMobile: true,
+  ...testHeaders,
+};
 const hostCtx = await browser.newContext({
   ...phone,
   permissions: ["geolocation", "clipboard-read", "clipboard-write"],
@@ -185,6 +198,29 @@ try {
   );
   await friend.screenshot({ path: path.join(OUT, "e2e-remember-note.png") });
   console.info(`Scribe ${scribeMs} ms; stop to note on the other phone ${endMs} ms`);
+  check("no audio is kept: the note holds words only, sealed", shown && !/data:audio|RIFF/.test(text));
+
+  // A late joiner who hasn't agreed turns it off for everyone; their no keeps it off.
+  const late = await (await browser.newContext({ ...phone })).newPage();
+  late.on("pageerror", (e) => fails.push(`late: ${e.message}`));
+  await late.goto(URL0 + link);
+  await late.getByRole("button", { name: "I'm in" }).click({ timeout: 15_000 });
+  const n2 = late.getByLabel("Your first name");
+  if (await n2.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    await n2.fill("Ash");
+    await late.getByRole("button", { name: "Join" }).click();
+  }
+  await host.waitForTimeout(2500);
+  await host.keyboard.press("Escape").catch(() => {});
+  await host.getByRole("button", { name: "Remember this" }).click();
+  const recordAfterLate = await sheet(host)
+    .getByRole("button", { name: "Record" })
+    .isVisible()
+    .catch(() => false);
+  check("a late joiner who hasn't agreed turns Record off for everyone", !recordAfterLate);
+  await host.keyboard.press("Escape").catch(() => {});
+  // "Any no keeps it off" is proven in apps/server/test/remember.test.ts (fast-check) and the
+  // contract tests; here the note already exists, so the late phone sees the note, not the ask.
 } catch (e) {
   fails.push(e instanceof Error ? (e.message.split("\n")[0] ?? "error") : String(e));
   await host.screenshot({ path: path.join(OUT, "e2e-remember-fail-host.png") }).catch(() => {});
