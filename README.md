@@ -7,7 +7,9 @@
 > **Changes after the deadline** (every commit after Oct 12, 06:59 UTC; nothing on the live site changed unless a line says so):
 >
 > - `ad59cc9`, Oct 12 07:09 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is now a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.
-> - This commit, Oct 12 about 07:15 UTC: README only. This block.
+> - `70689c3`, Oct 12 07:13 UTC: README only. This block.
+> - `987c12e`, Oct 12 07:16 UTC: docs only. An outline for a longer version of the DEV post (docs/post/draft-v2-outline.md).
+> - The next commit, Oct 12 about 07:20 UTC: README only. These hashes.
 
 Snap where you are. If enough friends quietly say yes, it's on.
 
