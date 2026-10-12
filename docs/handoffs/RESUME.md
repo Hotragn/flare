@@ -3,7 +3,7 @@
 ## Now: Mon 2026-10-12, about 1:55 AM ET. Main is held; the founder publishes 2:05 to 2:59.
 - **Live:** 832e206470fa, smoke passes.
 - **Live flags:** Mastra (LADDER_AGENT) is on. Remember this is off, and so is Voice Spark (ELEVENLABS_API_KEY isn't sent): both failed on a real iPhone, where the mic never started and the server logs show no upload.
-- **Post:** docs/post/draft.md, 1,886 words of prose. Holes left: REPO, ENTIRE (3), AGENT SESSION.
+- **Post:** docs/post/draft.md, 1,900 words of prose, 8 images (day cards 23 and 24 added; architecture and storyboard regenerated). Holes left: REPO, ENTIRE (3), AGENT SESSION.
 - **Entire:** push_sessions is false (.entire/settings.json). origin holds 247 refs/entire/checkpoints, which contain the founder's email. The founder decides before the repo goes public. Push main only.
 - **Next after the deadline:**
   - log the phone mic error, and test on a real iPhone
