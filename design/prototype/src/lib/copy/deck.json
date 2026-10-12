@@ -6250,7 +6250,7 @@
       "fixed": "ADR-0022"
     },
     "site.privacy.l.voice": {
-      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it.",
+      "text": "The warm compass voice is recorded once from fixed lines. It ships with the app, so nothing of yours goes to ElevenLabs.",
       "kind": "prose",
       "where": "site W4 (ADR-0027)"
     },
