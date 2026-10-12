@@ -3577,3 +3577,13 @@ Good work. One post fix, docs only: restore the "4 PM on a Saturday" opener, its
 <cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
 Usage is at 83%, and the window resets at 2:50 AM, just before the deadline. Save tokens: restore the hook, commit, push main only, update RESUME.md, then stop and hold. No new work unless I send it.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+One small docs change, then hold again. Copy flare/lab/reports/11-day-card.png to docs/post/media/23-day-card.png and put it in the Remember this bullet under What I got wrong, with this caption, swapping out about as many words elsewhere so you stay under 1,900:
+
+"The phone's recorder failed, so here is what the same server code makes from a 46 s recording of me in Telugu and English: Scribe 1.5 s, Gemma's line 2.8 s. Gemma's line is close but calls it a discussion and a device."
+
+The founder has agreed (it's their own voice). Commit, push main only, and tell me the word count.
+</cross-session-message>
