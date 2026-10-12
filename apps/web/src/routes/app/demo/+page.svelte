@@ -182,8 +182,7 @@
   </aside>
 
   {#if step === "send"}
-    <aside class="notes" aria-label={t("demo.intro", { host: me })}><p class="role" role="status">{t("demo.intro", { host: me })}</p></aside>
-    <H3Send bind:hostLine={typedLine} words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
+    <H3Send coach={t("demo.intro", { host: me })} bind:hostLine={typedLine} words={DEMO_WORDS} photo="/demo/pond.jpg" scene={DEMO_SCENE} spot={DEMO_SPOT} bind:quorum onsend={send} onclose={leave} />
   {:else if step === "kindling"}
     <div class="layer">
       <H5HostKindling photo="/demo/pond.jpg" scene={DEMO_SCENE} view={demo.have() > 1 ? "growing" : "zero"} have={demo.have()} quorum={demo.g?.quorum ?? 4} sentMin={sentAt ? Math.floor((demo.now - sentAt) / 60_000) : 0} hostLine={typedLine || t("demo.youWait", { spot: DEMO_SPOT })} onclose={leave} />

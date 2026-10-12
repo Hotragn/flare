@@ -29,6 +29,8 @@
     sample = false,
     onsend,
     onclose,
+      coach = "",
+      onlocate,
   }: {
     view?: "ready" | "editing" | "sending" | "error" | "offline";
     theme?: Theme;
@@ -48,6 +50,10 @@
     sample?: boolean;
     onsend?: () => void;
     onclose?: () => void;
+      /** The demo's coach line, in the sheet so it never covers the photo (fresh-eyes round 6). */
+    coach?: string;
+      /** Fresh-eyes round 6: the one place we ask for location, next to the place it fills. */
+    onlocate?: () => void;
   } = $props();
   let editing = $state(false);
   const showEdit = $derived(editing || view === "editing");
@@ -61,14 +67,18 @@
     {#if photo}<button class="pf" type="button" onclick={zoom}><img src={photo} alt={scene || t("invite.photoFallback")} onload={lit} /></button>{/if}
     <p class="t-invite words">{words}</p>
   {/snippet}
-  <Tip id="send" text="tip.send" />
+  <!-- First send on a short phone: the name field takes the tip's room; the tip shows next time. -->
+  {#if coach}<p class="coachline" role="status">{coach}</p>{/if}
+  <div class="tipwrap" class:first={askName}><Tip id="send" text="tip.send" /></div>
+  <!-- The size first (fresh-eyes round 6): on a small phone it must never sit below the fold. -->
+  <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
   {#if askName}
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
   {/if}
   {#if askSpot}
     <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} hint={typedSpot.trim() ? "" : t("send.whereHint")} max={80} />
+    {#if onlocate}<Button variant="text" icon="hotspots" onclick={onlocate}>{t("send.useLocation")}</Button>{/if}
   {/if}
-  <Choice label={t("send.quorumLabel")} bind:value={quorum} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
   <!-- One place field (fresh-eyes round 2): when you type where you are, that is the line;
        the Where you'll be row only shows when the map already named the spot. -->
   {#if askSpot && !showEdit}{:else if showEdit}
@@ -93,12 +103,21 @@
 </Screen>
 
 <style>
+  .tipwrap { display: contents; }
+  .coachline { margin: 0; padding: 8px 14px; border-radius: 14px; background: #fff; color: #111; font-weight: 700; }
   .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
   /* Photo-fit: the photo at its own shape, capped so the main button still fits on a 375 x 667
      phone. The words sit under it and the sheet takes the rest, so nothing covers the place. */
   .pf { display: block; margin: 0 auto; padding: 0; border: 0; background: none; border-radius: 16px; overflow: hidden; max-width: 100%; cursor: zoom-in; flex: none; }
-  .pf img { display: block; max-width: 100%; max-height: min(38dvh, 420px); width: auto; height: auto; }
-  .pf + .words { font-size: calc(2rem * var(--text-scale)); max-width: none; }
+  /* Send holds more controls than the invite (size, place, Edit): a smaller print, so every
+     control fits at 375 x 667 without scrolling (fresh-eyes round 6). Tap the photo to see it whole. */
+  .pf img { display: block; max-width: 100%; max-height: min(24dvh, 300px); width: auto; height: auto; }
+  .pf + .words { font-size: calc(1.5rem * var(--text-scale)); max-width: none; }
+  @media (max-height: 720px) {
+    .pf img { max-height: 15dvh; }
+    .tipwrap.first { display: none; }
+    .pf + .words { font-size: calc(1.25rem * var(--text-scale)); }
+  }
   :global(.staged > .hero:has(.pf)) { flex: none; justify-content: flex-start; gap: 10px; padding-top: 4px; }
   :global(.staged:has(> .hero .pf) > .sheet) { flex: 1; max-height: none; min-height: 0; }
   .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; }

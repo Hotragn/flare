@@ -38,7 +38,7 @@
       <a class="cta" href="/app/">{t("site.nav.open")}</a>
     </div>
     <SunLine />
-    <p class="fine">{t("site.hero.fine")} <a class="judge" href="/app/demo/">{t("site.hero.judge")}</a></p>
+    <p class="fine">{t("site.hero.fine")}</p>
   </div>
 </section>
 
@@ -114,5 +114,4 @@
   .live-fallback { border-radius: var(--r-lg); padding: 18px 20px; background: var(--c-dusk-900); color: var(--c-birch-100); display: flex; flex-direction: column; gap: 10px; }
   .live-fallback h2 { margin: 0; color: var(--c-gold-300); }
   .live-fallback a { color: var(--c-gold-300) !important; }
-  .judge { color: var(--c-birch-50) !important; font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
 </style>

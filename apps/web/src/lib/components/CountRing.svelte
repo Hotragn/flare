@@ -1,5 +1,5 @@
 <!-- The count, made visual (2026 direction): a ring of segments around the flame, one per
-     person needed, filled per yes; one short line ("1 more to light it"); "Nobody sees who" as
+     person needed, filled per yes; one short line ("Need 1 more"); "Nobody sees who" as
      a tiny hint. The flame grows with each yes like the app's Kindling.
      A yes arrives as a spark: it flies in from the screen's edge (a random side, never a name or
      a face), feeds the flame, then the flame grows a step and the count ticks (about 900 ms).

@@ -139,6 +139,34 @@ const onScreen = (page: Page, name: string | RegExp) =>
       return r.bottom <= innerHeight && r.top >= 0;
     });
 
+/** Round 6: every control in the sheet is on screen, not clipped by its scroll box, not covered. */
+const controlsHidden = (page: Page) =>
+  page.evaluate(() => {
+    const out: string[] = [];
+    const els = [
+      ...document.querySelectorAll(".sheet button, .sheet input, .sheet textarea, .sheet label.opt, .sheet a"),
+    ];
+    for (const el of els) {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height || getComputedStyle(el).visibility === "hidden") continue;
+      if (el.matches("label.opt input")) continue; // the label is the tap target; its radio is hidden
+      let clip = { top: 0, bottom: innerHeight };
+      for (let p = el.parentElement; p; p = p.parentElement) {
+        const o = getComputedStyle(p).overflowY;
+        if (o === "auto" || o === "scroll" || o === "hidden") {
+          const pr = p.getBoundingClientRect();
+          clip = { top: Math.max(clip.top, pr.top), bottom: Math.min(clip.bottom, pr.bottom) };
+        }
+      }
+      const cy = r.top + r.height / 2;
+      const hit = document.elementFromPoint(r.left + r.width / 2, cy);
+      const covered = !hit || !(el === hit || el.contains(hit) || hit.contains(el));
+      if (r.top < clip.top - 1 || r.bottom > clip.bottom + 1 || covered)
+        out.push((el.textContent?.trim() || el.getAttribute("aria-label") || el.tagName).slice(0, 30));
+    }
+    return out;
+  });
+
 async function measure(
   page: Page,
   screen: string,
@@ -157,6 +185,10 @@ async function measure(
   check(`${tag}: text and sheets cover at most 25% of the photo`, m.cover <= MAX_COVER, `${pct}%`);
   check(`${tag}: the whole photo is on screen (no crop)`, m.shown >= 0.97, `${shownPct}%`);
   check(`${tag}: the main button fits without scrolling`, await onScreen(page, main));
+  if (!BEFORE) {
+    const hidden = await controlsHidden(page);
+    check(`${tag}: every control is on screen and uncovered at first paint`, hidden.length === 0, hidden.join(", "));
+  }
   if (!BEFORE) {
     if (photo.dark) check(`${tag}: the dark photo is brightened for display`, /brightness/.test(m.filter), m.filter);
     else check(`${tag}: a bright photo has no filter`, !m.filter || m.filter === "none", m.filter);
@@ -286,6 +318,25 @@ try {
       }
       if (!BEFORE && vp.height === 664) await viewer(friend, `invite ${tag}`);
       await friendCtx.close();
+    }
+  // Round 6: the demo's Send step, with its coach line, on the same viewports and the same rules.
+  if (!BEFORE)
+    for (const vp of VIEWPORTS) {
+      const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
+      const demo = await ctx.newPage();
+      await demo.goto(`${srv.url}/app/demo/`);
+      await photoReady(demo);
+      const m = await coverage(demo);
+      const tag = `demo send ${vp.width}x${vp.height}`;
+      rows.push(`${tag}: ${Math.round(m.cover * 1000) / 10}% covered`);
+      check(
+        `${tag}: the coach line and sheet cover at most 25% of the photo`,
+        m.cover <= MAX_COVER,
+        `${Math.round(m.cover * 1000) / 10}%`,
+      );
+      const hidden = await controlsHidden(demo);
+      check(`${tag}: every control is on screen and uncovered at first paint`, hidden.length === 0, hidden.join(", "));
+      await ctx.close();
     }
 } finally {
   await browser.close();

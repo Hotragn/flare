@@ -69,6 +69,7 @@
       <img src="/brand/flare-mark-maple.svg" alt="" width="36" height="36" />
       <p>{t("site.foot.made")} {t("site.foot.osm")}</p>
     </div>
+    <p class="tour"><a href="/app/demo/">{t("site.hero.judge")}</a></p>
     <p class="build">{t("site.foot.build", { id: version.slice(0, 12) })}</p>
   </footer>
 </div>

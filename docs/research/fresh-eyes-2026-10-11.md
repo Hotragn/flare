@@ -105,4 +105,12 @@ Fixed after it (before the 1 AM freeze):
 - **"10min only with you" lost "only with you" in the demo.** The demo passes the host's name the way a friend's phone does.
 - **"after 10" at 10:40 PM became 10 AM tomorrow.** A bare hour that already holds (up to 6 h back) now stays tonight: 10 PM. blind_40 is still 30/40.
 
-Left: the location is asked twice (the "Name your spot?" sheet, then Send asks for "where you are"); the bottom sheet hides the 2/3/4 buttons at 375×667; the demo coach card over the photo; "N more to light it" vs "Need N more"; "Judging? 60-second tour" reads odd to normal users; "Made on our laptop · Photo not kept" sounds hobby-grade.
+Then fixed, the founder's leftover list (23:10 ET):
+- **At 375×667 the sheet hid the 2/3/4 size buttons** (a real bug). Send now puts the size first, uses a smaller print on short screens, and on a first send hides the tip there. A new gate, "every control is on screen and uncovered at first paint", runs on invite, develop, send and the demo's Send at 390×664, 375×667 and 390×844. It failed before the fix (2, 3, 4, Edit) and passes now.
+- **The demo coach card covered the photo.** The coach line now sits inside the sheet; the gate measures 0% of the photo covered.
+- **The location was asked twice.** Develop no longer opens its own sheet. The one ask is on Send, a "Use my location" button next to the place it fills.
+- **"Need N more"** is now the wording everywhere, including the count ring.
+- **"Judging? 60-second tour"** moved to the footer as "Take the 60-second tour".
+- **"Made on our laptop · Photo not kept"**: "Made on our laptop" is a fixed requirement string (SRS-AI-4), so it stays. The hint beside it now reads "Gemma 4 wrote it and kept no copy. Edit anything." on the laptop tier only, because the cloud tier can't promise that.
+
+Earlier left list: the location is asked twice (the "Name your spot?" sheet, then Send asks for "where you are"); the bottom sheet hides the 2/3/4 buttons at 375×667; the demo coach card over the photo; "N more to light it" vs "Need N more"; "Judging? 60-second tour" reads odd to normal users; "Made on our laptop · Photo not kept" sounds hobby-grade.

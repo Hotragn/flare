@@ -813,9 +813,14 @@
       "where": "H2"
     },
     "develop.editHint": {
-      "text": "Photo not kept. Edit anything.",
+      "text": "Edit anything.",
       "kind": "hint",
       "where": "H2"
+    },
+    "develop.editHintHub": {
+      "text": "Gemma 4 wrote it and kept no copy. Edit anything.",
+      "kind": "hint",
+      "where": "H2 tier note, hub tier only (fresh-eyes round 6: plain, confident, true)"
     },
     "develop.flameNote": {
       "text": "This is your flame. It grows as friends say yes.",
@@ -911,6 +916,11 @@
       "text": "Dismiss tip",
       "kind": "aria",
       "where": "Tip close button (fresh-eyes round 4: two buttons named Close)"
+    },
+    "send.useLocation": {
+      "text": "Use my location",
+      "kind": "button",
+      "where": "H3 typed place: the one location ask (fresh-eyes round 6)"
     },
     "send.whereHint": {
       "text": "Add where you are to send it.",
@@ -1830,8 +1840,8 @@
       }
     },
     "need.toLight": {
-      "text": "{n} more to light it",
-      "one": "1 more to light it",
+      "text": "Need {n} more",
+      "one": "Need 1 more",
       "kind": "label",
       "where": "I1"
     },
@@ -4320,9 +4330,9 @@
       "fixed": "brand promise line"
     },
     "site.hero.judge": {
-      "text": "Judging? 60-second tour",
+      "text": "Take the 60-second tour",
       "kind": "label",
-      "where": "site W1 hero fine print, links to /app/demo/"
+      "where": "Site footer (fresh-eyes round 6: moved from the hero)"
     },
     "site.home.readBuilt": {
       "text": "How it's built",

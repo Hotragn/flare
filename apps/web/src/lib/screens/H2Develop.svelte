@@ -65,7 +65,7 @@
     <p class="t-invite pending" role="status">{t("develop.writing")}</p>
   {:else if view === "drafted"}
     <TypeWords text={words} />
-    <p class="tier t-small t-muted">{dot(t(tier === "hub" ? "app.tier.hub" : tier === "cloud" ? "app.tier.cloud" : "app.tier.rules"), t("develop.editHint"))}</p>
+    <p class="tier t-small t-muted">{dot(t(tier === "hub" ? "app.tier.hub" : tier === "cloud" ? "app.tier.cloud" : "app.tier.rules"), t(tier === "hub" ? "develop.editHintHub" : "develop.editHint"))}</p>
     <FlameMeter have={1} quorum={2} note={t("develop.flameNote")} />
   {:else}
     <p class="t-muted t-small notice"><Icon name="info" size={20} />{view === "offline" ? t("develop.noSignal") : cloud ? t("develop.hubDownCloud") : t("develop.hubDown")}</p>
