@@ -21,7 +21,7 @@
 | **Google AI Studio billing** | On the free tier, Google may use what it receives to improve its products, and people there may review it. Plan asks always go there when the laptop is off; photos only when the host taps. Paid terms stop that use. Today it's disclosed in the app and on the privacy page | Google Cloud console, project billing |
 | **Stale image folders** | `apps/web/static/scenic/` and the `-640` and `-1280` files in `apps/web/static/scenery/` are untracked leftovers. Delete them | `rm -r` them yourself |
 
-| **Mastra prize line** | `LADDER_AGENT` is not on live, so the agent isn't running there. Either turn it on (set `LADDER_AGENT=1` for the hub and restart it) and check one live Plan, or delete the Mastra prize line (draft line 194). The Mastra paragraph in the stack section can stay, as "wired in, off by default". | .env / hub |
+| **Mastra** | Done: `LADDER_AGENT=1` is on live since 12:03 AM Oct 12 (c5d9da0). Checks: smoke passes; live Plan drafts through the agent with the hub on returned 4 steps on the hub tier (10.6 s cold, then 2.2 to 4.0 s warm); with the hub off, it fell back to cloud Gemma in 1.7 s (and to the template in 7.7 s while the server still thought the hub was there). The prize line stays | Nothing to do |
 | **ATUS microdata (next step)** | Our own 2003–2025 series (time with friends, time outdoors) needs 118.6 MB of bls.gov files. Skipped tonight; the chart uses the published 2003–2020 series | Later |
 
 ## 2. Fill in the post
@@ -40,7 +40,6 @@ Every hole in [draft.md](draft.md), top to bottom. You have about 135 words left
 | 130, 187, 196 | ENTIRE | The checkpoint links, after the session scrub (section 4); or delete all three |
 | 132 | SENTRY TRACE | A screenshot of an `invoke_agent flare-ladder` trace with `gen_ai.provider.name: google`. To make one, stop the hub and send a Plan draft |
 | 185 | AGENT SESSION | The DevRelay embed (section 4); or delete it |
-| 194 | MASTRA LIVE | See the Mastra row in section 1 |
 | 198 | THANKS | Names, with each person's OK; or delete it |
 
 Also delete the HTML comment at the top. Check the title, the tags (`devchallenge, hf26challenge` are required) and the cover image (`brand/export/social/dev-cover-1000x420.png`).

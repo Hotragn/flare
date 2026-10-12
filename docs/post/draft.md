@@ -6,7 +6,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
      FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), FIELD (outdoor test),
-     VIDEO, MASTRA LIVE, SENTRY TRACE, AGENT SESSION, ENTIRE, THANKS, and the repo line.
+     VIDEO, SENTRY TRACE, AGENT SESSION, ENTIRE, THANKS, and the repo line.
      Prose is 1,765 words without the holes: keep everything you add under about 135 words.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
@@ -191,7 +191,7 @@ A photo of where you stand, or your voice saying it, is about as personal as dat
 - **Gemma:** sees (39/40), hears (3.3 s) and writes, with code checking every answer. [Details](#gemma-4-sees-hears-and-writes)
 - **Tinker:** a $2.40 LoRA read 38/40 and taught the rules 20/40 to 30/40, blind. [Details](#the-rest-of-the-stack)
 - **ElevenLabs:** a compass voice for 698 characters that sends nothing. [Details](#the-rest-of-the-stack)
-- **Mastra:** four local tools, p95 5.1 s vs 5.5 s, weather 7/7. [MASTRA LIVE: keep this line only if the agent is switched on live] [Details](#the-rest-of-the-stack)
+- **Mastra:** four local tools, p95 5.1 s vs 5.5 s, weather 7/7. On live since Oct 12. [Details](#the-rest-of-the-stack)
 - **Sentry Agent Tracing:** every AI job traced, under an allow-list a test proves. [Details](#the-rest-of-the-stack)
 - **Entire:** [ENTIRE: one line with the session links]
 
