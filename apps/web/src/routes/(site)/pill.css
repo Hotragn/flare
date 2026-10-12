@@ -1,0 +1,24 @@
+/* Pill buttons for the website's tap moments (Hear the compass, Choose a photo, Light it, Use my
+   location, Try cloud AI). One shared rule, loaded with the site frame, so the home page's own
+   stylesheet stays small enough to be inlined (Lighthouse render-blocking). */
+.site .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 2px solid var(--c-maple-700);
+  border-radius: 999px;
+  background: var(--c-maple-700);
+  color: var(--c-birch-50);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.site .pill.ghost {
+  background: transparent;
+  color: var(--accent-text);
+}
+.site .pill:disabled {
+  opacity: 0.6;
+}

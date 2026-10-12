@@ -3,9 +3,11 @@
 <script lang="ts">
   import "#lib/styles/app.css";
   import "./site.css";
+  import "./pill.css";
   import { page } from "$app/state";
   import { t } from "#lib/copy/site.ts";
   import { onDestroy } from "svelte";
+  import { onNavigate } from "$app/navigation";
   let { children } = $props();
 
   // Website flames use the CSS renderer (Flame.svelte's "forced css"): same look and motion,
@@ -15,6 +17,19 @@
   if (browser) document.documentElement.dataset.flame = "css";
   onDestroy(() => {
     if (browser) delete document.documentElement.dataset.flame;
+  });
+
+  // View Transitions between the five site pages: the old page cross-fades into the new one
+  // (Chrome, Safari 18+). Skipped with reduced motion, into the app, and where unsupported.
+  onNavigate((nav) => {
+    const start = (document as Document & { startViewTransition?: (cb: () => Promise<void>) => unknown }).startViewTransition;
+    if (!start || !nav.to?.route.id?.startsWith("/(site)") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    return new Promise<void>((resolve) => {
+      start.call(document, async () => {
+        resolve();
+        await nav.complete;
+      });
+    });
   });
 
   const links = [
@@ -55,3 +70,8 @@
     </div>
   </footer>
 </div>
+
+<style>
+  /* The nav stays put while the page under it cross-fades. */
+  .nav { view-transition-name: site-nav; }
+</style>
