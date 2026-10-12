@@ -46,3 +46,6 @@ export function showState(lit: boolean, title: string): void {
     else void n.clearAppBadge?.().catch(() => {});
   } catch {}
 }
+
+/** The friend's "You're in" line: the buzz promise only with push (final review). */
+export const inBodyKey = (push: boolean): "in.body" | "in.bodyOpen" => (push ? "in.body" : "in.bodyOpen");

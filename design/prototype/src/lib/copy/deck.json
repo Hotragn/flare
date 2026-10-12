@@ -1661,6 +1661,11 @@
       "where": "I4",
       "fixed": "FR-RES-5"
     },
+    "in.bodyOpen": {
+      "text": "Keep this page open to see when it's lit.",
+      "kind": "message",
+      "where": "I4 You're in, no push on this phone (final review)"
+    },
     "in.private": {
       "text": "Nobody sees who said yes. Only the count.",
       "kind": "hint",
@@ -3659,7 +3664,7 @@
       "fixed": "BR-C-9"
     },
     "ai.run.ladder": {
-      "text": "Our laptop. If it can't answer in 8 s, a template.",
+      "text": "Our laptop, then cloud Gemma, then a template.",
       "kind": "message",
       "where": "/ai/",
       "owner": "apps/web/src/routes/ai"
@@ -4697,7 +4702,8 @@
     "site.live.sent": {
       "text": "{n} Flares sent",
       "kind": "status",
-      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)",
+      "one": "1 Flare sent"
     },
     "site.live.lit": {
       "text": "{n} lit",
@@ -4712,17 +4718,25 @@
     "site.live.yeses": {
       "text": "{n} yeses",
       "kind": "status",
-      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)",
+      "one": "1 yes"
     },
     "site.live.crews": {
       "text": "{n} crews made",
       "kind": "status",
-      "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+      "where": "site Running now, Since launch totals (GET /api/v1/stats)",
+      "one": "1 crew made"
     },
     "site.live.deleted": {
       "text": "{n} deleted on time",
       "kind": "status",
       "where": "site Running now, Since launch totals (GET /api/v1/stats)"
+    },
+    "site.live.before": {
+      "text": "{n} of the deletions are Flares sent before counting began.",
+      "one": "1 deletion is a Flare sent before counting began.",
+      "kind": "status",
+      "where": "site Running now, Since launch (final review)"
     },
     "site.live.build": {
       "text": "Server build {v}",
@@ -6289,6 +6303,11 @@
       "kind": "prose",
       "where": "/ai/ (ADR-0022)",
       "owner": "apps/web/src/routes/ai"
+    },
+    "ai.cloud.checking": {
+      "text": "Checking this server…",
+      "kind": "status",
+      "where": "/ai/ cloud section before /config answers (final review: no false 'off' at first paint)"
     },
     "motion.outsideH": {
       "text": "You were outside {h} h {m} min together",

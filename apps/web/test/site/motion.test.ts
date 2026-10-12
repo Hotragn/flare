@@ -28,6 +28,12 @@ describe("sunset from the time zone, no location", () => {
     if (soon?.kind === "soon") expect(soon.min).toBeGreaterThan(30);
     if (soon?.kind === "soon") expect(soon.min).toBeLessThan(45);
     expect(sunFor(detroit, new Date("2026-10-11T15:00:00Z"))?.kind).toBe("later");
+    // Final review: after midnight, the next sunset is "today", never "tomorrow" on the same date.
+    for (let h = 0; h < 48; h++) {
+      const now = new Date(Date.UTC(2026, 9, 11, h, 30));
+      const r = sunFor(detroit, now);
+      if (r?.kind === "down") expect(r.next.toDateString()).not.toBe(now.toDateString());
+    }
     const down = sunFor(detroit, new Date("2026-10-12T01:00:00Z"));
     expect(down?.kind).toBe("down");
     if (down?.kind === "down") expect(down.next.toISOString().slice(0, 10)).toBe("2026-10-12");

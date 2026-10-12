@@ -51,7 +51,15 @@ export function sunFor(at: LatLon, now: Date): Sun | null {
       ? { kind: "soon", min: Math.max(1, Math.round(ms / 60_000)) }
       : { kind: "later", at: today };
   const next = sunset(at, new Date(now.getTime() + 86_400_000));
-  return Number.isNaN(next.getTime()) ? null : { kind: "down", next };
+  if (Number.isNaN(next.getTime())) return null;
+  // After midnight the next sunset is later today, not "tomorrow" (final review, 12:30 AM).
+  if (next.toDateString() === now.toDateString()) {
+    const left = next.getTime() - now.getTime();
+    return left <= 2 * 3_600_000
+      ? { kind: "soon", min: Math.max(1, Math.round(left / 60_000)) }
+      : { kind: "later", at: next };
+  }
+  return { kind: "down", next };
 }
 
 export const clock = (d: Date) => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });

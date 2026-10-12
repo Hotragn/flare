@@ -81,6 +81,7 @@
         <li>{t("site.live.crews", { n: launch.crews })}</li>
         <li>{t("site.live.deleted", { n: launch.deleted_on_time })}</li>
       </ul>
+      {#if launch.deleted_on_time > launch.flares_sent}<p class="before">{t("site.live.before", { n: launch.deleted_on_time - launch.flares_sent })}</p>{/if}
     </div>
   {/if}
   <p class="note">
@@ -96,6 +97,7 @@
   .since h3 { margin: 0 0 6px; font-size: 1rem; color: var(--c-gold-300); }
   .since ul { display: flex; flex-wrap: wrap; gap: 6px 16px; }
   .since li { min-height: 0; }
+  .before { margin: 6px 0 0; font-size: 0.875rem; opacity: 0.85; }
   ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 1rem; }
   li { display: flex; gap: 10px; align-items: center; min-height: 28px; }
   .dot { position: relative; width: 12px; height: 12px; border-radius: 50%; background: #8a93a3; flex: none; }

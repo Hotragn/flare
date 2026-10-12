@@ -2,7 +2,7 @@
      and the models we measured but don't ship (SRS-AI-4, CR-E2). Reads only local state. -->
 <script lang="ts">
   // ADR-0022: say exactly when DigitalOcean is used, from the server's own /config.
-  let cloudOn = $state(false);
+  let cloudOn = $state<boolean | null>(null); // null until /config answers: never a false "off" at first paint
   $effect(() => {
     fetch("/api/v1/config")
       .then((r) => (r.ok ? r.json() : null))
@@ -99,7 +99,9 @@
 
   <section aria-labelledby="cloud">
     <h2 id="cloud">{t("ai.cloud.title")}</h2>
-    {#if cloudOn}
+    {#if cloudOn === null}
+      <p role="status">{t("ai.cloud.checking")}</p>
+    {:else if cloudOn}
       <ul>
         <li>{t("ai.cloud.ladder")}</li>
         <li>{t("ai.cloud.photo")}</li>

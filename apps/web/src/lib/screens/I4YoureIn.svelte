@@ -1,5 +1,7 @@
 <!-- I4 You're in. Shown within 500 ms of the tap (SRS-RES-3); take it back before Lit (SRS-RES-6). -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { inBodyKey, pushLive } from "#lib/push/buzz.ts";
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Hearth from "../components/Hearth.svelte";
@@ -29,6 +31,9 @@
     ondone?: () => void;
     ontakeback?: () => void;
   } = $props();
+  // Say "We'll buzz you" only when this phone really has push (live bug 5, final review).
+  let push = $state(false);
+  onMount(() => void pushLive().then((v) => (push = v)));
 </script>
 
 <Screen {theme} sound close={false} offline={view === "queued" ? t("app.offlineQueued") : ""}>
@@ -39,7 +44,7 @@
     {:else}
       <Hearth state="kindling" progress={kindlingProgress(have, quorum)} size={200} intro />
       <h1 class="t-display">{t("in.title")}</h1>
-      <p class="t-sun">{t("in.body")}</p>
+      <p class="t-sun">{t(inBodyKey(push))}</p>
       <NeedCount {have} {quorum} />
       <p class="t-muted t-small">{t("in.private")}</p>
     {/if}
