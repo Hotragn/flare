@@ -26,23 +26,24 @@
 
 ## 2. Fill in the post
 
-Every `[FIELD]` in [draft.md](draft.md), top to bottom:
+Every hole in [draft.md](draft.md), top to bottom. You have about 135 words left in total.
 
-1. **Line 22, your quote.** A suggested version is there; accept or rewrite it in your own words.
-2. **Line 40, the video.** 60 to 90 s, following [shot-list.md](shot-list.md). Upload it to YouTube or DEV, then paste the link or embed.
-3. **Line 42, the images.** Upload the four images below it in DEV's editor ("Upload image"), and replace each `docs/post/media/...` path with the URL DEV gives you. Optional extras are in [media/README.md](media/README.md), e.g. 03-friend-lit, 09-crew-atlas, 04b-demo-compass-ahead, and sim/fairlane-sim-42.gif.
-4. **Line 51, the meetup line.** If you go outside with friends before posting, replace it with what happened, using real numbers. If not, delete only the `[FIELD: ...]` part.
-5. **Line 65, the repo.** Delete the `[FIELD: make the repo public.]` text once it is public.
-6. **Line 127, a Sentry trace.** In Sentry, open the project's traces view and pick an `invoke_agent flare-ladder` trace whose chat span has `gen_ai.provider.name: google`. Screenshot the waterfall and upload it.
-   - To make one: stop the hub on the Mac and send a Plan draft from the live app.
-7. **Lines 170 and 172, the agent session.** See section 4. If you skip sessions, delete both lines and the Entire prize line (182).
-8. **Line 184, thanks.** Name anyone who tried it, with their OK, or delete the line.
-9. **Line 7 to 11, the HTML comment.** Delete it.
+| Line | Hole | What goes there |
+| --- | --- | --- |
+| 20 | FOUNDER WHY | Why you built it, in your own words. Nobody else writes this |
+| 22 | FRIEND QUOTE | A friend's real words and a screenshot, with their OK; or delete it |
+| 30 | HERO GIF | Kindling, Lit, Ember, Gone. The motion GIFs are in `media/app-motion/after/` |
+| 36 | WHY IT MATTERS | One chart from the site's Why it matters (screenshot `media/site/why-after-375.png`), with its source line |
+| 54 | VIDEO | 60 to 90 s, following [shot-list.md](shot-list.md) |
+| 62 | met in person? / outdoor test | What really happened at field test 1 and tonight's outdoor test, with numbers; never more than you saw |
+| 87 | REPO | Delete the line once the repo is public |
+| 130, 187, 196 | ENTIRE | The checkpoint links, after the session scrub (section 4); or delete all three |
+| 132 | SENTRY TRACE | A screenshot of an `invoke_agent flare-ladder` trace with `gen_ai.provider.name: google`. To make one, stop the hub and send a Plan draft |
+| 185 | AGENT SESSION | The DevRelay embed (section 4); or delete it |
+| 194 | MASTRA LIVE | See the Mastra row in section 1 |
+| 198 | THANKS | Names, with each person's OK; or delete it |
 
-Also check:
-- the title;
-- the tags (`devchallenge, hf26challenge` are required; `gemma, opensource` are ours);
-- the cover image: `brand/export/social/dev-cover-1000x420.png`.
+Also delete the HTML comment at the top. Check the title, the tags (`devchallenge, hf26challenge` are required) and the cover image (`brand/export/social/dev-cover-1000x420.png`).
 
 ## 3. Publish on DEV (your yes)
 
