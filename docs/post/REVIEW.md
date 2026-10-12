@@ -2,7 +2,7 @@
 
 **Deadline:** Mon Oct 12, 06:59 UTC (Sun 11:59 PM PDT, Mon 2:59 AM ET).
 **The post:** [draft.md](draft.md) (about 1,770 words; about 130 left for your holes under the 1,900 cap)
-**Live:** https://flare-outside.onrender.com, build e398bd8a967d (the footer shows the build; smoke passes)
+**Live:** https://flare-outside.onrender.com, build a6d01312d826 (the footer shows the build; smoke passes)
 
 **State at hand-off (Sun Oct 11, 11:55 PM ET, main frozen for the 1:00 AM freeze):**
 - **Field test 1 live bugs:** all six are fixed and live (photo covered, 10min read as 10 AM, "is at Near", share in Brave, the buzz promise, the stale service worker).
@@ -10,7 +10,7 @@
 - **Gates:** Lighthouse 100 on all 5 pages, mobile and desktop. JS: /app 149.1 KB, /g 148.2 KB, both under the 150 budget. npm test passes 830/830. e2e passes: photo-fit (including a new "every control visible" gate), share (Chrome and WebKit), demo, loop, telegram, sparks, flow, pwa and sw-update.
 - **Shipped and live tonight:** Again; Telegram direct send; auto I'm here; rule chips; Since launch totals; the app motion; Why it matters on BLS ATUS 2025 and WHO 2025.
 - **Cut:** Sounds of the spot (it failed the 100% voice-drop bar).
-- **Turned on live after the freeze, with the manager's OK:** Mastra (`LADDER_AGENT=1`, 12:03 AM) and Remember this (`REMEMBER_THIS=1`, 12:16 AM). Both passed live checks. Remember this goes in the post only if it worked for real people (line 152 hole). To turn either off, delete the line from .env and run `npm run deploy:render -- --yes`.
+- **Turned on live after the freeze, with the manager's OK:** Mastra (`LADDER_AGENT=1`, 12:03 AM), which passed its live checks and stays on. Remember this (`REMEMBER_THIS=1`, 12:16 AM) passed every automated and two-browser live check, then failed on the founder's real iPhone at 12:41: the mic or recorder failed on the phone before any upload, and the logs show no /record or /transcribe call. It is OFF again (12:47). Its privacy and AI page lines are removed, and the post says what happened under What I got wrong.
 
 ## 1. Decisions only you can make
 
