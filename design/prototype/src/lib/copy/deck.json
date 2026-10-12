@@ -922,6 +922,11 @@
       "kind": "button",
       "where": "H3 typed place: the one location ask (fresh-eyes round 6)"
     },
+    "send.noPlaceName": {
+      "text": "Got your location. Type a place name to send.",
+      "kind": "hint",
+      "where": "H3, located but the map has no name here (fresh-eyes round 6b)"
+    },
     "send.whereHint": {
       "text": "Add where you are to send it.",
       "kind": "hint",

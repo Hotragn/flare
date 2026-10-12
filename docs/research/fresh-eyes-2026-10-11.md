@@ -114,3 +114,24 @@ Then fixed, the founder's leftover list (23:10 ET):
 - **"Made on our laptop · Photo not kept"**: "Made on our laptop" is a fixed requirement string (SRS-AI-4), so it stays. The hint beside it now reads "Gemma 4 wrote it and kept no copy. Edit anything." on the laptop tier only, because the cloud tier can't promise that.
 
 Earlier left list: the location is asked twice (the "Name your spot?" sheet, then Send asks for "where you are"); the bottom sheet hides the 2/3/4 buttons at 375×667; the demo coach card over the photo; "N more to light it" vs "Need N more"; "Judging? 60-second tour" reads odd to normal users; "Made on our laptop · Photo not kept" sounds hobby-grade.
+
+## Round 6b (7/10, on 72ade11, live, 11:15 PM ET)
+Same method, a new no-context AI tester, the dark photo, traffic marked x-flare-test. Every button was on screen and tappable at 375×667 on every screen it tried, and the photo stayed visible.
+
+**"Would you use this over a WhatsApp poll? Why or why not?"** (verbatim)
+> For a spur-of-the-moment walk, maybe. Saying yes privately and the "it only happens if enough come" rule are really nicer than a public poll where nobody wants to vote first. The photo also makes it feel real. But my friends are already in the group chat, and I'd still have to paste a link there. As a host I couldn't see who was coming, or that someone had a condition, so I'd end up asking in WhatsApp anyway. Not until the host side gives me more.
+
+Fixed after it (before the freeze):
+- **"Use my location" outside the map left the field empty with no word why.** It now says "Got your location. Type a place name to send."
+- **The shared text after "Your Flare" was "\nNeed 1 more."** The invite words now come back with the live Flare, and the text is trimmed.
+- **"10min only with you" lost "only with you"** when the host's name wasn't on the friend's phone yet. It's now said back ("I didn't catch: only with Sam"), never dropped. blind_40 is still 30/40.
+- **A skipped view transition threw a page error on slow devices** (sparks e2e). It's now caught.
+
+Left:
+- The host's waiting and lit screens don't show the photo or the invite words.
+- The host can't see that a friend added a condition.
+- The name is asked again for some returning users.
+- "Your Flare" is one of five look-alike links.
+- "Here: 1" when nobody tapped I'm here.
+- On desktop, the QR code carries the full invite link.
+- "Whose laptop?"

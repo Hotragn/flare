@@ -31,6 +31,7 @@
     onclose,
       coach = "",
       onlocate,
+      located = false,
   }: {
     view?: "ready" | "editing" | "sending" | "error" | "offline";
     theme?: Theme;
@@ -54,6 +55,8 @@
     coach?: string;
       /** Fresh-eyes round 6: the one place we ask for location, next to the place it fills. */
     onlocate?: () => void;
+      /** Round 6b: location is known, but the map has no name for it here. */
+    located?: boolean;
   } = $props();
   let editing = $state(false);
   const showEdit = $derived(editing || view === "editing");
@@ -76,7 +79,7 @@
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
   {/if}
   {#if askSpot}
-    <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} hint={typedSpot.trim() ? "" : t("send.whereHint")} max={80} />
+    <TextField label={t("perm.locationHost.label")} bind:value={typedSpot} placeholder={t("perm.locationHost.placeholder")} hint={typedSpot.trim() ? "" : located ? t("send.noPlaceName") : t("send.whereHint")} max={80} />
     {#if onlocate}<Button variant="text" icon="hotspots" onclick={onlocate}>{t("send.useLocation")}</Button>{/if}
   {/if}
   <!-- One place field (fresh-eyes round 2): when you type where you are, that is the line;

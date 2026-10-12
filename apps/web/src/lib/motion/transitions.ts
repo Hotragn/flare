@@ -7,7 +7,16 @@
 import { reducedMotion } from "./core.ts";
 import "./transitions.css";
 
-type VTDoc = Document & { startViewTransition?: (cb: () => Promise<void> | void) => { finished: Promise<void> } };
+type VT = { finished: Promise<void>; ready?: Promise<void>; updateCallbackDone?: Promise<void> };
+type VTDoc = Document & { startViewTransition?: (cb: () => Promise<void> | void) => VT };
+
+/** A transition the browser skips (a slow DOM update times out) must not throw on the page. */
+export function quiet(vt: VT | undefined, done?: () => void): void {
+  if (!vt) return;
+  vt.ready?.catch(() => {});
+  vt.updateCallbackDone?.catch(() => {});
+  vt.finished.catch(() => {}).finally(() => done?.());
+}
 
 function mark(kind: "page" | "step") {
   const html = document.documentElement;
@@ -28,7 +37,7 @@ export function pageTransition(complete: () => Promise<void>): Promise<void> | v
       resolve();
       await complete();
     });
-    vt.finished.finally(done);
+    quiet(vt, done);
   });
 }
 
@@ -40,5 +49,5 @@ export function stepTransition(update: () => void | Promise<void>) {
     return;
   }
   const done = mark("step");
-  d.startViewTransition(update).finished.finally(done);
+  quiet(d.startViewTransition(update), done);
 }

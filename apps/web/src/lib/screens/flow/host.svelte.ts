@@ -265,12 +265,14 @@ export class HostFlow {
     if (n) this.spot = { name: n, key: n, lat: this.spot?.lat ?? 0, lon: this.spot?.lon ?? 0 };
   }
 
-  #saved(): { id: string; link: string; until: number } | null {
+  #saved(): { id: string; link: string; until: number; words?: string; quorum?: string } | null {
     try {
       const v = JSON.parse(localStorage.getItem(LIVE_KEY) ?? "null") as {
         id: string;
         link: string;
         until: number;
+        words?: string;
+        quorum?: string;
       } | null;
       return v && typeof v.id === "string" && typeof v.link === "string" && v.until > Date.now() ? v : null;
     } catch {
@@ -288,6 +290,8 @@ export class HostFlow {
     const v = this.#saved();
     if (!v) return false;
     this.link = v.link;
+    if (typeof v.words === "string") this.words = v.words; // round 6b: the shared text keeps the invite words
+    if (typeof v.quorum === "string") this.quorum = v.quorum;
     this.screen = "kindling";
     this.#follow(v.id);
     return true;
@@ -439,7 +443,10 @@ export class HostFlow {
       this.link = link;
       try {
         // Round 6: a reload must not lose the live Flare. Same origin as the key store; cleared at Gone.
-        localStorage.setItem(LIVE_KEY, JSON.stringify({ id, link, until: Date.now() + 4 * 3600_000 }));
+        localStorage.setItem(
+          LIVE_KEY,
+          JSON.stringify({ id, link, until: Date.now() + 4 * 3600_000, words: this.words, quorum: this.quorum }),
+        );
       } catch {}
       this.view = r.value ?? null;
       if (this.photoBlob && kind === "flare") void this.#uploadPhoto(id, key, this.photoBlob);
@@ -539,7 +546,7 @@ export class HostFlow {
     const text =
       kind === "plan"
         ? t("share.plan.text", { ask: this.ask, deadline: this.deadlineAt ? clock(this.deadlineAt, this.#d.tz) : "" })
-        : t("share.flare.text", { invite: this.words, n: v?.need ?? Number(this.quorum) - 1 });
+        : t("share.flare.text", { invite: this.words, n: v?.need ?? Number(this.quorum) - 1 }).trim();
     return this.#sheet({ title, text, url: this.link });
   }
 

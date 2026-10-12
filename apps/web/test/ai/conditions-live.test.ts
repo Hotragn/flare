@@ -62,6 +62,11 @@ describe("live bug: delays and bare hours", () => {
     expect(simple("after 10am is good", 20, 22)).toBe("after=10:00"); // said with am: kept as said
     expect(simple("after 10", 22, 40)).toBe("after=22:00"); // round 6: 10 PM already holds, not 10 AM tomorrow
   });
+  it("round 6b: with you when the host's name isn't on this phone yet is said back, never dropped", () => {
+    const r = parse("10min only with you", { ...ctxAt(23, 27), host: "Sam" }); // Sam is not in members
+    expect(r.ok && r.readBack).toBe("Got it: you can come in 10 min. Right?");
+    expect(r.ok && r.missed).toBe("only with Sam");
+  });
   it("with you means the host", () => {
     for (const s of ["with you", "only with you", "if you're there", "you and me", "only if you come"])
       expect(simple(s, 20, 22), s).toBe("with=m-fuego");

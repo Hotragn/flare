@@ -8,6 +8,7 @@
   import { t } from "#lib/copy/site.ts";
   import { onDestroy } from "svelte";
   import { onNavigate } from "$app/navigation";
+  import { quiet } from "#lib/motion/transitions.ts";
   import { version } from "$app/env";
   let { children } = $props();
 
@@ -26,10 +27,12 @@
     const start = (document as Document & { startViewTransition?: (cb: () => Promise<void>) => unknown }).startViewTransition;
     if (!start || !nav.to?.route.id?.startsWith("/(site)") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     return new Promise<void>((resolve) => {
-      start.call(document, async () => {
-        resolve();
-        await nav.complete;
-      });
+      quiet(
+        start.call(document, async () => {
+          resolve();
+          await nav.complete;
+        }) as Parameters<typeof quiet>[0],
+      );
     });
   });
 

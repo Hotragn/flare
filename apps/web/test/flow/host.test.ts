@@ -227,6 +227,7 @@ describe("round 6: a reload keeps the live Flare", () => {
     expect(again.resume()).toBe(true);
     await settle();
     expect(again.link).toBe(host.link);
+    expect(again.words).toBe(host.words); // round 6b: the shared text keeps the invite words
     expect(again.screen).toBe("kindling");
     vi.unstubAllGlobals();
   });

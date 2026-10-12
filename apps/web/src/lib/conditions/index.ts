@@ -143,7 +143,14 @@ export function parse(text: string, ctx: ParseContext): ParseResult {
   }
   // Only step words on a Flare: nothing usable was said.
   if (raw.rules.length && !rules.length) return { ok: false, reason: "didnt_catch" };
-  const missed = rules.length ? missedWords(text, ctx) : "";
+  // Round 6b: a person we couldn't match on this phone (e.g. "only with you" before the names
+  // load) is said back as missed, never dropped quietly.
+  const unmatched = raw.rules
+    .filter(
+      (r) => r.type === "with" && !ctx.members.some((m) => m.name.toLowerCase() === String(r.value).toLowerCase()),
+    )
+    .map((r) => `only with ${r.value}`);
+  const missed = [rules.length ? missedWords(text, ctx) : "", ...unmatched].filter(Boolean).join(", ");
   return { ok: true, rules, readBack: readBack(rules, ctx), ...(missed ? { missed } : {}) };
 }
 
