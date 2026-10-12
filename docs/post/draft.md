@@ -5,9 +5,9 @@ tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
-     FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), ROUND 6,
+     FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), FIELD (outdoor test),
      VIDEO, MASTRA LIVE, SENTRY TRACE, AGENT SESSION, ENTIRE, THANKS, and the repo line.
-     Prose is 1,713 words without the holes: keep everything you add under about 185 words.
+     Prose is 1,765 words without the holes: keep everything you add under about 135 words.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
 
@@ -21,9 +21,9 @@ It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a wa
 
 [FRIEND QUOTE: the friend's real words and screenshot, with their OK]
 
-Almost every entry this week is one person on one walk. Flare gets a group out. You take a photo of where you are, and Gemma 4, an open model on our own laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan, like 15 minutes at a bench nearby, instead of dying. Afterwards it says how long you were outside together, then deletes itself.
+Almost every entry this week is one person on one walk. Flare gets a group out. You take a photo of where you are, and Gemma 4, an open model on our own laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan, like 15 minutes at a bench nearby, instead of dying. Afterwards it shows your minutes outside together and deletes itself.
 
-For a friend with low vision, Gemma turns the photo into a line their screen reader speaks. When it lights, the compass talks them in ("150 meters, slightly left"), and if a photo isn't possible, they say where they are instead.
+For a friend with low vision, Gemma turns the photo into a line their screen reader speaks. When it lights, the compass talks them in, and if a photo isn't possible, they say where they are instead.
 
 **Nothing to install.** You and your friends open a link. Gemma runs on our laptop, so nobody needs a GPU, a key or an account.
 
@@ -44,13 +44,13 @@ A plan in a group chat dies when nobody wants to be the one who says yes first, 
 | A plan that gets smaller instead of failing | 11 of 12 lit (Simulation: 48 friends) | [Testing](#how-i-tested-it) |
 | Everything about the meetup deleted | within 5 min; worst case 90 s | [Privacy](#privacy-built-in) |
 | Real friends on the live app | 3 people, 1 gathering, live audit pass | [Testing](#how-i-tested-it) |
-| Strangers with no context | 5, 6, 5, 6, 6 out of 10 over 5 rounds | [Testing](#how-i-tested-it) |
+| AI testers with no context | 5, 6, 5, 6, 6, 6 out of 10 over 6 rounds | [Testing](#how-i-tested-it) |
 
 ## Demo
 
-- **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). The real rules engine runs in your browser, and nothing is sent. In 60 seconds: tap I'm in as Amor, Skip 30 min to watch it shrink, then Find them.
-- **The app:** [flare-outside.onrender.com/app/](https://flare-outside.onrender.com/app/). **The site:** [flare-outside.onrender.com](https://flare-outside.onrender.com/), Lighthouse 100 in all four categories on all five pages.
-- **Telegram:** [@FairlaneFlareBot](https://t.me/FairlaneFlareBot). Add it to a group chat from the app's "Post in Telegram" screen.
+- **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). Nothing is sent. In 60 seconds: tap I'm in as Amor, Skip 30 min to watch it shrink, then Find them.
+- **The app:** [flare-outside.onrender.com/app/](https://flare-outside.onrender.com/app/). **The site:** [flare-outside.onrender.com](https://flare-outside.onrender.com/), Lighthouse 100 on all five pages.
+- **Telegram:** [@FairlaneFlareBot](https://t.me/FairlaneFlareBot).
 - **Video:** [VIDEO: 60 to 90 s screen recording, see docs/post/shot-list.md]
 
 One evening, in four frames:
@@ -59,7 +59,7 @@ One evening, in four frames:
 
 ### How I tested it
 
-**Field test 1, Sun Oct 11, 8:20 PM:** I sent a real Flare to 2 real friends on the live app. 3 people, 1 gathering, 3 responses and 1 Spark, the live audit passing at 8:36 PM, and 6 bugs found, all fixed below. [FIELD: met in person?]
+**Field test 1, Sun Oct 11, 8:20 PM:** I sent a real Flare to 2 real friends on the live app. 3 people, 1 gathering, 3 responses and 1 Spark, the live audit passing at 8:36 PM, and 6 bugs found, all fixed below. [FIELD: met in person?] [FIELD: outdoor test]
 
 | What | How | Result |
 | --- | --- | --- |
@@ -68,13 +68,17 @@ One evening, in four frames:
 | Simulation: 48 friends | 48 made-up friends in 4 groups against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif)) | 11 of 12 lit; median 14.75 min to Lit; all 12 deleted after, audit pass |
 | Accessibility | axe on 88 page views (22 pages, 2 widths, light and dark) | 0 findings; every target 44 px or more |
 
-Each fresh-eyes round put a new tester with no context on the live site, as a phone:
+The fresh-eyes testers are AI agents, not people: each round, a new agent with no context used the live site as a phone. The real people are my 2 friends above.
 
 | Round | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Score out of 10 | 5 | 6 | 5 | 6 | 6 | [ROUND 6] |
+| Score out of 10 | 5 | 6 | 5 | 6 | 6 | 6 |
 
-[ROUND 6: the final fresh-eyes score and the WhatsApp-poll answers, quoted word for word]
+Round 6 scored 6/10 on live 68afd9b. On a WhatsApp poll, the AI tester said:
+
+> For a quick "anyone free for a walk now?", maybe. The private yes and the "only happens if enough come" rule are real wins over a poll, where everyone sees who said no. For a normal meetup I'd still use the WhatsApp poll. It sits inside the chat where everyone already is, it's never lost, and nobody needs to keep a tab open with the sound on. Here, losing my own invite on reload would put me off for good.
+
+That's the honest position. Flare is for "anyone free right now?". A poll still wins for a planned meetup. Today, Telegram is how Flare lives inside the chat.
 
 ## Code
 
@@ -86,7 +90,7 @@ Each fresh-eyes round put a new tester with no context on the live site, as a ph
 
 ### Method
 
-I'm one founder. I ran Claude Code sessions in roles: research, product, design, architecture, then specialists and QA. A manager session set the order of work, and each role left a handoff in the repo for the next. Before the parallel work started, the architect froze 14 interfaces in [an interface control document](https://github.com/Hotragn/flare/blob/main/docs/engineering/02-interface-control.md), so specialists built against contracts and fakes instead of each other's code. Decisions live in 31 ADRs, and 159 requirements are traced to code and tests by [`trace.py`](https://github.com/Hotragn/flare/blob/main/docs/requirements/tools/trace.py). Every push runs a secret scan, lint, types (with svelte-check), 775 unit and contract tests and the build. Each fresh-eyes round was the sprint review, and its worst issues became the next sprint.
+I'm one founder running Claude Code sessions in roles: research, product, design, architecture, specialists, QA. A manager session set the order, and each role left a handoff for the next. Before the parallel work started, the architect froze 14 interfaces in [an interface control document](https://github.com/Hotragn/flare/blob/main/docs/engineering/02-interface-control.md), so specialists built against contracts and fakes. Decisions live in 31 ADRs, and 159 requirements are traced to code and tests by [`trace.py`](https://github.com/Hotragn/flare/blob/main/docs/requirements/tools/trace.py). Every push runs a secret scan, lint, types (with svelte-check), 775 unit and contract tests and the build. Each fresh-eyes round was the sprint review, and its worst issues became the next sprint.
 
 **Disclosure:** I built this with Claude Code. The manager session, acting as CTO for me, sent many of the prompts. Product and privacy decisions were mine, and anything public waited for my yes.
 
@@ -113,14 +117,14 @@ I picked the model by measuring the options on one test set, and the smaller one
 
 Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at best, so Sounds of the spot didn't ship.
 
-**The model picks the words; code owns the facts.** Every answer passes `enforce()` before anyone sees it: six words at most, no names, no invented places. If the model is slow or the answer fails, the app shows typed words. Nobody waits on the AI.
+**The model picks the words; code owns the facts.** Every answer passes `enforce()` before anyone sees it: six words at most, no names, no invented places. If it's slow or fails, you type. Nobody waits on the AI.
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop. It thinks first by default: a Plan draft took 21.7 s with no answer. With `thinkingLevel: "minimal"`, 1.4 s. Photos go only on the host's tap. DigitalOcean is wired in, paused for billing.
+- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop. Thinking by default, a Plan draft took 21.7 s with no answer; with `thinkingLevel: "minimal"`, 1.4 s. DigitalOcean is wired in, paused for billing.
 - **Mastra.** An agent drafts the Plan ladder with four local tools (sunset, weather, nearby places, step templates). On 13 asks: p95 5.1 s against 5.5 s, weather 7/7, 12 ms of overhead.
-- **Tinker.** The phone's rules read 15/40 new condition phrasings. A Qwen3.5-4B LoRA (3,000 examples, 6 minutes, about $2.40) read 38/40 but can't run on the phone, so its errors taught the rules: 20/40 to 30/40, blind.
-- **ElevenLabs.** 54 compass lines recorded once: 698 characters, 684 KB, offline, no names. Voice Spark sends up to 10 s of your own voice to Scribe on a tap (0.72 s). No audio kept.
+- **Tinker.** The phone's rules read 15/40 new phrasings. A Qwen3.5-4B LoRA (about $2.40) read 38/40 but can't run on the phone, so its errors taught the rules: 20/40 to 30/40, blind.
+- **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names. Voice Spark sends 10 s of your own voice to Scribe on a tap. No audio kept.
 - **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing, ok and error class leave the server, and a test fails if marker phrases or UUIDs reach Sentry.
 - **Telegram.** The bot posts a card drawn in 15 to 60 ms, with no names, and deletes it at Gone. Real-stack test: 14/14.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
@@ -140,12 +144,12 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 - **Telegram-linked Send** posts straight to the group chat.
 - **I'm here by itself** within 30 m of the spot, with a 10 s Undo.
 - **Rule chips** fill a condition with a tap.
-- **Since launch** totals on the site come from `GET /api/v1/stats`, which holds no ids.
-- **The motion:** sparks for each yes, the lighting, the shrink to an Ember and Gone. All run at 60 fps at 4x CPU slowdown in Chrome, except the host's lit at 58.6. That is not an iPhone trace.
+- **Since launch** totals on the site, with no ids.
+- **The motion:** sparks for each yes, the lighting, the shrink to an Ember and Gone. 60 fps at 4x CPU in Chrome, except the host's lit at 58.6; not an iPhone trace.
 
 ![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
 
-**Remember this** stays off. A conversation note needs everyone's yes on their own phone, and I want a real group to try that rule before it ships.
+**Remember this** stays off until a real group tries its rule: everyone agrees on their own phone.
 
 ## What I got wrong
 
@@ -157,15 +161,14 @@ Field test 1 found these first:
 - **Share did nothing in Brave.** The tap's activation was lost after an await. Share now runs in the tap, with a Copy link fallback, tested in WebKit but not on a real iPhone.
 - **"We'll buzz you" with no push.** That line now shows only with a live subscription.
 - **Returning phones got old pages** from the service worker. Pages now load network first and the new worker takes over at once (two-build test, 8/8).
-
-Before that: the compass showed no arrow and said "close" 49 times on one walk, and DigitalOcean's billing block sent me to Google AI Studio.
+- **Round 6 caught 4 more** before the freeze. The invite was lost on reload ("Your flare" on Home now). "Sent." showed before sharing. At 375×667 the size buttons were hidden; a new "every control on screen" gate failed before the fix and passes now. Location was asked twice; now once.
 
 ## Honest limits
 
 - **No background location or mic.** An iPhone web app can't use either.
 - **No server pushes for golden hour or a weekly recap.** The server never knows where a crew is or its time zone.
 - **One real group so far,** and I can't yet say it met in person.
-- **In a small group, the count can give away who said yes.** If two people are invited and the count says 1, you can guess.
+- **In a small group, the count can give away who said yes.**
 
 ## Next steps
 
@@ -175,7 +178,7 @@ Before that: the compass showed no arrow and said "close" 49 times on one walk, 
 
 ## Why Does Open Innovation Matter?
 
-A photo of where you stand, or your voice saying it, is about as personal as data gets. The friend with low vision who says where they are sends that voice only to an open model on our own laptop, where it lives in memory and is gone after the call. A free app can't pay per call either: the laptop costs $0 per photo. And open let me look inside: I saw why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
+A photo of where you stand, or your voice saying it, is about as personal as data gets. When the friend with low vision says where they are, that voice goes only to an open model on our laptop and is gone after the call. A free app can't pay per call either: the laptop costs $0 per photo. And open let me look inside: I saw why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
 
 ## My Agent Session
 
