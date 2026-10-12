@@ -1,5 +1,16 @@
 # Resume note
 
+## Now: Mon 2026-10-12, about 1:55 AM ET. Main is held; the founder publishes 2:05 to 2:59.
+- **Live:** 832e206470fa, smoke passes.
+- **Live flags:** Mastra (LADDER_AGENT) is on. Remember this is off, and so is Voice Spark (ELEVENLABS_API_KEY isn't sent): both failed on a real iPhone, where the mic never started and the server logs show no upload.
+- **Post:** docs/post/draft.md, 1,886 words of prose. Holes left: REPO, ENTIRE (3), AGENT SESSION.
+- **Entire:** push_sessions is false (.entire/settings.json). origin holds 247 refs/entire/checkpoints, which contain the founder's email. The founder decides before the repo goes public. Push main only.
+- **Next after the deadline:**
+  - log the phone mic error, and test on a real iPhone
+  - show the host who's coming
+  - a host status line
+  - each AI job in its own Sentry trace
+
 ## Now: Sun 2026-10-11, 11:55 PM ET. Read this first.
 - **Live:** 0e7a81825764. Smoke passes. Lighthouse is 100 on all 5 pages, mobile and desktop. npm test passes 830/830. /app 149.1 KB, /g 148.2 KB.
 - **After 11:55 PM, with the manager's OK:** Mastra on (LADDER_AGENT), Remember this turned on, then OFF at 12:47 after it failed on the founder's iPhone (mic or recorder on the phone, no upload reached the server; the e2e faked getUserMedia). Next step: log the client error, and test on a real iPhone, "waiting near" grammar. Live e398bd8a967d. Since launch deleted_on_time = 1 (the field-test Flare, 00:18).
