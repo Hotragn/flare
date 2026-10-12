@@ -13,6 +13,8 @@ tags: devchallenge, hf26challenge, gemma, opensource
 
 ## What I Built
 
+It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a walk". Three people react with a thumbs up. Nobody goes.
+
 Flare turns one photo into a plan to meet. You take a photo of where you are, and Gemma 4, an open model on my laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan nearby instead of dying. Then it deletes itself. And it keeps working where the signal ends.
 
 Most of us have people close by, in group chats and small communities, and we still stay in, because asking means pinging everyone and waiting. I wanted one tap that says "I'm up for meeting, nearby, now." And for someone who's lonely, a quiet way to tell people they trust "I'd like some company," without anyone seeing who said no.
@@ -68,7 +70,7 @@ Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrom
 
 **Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below.
 
-**Field test 2, Mon Oct 12, 12:38 AM,** the first real meetup: sent, a nearby friend's yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone. We met in person and talked; We're done at 12:43, and it was gone from the public audit within 2 minutes ([notes](https://github.com/Hotragn/flare/blob/main/docs/research/field-test-2.md)).
+**Field test 2, Mon Oct 12, 12:38 AM,** the first real meetup: sent, a nearby friend's yes at 12:39 (it needed 2, so it lit), I'm here at 12:40. We met in person and talked; We're done at 12:43, and it was gone from the public audit within 2 minutes ([notes](https://github.com/Hotragn/flare/blob/main/docs/research/field-test-2.md)).
 
 | What | How | Result |
 | --- | --- | --- |
@@ -83,7 +85,7 @@ The fresh-eyes testers are AI agents, not people: a new one with no context each
 | --- | --- | --- | --- | --- | --- | --- |
 | Score out of 10 | 5 | 6 | 5 | 6 | 6 | 6 |
 
-Round 6 scored 6/10 on live 68afd9b, and a recheck after its fixes scored 7/10. That tester liked the private yes and the "only if enough come" rule, but would still use a WhatsApp poll for a normal meetup: it sits in the chat, and losing an invite on reload put it off.
+Round 6 scored 6/10, and a recheck after its fixes scored 7/10. That tester liked the private yes and the "only if enough come" rule, but would still use a WhatsApp poll for a normal meetup: it sits in the chat, and losing an invite on reload put it off.
 
 Flare is for "anyone free right now?". A poll still wins for a planned meetup. Today, Telegram is how Flare lives inside the chat.
 
@@ -128,11 +130,11 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default.
+- **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`.
 - **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; its first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
 - **Tinker.** A Qwen3.5-4B LoRA cost about $2.40 to train and read 38 of 40 new phrasings, but it's too big for a phone. Its mistakes showed me how to fix the phone's rules: 20/40 to 30/40 on a blind set.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names.
-- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing and error class leave; a test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing one parent trace.
+- **Sentry.** Agent Tracing follows every AI job, model call and guard. A test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing one parent trace.
 - **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
