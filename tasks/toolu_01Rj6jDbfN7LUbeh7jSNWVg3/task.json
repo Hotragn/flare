@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01Rj6jDbfN7LUbeh7jSNWVg3",
+  "agent_id": "a0e24f31091a79c08",
+  "subagent_type": "general-purpose",
+  "task_description": "Restructure the DEV post",
+  "token_usage": {
+    "input_tokens": 54,
+    "cache_creation_tokens": 98563,
+    "cache_read_tokens": 2565441,
+    "output_tokens": 12496,
+    "api_call_count": 27
+  },
+  "started_at": "2026-10-11T20:17:36.620281-04:00",
+  "completed_at": "2026-10-11T20:22:38.240779-04:00"
+}
