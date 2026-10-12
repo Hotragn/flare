@@ -25,6 +25,7 @@
     ontextyes,
     oncancel,
     onshare,
+    linkOnly = false,
     onclose,
   }: {
     /** The Flare photo behind the screen (2026 direction); the warm light when there is none. */
@@ -45,6 +46,8 @@
     ontextyes?: (code: string) => void;
     oncancel?: () => void;
     onshare?: () => void;
+    /** No share sheet in this browser: Share copies the link. */
+    linkOnly?: boolean;
     onclose?: () => void;
   } = $props();
   // svelte-ignore state_referenced_locally
@@ -63,7 +66,7 @@
   {#if error}<p class="err" role="alert">{error}</p>{/if}
   {#snippet actions()}
     <div class="row">
-      <Button variant="secondary" icon="share" onclick={onshare}>{t("sent.shareAgain")}</Button>
+      <Button variant="secondary" icon="share" onclick={onshare}>{t(linkOnly ? "share.copyLink" : "sent.shareAgain")}</Button>
       <Button variant="secondary" onclick={() => (sheet = "text-yes")}>{t("host.textYes.open")}</Button>
     </div>
     <Button variant="text" onclick={() => (sheet = "cancel")}>{t("host.kindling.cancel")}</Button>

@@ -1,5 +1,5 @@
 // Host flow (FE2, Plans P1 to P3) over the ICD fakes. Test names carry the rule ids.
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HostFlow } from "../../src/lib/screens/flow/host.svelte.ts";
 import { LinkFlow } from "../../src/lib/screens/flow/link.svelte.ts";
 import { fakeDeps } from "../fakes/index.ts";
@@ -159,5 +159,55 @@ describe("place pre-fill (fresh-eyes round 4)", () => {
     host.typeSpot("the big oak");
     await host.loadPack("fairlane");
     expect(host.spot?.name).toBe("the big oak");
+  });
+});
+
+describe("share (SRS-CRE-8): the sheet first, Copy link when there is none", () => {
+  const stub = (share?: (d: ShareData) => Promise<void>) => {
+    const copied: string[] = [];
+    vi.stubGlobal("navigator", { share, clipboard: { writeText: async (s: string) => void copied.push(s) } });
+    return copied;
+  };
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("calls navigator.share in the same tick as the tap, before any await", async () => {
+    const calls: ShareData[] = [];
+    stub(async (d) => void calls.push(d));
+    const { host } = await sent();
+    void host.share();
+    expect(calls).toHaveLength(1); // synchronous: iOS keeps the tap's activation
+    expect(calls[0]?.url).toBe(host.link);
+    expect(host.linkOnly).toBe(false);
+  });
+
+  it("AbortError (the host closed the sheet) changes nothing", async () => {
+    stub(() => Promise.reject(new DOMException("closed", "AbortError")));
+    const { host } = await sent();
+    await host.share();
+    expect(host.linkOnly).toBe(false);
+    expect(host.note).toBe("");
+  });
+
+  it("a failed sheet turns Share into Copy link; the next tap copies and shows a toast", async () => {
+    const copied = stub(() => Promise.reject(new DOMException("no tap", "NotAllowedError")));
+    const { host } = await sent();
+    await host.share();
+    expect(host.linkOnly).toBe(true);
+    expect(host.note).toBe("Share did not open. Tap Copy link."); // never swallowed
+    await host.shareLit();
+    expect(copied[0]).toContain(host.link);
+    expect(host.note).toBe("Link copied. Paste it in your chat.");
+  });
+
+  it("no navigator.share: Copy link from the start, and a blocked clipboard shows the link", async () => {
+    const copied = stub(undefined);
+    const { host } = await sent();
+    expect(host.linkOnly).toBe(true);
+    await host.share();
+    expect(copied).toHaveLength(1);
+    expect(host.note).toBe("Link copied. Paste it in your chat.");
+    vi.stubGlobal("navigator", {});
+    await host.share();
+    expect(host.note).toBe(`Could not copy. Here is the link: ${host.link}`);
   });
 });

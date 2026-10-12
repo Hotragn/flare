@@ -12,6 +12,8 @@
     copied = false,
     ondone,
     onshare,
+    linkOnly = false,
+    shareFirst = false,
     oncopy,
   }: {
     theme?: Theme;
@@ -20,6 +22,10 @@
     copied?: boolean;
     ondone?: () => void;
     onshare?: () => void;
+    /** No share sheet in this browser: Share copies the link. */
+    linkOnly?: boolean;
+    /** Share is the main button (not linked to Telegram). */
+    shareFirst?: boolean;
     oncopy?: () => void;
   } = $props();
 </script>
@@ -38,9 +44,11 @@
     {#if copied}<p class="t-small" role="status">{t("sent.copied")}</p>{/if}
   </div>
   {#snippet actions()}
-    <Button onclick={ondone}>{t("sent.pocket")}</Button>
+    {@const share = t(linkOnly ? "share.copyLink" : "sent.shareAgain")}
+    <!-- shareFirst: the Flare exists and the link is ready, so this tap opens the sheet at once. -->
+    {#if shareFirst}<Button icon="share" onclick={onshare}>{share}</Button>{:else}<Button onclick={ondone}>{t("sent.pocket")}</Button>{/if}
     <div class="row">
-      <Button variant="text" icon="share" onclick={onshare}>{t("sent.shareAgain")}</Button>
+      {#if shareFirst}<Button variant="text" onclick={ondone}>{t("sent.pocket")}</Button>{:else}<Button variant="text" icon="share" onclick={onshare}>{share}</Button>{/if}
       <Button variant="text" onclick={oncopy}>{t("sent.copyText")}</Button>
     </div>
   {/snippet}

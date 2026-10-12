@@ -19,6 +19,7 @@
     busy = false,
     onplusone,
     ontell,
+    linkOnly = false,
     ondone,
     onclose,
   }: {
@@ -34,6 +35,8 @@
     onplusone?: (who: { id: string } | "someone_else") => void;
     /** Automations: tell the group chat it's on (share sheet, or copy). */
     ontell?: () => void;
+    /** No share sheet in this browser: Tell the chat copies the link. */
+    linkOnly?: boolean;
     ondone?: () => void;
     onclose?: () => void;
   } = $props();
@@ -56,7 +59,7 @@
   {#if error}<p class="err" role="alert">{error}</p>{/if}
   {#snippet actions()}
     <Button onclick={() => (sheet = "done")}>{t("host.lit.done")}</Button>
-    {#if ontell}<Button variant="text" icon="share" onclick={ontell}>{t("host.lit.tell")}</Button>{/if}
+    {#if ontell}<Button variant="text" icon="share" onclick={ontell}>{t(linkOnly ? "share.copyLink" : "host.lit.tell")}</Button>{/if}
   {/snippet}
   {#snippet overlay()}
     {#if sheet === "plusone"}

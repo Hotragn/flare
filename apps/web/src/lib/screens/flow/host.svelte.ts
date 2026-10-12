@@ -491,8 +491,13 @@ export class HostFlow {
 
   // ---------- H4: share ----------
 
-  /** The share sheet with the link (SRS-CRE-8). Call from a tap. */
-  async share(): Promise<void> {
+  /** No share sheet here, or it failed: the share buttons say Copy link. */
+  linkOnly = $state<boolean>(typeof navigator !== "undefined" && !navigator.share);
+  note = $state("");
+
+  /** The share sheet with the link (SRS-CRE-8). Call from a tap: navigator.share runs before any
+   * await, or iOS drops the tap and nothing opens. */
+  share(): Promise<void> {
     const host = this.hostName || storedName();
     const v = this.view;
     const kind = v?.kind ?? "flare";
@@ -501,24 +506,33 @@ export class HostFlow {
       kind === "plan"
         ? t("share.plan.text", { ask: this.ask, deadline: this.deadlineAt ? clock(this.deadlineAt, this.#d.tz) : "" })
         : t("share.flare.text", { invite: this.words, n: v?.need ?? Number(this.quorum) - 1 });
-    try {
-      if (navigator.share) await navigator.share({ title, text, url: this.link });
-      else await this.copyText();
-    } catch {
-      // The host closed the share sheet: nothing to do.
-    }
+    return this.#sheet({ title, text, url: this.link });
   }
 
   /** Automations, "Tell the chat": once it's lit, one tap tells the group chat it's on and where.
    * The same link as the invite; the count only, never who. */
-  async shareLit(): Promise<void> {
-    const spot = this.spot?.name ?? "";
-    const text = t("share.lit.text", { spot });
+  shareLit(): Promise<void> {
+    const text = t("share.lit.text", { spot: this.spot?.name ?? "" });
+    return this.#sheet({ title: t("share.lit.title"), text, url: this.link });
+  }
+
+  async #sheet(data: ShareData): Promise<void> {
+    if (!this.linkOnly)
+      try {
+        return await navigator.share(data); // the first await in the tap
+      } catch (e) {
+        // AbortError: the host closed the sheet. Otherwise the next tap copies, in its own activation.
+        if ((e as Error).name === "AbortError") return;
+        this.linkOnly = true;
+        this.note = t("share.failed");
+        return;
+      }
     try {
-      if (navigator.share) await navigator.share({ title: t("share.lit.title"), text, url: this.link });
-      else await navigator.clipboard?.writeText(`${text} ${this.link}`);
+      await navigator.clipboard.writeText(`${data.text} ${data.url}`);
+      this.note = t("share.linkCopied");
+      setTimeout(() => (this.note = ""), 2500);
     } catch {
-      // The host closed the share sheet.
+      this.note = t("share.copyFailed", { url: data.url ?? "" }); // stays, so the link can be copied by hand
     }
   }
 
