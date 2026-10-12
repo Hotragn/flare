@@ -8,6 +8,7 @@
   import Icon from "../components/Icon.svelte";
   import Tip from "../components/Tip.svelte";
   import { t } from "#lib/copy/index.ts";
+  import { lit, zoom } from "#lib/photo-fit.ts";
   import type { Access, Theme } from "../components/parts";
   let {
     view = "ready",
@@ -54,8 +55,12 @@
 </script>
 
 <Screen {theme} {onclose} heading={t("send.title")} title={t("send.title")} offline={view === "offline" ? t("send.offline") : ""}
-  stage backdrop={photo} backdropAlt={scene} fallbackArt>
-  {#snippet hero()}<p class="t-invite words">{words}</p>{/snippet}
+  stage fallbackArt={!photo}>
+  {#snippet hero()}
+    <!-- Photo-fit: the photo is the content, shown whole at the top; words and sheet sit below it. -->
+    {#if photo}<button class="pf" type="button" onclick={zoom}><img src={photo} alt={scene || t("invite.photoFallback")} onload={lit} /></button>{/if}
+    <p class="t-invite words">{words}</p>
+  {/snippet}
   <Tip id="send" text="tip.send" />
   {#if askName}
     <TextField label={t("join.nameLabel")} bind:value={hostName} placeholder={t("join.namePlaceholder")} hint={t("join.nameHint")} max={24} />
@@ -89,6 +94,13 @@
 
 <style>
   .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
+  /* Photo-fit: the photo at its own shape, capped so the main button still fits on a 375 x 667
+     phone. The words sit under it and the sheet takes the rest, so nothing covers the place. */
+  .pf { display: block; margin: 0 auto; padding: 0; border: 0; background: none; border-radius: 16px; overflow: hidden; max-width: 100%; cursor: zoom-in; flex: none; }
+  .pf img { display: block; max-width: 100%; max-height: min(38dvh, 420px); width: auto; height: auto; }
+  .pf + .words { font-size: calc(2rem * var(--text-scale)); max-width: none; }
+  :global(.staged > .hero:has(.pf)) { flex: none; justify-content: flex-start; gap: 10px; padding-top: 4px; }
+  :global(.staged:has(> .hero .pf) > .sheet) { flex: 1; max-height: none; min-height: 0; }
   .hostline { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; }
   .hostline p { margin: 0; }
   .lbl { font-weight: 700; opacity: 0.85; }

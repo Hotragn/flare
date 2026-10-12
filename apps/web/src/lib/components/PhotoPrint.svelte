@@ -4,6 +4,8 @@
   --dur-develop (2.4 s), matching the ~3 s the hub takes to draft the six words.
   state: blank | developing | developed. Reduced motion shows the final print at once.
   `scene` is a short description used as the image's accessible name (SRS-ACC-5).
+  Photo-fit: a real photo keeps its own shape (height is then the most it may take, never a
+  crop), a dark one is brightened for display only, and a tap opens it full screen.
   Motion (docs/design/motion.md 3.4): only opacity animates (animated blur is a known
   slow path in iOS Safari). A white haze lifts first, the sepia veil clears from the
   middle, and the edges clear last, like a chemical print. No flash.
@@ -11,6 +13,7 @@
 <script lang="ts">
   import { t } from "#lib/copy/index.ts";
   import SampleScene from "./SampleScene.svelte";
+  import { lit, zoom } from "#lib/photo-fit.ts";
   let {
     state = "developed",
     scene = "",
@@ -29,20 +32,29 @@
   } = $props();
 </script>
 
-<figure class="print {state}" style:--tilt="{tilt}deg" style:height="{height}px">
+{#snippet layers()}
+  {#if state === "developing"}
+    <span class="veil" aria-hidden="true"></span>
+    <span class="edge" aria-hidden="true"></span>
+    <span class="haze" aria-hidden="true"></span>
+  {/if}
+{/snippet}
+
+<figure class="print {state}" class:natural={!!src} style:--tilt="{tilt}deg" style:--max="{height}px" style:height={src ? undefined : `${height}px`}>
   <div class="paper grain">
+    {#if src}
+      <button type="button" class="image photo-art" aria-label={scene || t("invite.photoFallback")} onclick={zoom}>
+        <img {src} alt="" onload={lit} />
+        {@render layers()}
+      </button>
+    {:else}
     <div class="image photo-art" role="img" aria-label={scene || t("invite.photoFallback")}>
-      {#if src}
-        <img {src} alt="" />
-      {:else if sample}
+      {#if sample}
         <SampleScene />
       {/if}
-      {#if state === "developing"}
-        <span class="veil" aria-hidden="true"></span>
-        <span class="edge" aria-hidden="true"></span>
-        <span class="haze" aria-hidden="true"></span>
-      {/if}
+{@render layers()}
     </div>
+    {/if}
   </div>
 </figure>
 
@@ -51,6 +63,12 @@
   .paper { height: 100%; padding: 12px 12px 44px; background: var(--c-birch-50); border-radius: 6px; box-shadow: var(--e-3); }
   .image { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 3px; background: #efe6d4; }
   .image :global(img), .image :global(svg) { width: 100%; height: 100%; object-fit: cover; }
+  /* Photo-fit: the print wraps the photo at its own shape, at most --max tall (44% of the screen
+     on short phones), so the main button still fits on a 375 x 667 screen. */
+  .natural { width: fit-content; max-width: 100%; margin: 0 auto; }
+  .natural .paper, .natural .image { height: auto; }
+  button.image { display: block; padding: 0; border: 0; cursor: zoom-in; color: inherit; }
+  .natural .image :global(img) { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(min(var(--max), 44dvh) - 56px); object-fit: initial; }
   .blank .image > :global(*) { opacity: 0; }
   .developed .image > :global(*) { opacity: 1; }
   .haze, .veil, .edge { position: absolute; inset: 0; pointer-events: none; }
