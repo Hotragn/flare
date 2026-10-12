@@ -44,7 +44,7 @@
 > - `84fde2e`, Oct 12 08:01 UTC: README only. Exact times in this list.
 > - `2878bd6`, Oct 12 08:21 UTC: docs, plus one static image. Evidence files for the post's numbers (counts and timings only), and the Crew image is now the site's labelled sample crew (/post/crew-sample.png; the real-meetup screenshot is removed). The site was redeployed for the image.
 > - `ad7547e`, Oct 12 08:29 UTC: docs only. Version 3 of the longer post draft, after a review.
-> - `10794d7`, Oct 12: README only. This list.
+> - `10794d7`, Oct 12 08:29 UTC: README only. This list.
 > - `1f631f2`, Oct 12 08:32 UTC: docs only. Small wording fixes in the longer post draft.
 > - The next commit: README only. This list.
 
