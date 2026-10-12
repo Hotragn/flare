@@ -1,4 +1,4 @@
-<!-- I10 Not this time: the same words for everyone (SRS-ST-3). Smoke drifts away. -->
+<!-- I10 Not this time: the same words for everyone (SRS-ST-3). The ember cools and ash drifts up once. -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
@@ -10,7 +10,7 @@
 
 <Screen {theme} close={false}>
   <div class="center">
-    <Hearth state="gone" size={170} />
+    <Hearth state="gone" size={150} cool />
     <h1 class="t-display">{t("gone.title")}</h1>
     <p>{t("gone.body")}</p>
   </div>

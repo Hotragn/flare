@@ -450,7 +450,7 @@
       "where": "O8"
     },
     "crew.empty": {
-      "text": "Send your first Flare to start a crew.",
+      "text": "Your fire's ready. Light a Flare.",
       "kind": "label",
       "where": "O8"
     },
@@ -6184,6 +6184,28 @@
       "kind": "prose",
       "where": "/ai/ (ADR-0022)",
       "owner": "apps/web/src/routes/ai"
+    },
+    "motion.outsideH": {
+      "text": "You were outside {h} h {m} min together",
+      "kind": "title",
+      "where": "I12, an outing of an hour or more (app motion)",
+      "sample": {
+        "h": 1,
+        "m": 12
+      }
+    },
+    "crew.sparkOpen": {
+      "text": "Read a Spark",
+      "kind": "aria",
+      "where": "O8 crew scene, a Spark floating as a small light (app motion)"
+    },
+    "crew.sceneAria": {
+      "text": "Your crew by the fire: {names}",
+      "kind": "aria",
+      "where": "O8 crew scene, the people standing by the fire (app motion)",
+      "sample": {
+        "names": "Fuego, Amor, Shilp"
+      }
     }
   }
 }

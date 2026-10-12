@@ -3,11 +3,11 @@
 <script lang="ts">
   import { t } from "#lib/copy/index.ts";
   import Flame from "./Flame.svelte";
-  import Scenery from "./Scenery.svelte";
+  import Later from "./Later.svelte";
 </script>
 
 <div class="waking" role="status" aria-live="polite">
-  <div class="art" aria-hidden="true"><Scenery /></div>
+  <div class="art" aria-hidden="true"><Later kind="scenery" /></div>
   <div class="veil" aria-hidden="true"></div>
   <div class="msg">
     <span class="flame"><Flame state="kindling" progress={0.6} size={90} /></span>

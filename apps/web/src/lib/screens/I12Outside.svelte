@@ -3,11 +3,16 @@
   view "end" follows Done: "You were outside 52 min together" when this phone knows when you
   arrived (2026 direction, B), else "Thanks for coming." Then a calm "Phone away" screen.
   view "go" follows I8.
+  The end of a Flare: the ember cools, ash drifts up, and the minutes outside together count up
+  (about 1.1 s; the full line is the screen's heading for screen readers from the start).
 -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
   import Flame from "../components/Flame.svelte";
+  import Hearth from "../components/Hearth.svelte";
+  import { onMount } from "svelte";
+  import { reducedMotion } from "#lib/motion/core.ts";
   import FlameAvatars from "../components/FlameAvatars.svelte";
   import Icon from "../components/Icon.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -37,9 +42,27 @@
     onclose?: () => void;
   } = $props();
   let away = $state(false);
-  const headline = $derived(
-    view === "go" && spot ? t("outside.go", { spot }) : minutes ? t("outside.together", { min: minutes }) : t("outside.thanks"),
-  );
+  const together = (m: number) => (m >= 60 ? t("motion.outsideH", { h: Math.floor(m / 60), m: m % 60 }) : t("outside.together", { min: m }));
+  const headline = $derived(view === "go" && spot ? t("outside.go", { spot }) : minutes ? together(minutes) : t("outside.thanks"));
+  // The count-up: from 0 to the minutes, easing out, once.
+  let counted = $state<number | null>(null);
+  let el: HTMLElement | undefined = $state();
+  onMount(() => {
+    const total = minutes ?? 0;
+    if (view !== "end" || total < 2 || reducedMotion(el)) return;
+    const t0 = performance.now();
+    let raf = 0;
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / 1100);
+      counted = Math.round(total * (1 - (1 - k) ** 3));
+      if (k < 1) raf = requestAnimationFrame(step);
+      else counted = null;
+    };
+    counted = 0;
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  });
+  const shown = $derived(counted !== null && view === "end" ? together(Math.max(1, counted)) : headline);
 </script>
 
 {#if away}
@@ -54,9 +77,10 @@
 {:else}
   <Screen stage backdrop={photo} fallbackArt close={false} heading={headline}>
     {#snippet hero()}
-      <div class="msg">
-        {#if people.length}<FlameAvatars people={people.map((name) => ({ name, out: true }))} />{:else}<Flame state="lit" size={96} />{/if}
-        <h1 class="t-display">{headline}</h1>
+      <div class="msg" bind:this={el}>
+        {#if view === "end"}<div class="cool"><Hearth state="gone" size={104} cool horizon={false} /></div>{/if}
+        {#if people.length}<FlameAvatars people={people.map((name) => ({ name, out: true }))} />{:else if view !== "end"}<Flame state="lit" size={96} />{/if}
+        <p class="t-display big" aria-hidden="true">{shown}</p>
         {#if spark}<p class="spark"><Icon name="spark" size={20} /><span>{t("invite.sparkQuote", { line: spark })}</span></p>{/if}
       </div>
     {/snippet}
@@ -69,7 +93,9 @@
 
 <style>
   .msg { display: flex; flex-direction: column; gap: 10px; }
-  .msg h1, .msg p { margin: 0; }
+  .msg p { margin: 0; }
+  .big { font-variant-numeric: tabular-nums; }
+  .cool { width: 120px; margin-left: -18px; }
   .spark { display: flex; gap: 8px; align-items: center; font-weight: 700; font-size: calc(1.125rem * var(--text-scale)); color: var(--c-gold-400); }
   .away { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
   .away p { margin: 0; }

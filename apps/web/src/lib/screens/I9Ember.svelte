@@ -1,8 +1,11 @@
-<!-- I9 Ember (sun mode): it didn't catch, so it shrinks to a bench close by. One friend is enough (BR-E-1 to -5). -->
+<!-- I9 Ember (sun mode): it didn't catch, so it shrinks to a bench close by. One friend is enough (BR-E-1 to -5).
+     The shrink plays in the scene: the flame folds into an ember that hops to the bench (Shrink).
+     The scene is the drawn one under the live sky, not the photo: the Ember is a different place,
+     and the headline sits above the bench, never on it. -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import Hearth from "../components/Hearth.svelte";
+  import Later from "../components/Later.svelte";
   import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -37,13 +40,15 @@
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} stage backdrop={info.photo} backdropAlt={info.scene}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} stage fallbackArt>
   {#snippet hero()}
   <div class="center">
-    <Hearth state={view === "lit" ? "lit" : "ember"} size={150} celebrate={view === "lit"} />
+    <div class="words">
     <h1 class="t-title">{view === "lit" ? t("lit.notice", { host: info.host, spot: bench }) : t("ember.headline", { bench })}</h1>
     {#if meters !== null}<p class="t-muted">{t("ember.where", { Bench: cap(bench), m: meters, spot: info.spot })}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
+    </div>
+    <Later kind="shrink" lit={view === "lit"} />
   </div>
   {/snippet}
   {#if view !== "lit"}<FlameMeter state="ember" {have} quorum={2} note={t("ember.meterNote")} />{/if}
@@ -58,8 +63,9 @@
 </Screen>
 
 <style>
-  .center { text-align: left; align-items: flex-start; }
-  .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
+  /* Headline up top, the bench scene below it: the words never sit on the drawing. */
+  .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; gap: 12px; padding-top: 40px; }
+  .words { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
   .err { font-weight: 700; }
 </style>

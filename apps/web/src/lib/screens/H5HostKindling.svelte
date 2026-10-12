@@ -2,6 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
+  import Later from "../components/Later.svelte";
   import CountRing from "../components/CountRing.svelte";
   import Sheet from "../components/Sheet.svelte";
   import TextField from "../components/TextField.svelte";
@@ -27,6 +28,7 @@
     onshare,
     linkOnly = false,
     onclose,
+    ember = false,
   }: {
     /** The Flare photo behind the screen (2026 direction); the warm light when there is none. */
     photo?: string;
@@ -49,6 +51,8 @@
     /** No share sheet in this browser: Share copies the link. */
     linkOnly?: boolean;
     onclose?: () => void;
+    /** The Flare shrank to an Ember (state "ember"): the flame folds into an ember that hops to a bench. */
+    ember?: boolean;
   } = $props();
   // svelte-ignore state_referenced_locally
   let sheet = $state<"" | "text-yes" | "cancel">(view === "text-yes" || view === "cancel" ? view : "");
@@ -58,7 +62,11 @@
 <Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene} fallbackArt>
   {#snippet hero()}
     <div class="center">
-      <CountRing {have} {quorum} size={190} />
+      {#if ember}
+        <Later kind="shrink" />
+      {:else}
+        <CountRing {have} {quorum} size={190} />
+      {/if}
       <p class="t-muted">{shrinkMin === null || have <= 1 ? (sentMin < 1 ? t("host.kindling.justSent") : t("host.kindling.sentAgo", { min: sentMin })) : t("host.kindling.shrinkIn", { min: shrinkMin })}</p>
     </div>
   {/snippet}
