@@ -59,7 +59,9 @@ One evening, in four frames:
 
 ### How I tested it
 
-**Field test 1, Sun Oct 11, 8:20 PM:** I sent a real Flare to 2 real friends on the live app. 3 people, 1 gathering, 3 responses and 1 Spark, the live audit passing at 8:36 PM, and 6 bugs found, all fixed below. [FIELD: met in person?] [FIELD: outdoor test]
+**Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below. [FIELD: met in person?]
+
+**Field test 2, Mon Oct 12, 12:38 AM:** sent, a yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone, We're done at 12:43, deleted on time. [FIELD: outdoor meetup?]
 
 | What | How | Result |
 | --- | --- | --- |
@@ -68,7 +70,7 @@ One evening, in four frames:
 | Simulation: 48 friends | 48 made-up friends in 4 groups against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif)) | 11 of 12 lit; median 14.75 min to Lit; all 12 deleted after, audit pass |
 | Accessibility | axe on 88 page views (22 pages, 2 widths, light and dark) | 0 findings; every target 44 px or more |
 
-The fresh-eyes testers are AI agents, not people: each round, a new agent with no context used the live site as a phone. The real people are my 2 friends above.
+The fresh-eyes testers are AI agents, not people: a new one with no context each round, on the live site as a phone.
 
 | Round | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -90,7 +92,7 @@ That's the honest position. Flare is for "anyone free right now?". A poll still 
 
 ### Method
 
-I'm one founder running Claude Code sessions in roles: research, product, design, architecture, specialists, QA. A manager session set the order, and each role left a handoff for the next. Before the parallel work started, the architect froze 14 interfaces in [an interface control document](https://github.com/Hotragn/flare/blob/main/docs/engineering/02-interface-control.md), so specialists built against contracts and fakes. Decisions live in 31 ADRs, and 159 requirements are traced to code and tests by [`trace.py`](https://github.com/Hotragn/flare/blob/main/docs/requirements/tools/trace.py). Every push runs a secret scan, lint, types (with svelte-check), 775 unit and contract tests and the build. Each fresh-eyes round was the sprint review, and its worst issues became the next sprint.
+I'm one founder running Claude Code sessions in roles: research, product, design, architecture, specialists, QA. A manager session set the order, and each role left a handoff for the next. The architect froze [14 interfaces](https://github.com/Hotragn/flare/blob/main/docs/engineering/02-interface-control.md) first, so specialists built against contracts. Decisions live in 31 ADRs, and 159 requirements are traced to code and tests by [`trace.py`](https://github.com/Hotragn/flare/blob/main/docs/requirements/tools/trace.py). Every push runs a secret scan, lint, types (with svelte-check), 775 unit and contract tests and the build.
 
 **Disclosure:** I built this with Claude Code. The manager session, acting as CTO for me, sent many of the prompts. Product and privacy decisions were mine, and anything public waited for my yes.
 
@@ -104,9 +106,9 @@ The phone talks only to the server on Render. Our Mac dials out over a WebSocket
 
 The photo goes to **Gemma 4 E4B** (`gemma4:e4b-it-q4_K_M`) on **Ollama**: 20/20 valid JSON, 39/40 scenes right, 3.0 s median. It also writes Plan ladders: 13/13 valid, p95 5.5 s.
 
-The audio surprised me: it hears 16 kHz WAV passed in the same `images` field a photo uses. A 10 s Voice Flare becomes "Meet at the pond bench" in 3.3 s, and the voice never leaves our laptop.
+It also hears 16 kHz WAV in the same `images` field: a 10 s Voice Flare becomes "Meet at the pond bench" in 3.3 s, on our laptop.
 
-I picked the model by measuring the options on one test set, and the smaller ones lost:
+Measured on one test set:
 
 | Model | Where | Result | Shipped? |
 | --- | --- | --- | --- |
@@ -121,8 +123,8 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop. Thinking by default, a Plan draft took 21.7 s with no answer; with `thinkingLevel: "minimal"`, 1.4 s. DigitalOcean is wired in, paused for billing.
-- **Mastra.** An agent drafts the Plan ladder with four local tools (sunset, weather, nearby places, step templates). On 13 asks: p95 5.1 s against 5.5 s, weather 7/7, 12 ms of overhead.
+- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default. DigitalOcean is wired in, paused for billing.
+- **Mastra.** An agent drafts the Plan ladder with four local tools. On 13 asks: p95 5.1 s against 5.5 s, weather 7/7. On live since Oct 12.
 - **Tinker.** The phone's rules read 15/40 new phrasings. A Qwen3.5-4B LoRA (about $2.40) read 38/40 but can't run on the phone, so its errors taught the rules: 20/40 to 30/40, blind.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names. Voice Spark sends 10 s of your own voice to Scribe on a tap. No audio kept.
 - **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing, ok and error class leave the server, and a test fails if marker phrases or UUIDs reach Sentry.
@@ -145,24 +147,28 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 - **I'm here by itself** within 30 m of the spot, with a 10 s Undo.
 - **Rule chips** fill a condition with a tap.
 - **Since launch** totals on the site, with no ids.
-- **The motion:** sparks for each yes, the lighting, the shrink to an Ember and Gone. 60 fps at 4x CPU in Chrome, except the host's lit at 58.6; not an iPhone trace.
+- **The motion:** a spark per yes, the lighting, the shrink and Gone. 60 fps at 4x CPU in Chrome (host's lit 58.6), not an iPhone trace.
 
 ![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
 
-**Remember this** (a 60 s note of the conversation, only if everyone agrees on their own phone) is off. It's the next step once it records on a real iPhone.
-
 ## What I got wrong
 
-Field test 1 found these first:
+My own test found the hardest ones:
 
-- **Remember this passed every automated check and failed on the first real iPhone.** On live, two test phones, a real Scribe call and the sealed note all passed. On the founder's iPhone, Record said "Couldn't write it down." The server logs show no upload at all: the microphone or recorder failed on the phone before anything was sent, and my tests had faked the microphone. It's off until it records on a real iPhone.
+- **As the host, after sending, all I could see was a lot of animation.** It was unclear whether my friends would come, and whether ElevenLabs had worked.
+- **"Pocket it" felt like a button I had to press.** Nothing said to wait until my friend arrives, or that the app should stay open even in my pocket.
+- **On the friend's side, it showed the place and buttons to finish fast,** without saying what each step is for.
+- **Remember this passed every automated check and failed on my iPhone.** On live, two test browsers, a real Scribe call and the sealed note all passed. On my iPhone, Record said "Couldn't write it down." The server logs show no upload: the mic or recorder failed on the phone, and my tests had faked the mic. It's off. What I expected was a neat card of what we said, a summary of the day, with the voice attached only if I want it.
+
+Field test 1 found these:
+
 - **The headline and sheet covered the photo,** 73% of it. Now 0%, and a new `e2e:photo-fit` gate checks 3 viewports with a dark photo.
-- **"After 10min" read as 10 AM.** It now reads "you can come in 10 min", and words the parser misses are said back. The blind set stays 30/40.
+- **"After 10min" read as 10 AM.** Now "you can come in 10 min", and missed words are said back. Blind set: 30/40, unchanged.
 - **"Fuego is at Near Heather Drive."** Now "is near".
-- **Share did nothing in Brave.** The tap's activation was lost after an await. Share now runs in the tap, with a Copy link fallback, tested in WebKit but not on a real iPhone.
+- **Share did nothing in Brave:** the tap was lost after an await. It runs in the tap now, with Copy link as a fallback (WebKit tested, not a real iPhone).
 - **"We'll buzz you" with no push.** That line now shows only with a live subscription.
-- **Returning phones got old pages** from the service worker. Pages now load network first and the new worker takes over at once (two-build test, 8/8).
-- **Round 6 caught 4 more** before the freeze. The invite was lost on reload ("Your Flare" on Home now). "Sent." showed before sharing. At 375×667 the size buttons were hidden; a new "every control on screen" gate failed before the fix and passes now. Location was asked twice; now once.
+- **Returning phones got old pages** from the service worker. Now network first, and a new worker takes over at once (two-build test, 8/8).
+- **Round 6 caught 4 more,** fixed before the freeze: the invite lost on reload, "Sent." before sharing, size buttons hidden at 375×667 (a new gate failed before the fix, passes now), and location asked twice.
 
 ## Honest limits
 
@@ -173,13 +179,16 @@ Field test 1 found these first:
 
 ## Next steps
 
+- Once it's lit, show the host who's coming, with each yes-sayer's OK.
+- A clear host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
+- Remember this as a day card, with the voice only by choice.
 - "My usual" conditions you save once.
 - Plans that repeat every week.
 - Golden-hour nudges inside the app.
 
 ## Why Does Open Innovation Matter?
 
-A photo of where you stand, or your voice saying it, is about as personal as data gets. When the friend with low vision says where they are, that voice goes only to an open model on our laptop and is gone after the call. A free app can't pay per call either: the laptop costs $0 per photo. And open let me look inside: I saw why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
+A photo of where you stand, or your voice, is about as personal as data gets; with an open model it goes only to our laptop and is gone after the call. It costs $0 a photo, and open let me see why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
 
 ## My Agent Session
 
