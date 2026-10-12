@@ -13,7 +13,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 
 ## What I Built
 
-Flare turns one photo into a plan to meet. You take a photo of where you are, and Gemma 4, an open model on my laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan nearby instead of dying. Then it deletes itself.
+Flare turns one photo into a plan to meet. You take a photo of where you are, and Gemma 4, an open model on my laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan nearby instead of dying. Then it deletes itself. And it keeps working where the signal ends.
 
 Most of us have people close by, in group chats and small communities, and we still stay in, because asking means pinging everyone and waiting. I wanted one tap that says "I'm up for meeting, nearby, now." And for someone who's lonely, a quiet way to tell people they trust "I'd like some company," without anyone seeing who said no.
 
@@ -26,6 +26,8 @@ Of the 813 Week 1 entries I scanned, fewer than 1% get a group out together.
 For a friend with low vision, Gemma turns the photo into a line their screen reader speaks, and the compass talks them in.
 
 **Nothing to install.** You and your friends open a link. Gemma runs on my laptop, so nobody needs a GPU, a key or an account.
+
+**When the signal ends.** Once it's lit, the compass needs no signal. The invite fits a 200-byte text for SMS or iPhone satellite texting; friends reply "IN" and the code, and the host counts them. Taps made offline send when signal returns.
 
 ![A Flare lights on a friend's phone](docs/post/media/app-motion/after/3-lit.gif)
 
@@ -107,7 +109,7 @@ The phone talks only to the server on Render. My Mac dials out over a WebSocket,
 
 ### Gemma 4 sees, hears and writes
 
-Gemma 4 E4B (`gemma4:e4b-it-q4_K_M`) runs in **Ollama** on my Mac. On my test set, it named 39 of 40 scenes right, took 3.0 s at the median, and gave valid JSON 20 times out of 20. It also writes the Plan ladder, the smaller plans a Flare can shrink to: 13 of 13 valid, and 95% came back within 5.5 s ([report](https://github.com/Hotragn/flare/blob/main/evals/reports/ladder-agent-hub.md)).
+Gemma 4 E4B (`gemma4:e4b-it-q4_K_M`) runs in **Ollama** on my Mac. On my test set: 39 of 40 scenes right, 3.0 s median, valid JSON 20 of 20. It also writes the Plan ladder, the smaller plans a Flare can shrink to: 13 of 13 valid, and 95% came back within 5.5 s ([report](https://github.com/Hotragn/flare/blob/main/evals/reports/ladder-agent-hub.md)).
 
 It hears too: a 10 s voice clip becomes "Meet at the pond bench" in 3.3 s, on my laptop.
 
@@ -126,12 +128,12 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default. DigitalOcean is wired in, paused for billing.
-- **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. On live since Oct 12. On live, the first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
+- **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default.
+- **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; its first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
 - **Tinker.** A Qwen3.5-4B LoRA cost about $2.40 to train and read 38 of 40 new phrasings, but it's too big for a phone. Its mistakes showed me how to fix the phone's rules: 20/40 to 30/40 on a blind set.
-- **ElevenLabs.** 54 compass lines recorded once (698 characters, offline, no names). Voice Spark (Scribe) is off: see below.
-- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing and error class leave; a test fails if our words or ids reach Sentry. It found two real things: the 10.6 s cold start above, and agent spans sharing one parent trace.
-- **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone. Send can post straight to a linked group chat.
+- **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names.
+- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing and error class leave; a test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing one parent trace.
+- **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
 ![Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings](media/sentry-agent-trace.png)
@@ -160,14 +162,13 @@ Field test 1 found these:
 - **"After 10min" read as 10 AM.** Now "you can come in 10 min" (blind set 30/40, unchanged).
 - **Share did nothing in Brave:** the tap was lost after an await. It runs in the tap now, with a Copy link fallback.
 - **Returning phones got old pages** from the service worker; a new one now takes over at once (two-build test, 8/8).
-- Also "Fuego is at Near Heather Drive", and "We'll buzz you" with no push.
 - **Round 6 caught 4 more,** fixed before the freeze: the invite lost on reload, "Sent." before sharing, size buttons hidden at 375×667, and location asked twice.
 
 ## Honest limits
 
+- **Not yet tested on a trail** or over a real satellite link.
 - **The mic on an iPhone:** it failed there twice tonight; voice input was tested only in desktop browsers.
 - **No background location or mic.** An iPhone web app can't use either.
-- **No server pushes for golden hour or a weekly recap.** The server never knows where a crew is or its time zone.
 - **Two real tests so far.** One short meetup in person, indoors or nearby, not yet an outdoor walk.
 - **In a small group, the count can give away who said yes.**
 
@@ -177,8 +178,6 @@ Field test 1 found these:
 - A clear host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
 - Give each AI job its own Sentry trace.
 - "My usual" conditions you save once.
-- Plans that repeat every week.
-- Golden-hour nudges inside the app.
 
 ## Why Does Open Innovation Matter?
 
