@@ -14,7 +14,8 @@
 // the friend decrypts is byte-for-byte the photo the host saw on Send (the filter never touches
 // bytes); the main button is on screen without scrolling; the privacy tip is one line at
 // 375 px and stays closed after a reload; tapping the photo opens a full-screen dialog with a
-// 44 px close button, Escape closes it and focus goes back to the photo.
+// 44 px close button, Escape closes it and focus goes back to the photo. axe (WCAG 2 A and AA,
+// best practice) on each photo screen at 390 x 664, and on the open viewer.
 // Real built app, in-memory fake API (serve.ts), Chrome. No network beyond localhost.
 // Usage: npm run build && node apps/web/test/e2e/photo-fit.ts [before]
 //   `before` only names the screenshots *-before.png and skips the checks main can't pass.
@@ -46,6 +47,7 @@ const VIEWPORTS = [
   { width: 390, height: 844 },
 ];
 
+const AXE = fs.readFileSync(path.join(ROOT, "node_modules/axe-core/axe.min.js"), "utf8");
 const fails: string[] = [];
 const rows: string[] = [];
 const check = (name: string, ok: boolean, detail = "") => {
@@ -159,8 +161,22 @@ async function measure(
     if (photo.dark) check(`${tag}: the dark photo is brightened for display`, /brightness/.test(m.filter), m.filter);
     else check(`${tag}: a bright photo has no filter`, !m.filter || m.filter === "none", m.filter);
   }
+  if (!BEFORE && vp.height === 664) await audit(page, tag);
   if (vp.width === 390 && vp.height === 664 && photo.dark)
     await page.screenshot({ path: path.join(OUT, `${screen}-${BEFORE ? "before" : "after"}.png`) });
+}
+
+type Axe = {
+  run: (c: Document, o: object) => Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }>;
+};
+async function audit(page: Page, tag: string) {
+  await page.evaluate(AXE); // evaluate, not a script tag: the app's CSP blocks inline scripts
+  const found = await page.evaluate(async () => {
+    const a = (window as unknown as { axe: Axe }).axe;
+    const r = await a.run(document, { runOnly: ["wcag2a", "wcag2aa", "best-practice"] });
+    return r.violations.map((v) => `${v.id} (${v.nodes.length}): ${v.nodes[0]?.target.join(" ")}`);
+  });
+  check(`${tag}: axe 0 violations`, found.length === 0, found.join("; "));
 }
 
 async function viewer(page: Page, tag: string) {
@@ -173,6 +189,7 @@ async function viewer(page: Page, tag: string) {
   );
   check(`${tag}: tapping the photo opens it full screen`, opened);
   if (!opened) return;
+  await audit(page, `${tag} viewer`);
   const box = await dlg.getByRole("button", { name: "Close" }).boundingBox();
   check(
     `${tag}: the close button is 44 px`,
