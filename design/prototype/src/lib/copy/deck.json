@@ -4922,18 +4922,115 @@
       "where": "site home Why it matters"
     },
     "site.why.lead": {
-      "text": "Most of our hours happen indoors, and fewer of them with friends. Time outside together helps.",
+      "text": "Most of our hours happen indoors, and fewer of them with people. Time outside together helps.",
       "kind": "prose",
       "where": "site home Why it matters"
     },
-    "site.why.indoor.t": {
-      "text": "A day, mostly indoors",
+    "site.why.social.t": {
+      "text": "Fewer people socialized on an average day in 2025 than in 2015",
       "kind": "title",
       "where": "site home Why it matters"
     },
-    "site.why.indoor.b": {
-      "text": "People in the US spent 87% of their time in buildings and 6% in vehicles.",
+    "site.why.social.share": {
+      "text": "Share who socialized",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.social.min": {
+      "text": "Minutes a day, everyone",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.social.src": {
+      "text": "BLS, American Time Use Survey 2025, released June 25, 2026",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.social.note": {
+      "text": "No interviews took place from October 1 to November 12, 2025, during the federal shutdown. BLS says it can't measure the effect.",
       "kind": "prose",
+      "where": "site home Why it matters"
+    },
+    "site.why.social.cap": {
+      "text": "How many socialized, and for how long, 2015 and 2025",
+      "kind": "aria",
+      "where": "site home Why it matters"
+    },
+    "site.why.pct": {
+      "text": "{n}%",
+      "kind": "label",
+      "where": "site home Why it matters",
+      "sample": {
+        "n": 30
+      }
+    },
+    "site.why.min": {
+      "text": "{n} min",
+      "kind": "label",
+      "where": "site home Why it matters",
+      "sample": {
+        "n": 30
+      }
+    },
+    "site.why.col.year": {
+      "text": "Year",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.t": {
+      "text": "Time with friends fell by two thirds from 2003 to 2020",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.kicker": {
+      "text": "Latest published analysis",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.line": {
+      "text": "Friends {n} min",
+      "kind": "label",
+      "where": "site home Why it matters",
+      "sample": {
+        "n": 30
+      }
+    },
+    "site.why.alone.line": {
+      "text": "Alone {n} min",
+      "kind": "label",
+      "where": "site home Why it matters",
+      "sample": {
+        "n": 30
+      }
+    },
+    "site.why.pandemic": {
+      "text": "pandemic",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.atus.src": {
+      "text": "Kannan and Veazie, 2023, from the American Time Use Survey",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.friends.cap": {
+      "text": "Minutes a day with friends and alone, 2003, 2019 and 2020",
+      "kind": "aria",
+      "where": "site home Why it matters"
+    },
+    "site.why.col.friends": {
+      "text": "With friends, min a day",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.col.alone": {
+      "text": "Alone, min a day",
+      "kind": "label",
+      "where": "site home Why it matters"
+    },
+    "site.why.indoor.t": {
+      "text": "In 1992 to 1994, Americans spent 87% of their time in buildings",
+      "kind": "title",
       "where": "site home Why it matters"
     },
     "site.why.indoor.bld": {
@@ -4956,66 +5053,49 @@
       "kind": "label",
       "where": "site home Why it matters"
     },
-    "site.why.friends.t": {
-      "text": "Less time with friends",
-      "kind": "title",
+    "site.why.indoor.cap": {
+      "text": "Share of time by place, US, 1992 to 1994",
+      "kind": "aria",
       "where": "site home Why it matters"
     },
-    "site.why.friends.b": {
-      "text": "Time with friends fell from 60 min a day in 2003 to 34 in 2019 and 20 in 2020.",
-      "kind": "prose",
-      "where": "site home Why it matters"
-    },
-    "site.why.alone.t": {
-      "text": "More time alone",
-      "kind": "title",
-      "where": "site home Why it matters"
-    },
-    "site.why.alone.b": {
-      "text": "Time alone rose from 285 min a day in 2003 to 309 in 2019 and 333 in 2020.",
-      "kind": "prose",
-      "where": "site home Why it matters"
-    },
-    "site.why.min": {
-      "text": "{n} min",
+    "site.why.col.place": {
+      "text": "Place",
       "kind": "label",
-      "where": "site home Why it matters",
-      "sample": {
-        "n": 60
-      }
+      "where": "site home Why it matters"
     },
-    "site.why.atus.src": {
-      "text": "Kannan and Veazie, 2023, from the American Time Use Survey",
+    "site.why.col.share": {
+      "text": "Share of time",
       "kind": "label",
       "where": "site home Why it matters"
     },
     "site.why.lonely.t": {
-      "text": "1 in 4 feel lonely",
+      "text": "1 in 6 people worldwide is affected by loneliness",
       "kind": "title",
+      "gradeNote": "WHO's own headline wording, quoted from who.int (30 June 2025).",
       "where": "site home Why it matters"
     },
-    "site.why.lonely.b": {
-      "text": "In 142 countries, 24% of people said they feel lonely. For ages 19 to 29 it was 27%.",
+    "site.why.lonely.deaths": {
+      "text": "WHO links loneliness to more than 871,000 deaths a year, about 100 every hour.",
       "kind": "prose",
       "where": "site home Why it matters"
     },
     "site.why.lonely.src": {
-      "text": "Gallup and Meta, Global State of Social Connections, 2022 to 2023",
+      "text": "WHO Commission on Social Connection, June 30, 2025",
       "kind": "label",
       "where": "site home Why it matters"
     },
     "site.why.lonely.aria": {
-      "text": "4 people, 1 of them lonely",
+      "text": "6 people, 1 of them lonely",
       "kind": "aria",
       "where": "site home Why it matters"
     },
     "site.why.nature.t": {
-      "text": "120 minutes a week",
+      "text": "120 minutes a week in nature is linked to good health",
       "kind": "title",
       "where": "site home Why it matters"
     },
     "site.why.nature.b": {
-      "text": "People who spent 120 min or more a week in nature were likelier to report good health. How they split it up didn't matter.",
+      "text": "How people split up the 120 minutes didn't matter.",
       "kind": "prose",
       "where": "site home Why it matters"
     },
@@ -5024,19 +5104,19 @@
       "kind": "label",
       "where": "site home Why it matters"
     },
+    "site.why.nature.aria": {
+      "text": "8 Flares of 15 minutes make 120",
+      "kind": "aria",
+      "where": "site home Why it matters"
+    },
+    "site.why.flares": {
+      "text": "Eight Flares make 120.",
+      "kind": "title",
+      "where": "site home Why it matters"
+    },
     "site.why.end": {
-      "text": "So start small: 15 minutes outside with people you like. Eight of those make 120.",
+      "text": "Start with 15 minutes outside with people you like.",
       "kind": "prose",
-      "where": "site home Why it matters"
-    },
-    "site.why.year": {
-      "text": "Year",
-      "kind": "label",
-      "where": "site home Why it matters"
-    },
-    "site.why.minDay": {
-      "text": "Minutes a day",
-      "kind": "label",
       "where": "site home Why it matters"
     },
     "site.how.title": {
