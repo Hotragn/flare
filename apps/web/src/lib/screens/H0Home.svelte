@@ -7,7 +7,7 @@
   import Icon from "../components/Icon.svelte";
   import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
-  import Scenery from "../components/Scenery.svelte";
+  import SceneryLater from "../components/SceneryLater.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Golden, Green } from "./flow/home.ts";
   import type { LatLon } from "@flare/shared/icd/map";
@@ -56,7 +56,7 @@
 </script>
 
 <Screen stage menu {onmenu} close={false} heading={headline}>
-  {#snippet backdropArt()}<Scenery people={false} sky={{ at, wind, hour, rain: !!weather?.rain_likely }} />{/snippet}
+  {#snippet backdropArt()}<SceneryLater people={false} sky={{ at, wind, hour, rain: !!weather?.rain_likely }} />{/snippet}
   {#snippet hero()}
     <div class="hero">
       <Flame state="lit" size={96} />

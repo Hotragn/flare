@@ -22,6 +22,7 @@
     linkOnly = false,
     ondone,
     onclose,
+    sky = undefined,
   }: {
     view?: "lit" | "arrivals" | "plusone" | "done";
     theme?: Theme;
@@ -39,12 +40,13 @@
     linkOnly?: boolean;
     ondone?: () => void;
     onclose?: () => void;
+    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   // svelte-ignore state_referenced_locally
   let sheet = $state<"" | "plusone" | "done">(view === "plusone" || view === "done" ? view : "");
 </script>
 
-<Screen {theme} sound {onclose} title={t("host.lit.title")} stage fallbackArt>
+<Screen {theme} sound {onclose} title={t("host.lit.title")} stage fallbackArt {sky}>
   {#snippet hero()}
   <div class="center">
     <Hearth state="lit" size={210} celebrate={view === "lit"} />

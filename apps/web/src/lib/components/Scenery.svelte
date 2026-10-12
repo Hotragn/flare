@@ -20,7 +20,7 @@
   let el: SVGSVGElement;
   let box = $state({ w: 400, h: 360 });
   let now = $state(new Date());
-  const fixed = width !== undefined || height !== undefined;
+  const fixed = $derived(width !== undefined || height !== undefined);
   const W = $derived(width ?? box.w);
   const H = $derived(height ?? box.h);
   onMount(() => {
@@ -80,7 +80,7 @@
   const dropAt = spread(42, 2.3);
   // Birches: inside the box on a tall phone (no half circles at the edges).
   const trees = $derived(fixed || !tall ? [[0.86, 0.5, 9, 1], [0.78, 0.36, 7, 1]] : [[0.8, 0.2, 8, 1.35], [0.16, 0.15, 7, 1.15]]);
-  const leafy = $derived(s.windy || s.phase === "day" || s.phase === "golden");
+  const leafy = $derived(s.windy); // leaves blow only in wind (still ones sat on headlines)
   const benchX = $derived(W * (tall && !fixed ? 0.36 : 0.54));
   const benchY = $derived(H * (hz + (tall && !fixed ? 0.1 : 0.155)));
 </script>
@@ -150,7 +150,7 @@
   .windy .tree { animation: sway 2.6s ease-in-out infinite; }
   .windy .leaf { animation: blow 5s linear infinite; }
   .drops line { animation: fall 0.8s linear infinite; }
-  .scenery[data-paused] * { animation-play-state: paused; }
+  :global(.scenery[data-paused] *) { animation-play-state: paused; }
   @keyframes twinkle { 50% { opacity: 0.35; } }
   @keyframes sway { 0%, 100% { transform: rotate(-1.6deg); } 50% { transform: rotate(2.4deg); } }
   @keyframes blow { from { transform: translate(-30px, -10px); opacity: 0; } 15%, 85% { opacity: 1; } to { transform: translate(90px, 40px); opacity: 0; } }

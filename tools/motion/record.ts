@@ -1,4 +1,4 @@
-// Records one motion moment from the /dev/moments/ catalog as a GIF (and a still of the end), with
+// Records one motion moment from the /dev/components/?s= catalog as a GIF (and a still of the end), with
 // Chrome's screencast (CDP) at 390x844, then gifenc. No ffmpeg. Frames are scaled to 260 px wide
 // and share one palette, so a 1.5 s moment stays well under 2 MB.
 // Usage: node tools/motion/record.ts <base-url> <out.gif> <catalog-query> <action-js> [ms=1600]
@@ -19,7 +19,7 @@ const WIDTH = 260;
 const browser = await chromium.launch({ channel: "chrome" });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();
-await page.goto(`${base}/dev/moments/?${query}`);
+await page.goto(`${base}/dev/components/?${query}`);
 await page.waitForFunction(() => document.documentElement.dataset.ready === "1");
 await page.waitForTimeout(1200);
 const cdp = await ctx.newCDPSession(page);

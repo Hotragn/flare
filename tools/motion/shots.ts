@@ -1,4 +1,4 @@
-// Screenshots of the app's motion moments at 390x844 (iPhone 13 class), from the /dev/moments/
+// Screenshots of the app's motion moments at 390x844 (iPhone 13 class), from the /dev/components/?s=
 // catalog. Usage: node tools/motion/shots.ts <base-url> <out-dir> [--reduce] [name=query ...]
 // Each name=query pair writes <out-dir>/<name>.png after the moment settles (1.6 s).
 // A query that starts with "/" is a path on the app instead of a catalog query.
@@ -25,7 +25,7 @@ for (const pair of pairs) {
   const i = pair.indexOf("=");
   const name = pair.slice(0, i);
   const q = pair.slice(i + 1);
-  const url = q.startsWith("/") ? `${base}${q}` : `${base}/dev/moments/?${q}`;
+  const url = q.startsWith("/") ? `${base}${q}` : `${base}/dev/components/?${q}`;
   await page.goto(url);
   await page.waitForTimeout(reduce ? 900 : 1800);
   await page.screenshot({ path: path.join(out, `${name}.png`) });

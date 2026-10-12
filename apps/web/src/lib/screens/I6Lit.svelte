@@ -2,6 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
+  import ShrinkLater from "../components/ShrinkLater.svelte";
   import Hearth from "../components/Hearth.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Sheet from "../components/Sheet.svelte";
@@ -21,6 +22,7 @@
     onhere,
     oncant,
     onclose,
+    sky = undefined,
   }: {
     /** Minutes outside together once 2+ have arrived (2026 direction, B). */
     together?: number | null;
@@ -36,17 +38,20 @@
     onhere?: () => void;
     oncant?: () => void;
     onclose?: () => void;
+    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
+  // Smaller: the shrink and the catch at the bench play in the drawn scene (Shrink), not the photo.
+  const smaller = $derived(view === "smaller" && !!smallerAt);
   let asking = $state(false);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={info.photo} backdropAlt={info.scene}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={smaller ? "" : info.photo} backdropAlt={info.scene} fallbackArt {sky}>
   {#snippet hero()}
-  <div class="center">
-    <Hearth state="lit" size={190} celebrate={view === "lit" && !savedAt} />
-    {#if view === "smaller" && smallerAt}
+  <div class="center" class:smaller>
+    {#if smaller}
       <h1 class="t-title">{t("ember.headline", { bench: smallerAt })}</h1>
     {:else}
+      <Hearth state="lit" size={190} celebrate={view === "lit" && !savedAt} />
       <h1 class="t-display">{t("lit.headline")}</h1>
       <p class="t-sun">{info.hostLine}</p>
     {/if}
@@ -54,6 +59,9 @@
     {:else if info.walkMin !== null}<p class="t-muted">{t("invite.walk", { min: info.walkMin })}</p>{/if}
     {#if cant}<p class="t-muted" role="status">{t("lit.cantDone")}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
+    {#if smaller}
+      <ShrinkLater lit={!savedAt} />
+    {/if}
   </div>
   {/snippet}
   <InfoLines access={info.access} nature={info.nature} />
@@ -79,6 +87,8 @@
   .center { text-align: left; align-items: flex-start; }
   .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
+  .center.smaller { justify-content: space-between; padding-top: 8px; }
+  .center.smaller :global(.shrink) { order: 9; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
   .err { font-weight: 700; }
 </style>

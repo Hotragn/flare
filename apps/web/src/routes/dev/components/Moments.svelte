@@ -1,10 +1,12 @@
-<!-- Motion catalog (/dev only): one app screen at phone size with sample data, so the motion
+<!-- Motion catalog (/dev/components/?s=H5): one app screen at phone size with sample data, so the motion
      moments can be screenshotted, traced and recorded. ?s=H5 picks the screen; ?photo=0 drops
      the photo so the illustrated scene shows; ?hour=21 fixes the sky's hour; ?rain=1, ?wind=25.
      Scripts change props with window.flareDev.set({ have: 3 }). Sample data only (#lib/sample.ts). -->
 <script lang="ts">
   import { onMount, type Component } from "svelte";
   import PhoneFrame from "#lib/components/PhoneFrame.svelte";
+  import Screen from "#lib/components/Screen.svelte";
+  import Scenery from "#lib/components/Scenery.svelte";
   import { access, flare, people } from "#lib/sample.ts";
   import type { InviteInfo } from "#lib/components/parts.ts";
 
@@ -25,6 +27,7 @@
   let C = $state<Any | null>(null);
   let props = $state<Record<string, unknown>>({});
   let key = $state(0);
+  let crew = $state(false);
 
   onMount(async () => {
     const q = new URL(location.href).searchParams;
@@ -68,16 +71,24 @@
       set: (p: Record<string, unknown>) => Object.assign(props, p),
       remount: () => (key += 1),
     };
+    crew = s === "crew";
     C = (await (load[s] ?? load.H5)()).default;
     document.documentElement.dataset.ready = "1";
   });
 </script>
 
-<svelte:head><title>Flare motion</title><meta name="robots" content="noindex" /></svelte:head>
 
 <PhoneFrame>
   {#if C}
-    {#key key}<C {...props} />{/key}
+    {#key key}
+      {#if crew}
+        <Screen stage close={false} heading="Crew">
+          {#snippet backdropArt()}<Scenery people={false} sky={props.sky as never} />{/snippet}
+          {#snippet hero()}<C {...props} />{/snippet}
+          <p>Sample crew.</p>
+        </Screen>
+      {:else}<C {...props} />{/if}
+    {/key}
   {:else}
     <main><h1>Flare motion</h1></main>
   {/if}

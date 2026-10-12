@@ -10,7 +10,7 @@
   import { themeAttrs, type Theme } from "./parts";
   import { net } from "#lib/net/waking.svelte.ts";
   import Waking from "./Waking.svelte";
-  import Scenery from "./Scenery.svelte";
+  import SceneryLater from "./SceneryLater.svelte";
 
   let {
     theme = "light",
@@ -54,7 +54,7 @@
   {#if staged}
     <!-- The photo is content (its alt is the scene for friends who can't see it), so it sits in a
          labelled region, not loose outside every landmark (page audit, axe region). -->
-    {#if backdrop}<section class="lm" aria-label={backdropAlt || heading || title}><img class="backdrop" src={backdrop} alt={backdropAlt} /></section>{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><Scenery {sky} /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
+    {#if backdrop}<section class="lm" aria-label={backdropAlt || heading || title}><img class="backdrop" src={backdrop} alt={backdropAlt} /></section>{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><SceneryLater {sky} people={false} /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
     <div class="scrim" aria-hidden="true"></div>
   {/if}
   <header class="bar">

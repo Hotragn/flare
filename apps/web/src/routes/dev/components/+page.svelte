@@ -18,10 +18,16 @@
   let q = $state("3");
   let v1 = $state("");
   let v2 = $state("only if Amor comes");
+  // ?s=H5 (and the rest, see Moments.svelte): one app screen at phone size for the motion tools.
+  let moments = $state(false);
+  $effect(() => { moments = new URL(location.href).searchParams.has("s"); });
 </script>
 
 <svelte:head><title>Flare components</title></svelte:head>
 
+{#if moments}
+  {#await import("./Moments.svelte") then { default: Moments }}<Moments />{/await}
+{:else}
 <main class="page" data-theme="light">
   <h1 class="t-title">Flare components</h1>
   <p>Every component and state. Tokens: design/system/tokens.css. Source: design/prototype/src/lib/components.</p>
@@ -90,6 +96,7 @@
     </section>
   {/each}
 </main>
+{/if}
 
 <style>
   .page { padding: 24px; }

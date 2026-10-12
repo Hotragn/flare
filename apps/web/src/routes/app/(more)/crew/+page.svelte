@@ -1,16 +1,18 @@
-<!-- O8 Your crew (backlog #5): the crew's home. People as flame avatars, how many are out now,
-     the week outside, the crew's story in numbers, your places as postcards, then one big Light a
-     Flare. Everything to change sits behind one "Manage crew" sheet. Never shows who said no. -->
+<!-- O8 Your crew (backlog #5): the crew's home, a living place, not a dashboard. Under the live
+     sky everyone stands round one fire (CrewScene): a figure with an initial each, the fire as big
+     as this week's time outside together, Sparks as small lights to tap. Then how many are out now,
+     the week outside, the crew's story in numbers, your places, then one big Light a Flare.
+     With no crew yet: an unlit fire pit, ready. Everything to change sits behind one "Manage crew"
+     sheet. Never shows who said no. -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { page } from "$app/state";
   import Screen from "#lib/components/Screen.svelte";
   import Button from "#lib/components/Button.svelte";
   import Choice from "#lib/components/Choice.svelte";
-  import FlameAvatars from "#lib/components/FlameAvatars.svelte";
+  import CrewScene from "#lib/components/CrewScene.svelte";
   import Icon from "#lib/components/Icon.svelte";
   import Scenery from "#lib/components/Scenery.svelte";
-  import ScenicHero from "#lib/components/ScenicHero.svelte";
   import Sheet from "#lib/components/Sheet.svelte";
   import TextField from "#lib/components/TextField.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -110,11 +112,13 @@
 <svelte:head><title>{name || t("crew.title")}</title></svelte:head>
 
 <Screen stage onclose={back} menu={false} title={name || t("crew.title")} heading={name || t("crew.title")}>
-  {#snippet backdropArt()}<ScenicHero start={2} />{/snippet}
+  {#snippet backdropArt()}<Scenery people={false} />{/snippet}
   {#snippet hero()}
-    {#if view.s === "ready"}
+    {#if view.s === "nogroup"}
+      <div class="hero"><CrewScene empty /></div>
+    {:else if view.s === "ready"}
       <div class="hero">
-        <FlameAvatars people={view.crew.people.map((p) => ({ name: p.name, out: false }))} size={48} />
+        <CrewScene people={view.crew.people} weekMin={view.crew.stats?.outside_min_week ?? 0} sparks={Object.values(sparks)} />
         {#if view.crew.outNow > 0}<p class="out"><span class="dot" aria-hidden="true"></span>{t("crew.outNow", { n: view.crew.outNow })}</p>{/if}
         <p class="t-display">{week}</p>
       </div>
@@ -123,7 +127,7 @@
   {#if view.s === "loading"}
     <p class="t-muted" role="status">{t("app.loading")}</p>
   {:else if view.s === "nogroup"}
-    <p>{t("crew.empty")}</p>
+    <p class="t-heading">{t("crew.empty")}</p>
   {:else if view.s === "error"}
     <p role="alert">{view.msg}</p>
     <Button variant="secondary" onclick={load}>{t("err.retry")}</Button>
