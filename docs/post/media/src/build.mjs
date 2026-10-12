@@ -15,7 +15,7 @@ await sharp(readFileSync(join(here, "20-architecture.svg")), { density: 144 })
   .toFile(join(media, "20-architecture.png"));
 
 const frames = [
-  { file: "02-friend-invite.jpg", n: "1", title: "Kindling", line1: "A friend gets the invite.", line2: "1 more to light it, never who." },
+  { file: "02-friend-invite.jpg", n: "1", title: "Kindling", line1: "A friend gets the invite.", line2: "Need 1 more, never who." },
   { file: "03-friend-lit.jpg", n: "2", title: "Lit", line1: "Enough said yes.", line2: "Find them, with the compass." },
   { file: "06-friend-ember.jpg", n: "3", title: "Ember", line1: "Too few in 30 min?", line2: "A smaller plan, not a dead one." },
   { file: "demo-6-outside.jpg", n: "4", title: "Gone", line1: "15 min outside together,", line2: "then it all deletes itself." },

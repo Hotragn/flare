@@ -35,7 +35,7 @@
 
   <!-- Hub -->
   <rect x="1160" y="170" width="380" height="330" rx="16" fill="#1d2230"/>
-  <text x="1190" y="220" font-size="28" font-weight="700" fill="#ffffff">Our laptop (the hub)</text>
+  <text x="1190" y="220" font-size="28" font-weight="700" fill="#ffffff">My laptop (the hub)</text>
   <text x="1190" y="252" font-size="19" fill="#c9ccd4">A Mac running Ollama</text>
   <text x="1190" y="306" font-size="24" font-weight="700" fill="#f6a23c">Gemma 4 E4B</text>
   <text x="1190" y="346" font-size="19" fill="#ffffff">Photo or voice in, invite out.</text>
@@ -57,10 +57,10 @@
 
   <!-- bottom row -->
   <rect x="60" y="640" width="440" height="190" rx="14" fill="#ffffff" stroke="#3a3f4b" stroke-width="2" stroke-dasharray="10 7"/>
-  <text x="85" y="684" font-size="22" font-weight="700" fill="#1d2230">ElevenLabs Scribe</text>
-  <text x="85" y="720" font-size="19" fill="#1d2230">Only when you tap Say it:</text>
-  <text x="85" y="748" font-size="19" fill="#1d2230">up to 10 s of your own voice,</text>
-  <text x="85" y="776" font-size="19" fill="#1d2230">words back, no audio kept.</text>
+  <text x="85" y="684" font-size="22" font-weight="700" fill="#1d2230">ElevenLabs</text>
+  <text x="85" y="720" font-size="19" fill="#1d2230">The compass voice: 54 lines recorded</text>
+  <text x="85" y="748" font-size="19" fill="#1d2230">once, shipped with the app, offline.</text>
+  <text x="85" y="792" font-size="19" fill="#b3261e">Voice input: off, the iPhone recorder failed.</text>
 
   <rect x="580" y="640" width="460" height="190" rx="14" fill="#ffffff" stroke="#3a3f4b" stroke-width="2" stroke-dasharray="10 7"/>
   <text x="605" y="684" font-size="22" font-weight="700" fill="#1d2230">Cloud fallback</text>
