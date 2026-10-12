@@ -43,7 +43,7 @@
       <h1 class="t-display">{t("planSent.title")}</h1>
       <p class="t-sun">{t("planSent.body", { deadline })}</p>
     {:else}
-      <h1 class="t-display">{t("sent.title")}</h1>
+      <h1 class="t-display">{t(shareFirst ? "sent.titleShare" : "sent.title")}</h1>
       <p class="t-sun">{t(sentBodyKey(buzz))}</p>
       {#if buzz !== "push" && !installed}
         <details class="home">

@@ -60,6 +60,10 @@
   $effect(() => {
     if (onboarding && (flow.screen !== "camera" || !home)) finishOnboarding();
   });
+  // Round 6: after a reload, Home offers the live Flare and its link ("Your Flare").
+  let liveSaved = $state(false);
+  onMount(() => (liveSaved = flow.hasLive()));
+
   // Live bug 5: say only what this device will do, and catch the host up when they come back.
   let pushOn = $state(false);
   let backNote = $state("");
@@ -239,7 +243,7 @@
     <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
   {/await}
 {:else if home && flow.screen === "camera"}
-  <H0Home at={homeAt} onagain={flow.groupId ? () => { home = false; flow.startAgain(); } : undefined} golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
+  <H0Home at={homeAt} onlive={liveSaved ? () => { if (flow.resume()) home = false; } : undefined} onagain={flow.groupId ? () => { home = false; flow.startAgain(); } : undefined} golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} onvoice={(d) => { stopCamera(); flow.useVoice(d); }} />
 {:else if flow.screen === "develop"}

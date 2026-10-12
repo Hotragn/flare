@@ -40,6 +40,7 @@
     tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
     now: new Date(demo.now).toISOString(),
     kind: "flare" as const,
+    host: me, // "only with you" means the host, as on a real friend's phone
   });
   // The same parser a friend's phone uses (fresh-eyes round 3: "Check it" checked nothing).
   function checkCondition(text: string) {

@@ -107,7 +107,7 @@ async function hostSends(host: Page, quorum: string, prefix: string | null): Pro
   await host.getByRole("radio", { name: quorum }).check({ force: true });
   if (prefix) await shot(host, "01-host-send.jpg");
   await host.getByRole("button", { name: "Send it" }).click();
-  await host.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+  await host.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
   if (prefix) await shot(host, "01-host-sent.jpg");
   await host.getByRole("button", { name: "Copy as text" }).click();
   const link =

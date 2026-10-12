@@ -148,7 +148,7 @@ try {
   const where = host.getByLabel("Where are you?");
   if (await where.isVisible().catch(() => false)) await where.fill("Ford Woods Park, by the pond");
   await host.getByRole("button", { name: "Send it" }).click();
-  await host.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+  await host.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
   await host.getByRole("button", { name: "Copy as text" }).click();
   const link =
     (await host.evaluate(() => navigator.clipboard.readText())).match(

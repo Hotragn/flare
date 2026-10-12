@@ -211,3 +211,23 @@ describe("share (SRS-CRE-8): the sheet first, Copy link when there is none", () 
     expect(host.note).toBe(`Could not copy. Here is the link: ${host.link}`);
   });
 });
+
+describe("round 6: a reload keeps the live Flare", () => {
+  it("after Send, a new page offers Your Flare, and resume brings back the link and the live view", async () => {
+    const store = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, String(v)),
+      removeItem: (k: string) => void store.delete(k),
+    });
+    const { f, host, ok } = await sent();
+    expect(ok).toBe(true);
+    const again = new HostFlow(f.deps);
+    expect(again.hasLive()).toBe(true);
+    expect(again.resume()).toBe(true);
+    await settle();
+    expect(again.link).toBe(host.link);
+    expect(again.screen).toBe("kindling");
+    vi.unstubAllGlobals();
+  });
+});

@@ -23,6 +23,7 @@
     onnear,
     onmenu,
     onagain,
+    onlive,
   }: {
     golden?: Golden | null;
     weather?: { temp_f: number; rain_likely: boolean } | null;
@@ -35,6 +36,8 @@
     onlight?: () => void;
     /** Automations: one tap, the last crew and size, no photo needed (shown once you have sent one). */
     onagain?: () => void;
+    /** Round 6: this phone's live Flare, after a reload. */
+    onlive?: () => void;
     onplan?: () => void;
     onnear?: () => void;
     onmenu?: () => void;
@@ -79,6 +82,7 @@
   {#snippet actions()}
     <Button icon="camera" haptic="tap" onclick={onlight}>{t("home.light")}</Button>
     <div class="row">
+      {#if onlive}<Button variant="text" onclick={onlive}>{t("home.live")}</Button>{/if}
       {#if onagain}<Button variant="text" onclick={onagain}>{t("home.again")}</Button>{/if}
       <Button variant="text" onclick={onplan}>{t("home.plan")}</Button>
       {#if !located}<Button variant="text" onclick={onnear}>{t("home.near")}</Button>{/if}

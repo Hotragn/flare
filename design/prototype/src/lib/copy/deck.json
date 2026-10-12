@@ -151,6 +151,11 @@
       "kind": "button",
       "where": "H0"
     },
+    "home.live": {
+      "text": "Your Flare",
+      "kind": "button",
+      "where": "H0 Home: reopen this phone's live Flare and its link (fresh-eyes round 6)"
+    },
     "home.again": {
       "text": "Again",
       "kind": "button",
@@ -996,6 +1001,11 @@
       "text": "Sent.",
       "kind": "title",
       "where": "H4"
+    },
+    "sent.titleShare": {
+      "text": "Ready. Share the link.",
+      "kind": "title",
+      "where": "H4 Sent, before the host has shared it (fresh-eyes round 6)"
     },
     "sent.body": {
       "text": "Phone in your pocket. We'll buzz you when it's lit.",

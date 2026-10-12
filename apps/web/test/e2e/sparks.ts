@@ -126,7 +126,7 @@ async function sendFlare(page: Page): Promise<string> {
   const name = page.getByLabel("Your first name");
   if (await name.isVisible().catch(() => false)) await name.fill("Fuego");
   await page.getByRole("button", { name: "Send it" }).click();
-  await page.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+  await page.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
   await page.getByRole("button", { name: "Copy as text" }).click();
   const clip = await page.evaluate(() => navigator.clipboard.readText());
   const link = clip.match(/(\/g\/[0-9a-f-]{36}\/#k=[A-Za-z0-9_-]{43})/)?.[1] ?? "";

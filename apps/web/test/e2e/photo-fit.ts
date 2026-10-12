@@ -250,7 +250,7 @@ try {
       const name = host.getByLabel("Your first name");
       if (await name.isVisible().catch(() => false)) await name.fill("Fuego");
       await host.getByRole("button", { name: "Send it" }).click();
-      await host.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+      await host.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
       await host.getByRole("button", { name: "Copy as text" }).click();
       const clip = await host.evaluate(() => navigator.clipboard.readText());
       const link = clip.match(/(\/g\/[0-9a-f-]{36}\/#k=[A-Za-z0-9_-]{43})/)?.[1];

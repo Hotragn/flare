@@ -88,3 +88,21 @@ Left:
 - buttons kept in the DOM behind the demo coach card;
 - "Sent a moment ago" never updates;
 - a gap above "What it does".
+
+## Round 6 (6/10, on 68afd9b, live, 10:45 PM ET)
+The same method as before: a new subagent with no context, on the live site at 390×844 (with checks at 375×667 and 1280×800). It used a dim photo (the darkened real photo fixture) as "its own photo". Its traffic carried `x-flare-test: 1`, so it isn't in Since launch.
+
+First 5 seconds: "A free web app for inviting friends outside. Friends say yes privately, and the plan only happens if enough people say yes."
+
+The photo: it stayed visible on the invite and Send screens. The dark photo was "dim but readable", and Gemma read it as "A dirt path winding through dense, dark foliage and trees."
+
+**"Would you use this over a WhatsApp poll? Why or why not?"** (verbatim)
+> For a quick "anyone free for a walk now?", maybe. The private yes and the "only happens if enough come" rule are real wins over a poll, where everyone sees who said no. For a normal meetup I'd still use the WhatsApp poll. It sits inside the chat where everyone already is, it's never lost, and nobody needs to keep a tab open with the sound on. Here, losing my own invite on reload would put me off for good.
+
+Fixed after it (before the 1 AM freeze):
+- **The live invite was lost on reload.** Home now shows "Your Flare", which reopens the live Flare and its link (flow test).
+- **"Sent." before anything was shared.** The heading is now "Ready. Share the link." until the host shares, or the Telegram group got it.
+- **"10min only with you" lost "only with you" in the demo.** The demo passes the host's name the way a friend's phone does.
+- **"after 10" at 10:40 PM became 10 AM tomorrow.** A bare hour that already holds (up to 6 h back) now stays tonight: 10 PM. blind_40 is still 30/40.
+
+Left: the location is asked twice (the "Name your spot?" sheet, then Send asks for "where you are"); the bottom sheet hides the 2/3/4 buttons at 375×667; the demo coach card over the photo; "N more to light it" vs "Need N more"; "Judging? 60-second tour" reads odd to normal users; "Made on our laptop · Photo not kept" sounds hobby-grade.

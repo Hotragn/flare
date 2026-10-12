@@ -123,7 +123,7 @@ try {
   await name.fill("Fuego");
   await host.screenshot({ path: path.join(OUT, "e2e-p2-ladder.png") });
   await send.click();
-  await host.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+  await host.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
   await host.getByRole("button", { name: "Copy as text" }).click();
   const link =
     (await host.evaluate(() => navigator.clipboard.readText())).match(

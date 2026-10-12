@@ -60,6 +60,7 @@ describe("live bug: delays and bare hours", () => {
     expect(simple("after 10", 20, 22)).toBe("after=22:00");
     expect(simple("after 10", 9, 0)).toBe("after=10:00");
     expect(simple("after 10am is good", 20, 22)).toBe("after=10:00"); // said with am: kept as said
+    expect(simple("after 10", 22, 40)).toBe("after=22:00"); // round 6: 10 PM already holds, not 10 AM tomorrow
   });
   it("with you means the host", () => {
     for (const s of ["with you", "only with you", "if you're there", "you and me", "only if you come"])
@@ -76,7 +77,7 @@ describe("live bug: delays and bare hours", () => {
     ]);
     for (const c of chips) expect(parse(c.text, ctx).ok, c.text).toBe(true);
   });
-  it("property: a delay or a bare hour never resolves before the Flare's now", () => {
+  it("property: back_by and delays never resolve before now; a bare after at most 6 h back", () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 23 }),
@@ -89,7 +90,14 @@ describe("live bug: delays and bare hours", () => {
           for (const text of [`after ${hour}`, `back by ${hour}`, `in ${min} min`, `${min}min`]) {
             const r = parse(text, ctx);
             if (!r.ok) return false;
-            for (const x of r.rules) if ("at" in x && Date.parse(x.at) < now - 60_000) return false;
+            for (const x of r.rules) {
+              if (!("at" in x)) continue;
+              const at = Date.parse(x.at);
+              // back_by and delays are never in the past; a bare "after" may be one that already
+              // holds, but never more than 6 h back (round 6: "after 10" at 10:40 PM is 10 PM).
+              if (x.type === "back_by" && at < now - 60_000) return false;
+              if (x.type === "after" && at < now - 6 * 3_600_000) return false;
+            }
           }
           return true;
         },

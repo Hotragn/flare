@@ -123,7 +123,7 @@ async function sendFlare(page: Page): Promise<string> {
   const name = page.getByLabel("Your first name");
   if (await name.isVisible().catch(() => false)) await name.fill("Fuego");
   await page.getByRole("button", { name: "Send it" }).click();
-  await page.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 15_000 });
+  await page.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 15_000 });
   const words = (await page.evaluate(() => document.body.innerText)).slice(0, 2000);
   await page.getByRole("button", { name: "Pocket it" }).click();
   return words;

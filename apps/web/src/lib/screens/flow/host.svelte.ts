@@ -48,6 +48,8 @@ const HOST_GROUP = "flare.hostGroup"; // id only; the key stays in IndexedDB
 const DRAFT_BUDGET_MS = 6000; // the server answers with the template after 6 s (openapi drafts)
 const CLOUD_WAIT_MS = 40_000; // DigitalOcean answers in about 30 s; the server gives up at 35 s (ADR-0022)
 
+const LIVE_KEY = "flare.live";
+
 export class HostFlow {
   screen = $state<HostScreen>("camera");
   photoBlob: Blob | null = null;
@@ -263,6 +265,34 @@ export class HostFlow {
     if (n) this.spot = { name: n, key: n, lat: this.spot?.lat ?? 0, lon: this.spot?.lon ?? 0 };
   }
 
+  #saved(): { id: string; link: string; until: number } | null {
+    try {
+      const v = JSON.parse(localStorage.getItem(LIVE_KEY) ?? "null") as {
+        id: string;
+        link: string;
+        until: number;
+      } | null;
+      return v && typeof v.id === "string" && typeof v.link === "string" && v.until > Date.now() ? v : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Round 6: this phone sent a Flare that may still be live. */
+  hasLive(): boolean {
+    return !!this.#saved();
+  }
+
+  /** Round 6: reopening the app brings back this phone's live Flare and its link. */
+  resume(): boolean {
+    const v = this.#saved();
+    if (!v) return false;
+    this.link = v.link;
+    this.screen = "kindling";
+    this.#follow(v.id);
+    return true;
+  }
+
   /** Automations, Again: the last crew and size, no photo; place-word chips or your own words. */
   startAgain(): void {
     this.photoBlob = null;
@@ -407,6 +437,10 @@ export class HostFlow {
       }
       await d.store.rememberGathering(id, group.groupId);
       this.link = link;
+      try {
+        // Round 6: a reload must not lose the live Flare. Same origin as the key store; cleared at Gone.
+        localStorage.setItem(LIVE_KEY, JSON.stringify({ id, link, until: Date.now() + 4 * 3600_000 }));
+      } catch {}
       this.view = r.value ?? null;
       if (this.photoBlob && kind === "flare") void this.#uploadPhoto(id, key, this.photoBlob);
       // ADR-0023: the real photo goes to Telegram only when the group turned photos on.
@@ -575,7 +609,12 @@ export class HostFlow {
         } else if (v.state === "ember") feedback("ember");
         else if (v.state === "gone") feedback("gone");
       }
-      if (v.state === "gone") void this.#recordHot(v);
+      if (v.state === "gone") {
+        void this.#recordHot(v);
+        try {
+          localStorage.removeItem(LIVE_KEY);
+        } catch {}
+      }
       if (this.screen !== "sent" || v.state !== "kindling") this.#route();
     });
   }

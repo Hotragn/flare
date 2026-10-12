@@ -24,7 +24,7 @@ const delayMin = new WeakMap<Rule, number>();
  * A bare hour ("after 10") means the next one coming up from now: 8:22 PM plus "after 10" is
  * 10 PM, 9 AM plus "after 10" is 10 AM. Never a time already gone (live bug, Oct 11).
  */
-function upcoming(hhmm: string, ctx: ParseContext): string {
+function upcoming(hhmm: string, ctx: ParseContext, kind: "after" | "back_by" = "back_by"): string {
   const [h, mi] = hhmm.split(":").map(Number) as [number, number];
   const h12 = h % 12;
   const mm = String(mi).padStart(2, "0");
@@ -35,6 +35,14 @@ function upcoming(hhmm: string, ctx: ParseContext): string {
     localToIso(`${String(h12 + (h >= 12 ? 0 : 12)).padStart(2, "0")}:${mm}`, ctx.now, ctx.tz),
     localToIso(`${String(h12).padStart(2, "0")}:${mm}`, tomorrow, ctx.tz),
   ];
+  // Round 6: "after 10" said at 10:40 PM means 10 PM, which already holds, not 10 AM tomorrow.
+  if (kind === "after") {
+    const held = tries
+      .slice(0, 2)
+      .filter((iso) => Date.parse(iso) <= now && now - Date.parse(iso) < 6 * 60 * MIN)
+      .sort((a, b) => Date.parse(b) - Date.parse(a))[0];
+    if (held) return held;
+  }
   return tries.find((iso) => Date.parse(iso) >= now - MIN) ?? (tries[2] as string);
 }
 
@@ -51,7 +59,7 @@ function toRule(r: RawRule, ctx: ParseContext): Rule | null {
     }
     case "after":
     case "back_by":
-      return { type: r.type, at: r.bare ? upcoming(r.value, ctx) : localToIso(r.value, ctx.now, ctx.tz) };
+      return { type: r.type, at: r.bare ? upcoming(r.value, ctx, r.type) : localToIso(r.value, ctx.now, ctx.tz) };
     case "max_walk":
       return { type: "max_walk", minutes: r.value };
     case "max_step":

@@ -136,7 +136,7 @@ async function sendFlare(page: Page): Promise<void> {
   const typed = page.getByLabel("Where are you?");
   if (await typed.isVisible().catch(() => false)) await typed.fill("Ford Woods Park, by the pond");
   await page.getByRole("button", { name: "Send it" }).click();
-  await page.getByRole("heading", { name: "Sent." }).waitFor({ timeout: 20_000 });
+  await page.getByRole("heading", { name: /^(Sent\.|Ready\. Share the link\.)$/ }).waitFor({ timeout: 20_000 });
   await page.waitForTimeout(300);
 }
 
