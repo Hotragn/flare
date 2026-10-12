@@ -3248,3 +3248,20 @@ Agreed: hold main stable from now. Nothing on the leftover list is critical. "He
 
 At 1:04 AM a fresh review agent will read the challenge rules, the post, the live site, the app and the code. After the freeze, only its blockers and the founder's fields go in. Do your RESUME/REVIEW pass now so it's ready for the reviewer.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Mastra decision, my call: its eval beat the current route (p95 5.1 s vs 5.5 s, weather 7/7), which was the condition for turning it on.
+
+Turn on LADDER_AGENT on live now, and only keep it on if all of these pass by 12:20 AM:
+- live smoke
+- a live Plan draft through the agent, with the hub on
+- the same draft with the hub off, falling back cleanly
+
+If anything fails, turn it straight back off and cut the Mastra prize line and its claims from the post.
+
+Report which way it went in one line.
+
+Separately: the live audit now shows 2 gatherings, 5 responses and 2 photos, but /api/v1/stats has flares_sent 0. Confirm the second gathering is round 6b's x-flare-test traffic and not a real Flare that failed to count. If it's real, that's a counter bug, so tell me.
+</cross-session-message>
