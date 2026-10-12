@@ -239,7 +239,7 @@
     <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
   {/await}
 {:else if home && flow.screen === "camera"}
-  <H0Home onagain={flow.groupId ? () => { home = false; flow.startAgain(); } : undefined} golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
+  <H0Home at={homeAt} onagain={flow.groupId ? () => { home = false; flow.startAgain(); } : undefined} golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} onvoice={(d) => { stopCamera(); flow.useVoice(d); }} />
 {:else if flow.screen === "develop"}
@@ -249,7 +249,7 @@
 {:else if flow.screen === "sent"}
   <H4Sent buzz={buzzMode({ push: pushOn, telegram: flow.postedToTelegram })} installed={installed()} kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} linkOnly={flow.linkOnly} shareFirst={!flow.postedToTelegram} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
 {:else if flow.screen === "kindling"}
-  <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} linkOnly={flow.linkOnly} onclose={exit} />
+  <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} linkOnly={flow.linkOnly} ember={flow.view?.state === "ember"} onclose={exit} />
 {:else if flow.screen === "lit"}
   <H6HostLit ontell={() => void flow.shareLit()} linkOnly={flow.linkOnly} coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
