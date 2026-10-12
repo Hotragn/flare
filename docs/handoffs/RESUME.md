@@ -10,7 +10,7 @@
   - the host should see when a friend adds a condition
   - stop asking returning users for their name again
   - the desktop QR code carries the full invite link
-  - "Here: 1" shows when nobody tapped I'm here
+  - "Here: 1" is the host's headcount by design, but testers read it as "1 arrived". Relabel it
 
 ## Now: Sun 2026-10-11, ~10:35 PM ET. Read this first.
 Freeze 1:00 AM ET. Deadline Mon 06:59 UTC.
