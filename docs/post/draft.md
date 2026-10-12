@@ -149,12 +149,13 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 
 ![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
 
-**Remember this** went on live for the outdoor test: up to 60 s of a conversation, only if everyone agrees on their own phone. [FIELD: did it work for real people? If not, say it stays off.]
+**Remember this** (a 60 s note of the conversation, only if everyone agrees on their own phone) is off. It's the next step once it records on a real iPhone.
 
 ## What I got wrong
 
 Field test 1 found these first:
 
+- **Remember this passed every automated check and failed on the first real iPhone.** On live, two test phones, a real Scribe call and the sealed note all passed. On the founder's iPhone, Record said "Couldn't write it down." The server logs show no upload at all: the microphone or recorder failed on the phone before anything was sent, and my tests had faked the microphone. It's off until it records on a real iPhone.
 - **The headline and sheet covered the photo,** 73% of it. Now 0%, and a new `e2e:photo-fit` gate checks 3 viewports with a dark photo.
 - **"After 10min" read as 10 AM.** It now reads "you can come in 10 min", and words the parser misses are said back. The blind set stays 30/40.
 - **"Fuego is at Near Heather Drive."** Now "is near".

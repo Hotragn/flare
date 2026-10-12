@@ -103,7 +103,6 @@
       <ul>
         <li>{t("ai.cloud.ladder")}</li>
         <li>{t("ai.cloud.photo")}</li>
-        <li>{t("ai.remember")}</li>
       </ul>
     {:else}
       <p>{t("ai.cloud.off")}</p>
