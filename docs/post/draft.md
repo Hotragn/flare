@@ -87,7 +87,7 @@ The fresh-eyes testers are AI agents with no context, not people.
 
 Round 6 scored 6/10, and a recheck after its fixes scored 7/10. That tester liked the private yes and the "only if enough come" rule, but would still use a WhatsApp poll for a normal meetup: it sits in the chat, and losing an invite on reload put it off.
 
-Flare is for "anyone free right now?". A poll still wins for a planned meetup. Today, Telegram is how Flare lives inside the chat.
+Flare is for "anyone free right now?". A poll still wins for a planned meetup. Telegram is how Flare lives in the chat.
 
 ## Code
 
@@ -115,7 +115,7 @@ Gemma 4 E4B (`gemma4:e4b-it-q4_K_M`) runs in **Ollama** on my Mac. On my test se
 
 It hears too: a 10 s voice clip becomes "Meet at the pond bench" in 3.3 s, on my laptop.
 
-Smaller models, on the same test set:
+Smaller models, same test set:
 
 | Model | Where | Result | Shipped? |
 | --- | --- | --- | --- |
@@ -130,12 +130,12 @@ Naming nearby sounds didn't ship: Gemma heard birds in nearly every clip.
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`.
-- **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; its first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
+- **Google AI Studio.** Gemma 4 26B A4B covers when my laptop is off: 1.4 s a Plan, thinking minimal.
+- **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; the first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
 - **Tinker.** A $2.40 Qwen3.5-4B LoRA read 38 of 40 new phrasings but is too big for a phone; its mistakes lifted the phone's rules from 20/40 to 30/40, blind.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names.
 - **Sentry.** Agent Tracing follows every AI job, model call and guard. A test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing a trace.
-- **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone.
+- **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes; it's deleted at Gone.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
 ![Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings](media/sentry-agent-trace.png)
@@ -184,8 +184,9 @@ Field test 1 found these:
 
 ## Next steps
 
-- Once it's lit, show the host who's coming, with each yes-sayer's OK.
-- A clear host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
+- Once lit, show the host who's coming, with each yes-sayer's OK.
+- A host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
+- "My usual" conditions, repeating Plans, in-app golden-hour nudges.
 
 ## Why Does Open Innovation Matter?
 
