@@ -1,15 +1,15 @@
 # Founder review: what's left before you publish
 
 **Deadline:** Mon Oct 12, 06:59 UTC (Sun 11:59 PM PDT, Mon 2:59 AM ET).
-**The post:** [draft.md](draft.md)
-**Live:** https://flare-outside.onrender.com (main, all checks green)
-**State at hand-off (Sun Oct 11, about 5:30 PM ET):**
-- CI passes: secret scan, lint, types, 775 unit and contract tests, contracts, build, budget, 38 diagrams.
-- Every e2e suite passes: hello, pwa, field 27/27, sparks, loop, telegram, kit a11y, demo, plan, voice, flow on the real stack.
-- axe finds 0 issues on 88 page views.
-- Smoke passes on live.
-- check-env: every setting is set, and no secret value is in the repo or the web build (12 values checked in 1,335 tracked files and 374 build files).
-- Fresh-eyes testers scored 5, 6, 5, 6 and 6 (five rounds, a new tester with no context each time). The post states this. Round 5's fixes shipped after its score, so they have no score of their own.
+**The post:** [draft.md](draft.md) (1,765 words; about 135 left for your holes under the 1,900 cap)
+**Live:** https://flare-outside.onrender.com, build 72ade1198688 (the footer shows the build; smoke passes)
+
+**State at hand-off (Sun Oct 11, about 11:20 PM ET):**
+- **Field test 1 live bugs:** all six are fixed and live (photo covered, 10min read as 10 AM, "is at Near", share in Brave, the buzz promise, the stale service worker).
+- **Fresh-eyes round 6:** scored 6/10. Its fixes and your leftover list are live.
+- **Gates:** Lighthouse 100 on all 5 pages, mobile and desktop. JS: /app 148.8 KB, /g 148.0 KB, both under the 150 budget. npm test passes 829/829. e2e passes: photo-fit (including a new "every control visible" gate), share (Chrome and WebKit), demo, loop, telegram, sparks, flow, pwa and sw-update.
+- **Shipped and live tonight:** Again; Telegram direct send; auto I'm here; rule chips; Since launch totals; the app motion; Why it matters on BLS ATUS 2025 and WHO 2025.
+- **Cut or off:** Sounds of the spot (it failed the 100% voice-drop bar); Remember this (off).
 
 ## 1. Decisions only you can make
 
@@ -20,6 +20,9 @@
 | **DigitalOcean** | The account answers 402 (blocked for billing). The post marks it **[PENDING DO BILLING]** (lines 98 and 178). If billing is fixed, re-run `npm run smoke -- https://flare-outside.onrender.com --hub-off` and look for `cloud tier: digitalocean`, then remove the markers. If not, delete the DigitalOcean prize line and leave the paragraph as "wired in, paused" | DigitalOcean billing |
 | **Google AI Studio billing** | On the free tier, Google may use what it receives to improve its products, and people there may review it. Plan asks always go there when the laptop is off; photos only when the host taps. Paid terms stop that use. Today it's disclosed in the app and on the privacy page | Google Cloud console, project billing |
 | **Stale image folders** | `apps/web/static/scenic/` and the `-640` and `-1280` files in `apps/web/static/scenery/` are untracked leftovers. Delete them | `rm -r` them yourself |
+
+| **Mastra prize line** | `LADDER_AGENT` is not on live, so the agent isn't running there. Either turn it on (set `LADDER_AGENT=1` for the hub and restart it) and check one live Plan, or delete the Mastra prize line (draft line 194). The Mastra paragraph in the stack section can stay, as "wired in, off by default". | .env / hub |
+| **ATUS microdata (next step)** | Our own 2003–2025 series (time with friends, time outdoors) needs 118.6 MB of bls.gov files. Skipped tonight; the chart uses the published 2003–2020 series | Later |
 
 ## 2. Fill in the post
 
