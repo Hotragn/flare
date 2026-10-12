@@ -9,7 +9,9 @@
 > - `ad59cc9`, Oct 12 07:09 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is now a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.
 > - `70689c3`, Oct 12 07:13 UTC: README only. This block.
 > - `987c12e`, Oct 12 07:16 UTC: docs only. An outline for a longer version of the DEV post (docs/post/draft-v2-outline.md).
-> - The next commit, Oct 12 about 07:20 UTC: README only. These hashes.
+> - `94601f9`, Oct 12 07:20 UTC: README only. The commit hashes in this list.
+> - `ff17533`, Oct 12 07:30 UTC: docs, plus one static image. A longer, unpublished draft of the post (docs/post/draft-v2.md), and a sprint timeline image served at /post/sprints.png. No app code changed.
+> - The next commit, Oct 12 about 07:31 UTC: README only. This line.
 
 Snap where you are. If enough friends quietly say yes, it's on.
 
