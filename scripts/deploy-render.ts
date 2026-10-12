@@ -31,6 +31,7 @@ export const WEB_KEYS = [
   "GEMINI_API_KEY", // ADR-0026: Gemma 4 on Google AI Studio after DigitalOcean
   "ELEVENLABS_API_KEY", // ADR-0027: Voice Spark (Scribe); the warm-voice clips are static
   "LADDER_AGENT", // ADR-0025: the Mastra Plan agent, on live from Oct 12 after its eval
+  "REMEMBER_THIS", // ADR-0031: on live from Oct 12 for the founder's outdoor test, after the consent tests
 ];
 const REQUIRED = ["RENDER_KEY", "HUB_SECRET"];
 
