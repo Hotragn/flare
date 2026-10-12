@@ -5,7 +5,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
-     FOUNDER WHY (about 60 words), AGENT SESSION, ENTIRE (3 places), and the repo line.
+     AGENT SESSION, ENTIRE (3 places), and the repo line.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
 
@@ -15,7 +15,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 
 It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a walk". Three people react with a thumbs up. Nobody goes.
 
-[FOUNDER WHY: the founder writes this tonight, in their own words]
+Most of us have people close by, in group chats and small communities, and we still stay in, because asking means pinging everyone and waiting. I wanted one tap that says "I'm up for meeting, nearby, now." And for someone who's lonely, a quiet way to tell people they trust "I'd like some company," without anyone seeing who said no.
 
 > "Last week I was busy working from home and haven't really got a chance or felt free to go out … I got this and saw that he was nearby next to me and used this, and we met to talk about flare … it really felt this is good for friends and people to go out"
 >
