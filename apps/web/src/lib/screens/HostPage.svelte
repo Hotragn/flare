@@ -16,8 +16,8 @@
   import H4Sent from "./H4Sent.svelte";
   import H5HostKindling from "./H5HostKindling.svelte";
   import H6HostLit from "./H6HostLit.svelte";
-  import I10Gone from "./I10Gone.svelte";
-  import I12Outside from "./I12Outside.svelte";
+  // End screens load when reached (JS budget): the Flare has run 30 min or more by then.
+  const endScreens = () => Promise.all([import("./I12Outside.svelte"), import("./I10Gone.svelte")]);
   // The Plan flow (P1, P2) is the second way in: loaded when you start a Plan (JS budget).
   const planScreens = () => Promise.all([import("./P1PlanAsk.svelte"), import("./P2Ladder.svelte")]);
   import type { Deps } from "./flow/deps.ts";
@@ -253,9 +253,11 @@
 {:else if flow.screen === "lit"}
   <H6HostLit ontell={() => void flow.shareLit()} linkOnly={flow.linkOnly} coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
-  <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} photo={flow.photo} onclose={exit} />
+  {#await endScreens() then [{ default: I12Outside }]}
+    <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} photo={flow.photo} onclose={exit} />
+  {/await}
 {:else if flow.screen === "gone"}
-  <I10Gone onclose={exit} />
+  {#await endScreens() then [, { default: I10Gone }]}<I10Gone onclose={exit} />{/await}
 {:else if flow.screen === "plan-ask"}
   {#await planScreens() then [{ default: P1PlanAsk }]}
     <P1PlanAsk bind:ask={flow.ask} bind:quorum={flow.quorum} bind:start={startLocal} bind:deadline={deadlineLocal} error={planError} offline={!navigator.onLine} ondraft={() => flow.draftLadder()} onclose={exit} />

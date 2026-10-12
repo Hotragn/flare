@@ -14,9 +14,9 @@
   import I7Compass from "./I7Compass.svelte";
   import I8Here from "./I8Here.svelte";
   import I9Ember from "./I9Ember.svelte";
-  import I10Gone from "./I10Gone.svelte";
   import I11Spark from "./I11Spark.svelte";
-  import I12Outside from "./I12Outside.svelte";
+  // Outside and Gone load when reached (JS budget); the walk there gives them time.
+  const endScreens = () => Promise.all([import("./I12Outside.svelte"), import("./I10Gone.svelte")]);
   // Plan screens (P4 to P7) load when the link is a Plan: Flares are most links (JS budget).
   const planScreens = () =>
     Promise.all([import("./P4PlanInvite.svelte"), import("./P5PlanLit.svelte"), import("./P6Fading.svelte"), import("./P7PlanGone.svelte")]);
@@ -176,9 +176,11 @@
 {:else if flow.screen === "missing-key"}
   <I1Invite view="missing-key" onclose={exit} />
 {:else if flow.screen === "gone"}
-  {#if v?.kind === "plan"}{#await planScreens() then [, , , { default: P7PlanGone }]}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{/await}{:else}<I10Gone onclose={exit} />{/if}
+  {#if v?.kind === "plan"}{#await planScreens() then [, , , { default: P7PlanGone }]}<P7PlanGone ask={info?.words ?? ""} onclose={exit} />{/await}{:else}{#await endScreens() then [, { default: I10Gone }]}<I10Gone onclose={exit} />{/await}{/if}
 {:else if flow.screen === "outside"}
+  {#await endScreens() then [{ default: I12Outside }]}
   <I12Outside view={v?.state === "gone" ? "end" : "go"} spot={info?.spot ?? ""} sunset={info?.nature ?? ""} minutes={flow.outsideMin} photo={info?.photo ?? ""} people={info?.host ? [info.host, name || "You"] : []} spark={flow.sparkLine} onclose={exit} />
+  {/await}
 {:else if flow.screen === "join"}
   <I0Join {host} bind:name error={flow.error} busy={flow.busy} onjoin={(n) => flow.join(n)} onclose={() => flow.notNow()} />
 {:else if info && v}
