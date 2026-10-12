@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#3a3f4b"/>
+    </marker>
+    <marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#e2611f"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" fill="#fbf7f2"/>
+  <text x="60" y="70" font-size="34" font-weight="700" fill="#1d2230">How a Flare moves</text>
+  <text x="60" y="108" font-size="20" fill="#5b6170">Solid lines run on every Flare. Dashed lines run only in the case named on them.</text>
+
+  <!-- Phone -->
+  <rect x="60" y="170" width="380" height="330" rx="28" fill="#ffffff" stroke="#1d2230" stroke-width="3"/>
+  <text x="90" y="220" font-size="28" font-weight="700" fill="#1d2230">Your phone</text>
+  <text x="90" y="252" font-size="19" fill="#5b6170">The web app, nothing to install</text>
+  <text x="90" y="300" font-size="19" fill="#1d2230">Names, places, photos and Sparks</text>
+  <text x="90" y="326" font-size="19" fill="#1d2230">are sealed here (AES-256-GCM).</text>
+  <text x="90" y="366" font-size="19" fill="#1d2230">The key lives in the link's</text>
+  <text x="90" y="392" font-size="19" fill="#1d2230">#fragment, never sent to a server.</text>
+  <text x="90" y="432" font-size="19" fill="#1d2230">The compass voice ships with</text>
+  <text x="90" y="458" font-size="19" fill="#1d2230">the app: 54 clips, works offline.</text>
+
+  <!-- Server -->
+  <rect x="610" y="170" width="400" height="330" rx="16" fill="#ffffff" stroke="#1d2230" stroke-width="3"/>
+  <text x="640" y="220" font-size="28" font-weight="700" fill="#1d2230">Server on Render</text>
+  <text x="640" y="252" font-size="19" fill="#5b6170">Hono on Node 24, Postgres</text>
+  <text x="640" y="300" font-size="19" fill="#1d2230">Sees counts and labels like c3,</text>
+  <text x="640" y="326" font-size="19" fill="#1d2230">never who said yes.</text>
+  <rect x="640" y="356" width="340" height="120" rx="10" fill="#fdeee4" stroke="#e2611f" stroke-width="2"/>
+  <text x="660" y="392" font-size="20" font-weight="700" fill="#1d2230">Deletion sweep</text>
+  <text x="660" y="422" font-size="19" fill="#1d2230">The Flare, photo and every yes</text>
+  <text x="660" y="450" font-size="19" fill="#1d2230">deleted within 5 min (worst: 90 s)</text>
+
+  <!-- Hub -->
+  <rect x="1160" y="170" width="380" height="330" rx="16" fill="#1d2230"/>
+  <text x="1190" y="220" font-size="28" font-weight="700" fill="#ffffff">Our laptop (the hub)</text>
+  <text x="1190" y="252" font-size="19" fill="#c9ccd4">A Mac running Ollama</text>
+  <text x="1190" y="306" font-size="24" font-weight="700" fill="#f6a23c">Gemma 4 E4B</text>
+  <text x="1190" y="346" font-size="19" fill="#ffffff">Photo or voice in, invite out.</text>
+  <text x="1190" y="374" font-size="19" fill="#ffffff">The photo lives in memory and</text>
+  <text x="1190" y="402" font-size="19" fill="#ffffff">is zero-filled after the call.</text>
+  <text x="1190" y="442" font-size="19" fill="#ffffff">No port open to the internet.</text>
+
+  <!-- phone <-> server -->
+  <line x1="446" y1="300" x2="602" y2="300" stroke="#3a3f4b" stroke-width="3" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text x="458" y="282" font-size="17" fill="#3a3f4b">HTTPS</text>
+  <text x="458" y="330" font-size="17" fill="#3a3f4b">sealed blobs</text>
+  <text x="458" y="352" font-size="17" fill="#3a3f4b">and counts</text>
+
+  <!-- hub -> server (outbound) -->
+  <line x1="1154" y1="300" x2="1016" y2="300" stroke="#e2611f" stroke-width="4" marker-end="url(#o)" marker-start="url(#o)"/>
+  <text x="1026" y="270" font-size="17" fill="#e2611f" font-weight="700">WebSocket</text>
+  <text x="1026" y="330" font-size="17" fill="#e2611f">the laptop</text>
+  <text x="1026" y="352" font-size="17" fill="#e2611f">dials out</text>
+
+  <!-- bottom row -->
+  <rect x="60" y="640" width="440" height="190" rx="14" fill="#ffffff" stroke="#3a3f4b" stroke-width="2" stroke-dasharray="10 7"/>
+  <text x="85" y="684" font-size="22" font-weight="700" fill="#1d2230">ElevenLabs Scribe</text>
+  <text x="85" y="720" font-size="19" fill="#1d2230">Only when you tap Say it:</text>
+  <text x="85" y="748" font-size="19" fill="#1d2230">up to 10 s of your own voice,</text>
+  <text x="85" y="776" font-size="19" fill="#1d2230">words back, no audio kept.</text>
+
+  <rect x="580" y="640" width="460" height="190" rx="14" fill="#ffffff" stroke="#3a3f4b" stroke-width="2" stroke-dasharray="10 7"/>
+  <text x="605" y="684" font-size="22" font-weight="700" fill="#1d2230">Cloud fallback</text>
+  <text x="605" y="720" font-size="19" fill="#1d2230">Only when the laptop is off:</text>
+  <text x="605" y="748" font-size="19" fill="#1d2230">Google AI Studio, Gemma 4 26B A4B.</text>
+  <text x="605" y="776" font-size="19" fill="#1d2230">A photo goes only if the host taps.</text>
+  <text x="605" y="806" font-size="17" fill="#5b6170">DigitalOcean: wired in, paused (billing).</text>
+
+  <rect x="1120" y="640" width="420" height="190" rx="14" fill="#ffffff" stroke="#3a3f4b" stroke-width="2"/>
+  <text x="1145" y="684" font-size="22" font-weight="700" fill="#1d2230">Sentry</text>
+  <text x="1145" y="720" font-size="19" fill="#1d2230">Server only. AI spans and timings</text>
+  <text x="1145" y="748" font-size="19" fill="#1d2230">under an allow-list: tier, model,</text>
+  <text x="1145" y="776" font-size="19" fill="#1d2230">ok, error class. No words, no ids.</text>
+
+  <line x1="700" y1="506" x2="330" y2="634" stroke="#3a3f4b" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#a)"/>
+  <line x1="810" y1="506" x2="810" y2="634" stroke="#3a3f4b" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#a)"/>
+  <line x1="930" y1="506" x2="1250" y2="634" stroke="#3a3f4b" stroke-width="2.5" marker-end="url(#a)"/>
+</svg>

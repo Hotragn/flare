@@ -23,6 +23,10 @@ The host picks a real photo through the app's own "Pick a photo": Eagle Lake, Ac
 | 11-demo-friend-view.jpg | The demo's friend view | e2e demo |
 | 12-site-home-phone.png, 13-site-feature-cards.png | The website on a phone, and the feature cards on desktop | local build |
 | 14-desktop-qr-note.png | The app on a desktop: the phone column and "Made for your phone" with a QR code | local build |
+| 20-architecture.png | The architecture: phone, server on Render, the laptop hub with Gemma 4 on Ollama, cloud fallback, deletion sweep, ElevenLabs Scribe, Sentry | src/20-architecture.svg, rendered by src/build.mjs |
+| 21-storyboard.png | One evening in four frames: Kindling, Lit, Ember, Gone (02-friend-invite, 03-friend-lit, 06-friend-ember, and the demo's outside screen) | src/build.mjs |
 | sim/fairlane-sim-42.gif | "A Saturday in Fairlane, played by 48 friends": the simulation (labelled Simulation) | tools/sim |
+
+Re-render the two made images with `node docs/post/media/src/build.mjs` from the repo root.
 
 Still to add: the founder's iPhone screen recording from [shot-list.md](../shot-list.md), and a Sentry trace screenshot from the live project (it needs the founder's Sentry login).
