@@ -16,7 +16,7 @@ Only what was observed. The founder's screenshots are in the manager chat. Open 
 - 8:36 PM, live audit (/api/v1/audit): pass. 1 gathering, 3 responses, 1 photo, 1 job, 1 Spark; 0 rows past their end.
 - The deletion watch is running, to log when the gathering's rows reach 0.
 
-## Bugs found (5), all sent to the build as top priority
+## Bugs found (6), all sent to the build as top priority
 1. On the invite and the send screens, the headline and sheet cover the photo, so you can't see the place. A dark photo makes it worse.
 2. The "Near {street}" spot name flows into "{host} is at {spot}", giving "is at Near Heather Drive".
 3. The condition parser: "10min" (no space) read as a clock time; a bare hour took AM at 8 PM; "a quick visit" silently dropped.
