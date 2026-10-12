@@ -8,6 +8,7 @@
   import { t } from "#lib/copy/site.ts";
   import { onDestroy } from "svelte";
   import { onNavigate } from "$app/navigation";
+  import { version } from "$app/environment";
   let { children } = $props();
 
   // Website flames use the CSS renderer (Flame.svelte's "forced css"): same look and motion,
@@ -68,10 +69,12 @@
       <img src="/brand/flare-mark-maple.svg" alt="" width="36" height="36" />
       <p>{t("site.foot.made")} {t("site.foot.osm")}</p>
     </div>
+    <p class="build">{t("site.foot.build", { id: version.slice(0, 12) })}</p>
   </footer>
 </div>
 
 <style>
   /* The nav stays put while the page under it cross-fades. */
   .nav { view-transition-name: site-nav; }
+  .build { margin: 8px 0 0; font-size: 0.75rem; opacity: 0.75; }
 </style>

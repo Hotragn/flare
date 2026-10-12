@@ -1,6 +1,21 @@
+import { execSync } from "node:child_process";
 import adapter from "@sveltejs/adapter-static";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, type Plugin } from "vite";
+
+// The build id shown in the site footer and used by the service worker cache (live bug 6):
+// the commit, so a phone can be checked against /api/v1/health.
+const BUILD = (() => {
+  const env = process.env.RENDER_GIT_COMMIT ?? process.env.FLARE_BUILD;
+  if (env) return env.slice(0, 12);
+  try {
+    return execSync("git rev-parse --short=12 HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    return String(Date.now());
+  }
+})();
 
 /**
  * The copy deck (ICD-12) carries notes for writers: kind, where, owner, sample. Phones need
@@ -46,6 +61,7 @@ export default defineConfig({
     sveltekit({
       adapter: adapter({ fallback: "200.html" }),
       prerender: { handleHttpError: "warn" },
+      version: { name: BUILD },
       inlineStyleThreshold: 16384, // website: inline small CSS for first paint (Lighthouse)
     }),
   ],

@@ -10,7 +10,6 @@
 import {
   CACHE_PREFIX,
   MAP_PACK,
-  NAV_TIMEOUT_MS,
   navigationFallbacks,
   precacheList,
   routeFor,
@@ -47,7 +46,9 @@ sw.addEventListener("install", (event) => {
       }
     })(),
   );
-  // No skipWaiting here: the page asks first ("New version. Reload?").
+  // Live bug 6: take over at once. Nothing showed the old "Reload?" prompt, so a waiting worker
+  // kept old pages on phones for days. Open pages reload on their next navigation (update.ts).
+  void sw.skipWaiting();
 });
 
 sw.addEventListener("activate", (event) => {
@@ -78,10 +79,9 @@ async function navigate(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const keys = navigationFallbacks(url.pathname);
   try {
-    const res = await Promise.race([
-      fetch(request),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), NAV_TIMEOUT_MS)),
-    ]);
+    // No timeout: a slow server wake (Render free tier) must not hand out an old page. The cache
+    // answers only when the network fails, which is what no signal looks like.
+    const res = await fetch(request, { cache: "no-store" });
     if (res.ok || res.status === 404 || res.status === 410) return res;
     return (await fromCache(keys)) ?? res;
   } catch {

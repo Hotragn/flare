@@ -38,6 +38,7 @@
     "diagrams": "node scripts/check-diagrams.ts",
     "device-check": "node scripts/device-check.ts",
     "e2e:pwa": "node apps/web/test/pwa/e2e/offline.ts",
+    "e2e:sw-update": "node apps/web/test/pwa/e2e/sw-update.ts",
     "eval": "node evals/harness/run.ts",
     "telegram:webhook": "node scripts/telegram-webhook.ts",
     "telegram:status": "node scripts/telegram-status.ts",

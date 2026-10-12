@@ -1,0 +1,9 @@
+PASS build N is controlled by its service worker
+PASS build N footer: Build buildN000000
+PASS one reload after the deploy shows N+1's HTML: Build buildN100000
+PASS the JS that ran is N+1's: 32/32
+PASS the new service worker took over with no waiting step: buildN100000 in 1780 ms
+PASS after the takeover, another page is N+1 too
+PASS no missing chunk and no page error
+PASS offline: the cached page still opens
+all passed (2026-10-12T01:53:47.301Z)

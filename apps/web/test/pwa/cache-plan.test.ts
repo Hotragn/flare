@@ -34,6 +34,8 @@ describe("PW5 cache plan (ADR-0010, SRS-OFF-4)", () => {
     expect(r("/_app/immutable/a.js")).toBe("precache");
     expect(r("/maps/fairlane.json")).toBe("precache");
     expect(r("/g/123/", "navigate")).toBe("navigate");
+    // Live bug 6: a precached page is still network-first when it's a navigation.
+    expect(r("/", "navigate")).toBe("navigate");
     expect(r("/_app/immutable/new.js")).toBe("static");
     expect(r("/photo.jpg")).toBe("skip");
   });

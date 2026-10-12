@@ -5860,6 +5860,11 @@
       "kind": "prose",
       "where": "site W7"
     },
+    "site.foot.build": {
+      "text": "Build {id}",
+      "kind": "label",
+      "where": "Site footer, small: which version this phone runs (live bug 6)"
+    },
     "site.foot.osm": {
       "text": "Map data © OpenStreetMap contributors.",
       "kind": "prose",

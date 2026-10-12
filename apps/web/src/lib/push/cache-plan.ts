@@ -5,7 +5,6 @@ export const CACHE_PREFIX = "flare-";
 export const MAP_PACK = "/maps/fairlane.json";
 /** Shell pages for SPA routes, in order of preference (adapter-static fallback). */
 export const SHELLS = ["/200.html", "/404.html", "/"];
-export const NAV_TIMEOUT_MS = 4000;
 
 /** Static files not worth phone storage: splash images (iOS reads them at install time),
  * the device-check kit, large or duplicate icons, and source maps. */
@@ -41,8 +40,10 @@ export function routeFor(
   const url = new URL(req.url);
   if (url.origin !== origin) return "skip";
   if (url.pathname.startsWith("/api/") || url.pathname === "/hub" || url.pathname.startsWith("/hub/")) return "skip";
-  if (precached.has(url.pathname)) return "precache";
+  // Live bug 6 (Oct 11): pages always go to the network first, even prerendered ones in the
+  // precache; the cached copy is only for no signal. Before, "/" came from the cache forever.
   if (req.mode === "navigate") return "navigate";
+  if (precached.has(url.pathname)) return "precache";
   if (url.pathname === MAP_PACK || url.pathname.startsWith("/_app/") || url.pathname.startsWith("/icons/"))
     return "static";
   return "skip";

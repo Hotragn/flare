@@ -384,26 +384,19 @@ try {
     JSON.stringify(b2b),
   );
 
-  // G. Update flow: a new worker waits until asked.
+  // G. Update flow (live bug 6): a new worker takes over at once, with no prompt to wait for.
   await page.goto(`${ORIGIN}/`);
   swSuffix = `\n// update ${Date.now()}\n`;
-  const waiting = await page.evaluate(async () => {
-    const reg = await navigator.serviceWorker.ready;
-    await reg.update();
-    for (let i = 0; i < 100 && !reg.waiting; i++) await new Promise((r) => setTimeout(r, 50));
-    return !!reg.waiting;
-  });
-  check("update: the new version waits (no skipWaiting on install)", waiting);
   const switched = await page.evaluate(async () => {
     const reg = await navigator.serviceWorker.ready;
     const changed = new Promise<boolean>((resolve) => {
       navigator.serviceWorker.addEventListener("controllerchange", () => resolve(true), { once: true });
-      setTimeout(() => resolve(false), 5000);
+      setTimeout(() => resolve(false), 8000);
     });
-    reg.waiting?.postMessage({ type: "skip-waiting" });
+    await reg.update();
     return changed;
   });
-  check("update: the Reload tap activates it (controllerchange)", switched);
+  check("update: the new version takes over at once (skipWaiting, controllerchange)", switched);
   const names = await page.evaluate(async () => (await caches.keys()).filter((n) => n.startsWith("flare-")));
   check("versioning: still one flare cache after the update", names.length === 1, names.join(", "));
 } catch (e) {

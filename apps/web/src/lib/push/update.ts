@@ -40,3 +40,23 @@ export async function applyUpdate(container?: ServiceWorkerContainer): Promise<v
   sw.addEventListener("controllerchange", () => globalThis.location?.reload(), { once: true });
   reg.waiting.postMessage({ type: "skip-waiting" });
 }
+
+/**
+ * Live bug 6: a new worker takes over at once (service-worker.ts). An open page then holds old
+ * code, so the next in-app navigation becomes a full load, and a missing old chunk reloads.
+ * Returns true from `shouldReload()` once a newer worker controls the page.
+ */
+export function followNewVersion(container?: ServiceWorkerContainer): { shouldReload: () => boolean } {
+  const sw = container ?? (globalThis.navigator as Navigator | undefined)?.serviceWorker;
+  let stale = false;
+  const hadController = !!sw?.controller; // the first install claiming the page is not an update
+  sw?.addEventListener("controllerchange", () => {
+    if (hadController) stale = true;
+  });
+  globalThis.addEventListener?.("vite:preloadError", () => globalThis.location?.reload());
+  const onVisible = () => {
+    if (globalThis.document?.visibilityState === "visible") void sw?.getRegistration().then((r) => r?.update());
+  };
+  globalThis.document?.addEventListener("visibilitychange", onVisible);
+  return { shouldReload: () => stale };
+}
