@@ -62,7 +62,7 @@
 </div>
 
 <style>
-  .crew-scene { position: relative; width: 100%; height: 250px; flex: none; }
+  .crew-scene { position: relative; width: 100%; height: 150px; flex: none; }
   .stage { position: absolute; inset: 0; }
   .stage svg { max-width: none; }
   .person { position: absolute; bottom: 8px; left: calc(50% - 20px); width: 40px; height: 70px; transform: translate(var(--dx), var(--dy)); overflow: visible; animation: arrive 520ms var(--ease-out) both; }

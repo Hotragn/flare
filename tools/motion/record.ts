@@ -17,7 +17,12 @@ const MS = Number(msArg);
 const WIDTH = 260;
 
 const browser = await chromium.launch({ channel: "chrome" });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+const ctx = await browser.newContext({
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 1,
+  isMobile: true,
+  hasTouch: true,
+});
 const page = await ctx.newPage();
 await page.goto(`${base}/dev/components/?${query}`);
 await page.waitForFunction(() => document.documentElement.dataset.ready === "1");
@@ -28,7 +33,13 @@ cdp.on("Page.screencastFrame", (f) => {
   frames.push({ data: Buffer.from(f.data, "base64"), t: f.metadata.timestamp ?? Date.now() / 1000 });
   void cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId });
 });
-await cdp.send("Page.startScreencast", { format: "jpeg", quality: 85, maxWidth: 390, maxHeight: 844, everyNthFrame: 1 });
+await cdp.send("Page.startScreencast", {
+  format: "jpeg",
+  quality: 85,
+  maxWidth: 390,
+  maxHeight: 844,
+  everyNthFrame: 1,
+});
 await page.waitForTimeout(250);
 await page.evaluate(action || "flareDev.remount()");
 await page.waitForTimeout(MS);
@@ -60,7 +71,14 @@ gif.finish();
 // A strip of 8 evenly spaced frames, for review without playing the GIF.
 const at = Array.from({ length: 8 }, (_, k) => raw[Math.round((k * (raw.length - 1)) / 7)]);
 await sharp({ create: { width: (w + 4) * 8, height: h, channels: 4, background: "#888" } })
-  .composite(at.map((r, k) => ({ input: r?.data ?? Buffer.alloc(0), raw: { width: w, height: h, channels: 4 }, left: k * (w + 4), top: 0 })))
+  .composite(
+    at.map((r, k) => ({
+      input: r?.data ?? Buffer.alloc(0),
+      raw: { width: w, height: h, channels: 4 },
+      left: k * (w + 4),
+      top: 0,
+    })),
+  )
   .png()
   .toFile(out.replace(/\.gif$/, "-strip.png"));
 fs.writeFileSync(out, gif.bytes());

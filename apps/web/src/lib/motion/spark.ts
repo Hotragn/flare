@@ -7,7 +7,12 @@ const FLY_MS = 640;
 
 export function fly(ring: HTMLElement, n: number, seed: number): Promise<void> {
   const r = ring.getBoundingClientRect();
-  const box = ring.closest(".screen")?.getBoundingClientRect() ?? { left: 0, top: 0, width: innerWidth, height: innerHeight };
+  const box = ring.closest(".screen")?.getBoundingClientRect() ?? {
+    left: 0,
+    top: 0,
+    width: innerWidth,
+    height: innerHeight,
+  };
   const cx = r.left + r.width / 2;
   const cy = r.top + r.height / 2;
   for (let k = 0; k < Math.min(3, n); k++) {
@@ -41,12 +46,18 @@ export function fly(ring: HTMLElement, n: number, seed: number): Promise<void> {
     });
     const delay = k * 120;
     el.animate(frames, { duration: FLY_MS, delay, easing: "cubic-bezier(0.4, 0, 0.6, 1)", fill: "backwards" });
-    el.animate([{ transform: "scale(1.2)", opacity: 1 }, { transform: "scale(3.2)", opacity: 0 }], {
-      duration: 420,
-      delay: delay + FLY_MS,
-      easing: "ease-out",
-      fill: "forwards",
-    }).finished.then(
+    el.animate(
+      [
+        { transform: "scale(1.2)", opacity: 1 },
+        { transform: "scale(3.2)", opacity: 0 },
+      ],
+      {
+        duration: 420,
+        delay: delay + FLY_MS,
+        easing: "ease-out",
+        fill: "forwards",
+      },
+    ).finished.then(
       () => el.remove(),
       () => el.remove(),
     );

@@ -5,7 +5,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DECK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../design/prototype/src/lib/copy/deck.json");
+const DECK = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../design/prototype/src/lib/copy/deck.json",
+);
 const add = JSON.parse(fs.readFileSync(process.argv[2] ?? "", "utf8"));
 let src = fs.readFileSync(DECK, "utf8");
 const have = JSON.parse(src).strings;

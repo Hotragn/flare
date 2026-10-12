@@ -66,7 +66,7 @@
 
 <style>
   /* Headline up top, the bench scene below it: the words never sit on the drawing. */
-  .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; gap: 12px; padding-top: 8px; }
+  .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; gap: 12px; padding-top: 40px; }
   .words { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .center h1, .center p { margin: 0; max-width: 22ch; }
   .err { font-weight: 700; }
