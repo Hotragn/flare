@@ -6246,7 +6246,7 @@
       "where": "site W4 (ADR-0028)"
     },
     "site.privacy.l.remember": {
-      "text": "Remember this records a conversation only with everyone's consent. It is off unless the host turns it on for one Flare or Plan. Each person who said yes agrees on their own phone. If anyone doesn't, or someone joins later without agreeing, it stays off for everyone, and nobody sees who. Anyone can stop a recording for everyone, and every phone shows when it's on. Up to 60 seconds goes once to ElevenLabs, which turns it into words with speaker numbers, not names. We keep no audio; ElevenLabs may keep it under its own terms. The words are sealed on your phones with the Flare key, and only the host and the people who agreed can open them; someone who joins later can't. Gemma on our laptop writes one line, never a cloud model. All of it is deleted with the Flare.",
+      "text": "Remember this records a conversation only with everyone's consent. It is off unless the host turns it on for one Flare or Plan. Each person who said yes agrees on their own phone. If anyone doesn't, or someone joins later without agreeing, it stays off for everyone, and nobody sees who. Anyone can stop a recording for everyone, and every phone shows when it's on. Up to 60 seconds goes once to ElevenLabs, which turns it into words with speaker numbers, not names. We keep no audio; ElevenLabs may keep it under its own terms. The words are sealed on your phones with the Flare key. Only the host and the people who agreed can open them, not someone who joins later. Gemma on our laptop writes one line, never a cloud model. All of it is deleted with the Flare.",
       "kind": "prose",
       "where": "site W4 (ADR-0031)"
     },
