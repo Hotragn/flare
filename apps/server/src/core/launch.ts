@@ -34,8 +34,9 @@ export async function launchStats(q: Q): Promise<LaunchStats> {
   const since = (await q.query<{ since: Date | string }>("select since from launch_meta where id = 1")).rows[0]?.since;
   const out = { since: new Date(since ?? 0).toISOString() } as LaunchStats;
   for (const n of LAUNCH_NAMES) out[n] = 0;
-  for (const r of (await q.query<{ name: string; value: string }>("select metric as name, value::text from launch_counters"))
-    .rows)
+  for (const r of (
+    await q.query<{ name: string; value: string }>("select metric as name, value::text from launch_counters")
+  ).rows)
     if ((LAUNCH_NAMES as readonly string[]).includes(r.name)) out[r.name as LaunchName] = Number(r.value);
   return out;
 }
