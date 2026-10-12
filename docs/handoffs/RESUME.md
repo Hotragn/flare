@@ -1,5 +1,33 @@
 # Resume note
 
+## Now: Sun 2026-10-11, ~10:35 PM ET. Read this first.
+Freeze 1:00 AM ET. Deadline Mon 06:59 UTC.
+
+**Live: 68afd9b (smoke passes).** All six live bugs from field test 1 are fixed and live:
+- 1, photo fit: 73% covered before, 0% after; e2e:photo-fit passes.
+- 2/3, conditions: 10min, bare hours, with you, missed words, rule chips.
+- 4, share is called in the tap with a Copy link fallback (e2e:share 27/27, Chrome and WebKit).
+- 5, the honest Sent line.
+- 6, the service worker loads pages network-first and takes over at once (e2e:sw-update 8/8, founder's iPhone confirmed).
+- The Near-X grammar.
+
+Also live:
+- Since launch totals (GET /api/v1/stats, counting from 02:16 UTC; x-flare-test groups excluded).
+- site-motion and app-motion, both merged (/app 148.3 KB, /g 147.9 KB).
+- The nav wraps at 375 px.
+- The hero was recaptured.
+- Automations: Again, Telegram direct send, auto I'm here.
+
+**Cut:** Sounds of the spot (lab: 8 of 12 voices at best, so it failed the bar). It appears only as a row in the AI page's "Measured, not shipped".
+**Off:** Remember this (REMEMBER_THIS); the post gets one next-step line.
+**Post:** docs/post/draft.md (post-rework merged, 1,713 words, 7 of 8 images), with holes listed at its top.
+
+**Running:**
+- Fresh-eyes round 6, a no-context tester on live (includes the WhatsApp-poll question).
+- The Why it matters rework on the site subagent (BLS ATUS 2025, WHO 2025, the chart system). Our own ATUS microdata series needs the founder's yes for the bls.gov downloads.
+
+**After the freeze:** fill [NEW TONIGHT] (done) and [ROUND 6]; the founder fills the other holes; recapture the hero GIF; update REVIEW.md.
+
 ## Now: Sun 2026-10-11, ~9:15 PM ET, usage-limit pause (resets 9:50 PM ET). Read this first.
 Freeze 1:00 AM ET. Deadline Mon 06:59 UTC. Order: live bugs 1 to 4, then site clarity, then the rest.
 
