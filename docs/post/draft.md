@@ -19,7 +19,7 @@ Flare starts there. You take a photo of where you are. Gemma 4, an open model on
 
 Now picture the friend with low vision. Gemma has already turned the photo into a line their screen reader speaks: "A calm body of water reflecting trees and distant hills, with reeds and foliage in the foreground." When it lights, the compass talks them in: "150 meters, slightly left." It buzzes and sounds a tone when they face the right way. If a photo isn't possible, they *say* where they are, and Gemma writes the invite from their voice.
 
-[FIELD: the founder's quote. Suggested: "My friends and I say 'let's go outside' every weekend and then scroll past it. I wanted the yes to be private, and the plan to get smaller instead of dying."]
+[FIELD: the founder's own why, in their own words. Not written by anyone else.]
 
 Afterwards it says how long you were outside together, and then it deletes itself.
 
