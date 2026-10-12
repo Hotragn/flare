@@ -70,7 +70,9 @@ export function mountRemember(app: Hono, ctx: Ctx, rl: RateLimiter): void {
       ...publicState(x),
       my_ok: x.isHost ? x.state.on : (x.r.consent.get(x.m.id) ?? null),
       is_host: x.isHost,
-      note_ct: x.r.row.note_ct ? b64u(x.r.row.note_ct) : null,
+      // The note goes only to the host and the people who agreed: a late joiner who wasn't asked
+      // never receives the sealed note (live check, Oct 12).
+      note_ct: x.r.row.note_ct && (x.isHost || x.r.consent.get(x.m.id) === true) ? b64u(x.r.row.note_ct) : null,
     });
   });
 

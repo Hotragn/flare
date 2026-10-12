@@ -219,6 +219,15 @@ try {
     .catch(() => false);
   check("a late joiner who hasn't agreed turns Record off for everyone", !recordAfterLate);
   await host.keyboard.press("Escape").catch(() => {});
+  await late.getByRole("button", { name: "Remember this" }).click({ timeout: 15_000 });
+  await late.waitForTimeout(800);
+  check(
+    "a late joiner who never agreed can't read the note",
+    !(await sheet(late)
+      .getByText("What you said")
+      .isVisible()
+      .catch(() => false)) && !/geese/i.test((await late.locator("body").textContent()) ?? ""),
+  );
   // "Any no keeps it off" is proven in apps/server/test/remember.test.ts (fast-check) and the
   // contract tests; here the note already exists, so the late phone sees the note, not the ask.
 } catch (e) {
