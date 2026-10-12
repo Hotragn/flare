@@ -4,6 +4,7 @@
   import Seo from "../Seo.svelte";
   import Walkthrough from "../Walkthrough.svelte";
   import Shrink from "../Shrink.svelte";
+  import Hood from "../Hood.svelte";
   import { reveal } from "../reveal.ts";
 
   // The deck holds the exact license sentence; the terms address inside it becomes a link.
@@ -19,6 +20,10 @@
 
 <section class="band alt" use:reveal>
   <Shrink />
+</section>
+
+<section class="band">
+  <Hood />
 </section>
 
 <section class="band">

@@ -1,12 +1,18 @@
-<!-- Home (W1 hero, W2 steps, W3 shrink, then short W4 to W6 with links to the full pages). -->
+<!-- Home: W1 hero (with the sunset line), the scroll story (was W2 steps and W3 shrink), Start in a
+     minute, Your crew space, At the spot (was the 10-card grid), Try it on your photo, Running now,
+     then short W4 to W6 with links to the full pages. -->
 <script lang="ts">
   import Scenery from "#lib/components/Scenery.svelte";
   import Icon from "#lib/components/Icon.svelte";
   import { t, type CopyKey } from "#lib/copy/site.ts";
   import Seo from "./Seo.svelte";
-  import Steps from "./Steps.svelte";
-  import Shrink from "./Shrink.svelte";
-  import Features from "./Features.svelte";
+  import Story from "./Story.svelte";
+  import SunLine from "./SunLine.svelte";
+  import Start from "./Start.svelte";
+  import Crew from "./Crew.svelte";
+  import Spot from "./Spot.svelte";
+  import TryPhoto from "./TryPhoto.svelte";
+  import Live from "./Live.svelte";
   import BuiltWith from "./BuiltWith.svelte";
   import { reveal } from "./reveal.ts";
 
@@ -31,21 +37,34 @@
       <a class="cta primary" href="/app/demo/">{t("demo.try")}</a>
       <a class="cta" href="/app/">{t("site.nav.open")}</a>
     </div>
-    <p class="fine">{t("site.hero.fine")}</p>
+    <SunLine />
+    <p class="fine">{t("site.hero.fine")} <a class="judge" href="/app/demo/">{t("site.hero.judge")}</a></p>
   </div>
 </section>
 
-<section class="band" use:reveal>
-  <Steps />
+<section class="band story-band">
+  <Story />
   <p class="more"><a href="/how/">{t("site.home.readHow")}</a></p>
 </section>
 
-<section class="band feat" use:reveal>
-  <Features />
+<section class="band alt" use:reveal>
+  <Start />
+</section>
+
+<section class="band" use:reveal>
+  <Crew />
 </section>
 
 <section class="band alt" use:reveal>
-  <Shrink />
+  <Spot />
+</section>
+
+<section class="band" use:reveal>
+  <TryPhoto />
+</section>
+
+<section class="band live-band" use:reveal>
+  <Live />
 </section>
 
 <section class="band" use:reveal>
@@ -66,6 +85,7 @@
 
 <section class="band alt" use:reveal>
   <BuiltWith />
+  <p class="more"><a href="/how/#hood">{t("site.home.readBuilt")}</a></p>
 </section>
 
 <section class="band" use:reveal>
@@ -73,3 +93,7 @@
   <p>{t("site.run.body")}</p>
   <p class="more"><a href="/run/">{t("site.home.readRun")}</a></p>
 </section>
+
+<style>
+  .judge { color: var(--c-birch-50) !important; font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
+</style>

@@ -4075,6 +4075,608 @@
       "where": "site W1",
       "fixed": "brand promise line"
     },
+    "site.hero.judge": {
+      "text": "Judging? 60-second tour",
+      "kind": "label",
+      "where": "site W1 hero fine print, links to /app/demo/"
+    },
+    "site.home.readBuilt": {
+      "text": "How it's built",
+      "kind": "label",
+      "where": "site home, link to /how/#hood"
+    },
+    "site.sun.soon": {
+      "text": "Sunset near {city} in {min} min. Light a Flare.",
+      "kind": "message",
+      "where": "site W1 hero, time zone city",
+      "sample": {
+        "city": "Detroit",
+        "min": 38
+      }
+    },
+    "site.sun.later": {
+      "text": "Sunset near {city} at {time}. Light a Flare.",
+      "kind": "message",
+      "where": "site W1 hero, time zone city",
+      "sample": {
+        "city": "Detroit",
+        "time": "6:57 PM"
+      }
+    },
+    "site.sun.down": {
+      "text": "Sun's down near {city}. Sunset tomorrow at {time}.",
+      "kind": "message",
+      "where": "site W1 hero, time zone city",
+      "sample": {
+        "city": "Detroit",
+        "time": "6:55 PM"
+      }
+    },
+    "site.sun.hereSoon": {
+      "text": "Sunset where you are in {min} min.",
+      "kind": "message",
+      "where": "site W1 hero, after Use my location",
+      "sample": {
+        "min": 38
+      }
+    },
+    "site.sun.hereLater": {
+      "text": "Sunset where you are at {time}.",
+      "kind": "message",
+      "where": "site W1 hero, after Use my location",
+      "sample": {
+        "time": "6:57 PM"
+      }
+    },
+    "site.sun.hereDown": {
+      "text": "Sun's down where you are. Sunset tomorrow at {time}.",
+      "kind": "message",
+      "where": "site W1 hero, after Use my location",
+      "sample": {
+        "time": "6:55 PM"
+      }
+    },
+    "site.sun.locate": {
+      "text": "Use my location",
+      "kind": "button",
+      "where": "site W1 hero"
+    },
+    "site.sun.locNote": {
+      "text": "Worked out on this phone. Nothing is sent.",
+      "kind": "hint",
+      "where": "site W1 hero, under Use my location"
+    },
+    "site.sun.locFail": {
+      "text": "No location, so this uses your time zone.",
+      "kind": "message",
+      "where": "site W1 hero, location refused"
+    },
+    "site.story.title": {
+      "text": "One Flare, start to finish",
+      "kind": "title",
+      "where": "site home scroll story"
+    },
+    "site.story.lead": {
+      "text": "Scroll to watch one Flare at the pond bench, from the first photo to gone.",
+      "kind": "prose",
+      "where": "site home scroll story"
+    },
+    "site.story.k": {
+      "text": "Fuego snaps the pond bench at golden hour and sends the link. It needs 3 yeses to light.",
+      "kind": "prose",
+      "where": "site home scroll story, Kindling"
+    },
+    "site.story.l": {
+      "text": "Amor, Shilp and Ammo say yes in private. The count goes 1, 2, 3, and it's lit.",
+      "kind": "prose",
+      "where": "site home scroll story, Lit"
+    },
+    "site.story.e": {
+      "text": "Another day, only Amor can come. It doesn't die: it shrinks to 15 min on the bench.",
+      "kind": "prose",
+      "where": "site home scroll story, Ember"
+    },
+    "site.story.g": {
+      "text": "When it ends, it's gone. The photo, the yeses and the spot are deleted for everyone.",
+      "kind": "prose",
+      "where": "site home scroll story, Gone"
+    },
+    "site.story.scene": {
+      "text": "A pond bench at golden hour and a phone showing one Flare",
+      "kind": "aria",
+      "where": "site home scroll story stage"
+    },
+    "site.story.count": {
+      "text": "{n} of 3 in",
+      "kind": "status",
+      "where": "site home scroll story phone",
+      "sample": {
+        "n": 2
+      }
+    },
+    "site.story.ember": {
+      "text": "15 min on the bench",
+      "kind": "label",
+      "where": "site home scroll story phone, Ember"
+    },
+    "site.story.deleted": {
+      "text": "Deleted for everyone",
+      "kind": "label",
+      "where": "site home scroll story phone, Gone"
+    },
+    "site.start.title": {
+      "text": "Start in a minute",
+      "kind": "title",
+      "where": "site home Start"
+    },
+    "site.start.lead": {
+      "text": "No app store, no account, no password. 3 steps.",
+      "kind": "prose",
+      "where": "site home Start"
+    },
+    "site.start.s1.t": {
+      "text": "Open the link",
+      "kind": "title",
+      "where": "site home Start step 1"
+    },
+    "site.start.s1.b": {
+      "text": "Flare is a web app. Open it in any phone browser, or add it to your home screen.",
+      "kind": "prose",
+      "where": "site home Start step 1"
+    },
+    "site.start.s2.t": {
+      "text": "Say your name",
+      "kind": "title",
+      "where": "site home Start step 2"
+    },
+    "site.start.s2.b": {
+      "text": "A first name or a nickname is all Flare asks for.",
+      "kind": "prose",
+      "where": "site home Start step 2"
+    },
+    "site.start.s3.t": {
+      "text": "Send a first Flare",
+      "kind": "title",
+      "where": "site home Start step 3"
+    },
+    "site.start.s3.b": {
+      "text": "Snap where you are and send the link. Or make a crew and share it to Telegram or iMessage.",
+      "kind": "prose",
+      "where": "site home Start step 3"
+    },
+    "site.start.sampleName": {
+      "text": "Amor",
+      "kind": "label",
+      "where": "site home Start step 2 phone (sample name)"
+    },
+    "site.start.send": {
+      "text": "Send it",
+      "kind": "label",
+      "where": "site home Start step 3 phone (a picture of a button, not a button)"
+    },
+    "site.start.phoneAria": {
+      "text": "Phone screen for step {n}",
+      "kind": "aria",
+      "where": "site home Start",
+      "sample": {
+        "n": 1
+      }
+    },
+    "site.tg.title": {
+      "text": "The card your Telegram group sees",
+      "kind": "title",
+      "where": "site home Start, Telegram card"
+    },
+    "site.tg.waitingAlt": {
+      "text": "Telegram card: Pond walk, then cider by the water. Need 2 more.",
+      "kind": "aria",
+      "where": "site home Telegram card"
+    },
+    "site.tg.litAlt": {
+      "text": "Telegram card: Pond walk, then cider by the water. It's lit.",
+      "kind": "aria",
+      "where": "site home Telegram card"
+    },
+    "site.tg.flip": {
+      "text": "Light it",
+      "kind": "button",
+      "where": "site home Telegram card"
+    },
+    "site.tg.back": {
+      "text": "Show waiting",
+      "kind": "button",
+      "where": "site home Telegram card"
+    },
+    "site.tg.note": {
+      "text": "The real card, drawn by our server and posted by our bot.",
+      "kind": "message",
+      "where": "site home Telegram card"
+    },
+    "site.crew.title": {
+      "text": "Your crew space",
+      "kind": "title",
+      "where": "site home Crew"
+    },
+    "site.crew.lead": {
+      "text": "After the first Flare, your crew gets a home: your places, your time outside and your Sparks.",
+      "kind": "prose",
+      "where": "site home Crew"
+    },
+    "site.crew.sample": {
+      "text": "Sample crew",
+      "kind": "label",
+      "where": "site home Crew badge"
+    },
+    "site.crew.name": {
+      "text": "Pond crew",
+      "kind": "label",
+      "where": "site home Crew (sample)"
+    },
+    "site.crew.p1": {
+      "text": "Ford Woods Park pond",
+      "kind": "label",
+      "where": "site home Crew sample place"
+    },
+    "site.crew.p2": {
+      "text": "Fair Lane trail bench",
+      "kind": "label",
+      "where": "site home Crew sample place"
+    },
+    "site.crew.p3": {
+      "text": "Library lawn",
+      "kind": "label",
+      "where": "site home Crew sample place"
+    },
+    "site.crew.p4": {
+      "text": "Rouge River overlook",
+      "kind": "label",
+      "where": "site home Crew sample place"
+    },
+    "site.crew.sparks": {
+      "text": "Sparks",
+      "kind": "title",
+      "where": "site home Crew"
+    },
+    "site.crew.spark1": {
+      "text": "Geese took our bench. We let them.",
+      "kind": "label",
+      "where": "site home Crew sample Spark"
+    },
+    "site.crew.spark2": {
+      "text": "The light on the water at 5",
+      "kind": "label",
+      "where": "site home Crew sample Spark"
+    },
+    "site.crew.atlasNote": {
+      "text": "The Crew Atlas is drawn on your phone from your places. No map tiles, nothing sent.",
+      "kind": "prose",
+      "where": "site home Crew"
+    },
+    "site.crew.manageB": {
+      "text": "Rename the crew, set how many it takes, or start fresh. Flare never shows who said no.",
+      "kind": "prose",
+      "where": "site home Crew, Manage crew"
+    },
+    "site.spot.title": {
+      "text": "At the spot",
+      "kind": "title",
+      "where": "site home At the spot rail"
+    },
+    "site.spot.lead": {
+      "text": "Once it's lit, Flare helps you find each other and keep the hour.",
+      "kind": "prose",
+      "where": "site home At the spot rail"
+    },
+    "site.spot.rail": {
+      "text": "Features at the spot. Scroll sideways for more.",
+      "kind": "aria",
+      "where": "site home At the spot rail"
+    },
+    "site.spot.hear": {
+      "text": "Hear the compass",
+      "kind": "button",
+      "where": "site home At the spot, compass card"
+    },
+    "site.spot.stop": {
+      "text": "Stop",
+      "kind": "button",
+      "where": "site home At the spot, compass card"
+    },
+    "site.spot.voice": {
+      "text": "Voice by ElevenLabs: 54 lines, 698 characters, made once.",
+      "kind": "message",
+      "where": "site home At the spot, compass card"
+    },
+    "site.spot.soon": {
+      "text": "Coming in this build",
+      "kind": "label",
+      "where": "site home At the spot, cards not live yet"
+    },
+    "site.spot.rem.t": {
+      "text": "Remember this",
+      "kind": "title",
+      "where": "site home At the spot"
+    },
+    "site.spot.rem.b": {
+      "text": "Everyone there taps yes before the mic turns on. One no, and it stays off.",
+      "kind": "prose",
+      "where": "site home At the spot"
+    },
+    "site.spot.rem.aria": {
+      "text": "3 friends each show a check, then the mic appears",
+      "kind": "aria",
+      "where": "site home At the spot"
+    },
+    "site.spot.snd.t": {
+      "text": "Sounds of the spot",
+      "kind": "title",
+      "where": "site home At the spot"
+    },
+    "site.spot.snd.b": {
+      "text": "The sound of the place, saved with your crew's Spark.",
+      "kind": "prose",
+      "where": "site home At the spot"
+    },
+    "site.live.title": {
+      "text": "Running now",
+      "kind": "title",
+      "where": "site home live proof strip"
+    },
+    "site.live.on": {
+      "text": "Gemma on our laptop: connected",
+      "kind": "status",
+      "where": "site home live strip (GET /api/v1/health)"
+    },
+    "site.live.off": {
+      "text": "Gemma on our laptop: cloud fallback",
+      "kind": "status",
+      "where": "site home live strip (hub absent)"
+    },
+    "site.live.checking": {
+      "text": "Asking the server…",
+      "kind": "status",
+      "where": "site home live strip"
+    },
+    "site.live.down": {
+      "text": "The server didn't answer. It may be waking up.",
+      "kind": "status",
+      "where": "site home live strip"
+    },
+    "site.live.audit": {
+      "text": "Records past their end: {n}, checked {s} s ago",
+      "kind": "status",
+      "where": "site home live strip (GET /api/v1/audit)",
+      "sample": {
+        "n": 0,
+        "s": 12
+      }
+    },
+    "site.live.auditMin": {
+      "text": "Records past their end: {n}, checked {m} min ago",
+      "kind": "status",
+      "where": "site home live strip (GET /api/v1/audit)",
+      "sample": {
+        "n": 0,
+        "m": 3
+      }
+    },
+    "site.live.build": {
+      "text": "Server build {v}",
+      "kind": "label",
+      "where": "site home live strip",
+      "sample": {
+        "v": "b6fd014"
+      }
+    },
+    "site.live.more": {
+      "text": "See the full audit",
+      "kind": "label",
+      "where": "site home live strip, link to /privacy/"
+    },
+    "site.live.note": {
+      "text": "Counts only, from GET /api/v1/health and /api/v1/audit. No personal data.",
+      "kind": "prose",
+      "where": "site home live strip"
+    },
+    "site.try.title": {
+      "text": "Try it on your photo",
+      "kind": "title",
+      "where": "site home photo try"
+    },
+    "site.try.lead": {
+      "text": "Pick a photo. Gemma writes six words on our laptop. Nothing is stored.",
+      "kind": "prose",
+      "where": "site home photo try"
+    },
+    "site.try.pick": {
+      "text": "Choose a photo",
+      "kind": "button",
+      "where": "site home photo try"
+    },
+    "site.try.again": {
+      "text": "Another photo",
+      "kind": "button",
+      "where": "site home photo try"
+    },
+    "site.try.rules": {
+      "text": "This page shrinks it to 768 px first. Gemma describes the place, never faces.",
+      "kind": "prose",
+      "where": "site home photo try"
+    },
+    "site.try.working": {
+      "text": "Developing. Gemma is writing six words…",
+      "kind": "status",
+      "where": "site home photo try"
+    },
+    "site.try.hub": {
+      "text": "Made on our laptop in {s} s",
+      "kind": "status",
+      "where": "site home photo try, tier hub",
+      "sample": {
+        "s": "3.1"
+      }
+    },
+    "site.try.cloudDone": {
+      "text": "Made by a cloud model in {s} s",
+      "kind": "status",
+      "where": "site home photo try, tier cloud",
+      "sample": {
+        "s": "1.6"
+      }
+    },
+    "site.try.off": {
+      "text": "Our laptop is off, so this is a template. Type your own.",
+      "kind": "status",
+      "where": "site home photo try, tier rules"
+    },
+    "site.try.typeLabel": {
+      "text": "Your six words",
+      "kind": "label",
+      "where": "site home photo try, typed fallback"
+    },
+    "site.try.cloud": {
+      "text": "Try cloud AI",
+      "kind": "button",
+      "where": "site home photo try, only after tier rules and photo_opt_in"
+    },
+    "site.try.cloudNote": {
+      "text": "Sends this photo once to a cloud model. Nothing is kept.",
+      "kind": "message",
+      "where": "site home photo try"
+    },
+    "site.try.busy": {
+      "text": "That's the try limit. Wait 1 minute and try again.",
+      "kind": "error",
+      "where": "site home photo try, 429"
+    },
+    "site.try.big": {
+      "text": "That photo is too big. Try another.",
+      "kind": "error",
+      "where": "site home photo try, 413"
+    },
+    "site.try.fail": {
+      "text": "That didn't send. Try again.",
+      "kind": "error",
+      "where": "site home photo try"
+    },
+    "site.try.altLabel": {
+      "text": "What a screen reader says",
+      "kind": "label",
+      "where": "site home photo try"
+    },
+    "site.try.photo": {
+      "text": "Your photo",
+      "kind": "aria",
+      "where": "site home photo try print"
+    },
+    "site.hood.title": {
+      "text": "Under the hood",
+      "kind": "title",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.lead": {
+      "text": "The real path a photo takes, and where each partner works. Every number is measured.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.aria": {
+      "text": "How a photo travels: phone, server, laptop, Gemma, and back",
+      "kind": "aria",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.n.phone": {
+      "text": "Your phone",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.n.server": {
+      "text": "Server",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.n.relay": {
+      "text": "Relay",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.n.hub": {
+      "text": "Laptop hub",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.n.cloud": {
+      "text": "Cloud fallback",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.n.sweep": {
+      "text": "Deletion sweep",
+      "kind": "label",
+      "where": "/how/ diagram node"
+    },
+    "site.hood.code": {
+      "text": "Code: {path}",
+      "kind": "label",
+      "where": "/how/ partner link",
+      "sample": {
+        "path": "apps/hub/src/ollama.ts"
+      }
+    },
+    "site.hood.relay": {
+      "text": "The laptop dials out to the server over one WebSocket, so no port is open at home.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.gemma": {
+      "text": "Gemma 4 E4B on our laptop: a photo becomes six words in 3.0 s median. Voice Flare takes 3.3 s.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.google": {
+      "text": "Google AI Studio runs Gemma when the laptop is off. The Plan ladder answers in 1.4 s.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.do": {
+      "text": "DigitalOcean is wired in as a cloud tier, paused for now.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.mastra": {
+      "text": "A Mastra agent drafts Plan steps with 4 local tools. p95 5.1 s, was 5.5 s. Weather right 7 of 7.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.tinker": {
+      "text": "Tinker: our phone rules read 15 of 40 new conditions, a LoRA read 38 of 40. Its errors taught the rules: 20 to 30 of 40, blind.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.sentry": {
+      "text": "Sentry times the AI path through an allow-list. A test proves nothing personal is sent.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.eleven": {
+      "text": "ElevenLabs voiced 54 compass lines, 698 characters, once. Phones play the files; nothing is sent.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.telegram": {
+      "text": "Telegram gets a card drawn by the server's own renderer, redrawn when it's lit.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.entire": {
+      "text": "Entire saves the agent sessions behind each change.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
+    "site.hood.sweep": {
+      "text": "The sweep deletes each Flare's records at its end. The live audit counts what is left.",
+      "kind": "prose",
+      "where": "/how/ Under the hood"
+    },
     "site.how.title": {
       "text": "How it works",
       "kind": "title",
