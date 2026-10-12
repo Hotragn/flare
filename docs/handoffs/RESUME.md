@@ -1,5 +1,33 @@
 # Resume note
 
+## Now: Sun 2026-10-11, ~9:15 PM ET, usage-limit pause (resets 9:50 PM ET). Read this first.
+Freeze 1:00 AM ET. Deadline Mon 06:59 UTC. Order: live bugs 1 to 4, then site clarity, then the rest.
+
+**Main (live, deploy started for 2751410 + format fix):**
+- 7792e2c Automations: Again on Home (last crew size, no photo, place words), Telegram-linked Send posts directly with no share sheet, auto I'm here within 30 m on 2 good fixes with a 10 s Undo.
+- 2751410 Live bugs 2 and 3, conditions:
+  - "10min" and the other delay phrasings are read as a delay;
+  - a bare hour picks the next one coming;
+  - "with you" means the host;
+  - missed words are said back ("I didn't catch: ...");
+  - tap-to-fill chips from the time of day and the host;
+  - cond.didntCatchNow replaces the fixed hint on screen. cond.didntCatch (SRS-COND-8) is unchanged and is still what parseError returns.
+  - Tests: apps/web/test/ai/conditions-live.test.ts, 10 tests including a fast-check property. blind_40 30/40 before and after; core 40/40, hard_20 20/20, fresh 40/40 (ml/tinker/out/eval_after_fix.json).
+  - TODO after the reset: live smoke, then a manager status line with the friend's sentence before and after.
+
+**Worktree branches (merge in this order):**
+1. Photo fit, live bug 1 (agent a3799e92ab8ab5a63, worktree-agent-a3799e92ab8ab5a63): I1Invite, H2Develop, H3Send and PhotoPrint, the dark-photo display filter, the private chip on one line and remembered once closed, the e2e:photo-fit overlap gate under 25% at 390x664, 375x667 and 390x844, and before/after shots in docs/frontend/evidence/photo-fit/. The manager wants the 390x664 before/after shots once it's live. "Fuego is at Near Heather Drive" grammar (fix 4) is NOT done yet: it's the lead's job, for invite.where, invite.whereWalk, lit.notice, push.lit and sms.lit, with a test over street, park and bench spots.
+2. Share, live bug 4 (agent a26567a1d6d5b923c, worktree-agent-a26567a1d6d5b923c): navigator.share synchronous in the tap after the Flare exists, a real wa.me anchor, Copy link fallback with a toast, WebKit slow-network test, docs/frontend/evidence/share-matrix.md (honest about real devices).
+3. site-motion (agent a1ac31aa2d2a5e6f7, branch site-motion, a3e295f mergeable): Why it matters (4 charts from primary sources; Surgeon General numbers NOT used, hhs.gov 403), Start in a minute, Crew space, Running now (copy-lint bans "right now"), Try it on your photo, the scroll story. Lighthouse mobile home perf was 99 and being tuned.
+4. app-motion (paused, worktree-agent-a5311b695b3086d89 at 4119624, rebased on 7792e2c). After merging:
+   - wire H5HostKindling `ember`, H0Home `at` = homeAt, and wind later;
+   - rerun npm test, e2e demo/sparks/loop, axe and perf;
+   - take the after shots and GIFs (tools/motion/).
+   - Budget on its last full build: 146.7 / 146.8 KB.
+5. post-rework (worktree-agent-a0e24f31091a79c08 at 5e2e6a5): docs/post only, about 1,585 words, 6 of 8 images, holes listed in its commit. It's paused; the holes get filled after the freeze.
+
+**Still to do:** the Near-X grammar; Sounds of the spot (waiting on lab numbers); Remember this stays OFF unless the consent tests pass by 1 AM; fresh-eyes round 6 (testers use their own dark photo, plus the WhatsApp-poll question, answers quoted verbatim); gates after the merges (Lighthouse 100, axe 0, budget under 150 KB, CSP, smoke); post holes after the freeze.
+
 ## Now: Sun 2026-10-11, ~16:10 ET (read this first)
 - **Live:** https://flare-outside.onrender.com (Render free tier, auto-deploy off; `npm run deploy:render -- --yes`). The hub runs on this Mac against live (`FLARE_SERVER_URL=wss://flare-outside.onrender.com npm run hub`); restart it after hub code changes.
 - **Done today:**
