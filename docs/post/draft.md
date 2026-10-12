@@ -124,7 +124,7 @@ Smaller models, on the same test set:
 | SmolVLM-500M | Chrome and Safari | 16/40 scenes, 6/20 misleading | No |
 | Qwen3-0.6B (conditions) | Safari | 26/40 | No: rules got 40/40 in under 1 ms |
 
-Naming the sounds around you didn't ship: Gemma heard birds in almost every clip and got 8 of 12 at best.
+Naming nearby sounds didn't ship: Gemma heard birds in nearly every clip.
 
 **The model picks the words; code owns the facts.** Every answer passes `enforce()`: six words at most, no names, no invented places. If it's slow, you type.
 
@@ -134,7 +134,7 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 - **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. Live since Oct 12; its first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
 - **Tinker.** A $2.40 Qwen3.5-4B LoRA read 38 of 40 new phrasings but is too big for a phone; its mistakes lifted the phone's rules from 20/40 to 30/40, blind.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names.
-- **Sentry.** Agent Tracing follows every AI job, model call and guard. A test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing one parent trace.
+- **Sentry.** Agent Tracing follows every AI job, model call and guard. A test fails if our words or ids reach Sentry. It caught the 10.6 s cold start and agent spans sharing a trace.
 - **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
@@ -162,6 +162,10 @@ My own test found the hardest ones:
 
   *The phone's recorder failed, so here is what the same server code makes from a 46 s recording of me in Telugu and English: Scribe 1.5 s, Gemma's line 2.8 s. Gemma's line is close but calls it a discussion and a device.*
 
+  ![A Remember this card from a public meeting recording](docs/post/media/24-day-card-ami.png)
+
+  *The same code on 45 s of a public meeting recording (AMI Meeting Corpus, ES2002a, CC BY 4.0): Scribe found 2 speakers in 1.7 s, and Gemma's line took 2.3 s.*
+
 Field test 1 found these:
 
 - **The headline and sheet covered 73% of the photo.** Now 0%, checked by a new gate on 3 viewports.
@@ -182,8 +186,6 @@ Field test 1 found these:
 
 - Once it's lit, show the host who's coming, with each yes-sayer's OK.
 - A clear host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
-- Give each AI job its own Sentry trace.
-- "My usual" conditions you save once.
 
 ## Why Does Open Innovation Matter?
 
