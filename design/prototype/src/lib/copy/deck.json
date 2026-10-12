@@ -6250,7 +6250,7 @@
       "fixed": "ADR-0022"
     },
     "site.privacy.l.voice": {
-      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it. Say it for a Spark sends up to 10 seconds of your own voice to ElevenLabs once, only after you tap. We keep no audio. ElevenLabs may keep it under its own terms.",
+      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it.",
       "kind": "prose",
       "where": "site W4 (ADR-0027)"
     },

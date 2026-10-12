@@ -129,7 +129,7 @@ Naming the sounds around you didn't ship: Gemma heard birds in almost every clip
 - **Google AI Studio.** Gemma 4 26B A4B covers for my laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default. DigitalOcean is wired in, paused for billing.
 - **Mastra.** An agent drafts the Plan ladder with four local tools. Across two runs of 13 asks, p95 stayed within 0.3 s of the old route (5.1 vs 5.5 s, then 5.6 vs 5.3 s), and the weather was right 7/7. On live since Oct 12. On live, the first draft took 10.6 s, which Sentry flagged as 271% over its 2.85 s average.
 - **Tinker.** A Qwen3.5-4B LoRA cost about $2.40 to train and read 38 of 40 new phrasings, but it's too big for a phone. Its mistakes showed me how to fix the phone's rules: 20/40 to 30/40 on a blind set.
-- **ElevenLabs.** 54 compass lines recorded once (698 characters, offline, no names); Voice Spark sends 10 s of your voice to Scribe on a tap.
+- **ElevenLabs.** 54 compass lines recorded once (698 characters, offline, no names). Voice Spark (Scribe) is off: see below.
 - **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing and error class leave; a test fails if our words or ids reach Sentry. It found two real things: the 10.6 s cold start above, and agent spans sharing one parent trace.
 - **Telegram.** The bot posts a card with the six words, the spot and the host's first name, never who said yes, and deletes it at Gone. Send can post straight to a linked group chat.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
@@ -152,7 +152,7 @@ My own test found the hardest ones:
 - **As the host, after sending, all I could see was a lot of animation.** It was unclear whether my friends would come, and whether ElevenLabs had worked.
 - **"Pocket it" felt like a button I had to press.** Nothing said to wait until my friend arrives, or that the app should stay open even in my pocket.
 - **On the friend's side, it showed the place and buttons to finish fast,** without saying what each step is for.
-- **Remember this passed every automated check, then failed on my iPhone:** "Couldn't write it down." The logs show no upload. My tests had faked the mic. It's off now. I expected a card of the day, with the voice only by choice.
+- **Remember this passed every automated check, then failed on my iPhone:** "Couldn't write it down." The logs show no upload. My tests had faked the mic. "Say it" for a Spark failed the same way in Safari, so both are off. I expected a card of the day, with the voice only by choice.
 
 Field test 1 found these:
 
@@ -165,6 +165,7 @@ Field test 1 found these:
 
 ## Honest limits
 
+- **The mic on an iPhone:** it failed there twice tonight; voice input was tested only in desktop browsers.
 - **No background location or mic.** An iPhone web app can't use either.
 - **No server pushes for golden hour or a weekly recap.** The server never knows where a crew is or its time zone.
 - **Two real tests so far.** One short meetup in person, indoors or nearby, not yet an outdoor walk.

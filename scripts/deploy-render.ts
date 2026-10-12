@@ -29,7 +29,7 @@ export const WEB_KEYS = [
   "SENTRY_DSN",
   "DO_MODEL_ACCESS_KEY",
   "GEMINI_API_KEY", // ADR-0026: Gemma 4 on Google AI Studio after DigitalOcean
-  "ELEVENLABS_API_KEY", // ADR-0027: Voice Spark (Scribe); the warm-voice clips are static
+  // "ELEVENLABS_API_KEY": not sent since Oct 12, 1:40 AM. Voice Spark failed on a real iPhone (the mic never started), so Scribe is off live. The compass clips are static files and need no key.
   "LADDER_AGENT", // ADR-0025: the Mastra Plan agent, on live from Oct 12 after its eval
   "REMEMBER_THIS", // ADR-0031: on live from Oct 12 for the founder's outdoor test, after the consent tests
 ];
