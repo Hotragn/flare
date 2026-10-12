@@ -85,7 +85,6 @@
 </div>
 
 <style>
-  .lead { margin: 0; }
   .crew { border-radius: var(--r-xl); padding: 18px; background: linear-gradient(160deg, #f3ead9, #e5efe3); box-shadow: 0 6px 18px rgb(22 35 58 / 0.08); color: #1d2b1f; }
   .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
   .head h3 { margin: 0; font-size: 1.4rem; }

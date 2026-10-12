@@ -1,9 +1,11 @@
-<!-- How it works in full: the real screens step by step (fresh-eyes #18), the shrink rule (W3), and the Gemma attribution (docs/ml/model-selection.md). -->
+<!-- How it works in full: the real screens step by step (fresh-eyes #18), the scroll story (Kindling,
+     Lit, Ember, Gone; it replaced the static W3 shrink states), the Plan sizes, Under the hood, and
+     the Gemma attribution (docs/ml/model-selection.md). -->
 <script lang="ts">
   import { t } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
   import Walkthrough from "../Walkthrough.svelte";
-  import Shrink from "../Shrink.svelte";
+  import Story from "../Story.svelte";
   import Hood from "../Hood.svelte";
   import { reveal } from "../reveal.ts";
 
@@ -18,11 +20,12 @@
   <Walkthrough />
 </section>
 
-<section class="band alt" use:reveal>
-  <Shrink />
+<section class="band">
+  <Story />
+  <p>{t("site.shrink.plan")}</p>
 </section>
 
-<section class="band">
+<section class="band alt" use:reveal>
   <Hood />
 </section>
 

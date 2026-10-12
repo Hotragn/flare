@@ -83,7 +83,7 @@
     <PhotoPrint state={printState} {src} scene={src ? result?.alt || t("site.try.photo") : ""} height={300} tilt={-2} sample={!src} />
   </div>
   <div class="side">
-    <label class="pick" class:busy>
+    <label class="pill pick" class:busy>
       <input type="file" accept="image/*" onchange={pick} disabled={busy} />
       <span>{src ? t("site.try.again") : t("site.try.pick")}</span>
     </label>
@@ -105,7 +105,7 @@
           <input type="text" bind:value={typed} maxlength="60" autocomplete="off" />
         </label>
         {#if cloudOk}
-          <button type="button" class="cloud" onclick={() => send(true)}>{t("site.try.cloud")}</button>
+          <button type="button" class="pill ghost" onclick={() => send(true)}>{t("site.try.cloud")}</button>
           <p class="small">{t("site.try.cloudNote")}</p>
         {/if}
       {/if}
@@ -114,12 +114,10 @@
 </div>
 
 <style>
-  .lead { margin: 0; }
   .try { display: grid; gap: 22px; align-items: center; }
   .print-box { width: min(260px, 72vw); justify-self: center; }
   .side { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-  .pick { position: relative; display: inline-flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--c-maple-700);
-    color: var(--c-birch-50); font-weight: 700; cursor: pointer; }
+  .pick { position: relative; }
   .pick:focus-within { outline: 3px solid var(--c-gold-400); outline-offset: 3px; }
   .pick.busy { opacity: 0.7; cursor: progress; }
   .pick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
@@ -131,7 +129,6 @@
   .err { color: var(--accent-text); }
   .type { display: flex; flex-direction: column; gap: 4px; font-weight: 700; width: 100%; max-width: 360px; }
   .type input { min-height: 48px; padding: 0 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-weight: 400; }
-  .cloud { min-height: 48px; padding: 0 20px; border-radius: 999px; border: 2px solid var(--c-maple-700); background: transparent; color: var(--accent-text); font: inherit; font-weight: 700; cursor: pointer; }
   @media (min-width: 900px) {
     .try { grid-template-columns: 300px 1fr; gap: 40px; }
   }

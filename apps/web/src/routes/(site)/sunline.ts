@@ -46,7 +46,10 @@ export function sunFor(at: LatLon, now: Date): Sun | null {
   const today = sunset(at, now);
   if (Number.isNaN(today.getTime())) return null; // polar day or night
   const ms = today.getTime() - now.getTime();
-  if (ms > 0) return ms <= 2 * 3_600_000 ? { kind: "soon", min: Math.max(1, Math.round(ms / 60_000)) } : { kind: "later", at: today };
+  if (ms > 0)
+    return ms <= 2 * 3_600_000
+      ? { kind: "soon", min: Math.max(1, Math.round(ms / 60_000)) }
+      : { kind: "later", at: today };
   const next = sunset(at, new Date(now.getTime() + 86_400_000));
   return Number.isNaN(next.getTime()) ? null : { kind: "down", next };
 }

@@ -64,7 +64,7 @@
 <div class="sun">
   <p class="sun-line" aria-live="polite">{line}</p>
   {#if canLocate}
-    <button type="button" class="locate" onclick={locate} disabled={asking}>{t("site.sun.locate")}</button>
+    <button type="button" class="pill ghost locate" onclick={locate} disabled={asking}>{t("site.sun.locate")}</button>
   {/if}
   {#if note}<p class="sun-note">{note}</p>{/if}
 </div>
@@ -74,7 +74,5 @@
   .sun-line { margin: 0; font-weight: 700; color: var(--c-birch-50); min-height: 2.8em; }
   .sun-note { margin: 0; font-size: 0.95rem; color: var(--c-birch-100); }
   @media (min-width: 900px) { .sun-line { min-height: 1.4em; } }
-  .locate { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--c-gold-300); background: transparent;
-    color: var(--c-gold-300); font: inherit; font-weight: 700; cursor: pointer; }
-  .locate:disabled { opacity: 0.6; }
+  .sun .pill.locate { min-height: 44px; border-color: var(--c-gold-300); color: var(--c-gold-300); }
 </style>

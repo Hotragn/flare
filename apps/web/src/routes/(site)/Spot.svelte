@@ -42,9 +42,18 @@
   onDestroy(stop);
 
   function near(img: HTMLImageElement) {
-    const go = () => (img.src = img.dataset.src ?? "");
+    const go = () => {
+      img.src = img.dataset.src ?? "";
+    };
     if (typeof IntersectionObserver === "undefined") return go();
-    const io = new IntersectionObserver((es) => es.some((e) => e.isIntersecting) && (go(), io.disconnect()), { rootMargin: "300px" });
+    const io = new IntersectionObserver(
+      (es) => {
+        if (!es.some((e) => e.isIntersecting)) return;
+        go();
+        io.disconnect();
+      },
+      { rootMargin: "300px" },
+    );
     io.observe(img);
     return { destroy: () => io.disconnect() };
   }
@@ -60,7 +69,7 @@
       <div class="cmp"><Compass name="Amor" meters={150} {bearing} status="pointing" /></div>
       <h3>{t("site.feat.compass.t")}</h3>
       <p>{t("site.feat.compass.b")}</p>
-      <button type="button" class="hear" aria-pressed={playing} onclick={hear}>
+      <button type="button" class="pill" aria-pressed={playing} onclick={hear}>
         <Icon name={playing ? "mute" : "sound"} />{playing ? t("site.spot.stop") : t("site.spot.hear")}
       </button>
       <p class="small">{t("site.spot.voice")}</p>
@@ -98,7 +107,6 @@
 </div>
 
 <style>
-  .lead { margin: 0; }
   .rail { margin: 0 -20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 20px; outline-offset: -3px; scrollbar-width: thin; }
   .rail ul { list-style: none; margin: 0; padding: 4px 20px 16px; display: flex; gap: 14px; width: max-content; }
   .card { scroll-snap-align: start; width: 272px; padding: 16px; border-radius: 22px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
@@ -113,8 +121,6 @@
   .cmp :global(.dial) { width: 170px; height: 170px; }
   .cmp :global(.dist) { font-size: 1.6rem; }
   .cmp :global(.spoken) { font-size: 0.95rem; min-height: 2.6em; }
-  .hear { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; border: 0; border-radius: 999px;
-    background: var(--c-maple-700); color: var(--c-birch-50); font: inherit; font-weight: 700; cursor: pointer; }
 
   .soon { padding: 3px 10px; border-radius: 999px; background: #1d2b1f; color: #FBF8F2; font-size: 0.85rem; font-weight: 800; }
   .consent { align-self: center; height: 180px; display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: 64px 1fr; justify-items: center; align-items: center; gap: 6px 10px; }

@@ -55,7 +55,7 @@
   <div class="tg-copy">
     <h3 class="t-heading">{t("site.tg.title")}</h3>
     <p>{t("site.tg.note")}</p>
-    <button type="button" class="flip-btn" aria-pressed={lit} onclick={() => (lit = !lit)}>{lit ? t("site.tg.back") : t("site.tg.flip")}</button>
+    <button type="button" class="pill" aria-pressed={lit} onclick={() => (lit = !lit)}>{lit ? t("site.tg.back") : t("site.tg.flip")}</button>
   </div>
   <div class="card" class:lit>
     <div class="face front" aria-hidden={lit}>
@@ -68,13 +68,11 @@
 </div>
 
 <style>
-  .lead { margin: 0; }
   .start { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 28px; }
   .start li { display: grid; grid-template-columns: 120px 1fr; grid-template-rows: auto 1fr; column-gap: 16px; row-gap: 6px; align-items: start; }
   .start .mini { grid-row: span 2; }
   .start h3 { margin: 0; display: flex; align-items: center; gap: 10px; }
   .start p { margin: 0; max-width: 34ch; }
-  .n { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--c-maple-700); color: var(--c-birch-50); flex: none; font-size: 0.95rem; }
 
   /* A small phone, drawn in CSS: 120 x 210. */
   .mini { position: relative; width: 120px; height: 210px; border-radius: 22px; border: 5px solid #111; background: linear-gradient(#22324D, #2E4A6B);
@@ -121,7 +119,6 @@
   .tg { margin-top: 20px; display: grid; gap: 16px; align-items: center; padding: 18px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
   .tg-copy { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .tg-copy h3, .tg-copy p { margin: 0; }
-  .flip-btn { min-height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: var(--c-maple-700); color: var(--c-birch-50); font: inherit; font-weight: 700; cursor: pointer; }
   .card { position: relative; width: 100%; max-width: 480px; aspect-ratio: 3 / 2; perspective: 1200px; }
   .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 16px; overflow: hidden; box-shadow: var(--e-2);
     transition: transform 700ms var(--ease-spring); }

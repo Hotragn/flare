@@ -1,6 +1,6 @@
 <!-- "Running now" (brief item 3): live proof with no personal data. Gemma on our laptop
      (health.hub), and records past their end from the deletion audit, with how long ago it ran.
-     Asks after the page has painted, so it never slows the first screen. -->
+     Asks only when it comes near the screen, so it never slows the first paint. -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { t } from "#lib/copy/site.ts";
@@ -11,6 +11,9 @@
   let audit: AuditView | null = $state(null);
   let now = $state(new Date());
 
+  let root: HTMLElement;
+  // Asks only when the strip comes within 600 px of the screen: no request for visitors who
+  // never scroll this far, and none during the first paint.
   onMount(() => {
     let tick: ReturnType<typeof setInterval> | undefined;
     const go = () => {
@@ -18,11 +21,22 @@
       fetchAudit(fetch).then((a) => (audit = a));
       tick = setInterval(() => (now = new Date()), 1000);
     };
-    const idle = (globalThis as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-    const handle = idle ? idle(go, { timeout: 2500 }) : setTimeout(go, 1200);
+    if (typeof IntersectionObserver === "undefined") go();
+    const io =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(
+            (es) => {
+              if (!es.some((e) => e.isIntersecting)) return;
+              io?.disconnect();
+              go();
+            },
+            { rootMargin: "600px 0px" },
+          );
+    io?.observe(root);
     return () => {
+      io?.disconnect();
       clearInterval(tick);
-      if (!idle) clearTimeout(handle as ReturnType<typeof setTimeout>);
     };
   });
 
@@ -33,7 +47,7 @@
   });
 </script>
 
-<div class="live">
+<div class="live" bind:this={root}>
   <h2 class="t-heading">{t("site.live.title")}</h2>
   <ul aria-live="polite">
     <li class:on={health?.s === "ok" && health.hub === "connected"} class:warn={health?.s === "ok" && health.hub === "absent"} class:off={health?.s === "down"}>

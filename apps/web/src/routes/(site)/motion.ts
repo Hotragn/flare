@@ -26,7 +26,9 @@ export function play(node: HTMLElement, opts: { margin?: string } = {}) {
 }
 
 export const scrollTimelines = () =>
-  typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()") && CSS.supports("animation-range: contain 0% contain 100%");
+  typeof CSS !== "undefined" &&
+  CSS.supports("animation-timeline: view()") &&
+  CSS.supports("animation-range: contain 0% contain 100%");
 
 /** Progress through a tall section while its sticky stage is pinned: 0 at its top, 1 at its end. */
 export function progressOf(top: number, height: number, viewport: number): number {
