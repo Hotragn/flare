@@ -70,8 +70,17 @@ function stubs(mode: Mode) {
     localStorage.setItem("flare.onboarded", "1");
   } catch {}
   // Capture on window runs first; bubble on window runs after Svelte's delegated handlers.
-  addEventListener("click", () => ((w.__inClick = true), w.log.push("click")), true);
-  addEventListener("click", () => (w.__inClick = false));
+  addEventListener(
+    "click",
+    () => {
+      w.__inClick = true;
+      w.log.push("click");
+    },
+    true,
+  );
+  addEventListener("click", () => {
+    w.__inClick = false;
+  });
   const f = window.fetch;
   window.fetch = (...a: Parameters<typeof fetch>) => (w.log.push("fetch"), f(...a));
   const n = navigator as Navigator & { share?: unknown };
@@ -174,7 +183,9 @@ async function run(name: string, browser: Browser, real: boolean) {
     await sendFlare(page);
     check(tag("slow Send: no share call after the await"), (await sharesOf(page)).length === 0);
     const order = await page.evaluate(() =>
-      [...document.querySelectorAll("button")].map((b) => b.textContent?.trim()).filter((x) => x === "Share" || x === "Pocket it"),
+      [...document.querySelectorAll("button")]
+        .map((b) => b.textContent?.trim())
+        .filter((x) => x === "Share" || x === "Pocket it"),
     );
     check(tag("H4: Share comes before Pocket it"), order[0] === "Share", order.join(", "));
     const before = (await logOf(page)).length;
@@ -183,11 +194,19 @@ async function run(name: string, browser: Browser, real: boolean) {
     const after = (await logOf(page)).slice(before);
     const tap = (await sharesOf(page)).at(-1);
     check(tag("Share calls navigator.share inside the click"), tap?.inClick === true);
-    check(tag("no network request between the tap and the share call"), after[0] === "click" && after[1] === "share", after.join(" "));
+    check(
+      tag("no network request between the tap and the share call"),
+      after[0] === "click" && after[1] === "share",
+      after.join(" "),
+    );
     check(tag("the shared url is the Flare link"), /\/g\/[0-9a-f-]{36}\/#k=/.test(tap?.url ?? ""), tap?.url);
     const wa = await page.evaluate(() =>
       [...document.querySelectorAll("a, button")]
-        .filter((el) => /whats\s?app|wa\.me|whatsapp:/i.test(`${el.textContent} ${el.getAttribute("href") ?? ""} ${el.getAttribute("aria-label") ?? ""}`))
+        .filter((el) =>
+          /whats\s?app|wa\.me|whatsapp:/i.test(
+            `${el.textContent} ${el.getAttribute("href") ?? ""} ${el.getAttribute("aria-label") ?? ""}`,
+          ),
+        )
         .map((el) => ({ tag: el.tagName, href: el.getAttribute("href") ?? "" })),
     );
     check(
@@ -234,7 +253,10 @@ async function run(name: string, browser: Browser, real: boolean) {
   page = await open("none");
   try {
     await sendFlare(page);
-    check(tag("no share: Share is not offered"), (await page.getByRole("button", { name: "Share", exact: true }).count()) === 0);
+    check(
+      tag("no share: Share is not offered"),
+      (await page.getByRole("button", { name: "Share", exact: true }).count()) === 0,
+    );
     await page.getByRole("button", { name: "Copy link" }).click();
     await page.getByText("Link copied. Paste it in your chat.").waitFor({ timeout: 5000 });
     const copied = await copiedOf(page);
