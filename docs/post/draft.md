@@ -161,7 +161,7 @@ Field test 1 found these first:
 - **Share did nothing in Brave.** The tap's activation was lost after an await. Share now runs in the tap, with a Copy link fallback, tested in WebKit but not on a real iPhone.
 - **"We'll buzz you" with no push.** That line now shows only with a live subscription.
 - **Returning phones got old pages** from the service worker. Pages now load network first and the new worker takes over at once (two-build test, 8/8).
-- **Round 6 caught 4 more** before the freeze. The invite was lost on reload ("Your flare" on Home now). "Sent." showed before sharing. At 375×667 the size buttons were hidden; a new "every control on screen" gate failed before the fix and passes now. Location was asked twice; now once.
+- **Round 6 caught 4 more** before the freeze. The invite was lost on reload ("Your Flare" on Home now). "Sent." showed before sharing. At 375×667 the size buttons were hidden; a new "every control on screen" gate failed before the fix and passes now. Location was asked twice; now once.
 
 ## Honest limits
 
