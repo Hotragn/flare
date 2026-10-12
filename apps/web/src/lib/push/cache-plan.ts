@@ -14,6 +14,7 @@ const SKIP = [
   /^\/scenery\//,
   /^\/scenic\//,
   /^\/sim\//,
+  /^\/post\//, // the DEV post's images (about 5 MB): served for the post, never precached
   /^\/site\/how\//, // the /how/ walkthrough screens, lazy on that page
   /^\/voice\//, // warm-voice clips: saved only when the warm voice is turned on (ADR-0027)
   /^\/splash\//,
