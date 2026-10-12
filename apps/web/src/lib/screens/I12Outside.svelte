@@ -27,7 +27,6 @@
     people = [],
     spark = "",
     onclose,
-    sky = undefined,
   }: {
     view?: "end" | "go";
     theme?: Theme;
@@ -41,7 +40,6 @@
     /** The Spark just left, if any. */
     spark?: string;
     onclose?: () => void;
-    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   let away = $state(false);
   const together = (m: number) => (m >= 60 ? t("motion.outsideH", { h: Math.floor(m / 60), m: m % 60 }) : t("outside.together", { min: m }));
@@ -77,7 +75,7 @@
     {#snippet actions()}<Button variant="secondary" onclick={onclose}>{t("gone.close")}</Button>{/snippet}
   </Screen>
 {:else}
-  <Screen stage backdrop={photo} fallbackArt {sky} close={false} heading={headline}>
+  <Screen stage backdrop={photo} fallbackArt close={false} heading={headline}>
     {#snippet hero()}
       <div class="msg" bind:this={el}>
         {#if view === "end"}<div class="cool"><Hearth state="gone" size={104} cool horizon={false} /></div>{/if}

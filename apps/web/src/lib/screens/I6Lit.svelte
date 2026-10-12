@@ -2,7 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import ShrinkLater from "../components/ShrinkLater.svelte";
+  import Later from "../components/Later.svelte";
   import Hearth from "../components/Hearth.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import Sheet from "../components/Sheet.svelte";
@@ -22,7 +22,6 @@
     onhere,
     oncant,
     onclose,
-    sky = undefined,
   }: {
     /** Minutes outside together once 2+ have arrived (2026 direction, B). */
     together?: number | null;
@@ -38,14 +37,13 @@
     onhere?: () => void;
     oncant?: () => void;
     onclose?: () => void;
-    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   // Smaller: the shrink and the catch at the bench play in the drawn scene (Shrink), not the photo.
   const smaller = $derived(view === "smaller" && !!smallerAt);
   let asking = $state(false);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={smaller ? "" : info.photo} backdropAlt={info.scene} fallbackArt {sky}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={smaller ? "" : info.photo} backdropAlt={info.scene} fallbackArt>
   {#snippet hero()}
   <div class="center" class:smaller>
     {#if smaller}
@@ -60,7 +58,7 @@
     {#if cant}<p class="t-muted" role="status">{t("lit.cantDone")}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
     {#if smaller}
-      <ShrinkLater lit={!savedAt} />
+      <Later kind="shrink" lit={!savedAt} />
     {/if}
   </div>
   {/snippet}

@@ -51,7 +51,11 @@ async function measure(name: string, act: () => Promise<unknown>, ms = 1600) {
     dropped += Math.max(0, Math.round(dt / 16.67) - 1);
   }
   if (process.env.GAPS) {
-    const gaps = r.t.flatMap((t, i) => (i && t - (r.t[i - 1] ?? 0) > 40 ? [`${Math.round((r.t[i - 1] ?? 0) - (r.t[0] ?? 0))}+${Math.round(t - (r.t[i - 1] ?? 0))}`] : []));
+    const gaps = r.t.flatMap((t, i) =>
+      i && t - (r.t[i - 1] ?? 0) > 40
+        ? [`${Math.round((r.t[i - 1] ?? 0) - (r.t[0] ?? 0))}+${Math.round(t - (r.t[i - 1] ?? 0))}`]
+        : [],
+    );
     console.info(name, "gaps(ms at+len):", gaps.join(" "));
   }
   const fps = span ? ((r.t.length - 1) * 1000) / span : 0;
@@ -82,12 +86,22 @@ if (traceOut) await browser.startTracing(page, { path: traceOut, screenshots: fa
 await page.goto(`${site.url}/app/demo/`);
 await page.getByRole("button", { name: "Send it" }).click();
 await page.getByRole("button", { name: "Friend's view" }).click();
-rows.push(await measure("demo: friend's I'm in (I1 count ring)", () => page.getByRole("button", { name: "I'm in" }).click(), 1200));
+rows.push(
+  await measure(
+    "demo: friend's I'm in (I1 count ring)",
+    () => page.getByRole("button", { name: "I'm in" }).click(),
+    1200,
+  ),
+);
 await page.getByRole("button", { name: "Back to you" }).click();
 await page.getByRole("button", { name: "Skip 30 min" }).waitFor();
 await page.waitForTimeout(800);
 rows.push(
-  await measure("demo: shrink to an Ember, lit at the bench (I6)", () => page.getByRole("button", { name: "Skip 30 min" }).click(), 3200),
+  await measure(
+    "demo: shrink to an Ember, lit at the bench (I6)",
+    () => page.getByRole("button", { name: "Skip 30 min" }).click(),
+    3200,
+  ),
 );
 if (traceOut) await browser.stopTracing();
 

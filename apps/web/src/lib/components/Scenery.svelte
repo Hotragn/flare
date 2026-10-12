@@ -36,7 +36,11 @@
     return () => { clearInterval(tick); ro?.disconnect(); };
   });
 
-  const s = $derived(fixed && !sky ? { phase: "golden" as Phase, sun: 0.95, rain: false, windy: false } : skyAt(now, sky));
+  // The motion catalog fixes the hour for every scene on the page: <html data-sky-hour="21">.
+  const pinned = typeof document === "undefined" ? undefined : document.documentElement.dataset.skyHour;
+  const s = $derived(
+    fixed && !sky ? { phase: "golden" as Phase, sun: 0.95, rain: false, windy: false } : skyAt(now, pinned ? { ...sky, hour: Number(pinned) } : sky),
+  );
   // Sky colours top to horizon. Golden hour is the brand drawing; the rest blend three stops.
   const GOLD = ["#22324D", "#283A57", "#2E4A6B", "#3A4F6D", "#7C5B5E", "#B0643F", "#D6762F", "#EC9A33", "#F2B33D", "#F7CB72"];
   const STOPS: Record<Exclude<Phase, "golden">, [string, string, string]> = {

@@ -5,7 +5,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import ShrinkLater from "../components/ShrinkLater.svelte";
+  import Later from "../components/Later.svelte";
   import FlameMeter from "../components/FlameMeter.svelte";
   import InfoLines from "../components/InfoLines.svelte";
   import { t } from "#lib/copy/index.ts";
@@ -23,7 +23,6 @@
     onyes,
     onfind,
     onclose,
-    sky = undefined,
   }: {
     view?: "waiting" | "lit";
     theme?: Theme;
@@ -37,12 +36,11 @@
     onyes?: () => void;
     onfind?: () => void;
     onclose?: () => void;
-    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
-<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} stage fallbackArt {sky}>
+<Screen {theme} sound {onclose} title={t("lit.title", { host: info.host })} stage fallbackArt>
   {#snippet hero()}
   <div class="center">
     <div class="words">
@@ -50,7 +48,7 @@
     {#if meters !== null}<p class="t-muted">{t("ember.where", { Bench: cap(bench), m: meters, spot: info.spot })}</p>{/if}
     {#if error}<p class="err" role="alert">{error}</p>{/if}
     </div>
-    <ShrinkLater lit={view === "lit"} />
+    <Later kind="shrink" lit={view === "lit"} />
   </div>
   {/snippet}
   {#if view !== "lit"}<FlameMeter state="ember" {have} quorum={2} note={t("ember.meterNote")} />{/if}

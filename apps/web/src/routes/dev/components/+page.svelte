@@ -19,13 +19,16 @@
   let v1 = $state("");
   let v2 = $state("only if Amor comes");
   // ?s=H5 (and the rest, see Moments.svelte): one app screen at phone size for the motion tools.
+  // Only in dev, or a build made with VITE_MOTION_CATALOG=1: importing the screens from here
+  // would split the app's chunks and cost the /app and /g/[id] JS budget.
+  const CATALOG = import.meta.env.DEV || import.meta.env.VITE_MOTION_CATALOG === "1";
   let moments = $state(false);
-  $effect(() => { moments = new URL(location.href).searchParams.has("s"); });
+  $effect(() => { moments = CATALOG && new URL(location.href).searchParams.has("s"); });
 </script>
 
 <svelte:head><title>Flare components</title></svelte:head>
 
-{#if moments}
+{#if CATALOG && moments}
   {#await import("./Moments.svelte") then { default: Moments }}<Moments />{/await}
 {:else}
 <main class="page" data-theme="light">

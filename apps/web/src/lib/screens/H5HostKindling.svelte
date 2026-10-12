@@ -2,7 +2,7 @@
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
-  import ShrinkLater from "../components/ShrinkLater.svelte";
+  import Later from "../components/Later.svelte";
   import CountRing from "../components/CountRing.svelte";
   import Sheet from "../components/Sheet.svelte";
   import TextField from "../components/TextField.svelte";
@@ -29,7 +29,6 @@
     linkOnly = false,
     onclose,
     ember = false,
-    sky = undefined,
   }: {
     /** The Flare photo behind the screen (2026 direction); the warm light when there is none. */
     photo?: string;
@@ -54,18 +53,17 @@
     onclose?: () => void;
     /** The Flare shrank to an Ember (state "ember"): the flame folds into an ember that hops to a bench. */
     ember?: boolean;
-    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   // svelte-ignore state_referenced_locally
   let sheet = $state<"" | "text-yes" | "cancel">(view === "text-yes" || view === "cancel" ? view : "");
   let reply = $state("");
 </script>
 
-<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene} fallbackArt {sky}>
+<Screen {theme} sound {onclose} heading={t("host.kindling.heading")} title={t("host.kindling.title")} offline={savedAt ? t("app.offline", { time: savedAt }) : ""} stage backdrop={photo} backdropAlt={scene} fallbackArt>
   {#snippet hero()}
     <div class="center">
       {#if ember}
-        <ShrinkLater />
+        <Later kind="shrink" />
       {:else}
         <CountRing {have} {quorum} size={190} />
       {/if}

@@ -66,7 +66,8 @@
         empty: q.get("empty") === "1",
       },
     };
-    props = { ...(base[s] ?? {}), sky, hour: sky.hour, wind: sky.wind };
+    if (sky.hour !== undefined) document.documentElement.dataset.skyHour = String(sky.hour);
+    props = { ...(base[s] ?? {}), sky, wind: sky.wind };
     (window as unknown as { flareDev: object }).flareDev = {
       set: (p: Record<string, unknown>) => Object.assign(props, p),
       remount: () => (key += 1),

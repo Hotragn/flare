@@ -10,7 +10,7 @@
   import { themeAttrs, type Theme } from "./parts";
   import { net } from "#lib/net/waking.svelte.ts";
   import Waking from "./Waking.svelte";
-  import SceneryLater from "./SceneryLater.svelte";
+  import Later from "./Later.svelte";
 
   let {
     theme = "light",
@@ -34,7 +34,6 @@
     hero,
     backdropArt,
     fallbackArt = false,
-    sky = undefined,
   }: {
     theme?: Theme; title?: string; heading?: string; sound?: boolean; close?: boolean; menu?: boolean; offline?: string; grain?: boolean;
     tone?: "bg" | "dusk"; onclose?: () => void; onmenu?: () => void; children: Snippet; actions?: Snippet; overlay?: Snippet; wire?: boolean;
@@ -44,8 +43,6 @@
     backdropArt?: Snippet;
     /** No photo (typed words): show the outdoor scenery rather than a bare gradient. */
     fallbackArt?: boolean;
-    /** The weather and clock for the illustrated scene (#lib/motion/sky.ts); the phone's clock when absent. */
-    sky?: import("#lib/motion/sky.ts").SkyInput;
   } = $props();
   const staged = $derived(stage || !!backdrop);
 </script>
@@ -54,7 +51,7 @@
   {#if staged}
     <!-- The photo is content (its alt is the scene for friends who can't see it), so it sits in a
          labelled region, not loose outside every landmark (page audit, axe region). -->
-    {#if backdrop}<section class="lm" aria-label={backdropAlt || heading || title}><img class="backdrop" src={backdrop} alt={backdropAlt} /></section>{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><SceneryLater {sky} people={false} /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
+    {#if backdrop}<section class="lm" aria-label={backdropAlt || heading || title}><img class="backdrop" src={backdrop} alt={backdropAlt} /></section>{:else if backdropArt}<div class="backdrop art" aria-hidden="true">{@render backdropArt()}</div>{:else if fallbackArt}<div class="backdrop art" aria-hidden="true"><Later kind="scenery" people={false} /></div>{:else}<div class="backdrop warm" aria-hidden="true"></div>{/if}
     <div class="scrim" aria-hidden="true"></div>
   {/if}
   <header class="bar">
