@@ -2,7 +2,7 @@
 title: "Flare: snap where you are, and it only lights if enough friends quietly say yes"
 published: false
 tags: devchallenge, hf26challenge, gemma, opensource
-cover_image: https://flare-outside.onrender.com/post/cover.png
+cover_image: https://flare-outside.onrender.com/post/cover-v2.png
 ---
 
 *This is a submission for the [Hacktoberfest Open-Source AI Challenge Week 1: Touch Grass](https://dev.to/challenges/hacktoberfest-week1-2026-10-05).*
@@ -505,3 +505,5 @@ Four of my structured prompts (the idea, the brainstorm brief, the night re-plan
 ## Updated after the deadline (Oct 12, 3 AM ET)
 
 This is a detailed rewrite of the published post, in first person. The facts are the same. What's new: how I built it (the planning sprint and the sprint table), a section per tool in one pattern, the field-test failure table with commit links, the losses up front, the two Remember this day cards, and the agent sessions.
+
+After the deadline I also cleaned and published the agent sessions and Entire checkpoints, and made the repo public.

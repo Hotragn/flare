@@ -35,12 +35,13 @@
 > - `c09fabf`, Oct 12 07:39 UTC: docs only. Post v2: manager session embed xefvhu.
 > - `20b7edd`, Oct 12 07:40 UTC: README only. README rewrite and cover v2 on Eagle Lake.
 > - `89f1afe`, Oct 12 07:41 UTC: merge of the README and cover branch (README, brand images, one static image under /post/).
-> - The next commit: README only. This list. The live site was redeployed after it to serve the new static images under /post/ (sprints.png, cover-v2.png); no app code changed after the deadline.
+> - `37e029c`, Oct 12 07:44 UTC: README only. This list. The live site was redeployed after it to serve the new static images under /post/ (sprints.png, cover-v2.png); no app behaviour changed after the deadline: the commits since are comments, tests, docs and static images.
+> - The next commit: README and the longer post draft. The DEV post link and this wording.
 
 <p align="center">
   <a href="https://flare-outside.onrender.com/app/demo/">60-second demo</a> ·
   <a href="https://flare-outside.onrender.com/app/">The app</a> ·
-  <a href="https://dev.to/hotragn">DEV post</a> ·
+  <a href="https://dev.to/hotragn/flare-snap-where-you-are-and-it-only-lights-if-enough-friends-quietly-say-yes-1jc8">DEV post</a> ·
   <a href="#how-ai-was-used">Agent sessions</a> ·
   <a href="https://t.me/FairlaneFlareBot">Telegram bot</a>
 </p>
