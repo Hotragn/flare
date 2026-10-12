@@ -148,13 +148,13 @@ The fresh-eyes testers are AI agents with no context, not people. Each one used 
 
 ## How I built it
 
-![How Flare was built: one waterfall day, then short sprints](https://flare-outside.onrender.com/post/sprints.png)
+![How Flare was built: a planning sprint, then short build sprints](https://flare-outside.onrender.com/post/sprints.png)
 
-### Day 1, like a real software company, waterfall style
+I ran the build as short sprints. Each one had one goal, ended with a review, and the review's misses became the next sprint. The review was either an AI fresh-eyes tester round or a real field test, and the retro after it wrote the next sprint's backlog.
 
-I'm one founder. I ran Claude Code sessions in roles, the way a small company would staff a project, and I made Day 1 waterfall on purpose. With many agents building at once, the cheapest bug is the one caught in a document.
+### Sprint 0: plan before anyone builds
 
-In order, on Oct 10 from 1 PM to 7 PM ET:
+With many agents building at once, the cheapest bug is the one caught in a document. So the first sprint built no product code. In order, on Oct 10 from 1 PM to 7 PM ET:
 
 1. **Research**: the challenge rules, the field of other entries, and the sources for why it matters.
 2. **Product**: personas and journeys ([04-personas-journeys.md](https://github.com/Hotragn/flare/blob/main/docs/product/04-personas-journeys.md)), the PRD and the scope.
@@ -165,12 +165,13 @@ In order, on Oct 10 from 1 PM to 7 PM ET:
 
 Then the specialists started in parallel: engine, backend, hub, integrations, PWA, frontend, maps and website, each with a brief in [docs/engineering/briefs/](https://github.com/Hotragn/flare/tree/main/docs/engineering/briefs), each building against the frozen contracts.
 
-### Then short agile sprints
+### The sprints
 
-After the build, I switched to short sprints, each ending in a review: a fresh-eyes round or a field test. Times are from `git log`, in ET.
+Times are from `git log`, in ET.
 
 | Sprint | When | Goal | What shipped | Review |
 | --- | --- | --- | --- | --- |
+| 0: plan | Oct 10, 1:01 PM to 7 PM | A spec, contracts and a plan before code | Research, personas, the SRS (159 requirements), ADRs, the ICD (14 interfaces) | The ICD frozen |
 | 1: build | Oct 10, 8:51 PM to Oct 11, 3:48 AM | Every part working against the ICD | Engine, backend, hub, PWA, frontend; integration merge at 1:55 AM | End-to-end suites |
 | 2: deploy and partners | Oct 11, 7:05 AM to 12:42 PM | Live, and the partner tech wired in | Render deploy (10:51), Mastra agent (10:54), Tinker rules (12:21), AI Studio key (12:42) | Fresh-eyes round 1: 5/10 |
 | 3: clarity | Oct 11, 1:09 PM to 5:14 PM | A stranger understands it in a minute | Rounds 2 to 5 fixes, ElevenLabs compass voice (2:12), axe 0 and Lighthouse 100 (3:33) | Rounds 2 to 5: 6, 5, 6, 6 |
@@ -181,7 +182,7 @@ After the build, I switched to short sprints, each ending in a review: a fresh-e
 ### The roles
 
 - **Per-role Claude Code sessions**: research, product, brand, design, architect, engineering lead, and one per specialist. Each wrote a handoff note when done ([docs/handoffs/](https://github.com/Hotragn/flare/tree/main/docs/handoffs)).
-- **The manager session**, acting as my CTO: it wrote briefs, reviewed handoffs and sent many prompts. Product and privacy calls were mine.
+- **The manager session**, acting as my project manager: it wrote briefs and prompts, reviewed handoffs and made day-to-day calls.
 - **Subagents in git worktrees** for isolated work, so a share fix or a photo gate could land without touching anyone else's files. You can see them in the history as `Merge branch 'worktree-agent-...'`.
 - **The Lab session** for risk spikes: things that could sink the plan, tried before anyone built on them. The browser models, the iPhone compass and Telegram were all spikes first.
 
@@ -193,7 +194,7 @@ The pre-push hook ([.githooks/pre-push.pre-entire](https://github.com/Hotragn/fl
 
 Entire records each agent session (more in [its section](#entire)). Its token count for one checkpoint, `entire checkpoint tokens 01M4NXQZFTTGWVNDECY5S75K0E`, shows 828M tokens over 1,546 API calls, and 99.2% of them were cache replay: the same context sent again on each call. That number is why I moved from 9 parallel specialist subagents to one session plus narrow subagents. Nine agents each carrying the whole project mostly paid to re-read it.
 
-**Disclosure:** I built this with Claude Code. Claude Code sessions drafted this post from the repo's evidence; I checked every claim and supplied the why, the field notes and my friend's words.
+**How I used AI:** Claude Code wrote the code and drafted this post from the repo's evidence, and a separate review session checked its numbers against that evidence. One session acted as my project manager: it wrote the build session's prompts, reviewed the work and made day-to-day calls while I slept, and anything that got posted or published waited for my yes. I chose the idea and set the direction, I ran both field tests with my friends, and the why is mine.
 
 ## Architecture
 
@@ -503,4 +504,4 @@ The manager/CTO session, curated to the work orders and the reports that came ba
 
 ## Updated after the deadline (Oct 12, 3 AM ET)
 
-This is a detailed rewrite of the published post, in first person. The facts are the same. What's new: how I built it (the waterfall day and the sprint table), a section per tool in one pattern, the field-test failure table with commit links, the losses up front, the two Remember this day cards, and the agent sessions.
+This is a detailed rewrite of the published post, in first person. The facts are the same. What's new: how I built it (the planning sprint and the sprint table), a section per tool in one pattern, the field-test failure table with commit links, the losses up front, the two Remember this day cards, and the agent sessions.
