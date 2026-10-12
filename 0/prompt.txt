@@ -3324,3 +3324,30 @@ The founder's feedback: "the flow and design isn't changed? its unclear, I mysel
 (b) Are the app-motion moments (sparks, lit, shrink, Gone) actually visible in the real host flow on live, not just in the demo?
 Tell me what you find. No code changes after 1:00 except a blocker fix.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder's own words from tonight's outdoor test go into the post. They're the founder's first-person experience, so they go in their voice; keep the meaning exact and only fix the grammar lightly. Docs only; no code after the freeze.
+
+As host, after sending:
+- All they could see was a lot of animation. It was unclear whether friends would come, and whether ElevenLabs had worked.
+- "Pocket it" felt like a button they had to press. Nothing said to wait until the friend arrives, or that the app should stay open even in a pocket.
+
+The friends' side: it showed the place and buttons to finish the flow fast, without explaining what each step is for.
+
+What they expected from Remember this: a neat card showing what was said between them and their friends, as a summary of the day, with the voice attached only if they want it.
+
+Where it goes:
+- "What I got wrong": the host side doesn't explain what's happening, "Pocket it" misleads, and the friend steps aren't explained.
+- Next steps:
+  - Show the host who's coming once it's lit, with the yes-sayers' OK.
+  - A clear host status line ("1 friend coming. Keep Flare open; your phone can stay in your pocket.").
+  - Remember this as a day card, voice only by choice.
+
+Also, field test 2 facts from the logs: sent 12:38:32, a yes 12:39:52 (quorum 2, so it lit at once), I'm here 12:40:43, Remember this turned on and agreed at 12:41, then the mic failed on the iPhone, We're done 12:43:34, deleted on time. Don't claim an outdoor meetup until the founder confirms it.
+
+The founder's "why" and the friend quotes are coming; I'll send them once the founder approves.
+
+One question: what's the exact Sentry search or view for an AI-job trace (Agent Tracing spans, op name, transaction), so the founder can screenshot one trace with its model call and guard spans? Reply in one line.
+</cross-session-message>
