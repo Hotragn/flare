@@ -88,8 +88,9 @@ Everything a person can do, and how far each part has been tested:
 | I'm in, private count | Say yes in private; everyone sees the count, never who. | A no is invisible. | Yes | |
 | Conditions | "I'm in if…", like "after 9" or "only with you", read on the phone. | Say yes with your own terms. | Test 1 | |
 | I'm here, We're done | Mark that you've arrived; the host ends the Flare. | The Flare ends, and it's deleted. | Yes | |
-| Share: Telegram card or link | The bot posts the invite and the count to your group, or you send the link. | Flare inside the chat you already use. | Yes | |
-| Sparks | A Spark is a one-line note after a meetup, sealed for the crew. | The invite next time remembers this place. | Test 1 left one | |
+| Share: link | You send the link in any chat, like WhatsApp. | Flare inside the chat you already use. | Yes (test 1, WhatsApp) | |
+| Share: Telegram card | The bot posts the invite and the count to a linked Telegram group. | No link to paste in that chat. | | Yes |
+| Sparks | A Spark is a one-line note after a meetup, sealed for the crew. | The place comes back in your crew's places. | Test 1 left one | |
 | Plan for later | Pick a time and a deadline; Gemma writes a ladder of smaller plans it can shrink to. | A plan that can get smaller instead of dying. | | Yes |
 | Crew space | Your places, time outside together this week, Sparks, and Manage crew. | The crew's story, without a feed. | | Yes |
 | Hot spots | The places your crew met, sealed on the phone. | Good places come back, no one else sees them. | | Yes |
@@ -188,7 +189,7 @@ The measurements that changed the design, mostly things that didn't work:
 | Sounds of the spot, voices caught | 8/12 | cut | Failed the bar, so it's not in the app | [RESUME.md](https://github.com/Hotragn/flare/blob/main/docs/handoffs/RESUME.md) |
 | Fresh-eyes score out of 10 | 5 | 7 | Rounds: 5, 6, 5, 6, 6, 6, then 7 | [fresh-eyes](https://github.com/Hotragn/flare/blob/main/docs/research/fresh-eyes-2026-10-11.md) |
 
-The fresh-eyes testers are AI agents with no context, not people, using the live site as a phone. The round 6 tester liked the private yes, but would still use a WhatsApp poll for a normal meetup. A recheck after the fixes (round 6b) scored 7/10, in the tester's own words: "Not until the host side gives me more." I agree. Flare is for "anyone free right now?", and a poll still wins for a planned meetup.
+The fresh-eyes testers are AI agents with no context, not people, using the live site as a phone. The round 6 tester liked the private yes, but would still use a WhatsApp poll for a normal meetup. A recheck after the fixes (round 6b) scored 7/10. That tester's last line: "Not until the host side gives me more." I agree. Flare is for "anyone free right now?", and a poll still wins for a planned meetup.
 
 ## How I Built It
 
@@ -303,7 +304,7 @@ For each tool: what it does, why, how it's wired, and what went wrong. Measured 
 
 #### Gemma 4
 
-Gemma 4 turns a photo into the invite and a spoken line, turns a voice clip into an invite, and drafts the Plan ladder: the four smaller plans a Flare can shrink to.
+Gemma 4 turns a photo into the invite and a spoken line, turns a voice clip into an invite (on my laptop; voice is off on the live app), and drafts the Plan ladder: the four smaller plans a Flare can shrink to.
 
 It's open, and I wanted the photo to go to a machine I own, not a vendor. It runs as `gemma4:e4b-it-q4_K_M`, called by the hub ([ollama.ts](https://github.com/Hotragn/flare/blob/main/apps/hub/src/ollama.ts)), with versioned [prompts](https://github.com/Hotragn/flare/tree/main/packages/shared/src/prompts); the photo prompt gets 6 s. On 20 test photos, Gemma scored 39 of 40 points (each graded 0 to 2) ([model-selection.md](https://github.com/Hotragn/flare/blob/main/docs/ml/model-selection.md)).
 
@@ -542,14 +543,14 @@ Four of my structured prompts (the idea, the brainstorm brief, the night re-plan
 
 ## Prize Categories
 
-- **Overall:** Flare gets friends who mean to meet out the door, and nobody sees who said no: field test 2 ran 5 minutes from send to We're done, with a meetup in person. [Details](#testing-it-with-friends)
+- **Overall:** Flare turns "we should meet" into an actual meetup, and nobody sees who said no: in field test 2 a friend said yes 80 seconds after I sent it, and we met in person. [Details](#testing-it-with-friends)
 - **Best Use of Gemma:** Gemma 4 turns a photo of where you are into a six-word invite, on my own laptop: 39 of 40 points on 20 test photos. [Details](#gemma-4)
 - **Best Use of Tinker:** Tinker helped the phone understand more ways friends say "I'm in if…": a $2.40 LoRA read 38 of 40 new phrasings. [Details](#tinker)
 - **Best Use of ElevenLabs:** ElevenLabs gives the compass a warm voice that plays offline and sends nothing: 54 lines, recorded once. [Details](#elevenlabs)
 - **Best Use of Mastra:** Mastra lets the Plan agent check sunset, weather and nearby places: the weather tool matched the plan's time window 7/7. [Details](#mastra)
 - **Best Use of Sentry Agent Tracing:** Sentry shows where a friend's wait goes in each AI job, without our words: it caught a cold start 271% over average. [Details](#sentry-agent-tracing)
 - **Best Use of Render:** Render keeps the deletion promise even on a free tier that sleeps: anything past its end is swept at boot, and the promise is 5 minutes. [Details](#render)
-- **Best Use of Entire:** Entire lets anyone trace the code to the session that wrote it: 235 of 411 commits on main carry an Entire-Checkpoint trailer (when I wrote this): every commit since 2:27 AM on Oct 11. [Details](#entire)
+- **Best Use of Entire:** Entire lets anyone trace the code back to the session that wrote it: every commit since 2:27 AM on Oct 11 carries a checkpoint (235 of 411 on main). [Details](#entire)
 
 ## Updated after the deadline (Oct 12, morning ET)
 
