@@ -3,9 +3,7 @@
 // goes back to the photo that opened it. Loaded lazily on the first tap, so the entry bundles
 // don't carry it. Plain DOM, no Svelte runtime. The same display filter as the small photo.
 
-import { t } from "#lib/copy/index.ts";
-
-export function openPhoto(small: HTMLImageElement, from: HTMLElement): void {
+export function openPhoto(small: HTMLImageElement, from: HTMLElement, closeLabel: string): void {
   const alt = small.alt || from.getAttribute("aria-label") || "";
   const d = document.createElement("dialog");
   d.className = "photo-view";
@@ -19,7 +17,7 @@ export function openPhoto(small: HTMLImageElement, from: HTMLElement): void {
   img.style.filter = small.style.filter;
   const x = document.createElement("button");
   x.type = "button";
-  x.setAttribute("aria-label", t("app.close"));
+  x.setAttribute("aria-label", closeLabel);
   x.style.cssText =
     "position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgb(255 255 255 / .2);color:#fff;font:700 22px/1 system-ui;display:grid;place-items:center";
   x.textContent = "×";

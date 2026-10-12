@@ -32,29 +32,21 @@
   } = $props();
 </script>
 
-{#snippet layers()}
-  {#if state === "developing"}
-    <span class="veil" aria-hidden="true"></span>
-    <span class="edge" aria-hidden="true"></span>
-    <span class="haze" aria-hidden="true"></span>
-  {/if}
-{/snippet}
-
 <figure class="print {state}" class:natural={!!src} style:--tilt="{tilt}deg" style:--max="{height}px" style:height={src ? undefined : `${height}px`}>
   <div class="paper grain">
-    {#if src}
-      <button type="button" class="image photo-art" aria-label={scene || t("invite.photoFallback")} onclick={zoom}>
+    <!-- A real photo is a button: tap it to see it full screen (photo-fit). -->
+    <svelte:element this={src ? "button" : "div"} class="image photo-art" role={src ? undefined : "img"} aria-label={scene || t("invite.photoFallback")} onclick={src ? zoom : undefined}>
+      {#if src}
         <img {src} alt="" onload={lit} />
-        {@render layers()}
-      </button>
-    {:else}
-    <div class="image photo-art" role="img" aria-label={scene || t("invite.photoFallback")}>
-      {#if sample}
+      {:else if sample}
         <SampleScene />
       {/if}
-{@render layers()}
-    </div>
-    {/if}
+      {#if state === "developing"}
+        <span class="veil" aria-hidden="true"></span>
+        <span class="edge" aria-hidden="true"></span>
+        <span class="haze" aria-hidden="true"></span>
+      {/if}
+    </svelte:element>
   </div>
 </figure>
 

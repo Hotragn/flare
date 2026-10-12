@@ -72,7 +72,7 @@ async function photoReady(page: Page) {
 function coverage(page: Page) {
   return page.evaluate((sel) => {
     const img = document.querySelector<HTMLImageElement>(sel);
-    if (!img) return { cover: 1, filter: "", luma: "" };
+    if (!img) return { cover: 1, filter: "", luma: "", shown: 0 };
     const vw = innerWidth;
     const vh = innerHeight;
     const r = img.getBoundingClientRect();
@@ -101,7 +101,19 @@ function coverage(page: Page) {
         inside++;
         if (boxes.some((b) => x >= b.l && x < b.r && y >= b.t && y < b.b)) covered++;
       }
-    return { cover: inside ? covered / inside : 1, filter: getComputedStyle(img).filter, luma: img.dataset.luma ?? "" };
+    // How much of the photo is on screen: object-fit cover crops a portrait on a wide box, and a
+    // full-bleed backdrop crops whatever falls off the viewport.
+    const fit = getComputedStyle(img).objectFit;
+    const sx = r.width / img.naturalWidth;
+    const sy = r.height / img.naturalHeight;
+    const scale = fit === "cover" ? Math.max(sx, sy) : Math.min(sx, sy);
+    const drawn = img.naturalWidth * scale * img.naturalHeight * scale;
+    return {
+      cover: inside ? covered / inside : 1,
+      filter: getComputedStyle(img).filter,
+      luma: img.dataset.luma ?? "",
+      shown: Math.min(1, ((P.r - P.l) * (P.b - P.t)) / drawn),
+    };
   }, PHOTO_SEL);
 }
 
@@ -135,11 +147,13 @@ async function measure(
   await photoReady(page);
   const m = await coverage(page);
   const pct = Math.round(m.cover * 1000) / 10;
+  const shownPct = Math.round(m.shown * 1000) / 10;
   const tag = `${screen} ${photo.name} ${vp.width}x${vp.height}`;
   rows.push(
-    `${tag}: ${pct}% covered${m.luma ? `, luma ${m.luma}` : ""}${m.filter && m.filter !== "none" ? `, ${m.filter}` : ""}`,
+    `${tag}: ${pct}% covered, ${shownPct}% of the photo on screen${m.luma ? `, luma ${m.luma}` : ""}${m.filter && m.filter !== "none" ? `, ${m.filter}` : ""}`,
   );
   check(`${tag}: text and sheets cover at most 25% of the photo`, m.cover <= MAX_COVER, `${pct}%`);
+  check(`${tag}: the whole photo is on screen (no crop)`, m.shown >= 0.97, `${shownPct}%`);
   check(`${tag}: the main button fits without scrolling`, await onScreen(page, main));
   if (!BEFORE) {
     if (photo.dark) check(`${tag}: the dark photo is brightened for display`, /brightness/.test(m.filter), m.filter);
@@ -261,5 +275,5 @@ try {
   srv.close();
 }
 console.info(`\nCoverage (${BEFORE ? "before" : "after"}):\n${rows.join("\n")}`);
-console.info(fails.length ? `\n${fails.length} FAIL` : "\nAll photo-fit checks pass.");
+console.info(fails.length ? `\n${fails.length} FAIL:\n${fails.join("\n")}` : "\nAll photo-fit checks pass.");
 process.exit(fails.length ? 1 : 0);
