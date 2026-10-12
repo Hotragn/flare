@@ -1,5 +1,6 @@
 <!-- H0 Home: going outside now is the point (docs/design/09-2026-direction.md, B). Golden hour,
-     the weather window, the nearest green spot, then one big Light a Flare. -->
+     the weather window, the nearest green spot, then one big Light a Flare. Behind it the real
+     sky: the scene follows this phone's clock and sun, rain falls when it's likely, trees sway in wind. -->
 <script lang="ts">
   import Screen from "../components/Screen.svelte";
   import Button from "../components/Button.svelte";
@@ -7,12 +8,15 @@
   import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
   import Scenery from "../components/Scenery.svelte";
-  import ScenicHero from "../components/ScenicHero.svelte";
   import { t } from "#lib/copy/index.ts";
   import type { Golden, Green } from "./flow/home.ts";
+  import type { LatLon } from "@flare/shared/icd/map";
   let {
     golden = null,
     weather = null,
+    at = null,
+    wind = null,
+    hour = undefined,
     green = null,
     located = false,
     onlight,
@@ -23,6 +27,12 @@
   }: {
     golden?: Golden | null;
     weather?: { temp_f: number; rain_likely: boolean } | null;
+    /** The phone's rough position, for the sun in the scene; the time zone's when null. */
+    at?: LatLon | null;
+    /** Wind in mph; 15 or more sways the trees. Not fetched yet (NWS hourly has windSpeed). */
+    wind?: number | null;
+    /** Fixes the scene's hour (catalog and tests). */
+    hour?: number;
     green?: Green | null;
     located?: boolean;
     onlight?: () => void;
@@ -46,7 +56,7 @@
 </script>
 
 <Screen stage menu {onmenu} close={false} heading={headline}>
-  {#snippet backdropArt()}<ScenicHero />{/snippet}
+  {#snippet backdropArt()}<Scenery people={false} sky={{ at, wind, hour, rain: !!weather?.rain_likely }} />{/snippet}
   {#snippet hero()}
     <div class="hero">
       <Flame state="lit" size={96} />
