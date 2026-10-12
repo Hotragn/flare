@@ -3618,3 +3618,13 @@ One fix: restore the "my usual" conditions next step. The founder named it expli
 <cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
 Usage is at 91%. Commit and push main only, update docs/handoffs/RESUME.md, then hold. Don't start anything new.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+The founder said to publish now. DEV needs public image URLs, and the repo is still private. Static files only, by 2:25:
+1. Copy the post's 8 images and the cover (brand/export/social/dev-cover-1000x420.png) into apps/web/static/post/ with short names.
+2. Push main only, and wait until https://flare-outside.onrender.com/post/<name> returns 200 for every file.
+3. In docs/post/draft.md, point every image at those full URLs, and replace the {% github %} embed with a plain link to https://github.com/Hotragn/flare. Leave the AGENT SESSION and ENTIRE holes for me.
+Reply with the list of URLs, in one line each.
+</cross-session-message>
