@@ -47,17 +47,18 @@
   min-height: 44px;
   align-items: center;
 }
-/* Phones: the links get their own scrolling row under the logo (fresh-eyes #15). */
+/* Phones: the links get their own rows under the logo (fresh-eyes #15). Wrapped, the bar is
+   about 150 px, so on phones it scrolls away instead of sticking over a quarter of the screen. */
 .site .nav {
   flex-wrap: wrap;
+  position: static;
 }
 .site .nav nav {
   order: 3;
   flex-basis: 100%;
   display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex-wrap: wrap; /* 375 px: the four links wrap to a second row instead of scrolling (no clipped "Host") */
+  gap: 0 16px;
   margin-top: -4px;
 }
 .site .nav nav::-webkit-scrollbar {
@@ -477,6 +478,7 @@
 @media (min-width: 900px) {
   .site .nav {
     flex-wrap: nowrap;
+    position: sticky;
   }
   .site .nav nav {
     order: 0;
