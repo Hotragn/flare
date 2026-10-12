@@ -31,7 +31,7 @@ export function t(key: CopyKey, vars: Record<string, string> = {}): string {
       if (v === undefined) throw new Error(`push copy ${key} needs ${name}`);
       return v;
     })
-    .replace(/\bat [Nn]ear (?=\p{Lu})/gu, "near "); // "is near Heather Drive", not "is at Near"
+    .replace(/\bat [Nn]ear (?=\p{Lu})/gu, "near "); // "is near Maple Road", not "is at Near"
 }
 
 /** Checks the asyncapi pushNotice shape; anything else gets the generic notice. */

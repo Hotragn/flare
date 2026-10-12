@@ -63,5 +63,5 @@ const STRINGS = load();
 export function t(key: BotKey, vars: Record<string, string | number> = {}): string {
   return STRINGS[key]
     .replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m))
-    .replace(/\bat [Nn]ear (?=\p{Lu})/gu, "near "); // "is near Heather Drive", not "is at Near"
+    .replace(/\bat [Nn]ear (?=\p{Lu})/gu, "near "); // "is near Maple Road", not "is at Near"
 }

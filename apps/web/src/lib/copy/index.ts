@@ -30,7 +30,7 @@ export function t(key: CopyKey, vars: Vars = {}): string {
   );
 }
 
-/** Live bug (Oct 11): a "Near Heather Drive" spot reads "is near Heather Drive", not "is at Near". */
+/** Live bug (Oct 11): a "Near Maple Road" spot reads "is near Maple Road", not "is at Near". */
 export const nearSpot = (s: string): string => s.replace(/\bat [Nn]ear (?=\p{Lu})/gu, "near ");
 
 /** Joins two or more strings with the deck's middle-dot separator. */

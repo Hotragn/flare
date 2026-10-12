@@ -7,7 +7,7 @@ Only what was observed. The founder's screenshots are in the manager chat. Open 
 - The link went over WhatsApp Business, and the friends opened it in their browsers.
 
 ## Timeline
-- 8:20 PM: the host sends a Flare: a photo of a dim indoor light, quorum 3 ("2 more to light it"). Gemma's invite: "Meet under the warm light". The invite shows "Fuego is at Near Heather Drive."
+- 8:20 PM: the host sends a Flare: a photo of a dim indoor light, quorum 3 ("2 more to light it"). Gemma's invite: "Meet under the warm light". The invite shows "Fuego is at Near Maple Road."
 - Before sending: both the WhatsApp button and the Share button did nothing in Brave. ASK: how the link was finally sent (copy and paste?).
 - 8:22 PM: a friend types "After 10min, a quick visit works". The readback says "Got it: after 10 AM. Right?" The friend caught it on the readback.
 - 8:24 PM: a friend types "10min only with you". The app answers "I didn't catch that. Try 'after 2' or 'only with Amor'."
@@ -18,7 +18,7 @@ Only what was observed. The founder's screenshots are in the manager chat. Open 
 
 ## Bugs found (6), all sent to the build as top priority
 1. On the invite and the send screens, the headline and sheet cover the photo, so you can't see the place. A dark photo makes it worse.
-2. The "Near {street}" spot name flows into "{host} is at {spot}", giving "is at Near Heather Drive".
+2. The "Near {street}" spot name flows into "{host} is at {spot}", giving "is at Near Maple Road".
 3. The condition parser: "10min" (no space) read as a clock time; a bare hour took AM at 8 PM; "a quick visit" silently dropped.
 4. The parser: "only with you" not understood. The hint examples didn't fit the moment ("after 2" at 8 PM, and possibly the reader's own name).
 5. Sharing: neither the WhatsApp nor the Share button opened anything in Brave. Suspected cause: the tap's user activation is lost after an await.

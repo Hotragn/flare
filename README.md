@@ -93,4 +93,6 @@ The group key lives in the link's `#fragment`, which browsers never send to serv
 
 ## Changes after the DEV deadline
 
-None yet. Any commit after Mon 2026-10-12 06:59 UTC will be listed here (SRS-MNT-2).
+Every commit after Mon 2026-10-12 06:59 UTC is listed here (SRS-MNT-2). Nothing on the live site changed after the deadline unless a line says so.
+
+- 2026-10-12 07:10 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is replaced with a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.

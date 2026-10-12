@@ -1,4 +1,4 @@
-// Live bug (Oct 11): "Fuego is at Near Heather Drive." Every "{host} is at {spot}" template,
+// Live bug (Oct 11): "Fuego is at Near Maple Road." Every "{host} is at {spot}" template,
 // with a street spot, a park spot and a bench spot.
 import { describe, expect, it } from "vitest";
 import { t as botT } from "../../../server/src/telegram/copy.ts";
@@ -6,7 +6,7 @@ import { t } from "../../src/lib/copy/index.ts";
 import { t as pushT } from "../../src/lib/push/notice.ts";
 
 const SPOTS = [
-  ["Near Heather Drive", "near Heather Drive"],
+  ["Near Maple Road", "near Maple Road"],
   ["Ford Field Park", "at Ford Field Park"],
   ["The bench by the willow", "at The bench by the willow"],
 ] as const;
