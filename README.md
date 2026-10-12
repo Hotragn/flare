@@ -25,11 +25,17 @@
 > **Changes after the deadline** (every commit after Oct 12, 06:59 UTC; nothing on the live site changed unless a line says so):
 >
 > - `ad59cc9`, Oct 12 07:09 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is now a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.
-> - `70689c3`, Oct 12 07:13 UTC: README only. This block.
-> - `987c12e`, Oct 12 07:16 UTC: docs only. An outline for a longer version of the DEV post (docs/post/draft-v2-outline.md).
-> - `94601f9`, Oct 12 07:20 UTC: README only. The commit hashes in this list.
-> - `ff17533`, Oct 12 07:30 UTC: docs, plus one static image. A longer, unpublished draft of the post (docs/post/draft-v2.md), and a sprint timeline image served at /post/sprints.png. No app code changed.
-> - The next commit, Oct 12 about 07:31 UTC: README only. This line.
+> - `70689c3`, Oct 12 07:13 UTC: README only. README: challenge, start and deadline block at the top, with every post-deadline commit listed.
+> - `987c12e`, Oct 12 07:16 UTC: docs only. Post v2 outline.
+> - `94601f9`, Oct 12 07:20 UTC: README only. README: post-deadline commit hashes.
+> - `ff17533`, Oct 12 07:25 UTC: docs, plus one static image: an unpublished longer draft of the post and a sprint timeline image at /post/sprints.png.
+> - `9fea5f4`, Oct 12 07:25 UTC: README only. README: post-deadline list.
+> - `ddf91e5`, Oct 12 07:32 UTC: docs, plus the sprint image relabelled. Post v2: the founder's How I used AI text, the method as sprints (Sprint 0 plans), timeline labels to match.
+> - `57678f2`, Oct 12 07:37 UTC: docs only. Post v2: template headings, deletion timing, Entire causality, exact Sentry and ElevenLabs wording, new manager session embed.
+> - `c09fabf`, Oct 12 07:39 UTC: docs only. Post v2: manager session embed xefvhu.
+> - `20b7edd`, Oct 12 07:40 UTC: README only. README rewrite and cover v2 on Eagle Lake.
+> - `89f1afe`, Oct 12 07:41 UTC: merge of the README and cover branch (README, brand images, one static image under /post/).
+> - The next commit: README only. This list. The live site was redeployed after it to serve the new static images under /post/ (sprints.png, cover-v2.png); no app code changed after the deadline.
 
 <p align="center">
   <a href="https://flare-outside.onrender.com/app/demo/">60-second demo</a> ·
@@ -308,4 +314,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md): open an issue first for anything bigger 
 
 How I used AI: Claude Code wrote the code and drafted this post from the repo's evidence, and a separate review session checked its numbers against that evidence. One session acted as my project manager: it wrote the build session's prompts, reviewed the work and made day-to-day calls while I slept, and anything that got posted or published waited for my yes. I chose the idea and set the direction, I ran both field tests with my friends, and the why is mine.
 
-Three scrubbed agent sessions (the build, the Lab's risk spikes and the manager) are hosted on DevRelay and embedded in the longer draft of the post, [docs/post/draft-v2.md](docs/post/draft-v2.md#my-agent-sessions). Commits carry an `Entire-Checkpoint:` trailer that points at the session that wrote them.
+Three scrubbed agent sessions (the build, the Lab's risk spikes and the manager) are hosted on DevRelay and embedded in the longer draft of the post, [docs/post/draft-v2.md](docs/post/draft-v2.md#my-agent-session). Commits carry an `Entire-Checkpoint:` trailer that points at the session that wrote them.
