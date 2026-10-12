@@ -152,7 +152,9 @@
   async function send() {
     if (!flow.spot?.name && typedSpot.trim()) flow.typeSpot(typedSpot);
     const ok = await flow.send(kind);
-    if (ok) void flow.share(); // the share sheet opens on its own (H4); still inside the tap's activation on most browsers
+    // The share sheet opens on its own (H4), unless the crew is linked to Telegram: then the server
+    // already posted the card to the group, one tap fewer (automations, ADR-0030).
+    if (ok && !flow.postedToTelegram) void flow.share();
   }
 
   // Plans: datetime-local values in this phone's zone.
@@ -202,7 +204,7 @@
     <H00Onboarding onlight={() => { finishOnboarding(); light(); }} ondemo={() => { finishOnboarding(); location.assign("/app/demo/"); }} />
   {/await}
 {:else if home && flow.screen === "camera"}
-  <H0Home golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
+  <H0Home onagain={flow.groupId ? () => { home = false; flow.startAgain(); } : undefined} golden={goldenNow} {weather} {green} located={!!homeAt} onlight={light} onplan={startPlan} onnear={nearHere} onmenu={() => (menu = true)} />
 {:else if flow.screen === "camera"}
   <H1Camera view={camera} {stream} onshoot={shoot} onpick={pick} onallow={openCamera} onmenu={() => (menu = true)} onvoice={(d) => { stopCamera(); flow.useVoice(d); }} />
 {:else if flow.screen === "develop"}
@@ -244,6 +246,10 @@
   <p class="t-small t-muted foot">{t("menu.foot")}</p>
 </Sheet>
 
+{#if flow.screen === "sent" && flow.postedToTelegram}
+  <p class="posted" role="status">{t("sent.telegram")}</p>
+{/if}
+
 <!-- Remember this (ADR-0031): the host turns it on; the recording sign shows here too. -->
 {#if (flow.screen === "kindling" || flow.screen === "lit") && flow.rememberCtx()}
   {#await import("#lib/components/RememberPanel.svelte") then { default: RememberPanel }}
@@ -252,6 +258,7 @@
 {/if}
 
 <style>
+  .posted { position: fixed; z-index: 45; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0) + 64px); margin: 0; padding: 10px 16px; border-radius: 999px; background: #1d6fa5; color: #fff; font-weight: 700; white-space: nowrap; }
   .menu { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
   .row { width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 6px; border: 0; background: transparent; color: var(--text); text-decoration: none; font: inherit; text-align: left; border-radius: var(--r-md); }
   .txt { flex: 1; display: flex; flex-direction: column; }

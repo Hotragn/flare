@@ -59,6 +59,9 @@ export class HostFlow {
     return { id, auth: bearer(g), key: g.key, crypto: this.#d.crypto };
   }
 
+  /** Automations: the crew is linked to Telegram, so Send posted the card there; no share sheet. */
+  postedToTelegram = $state(false);
+
   /** Automations: Home's 2-hour forecast says rain is likely (lib/map/weather.ts). */
   rainLikely = false;
   photo = $state("");
@@ -260,6 +263,20 @@ export class HostFlow {
     if (n) this.spot = { name: n, key: n, lat: this.spot?.lat ?? 0, lon: this.spot?.lon ?? 0 };
   }
 
+  /** Automations, Again: the last crew and size, no photo; place-word chips or your own words. */
+  startAgain(): void {
+    this.photoBlob = null;
+    if (this.photo) URL.revokeObjectURL(this.photo);
+    this.photo = "";
+    try {
+      const q = localStorage.getItem("flare.lastQuorum");
+      if (q && /^[2-6]$/.test(q)) this.quorum = q;
+    } catch {}
+    this.screen = "develop";
+    this.draft = "hub-unreachable"; // the typing view with place words: no model needed
+    this.askLocation = !this.spot;
+  }
+
   /** Voice Flare (ADR-0028): the hub's draft from what the host said, with no photo. The
    * invite shows over the outdoor scenery; the host checks the place on Send. */
   useVoice(d: { invite: string; alt: string }): void {
@@ -340,6 +357,10 @@ export class HostFlow {
       // A Telegram group gets readable post text for the bot (ADR-0013; disclosed when the
       // group was connected). Link groups send nothing readable.
       const tg = await this.#telegramFor(group);
+      this.postedToTelegram = !!tg; // the server posts the card to the linked group itself
+      try {
+        localStorage.setItem("flare.lastQuorum", String(this.quorum)); // for Again
+      } catch {}
       const link = `${globalThis.location?.origin ?? ""}/g/${id}/#k=${this.#fragment}`;
       const body: CreateGathering = {
         id,

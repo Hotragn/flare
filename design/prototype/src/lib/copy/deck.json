@@ -151,6 +151,11 @@
       "kind": "button",
       "where": "H0"
     },
+    "home.again": {
+      "text": "Again",
+      "kind": "button",
+      "where": "H0 Home, once you have sent one: the last crew and size (automations)"
+    },
     "home.plan": {
       "text": "Plan for later",
       "kind": "button",
@@ -1001,6 +1006,11 @@
       "text": "If it doesn't catch in 30 min, it gets smaller.",
       "kind": "hint",
       "where": "H4"
+    },
+    "sent.telegram": {
+      "text": "Posted to your Telegram group.",
+      "kind": "status",
+      "where": "H4 Sent, crew linked to Telegram (automations)"
     },
     "sent.pocket": {
       "text": "Pocket it",
@@ -2034,6 +2044,16 @@
       "text": "Deleted with the Flare. Only your group can read it.",
       "kind": "hint",
       "where": "Under the note"
+    },
+    "here.auto": {
+      "text": "You're at the spot. Marking you here in {s} s.",
+      "kind": "status",
+      "where": "Find them, automatic I'm here (ADR-0030)"
+    },
+    "here.undo": {
+      "text": "Undo",
+      "kind": "button",
+      "where": "Find them, automatic I'm here"
     },
     "compass.heading": {
       "text": "Find them",

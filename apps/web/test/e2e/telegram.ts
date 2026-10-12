@@ -80,6 +80,14 @@ const ctx = await browser.newContext({
   geolocation: { latitude: 42.3196, longitude: -83.2129 },
 });
 await ctx.addInitScript(() => {
+  // Count share sheets: a crew linked to Telegram should not need one (automations).
+  (window as unknown as { __shares: number }).__shares = 0;
+  Object.defineProperty(navigator, "share", {
+    configurable: true,
+    value: async () => {
+      (window as unknown as { __shares: number }).__shares++;
+    },
+  });
   try {
     localStorage.setItem("flare.onboarded", "1"); // onboarding is tested on its own
   } catch {}
@@ -188,6 +196,10 @@ try {
   // 4. The next Flare posts in the group as the branded card, right away.
   tg.reset();
   await sendFlare(host);
+  check(
+    "linked to Telegram: Send posts the card, no share sheet",
+    (await host.evaluate(() => (window as unknown as { __shares: number }).__shares)) === 0,
+  );
   await waitFor(() => tg.of("sendPhoto").length > 0, 10_000);
   const card = tg.of("sendPhoto")[0];
   check("the Flare posts as the branded card (PNG)", card?.photoType === "image/png", `${card?.photoBytes ?? 0} bytes`);

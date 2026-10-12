@@ -23,6 +23,7 @@
   import type { Deps } from "./flow/deps.ts";
   import { LinkFlow, rememberedName } from "./flow/link.svelte.ts";
   import { roundMeters, type SensorState, startSensors } from "./flow/compass.ts";
+  import { createArrival, UNDO_MS } from "#lib/compass/arrive.ts";
   import { createGuide, type GuideState } from "#lib/compass/guide.ts";
   import { clock } from "./flow/format.ts";
   import { sparkVoiceOn } from "#lib/voice/spark.ts";
@@ -75,19 +76,47 @@
     }
   }
 
+  // Automatic I'm here (ADR-0030): two good fixes within 30 m, then a 10 s Undo before it counts.
+  let autoLeft = $state(0);
+  let autoTimer: ReturnType<typeof setInterval> | undefined;
+  const cancelAuto = () => {
+    clearInterval(autoTimer);
+    autoLeft = 0;
+  };
+  function offerHere() {
+    cancelAuto();
+    autoLeft = UNDO_MS / 1000;
+    autoTimer = setInterval(() => {
+      autoLeft -= 1;
+      if (autoLeft <= 0) {
+        cancelAuto();
+        if (flow.screen === "compass") void flow.here();
+      }
+    }, 1000);
+  }
+
   /** Find them: sensors start inside the tap, orientation first (spike E3). */
   function find() {
     stopSensors?.();
     guided = null;
+    const guide = createGuide(flow.target);
+    const arrival = createArrival();
     stopSensors = startSensors(
-      createGuide(flow.target),
+      guide,
       (g) => (guided = g),
       (st) => (sensor = st),
-      (p) => flow.setPosition(p),
+      (p) => {
+        flow.setPosition(p);
+        queueMicrotask(() => {
+          const s = guide.state();
+          if (arrival.fix(s.distance_m, s.accuracy_m) && flow.screen === "compass") offerHere();
+        });
+      },
     );
     flow.find();
   }
   function leaveCompass() {
+    cancelAuto();
     stopSensors?.();
     stopSensors = null;
     flow.backToLit();
@@ -184,6 +213,13 @@
   {/if}
 {/if}
 
+{#if autoLeft > 0}
+  <div class="auto" role="status" aria-live="polite">
+    <span>{t("here.auto", { s: autoLeft })}</span>
+    <button onclick={cancelAuto}>{t("here.undo")}</button>
+  </div>
+{/if}
+
 <!-- Remember this (ADR-0031): consent and the recording sign, only while the gathering is live. -->
 {#if flow.view && flow.view.state !== "gone" && flow.rememberCtx()}
   {#await import("#lib/components/RememberPanel.svelte") then { default: RememberPanel }}
@@ -192,5 +228,7 @@
 {/if}
 
 <style>
+  .auto { position: fixed; z-index: 55; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0) + 96px); display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 16px; background: #111; color: #fff; font-weight: 700; box-shadow: 0 8px 24px rgb(0 0 0 / 0.35); }
+  .auto button { margin-left: auto; min-height: 44px; padding: 0 16px; border: 2px solid #fff; border-radius: 999px; background: transparent; color: #fff; font-weight: 800; }
   .center { flex: 1; display: grid; place-items: center; text-align: center; }
 </style>
