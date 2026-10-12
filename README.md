@@ -36,11 +36,12 @@
 > - `20b7edd`, Oct 12 07:40 UTC: README only. README rewrite and cover v2 on Eagle Lake.
 > - `89f1afe`, Oct 12 07:41 UTC: merge of the README and cover branch (README, brand images, one static image under /post/).
 > - `37e029c`, Oct 12 07:44 UTC: README only. This list. The live site was redeployed after it to serve the new static images under /post/ (sprints.png, cover-v2.png); no app behaviour changed after the deadline: the commits since are comments, tests, docs and static images.
-> - `415f319`, Oct 12 07:47 UTC: README and the longer post draft. The DEV post link and this wording.
-> - `aba3b8d`, Oct 12 07:52 UTC: docs only. The longer post draft: Entire confirmed, the overall prize line, Sentry wording.
-> - `8cb11ab`, Oct 12 07:55 UTC: docs only. The longer post draft: a voice pass, with facts, numbers and links unchanged.
-> - `2b16791`, Oct 12 07:58 UTC: docs, plus one static image. A "What's inside" table in the longer post draft, and the live Crew space screenshot at /post/crew.jpg (the site was redeployed for it, static image only).
-> - The next commit: README only. This list.
+> - `415f319`, Oct 12 07:45 UTC: README and the longer post draft. The DEV post link and this wording.
+> - `aba3b8d`, Oct 12 07:48 UTC: docs only. The longer post draft: Entire confirmed, the overall prize line, Sentry wording.
+> - `8cb11ab`, Oct 12 07:52 UTC: docs only. The longer post draft: a voice pass, with facts, numbers and links unchanged.
+> - `2b16791`, Oct 12 07:55 UTC: docs, plus one static image. A "What's inside" table in the longer post draft, and the live Crew space screenshot at /post/crew.jpg (the site was redeployed for it, static image only).
+> - `09bb986`, Oct 12 07:59 UTC: README only. This list.
+> - The next commit: README only. Exact times in this list.
 
 <p align="center">
   <a href="https://flare-outside.onrender.com/app/demo/">60-second demo</a> ·
