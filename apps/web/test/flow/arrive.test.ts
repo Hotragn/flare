@@ -25,7 +25,9 @@ const replay = (fixes: { t: number; n: number; e: number; acc: number; v?: numbe
 describe("automatic I'm here", () => {
   for (const file of ["compass-iphone16promax-ios26.6.1.json", "compass-iphone13-safari27.0.json"]) {
     it(`${file}: standing at the spot, it offers I'm here by the second fix`, () => {
-      const { stream } = JSON.parse(fs.readFileSync(new URL(`../fixtures/${file}`, import.meta.url), "utf8")) as { stream: { fixes: F[] } };
+      const { stream } = JSON.parse(fs.readFileSync(new URL(`../fixtures/${file}`, import.meta.url), "utf8")) as {
+        stream: { fixes: F[] };
+      };
       const i = replay(stream.fixes);
       expect(i).toBeGreaterThanOrEqual(1);
       expect(i).toBeLessThanOrEqual(3);
