@@ -81,6 +81,12 @@ export class LinkFlow {
   #d: Deps;
   #id: string;
   #key: CryptoKey | null = null;
+
+  /** Remember this (ADR-0031): what the panel needs to call the server and seal the note. */
+  rememberCtx(): { id: string; auth: string; key: CryptoKey; crypto: Deps["crypto"] } | null {
+    if (!this.#key || !this.#group) return null;
+    return { id: this.#id, auth: bearer(this.#group), key: this.#key, crypto: this.#d.crypto };
+  }
   #group: ClientIcd.GroupRecord | null = null;
   #names: Record<string, string> = {};
   #pending: Pending | null = null;

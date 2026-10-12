@@ -54,6 +54,7 @@
     "e2e:plan": "node apps/web/test/e2e/plan.ts",
     "e2e:voice": "node apps/web/test/e2e/voice-flare.ts",
     "e2e:cloud-only": "node apps/web/test/e2e/cloud-only.ts",
+    "e2e:remember": "node apps/web/test/e2e/remember.ts",
     "e2e:no-keys": "node apps/web/test/e2e/cloud-only.ts --no-keys",
     "scenic": "node scripts/scenic.ts",
     "sim": "node tools/sim/run.ts",

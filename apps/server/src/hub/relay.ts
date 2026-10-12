@@ -122,6 +122,17 @@ export class HubRelay {
     return this.send(id, JSON.stringify(header), photo, timeoutMs);
   }
 
+  /** ADR-0031: a consented transcript to one line on the hub (asyncapi summaryJob, 8 s). Text only. */
+  summary(text: string, timeoutMs: number): Promise<RelayResult | null> {
+    const id = randomUUID();
+    return this.send(
+      id,
+      JSON.stringify({ type: "job", id, kind: "summary-draft", text: text.slice(0, 4000) }),
+      null,
+      timeoutMs,
+    );
+  }
+
   /** ADR-0028: what the host said, as 16 kHz mono WAV, for an invite draft (asyncapi voiceJob, 8 s). */
   voice(wav: Buffer, timeoutMs: number): Promise<RelayResult | null> {
     const id = randomUUID();

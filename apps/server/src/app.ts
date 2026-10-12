@@ -16,6 +16,7 @@ import { mountAi } from "./routes/ai.ts";
 import { mountGatherings } from "./routes/gatherings.ts";
 import { mountGroups } from "./routes/groups.ts";
 import { mountPlaces } from "./routes/places.ts";
+import { mountRemember } from "./routes/remember.ts";
 import { mountSystem } from "./routes/system.ts";
 import { mountVoice } from "./routes/voice.ts";
 import { captureServerError, routeSpan } from "./tracing.ts";
@@ -122,6 +123,7 @@ export function createApp(deps: Deps, ctx: Ctx = buildCtx(deps)): Hono {
   mountPlaces(app, ctx, rl);
   mountAi(app, ctx, rl);
   mountVoice(app, ctx, rl);
+  mountRemember(app, ctx, rl);
   for (const m of deps.mounts ?? []) m(app, ctx);
 
   if (webBuildDir && fs.existsSync(webBuildDir)) {

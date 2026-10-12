@@ -79,6 +79,15 @@ const STORES: { store: string; table: string; per: boolean; total: string; expir
       };
     },
   ),
+  // ADR-0031: Remember this. No expiry of their own: they go with their gathering (cascade).
+  ...["remember", "remember_consent"].map((table) => ({
+    store: "DS12",
+    table,
+    per: true,
+    total: `select count(*)::int as n from ${table}`,
+    expired: `select count(*)::int as n from ${table} t where exists (select 1 from gatherings g
+      where g.id = t.gathering_id and (g.expires_at < $1 or (g.state = 'gone' and g.state_since < $2)))`,
+  })),
   {
     store: "DS5",
     table: "groups",
@@ -184,7 +193,16 @@ export async function auditGathering(db: Q, gatheringId: string): Promise<{ tabl
     rows: (await db.query<{ n: number }>("select count(*)::int as n from gatherings where id = $1", [gatheringId]))
       .rows[0]?.n as number,
   });
-  for (const t of ["responses", "photos", "jobs", "bot_messages", "telegram_binds", "live_locations"])
+  for (const t of [
+    "responses",
+    "photos",
+    "jobs",
+    "bot_messages",
+    "telegram_binds",
+    "live_locations",
+    "remember",
+    "remember_consent",
+  ])
     out.push({
       table: t,
       rows: (

@@ -1930,6 +1930,111 @@
       "kind": "aria",
       "where": "App on a wide screen, beside the phone column (fresh-eyes round 4)"
     },
+    "remember.chip": {
+      "text": "Remember this",
+      "kind": "button",
+      "where": "Lit screens, opens the Remember this sheet (ADR-0031)"
+    },
+    "remember.title": {
+      "text": "Remember this?",
+      "kind": "title",
+      "where": "Remember this sheet"
+    },
+    "remember.hostBody": {
+      "text": "Record up to 60 seconds of your group, only if everyone agrees.",
+      "kind": "message",
+      "where": "Remember this sheet, host, off"
+    },
+    "remember.turnOn": {
+      "text": "Turn it on",
+      "kind": "button",
+      "where": "Remember this sheet, host"
+    },
+    "remember.turnOff": {
+      "text": "Turn it off",
+      "kind": "button",
+      "where": "Remember this sheet, host"
+    },
+    "remember.askBody": {
+      "text": "Your host wants to remember this. It records only if everyone agrees.",
+      "kind": "message",
+      "where": "Remember this sheet, friend asked"
+    },
+    "remember.agree": {
+      "text": "I agree",
+      "kind": "button",
+      "where": "Remember this sheet, friend"
+    },
+    "remember.decline": {
+      "text": "No thanks",
+      "kind": "button",
+      "where": "Remember this sheet, friend"
+    },
+    "remember.off": {
+      "text": "Recording is off for this Flare.",
+      "kind": "status",
+      "where": "When not everyone agreed (never who)"
+    },
+    "remember.waiting": {
+      "text": "Waiting for everyone to say OK.",
+      "kind": "status",
+      "where": "On, not everyone has answered (never who)"
+    },
+    "remember.notLit": {
+      "text": "You can record once it's lit.",
+      "kind": "status",
+      "where": "Ready to agree, not lit yet"
+    },
+    "remember.warn": {
+      "text": "Only your group. Stop if others are close.",
+      "kind": "hint",
+      "where": "Shown before Record"
+    },
+    "remember.record": {
+      "text": "Record",
+      "kind": "button",
+      "where": "Remember this sheet, when everyone agreed"
+    },
+    "remember.recording": {
+      "text": "Recording \u00b7 {s} s left",
+      "kind": "status",
+      "where": "On every phone while someone records"
+    },
+    "remember.stop": {
+      "text": "Stop for everyone",
+      "kind": "button",
+      "where": "On every phone while someone records"
+    },
+    "remember.working": {
+      "text": "Writing it down\u2026",
+      "kind": "status",
+      "where": "After recording, before the note"
+    },
+    "remember.noteTitle": {
+      "text": "What you said",
+      "kind": "title",
+      "where": "The note, on every phone"
+    },
+    "remember.noSummary": {
+      "text": "No summary: our laptop is off.",
+      "kind": "hint",
+      "where": "Hub off: no summary, nothing sent to the cloud"
+    },
+    "remember.failed": {
+      "text": "Couldn't write it down. Nothing was kept.",
+      "kind": "error",
+      "where": "Scribe failed"
+    },
+    "remember.saveSpark": {
+      "text": "Save as Spark",
+      "kind": "button",
+      "where": "The note's summary to a Spark"
+    },
+    "remember.privacy": {
+      "text": "Deleted with the Flare. Only your group can read it.",
+      "kind": "hint",
+      "where": "Under the note"
+    },
     "compass.heading": {
       "text": "Find them",
       "kind": "title",
@@ -5162,7 +5267,7 @@
       "fixed": "ADR-0022"
     },
     "site.privacy.l.voice": {
-      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it. Say it for a Spark sends up to 10 seconds of your own voice to ElevenLabs once, only after you tap. We keep no audio. ElevenLabs may keep it under its own terms. We never record anyone else or a conversation.",
+      "text": "The warm compass voice is recorded once from fixed lines and ships with the app; nothing of yours reaches ElevenLabs for it. Say it for a Spark sends up to 10 seconds of your own voice to ElevenLabs once, only after you tap. We keep no audio. ElevenLabs may keep it under its own terms.",
       "kind": "prose",
       "where": "site W4 (ADR-0027)"
     },
@@ -5170,6 +5275,16 @@
       "text": "You can say your Flare instead of taking a photo. Up to 10 seconds of your voice goes to our laptop once, over the encrypted link. Gemma 4 writes the invite from it. Nothing is kept, and the words it heard never come back.",
       "kind": "prose",
       "where": "site W4 (ADR-0028)"
+    },
+    "site.privacy.l.remember": {
+      "text": "Remember this records a conversation only with everyone's consent. It is off unless the host turns it on for one Flare or Plan. Each person who said yes agrees on their own phone. If anyone doesn't, or someone joins later without agreeing, it stays off for everyone, and nobody sees who. Anyone can stop a recording for everyone, and every phone shows when it's on. Up to 60 seconds goes once to ElevenLabs, which turns it into words with speaker numbers, not names. We keep no audio; ElevenLabs may keep it under its own terms. The words are sealed on your phones with the Flare key. Gemma on our laptop writes one line, never a cloud model. All of it is deleted with the Flare.",
+      "kind": "prose",
+      "where": "site W4 (ADR-0031)"
+    },
+    "ai.remember": {
+      "text": "Remember this: when everyone says OK, up to 60 s is written down and our laptop sums it up.",
+      "kind": "prose",
+      "where": "/ai/ (ADR-0031)"
     },
     "site.privacy.l.sleep": {
       "text": "Our server runs on a free plan that sleeps when nobody uses it. A Flare that ends while it sleeps is deleted the moment it wakes, not within 5 minutes.",

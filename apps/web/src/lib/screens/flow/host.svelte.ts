@@ -51,6 +51,14 @@ const CLOUD_WAIT_MS = 40_000; // DigitalOcean answers in about 30 s; the server 
 export class HostFlow {
   screen = $state<HostScreen>("camera");
   photoBlob: Blob | null = null;
+  /** Remember this (ADR-0031): what the panel needs to call the server and seal the note. */
+  rememberCtx(): { id: string; auth: string; key: CryptoKey; crypto: Deps["crypto"] } | null {
+    const g = this.#group;
+    const id = this.view?.id;
+    if (!g || !id) return null;
+    return { id, auth: bearer(g), key: g.key, crypto: this.#d.crypto };
+  }
+
   /** Automations: Home's 2-hour forecast says rain is likely (lib/map/weather.ts). */
   rainLikely = false;
   photo = $state("");

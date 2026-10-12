@@ -913,6 +913,206 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
 
+  /api/v1/gatherings/{gatheringId}/remember:
+    get:
+      tags: [gatherings]
+      operationId: getRemember
+      summary: "Remember this: flags and this phone's own choice (ADR-0031)"
+      description: |
+        Flags only (on, ready, recording, has_note), this phone's own consent and the sealed note. Never who said no.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+    put:
+      tags: [gatherings]
+      operationId: setRemember
+      summary: "Remember this: the host turns it on or off for this Flare (ADR-0031)"
+      description: |
+        Host only. Off by default; turning it off clears every consent and any recording.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [on], properties: { on: { type: boolean } } }
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+  /api/v1/gatherings/{gatheringId}/remember/consent:
+    put:
+      tags: [gatherings]
+      operationId: consentRemember
+      summary: "Remember this: one person agrees, or not, on their own phone (ADR-0031)"
+      description: |
+        Any no keeps it off for everyone and stops a recording at once.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [ok], properties: { ok: { type: boolean } } }
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+  /api/v1/gatherings/{gatheringId}/remember/record:
+    post:
+      tags: [gatherings]
+      operationId: recordRemember
+      summary: "Remember this: start (when ready) or stop (anyone, for everyone) (ADR-0031)"
+      description: |
+        Start needs every yes to have agreed and the gathering lit; it records up to 60 s on that phone. Every phone gets the sign live (SSE event remember).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [action], properties: { action: { type: string, enum: [start, stop] } } }
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+  /api/v1/gatherings/{gatheringId}/remember/transcribe:
+    post:
+      tags: [gatherings]
+      operationId: transcribeRemember
+      summary: "Remember this: the recording to speaker-labelled lines, once (ADR-0031)"
+      description: |
+        Audio up to 1.2 MB, sent once to ElevenLabs Scribe v2 with speaker labels (Speaker 1, 2), zero-filled after; nothing kept. 503 without an ElevenLabs key.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          audio/webm:
+            schema: { type: string, maxLength: 1200000 }
+          audio/mp4:
+            schema: { type: string, maxLength: 1200000 }
+      responses:
+        "200":
+          description: Lines
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+  /api/v1/gatherings/{gatheringId}/remember/summary:
+    post:
+      tags: [gatherings]
+      operationId: summarizeRemember
+      summary: "Remember this: one line from Gemma on the hub (ADR-0031)"
+      description: |
+        Hub only; with the hub off, line is null and the text never goes to a cloud model.
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [text], properties: { text: { type: string, maxLength: 4000 } } }
+      responses:
+        "200":
+          description: Line
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+  /api/v1/gatherings/{gatheringId}/remember/note:
+    put:
+      tags: [gatherings]
+      operationId: noteRemember
+      summary: "Remember this: store the note, sealed on the phone with the Flare key (ADR-0031)"
+      description: |
+        The server can't read it; deleted with the gathering at Gone (audit DS12).
+      security: [{ member: [] }]
+      parameters:
+        - $ref: "#/components/parameters/GatheringId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [note_ct], properties: { note_ct: { type: string, maxLength: 32004 } } }
+      responses:
+        "200":
+          description: State
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RememberState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Recording is off for this Flare (not everyone agreed, or not lit)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "410": { $ref: "#/components/responses/Gone" }
+
   /api/v1/groups/{groupId}/stats:
     parameters:
       - $ref: "#/components/parameters/GroupId"
@@ -1221,6 +1421,21 @@ components:
       type: string
       pattern: "^[A-Za-z0-9_-]{43}$"
 
+    RememberState:
+      type: object
+      description: Remember this (ADR-0031). Flags only, never who; GET adds my_ok, is_host, note_ct; transcribe answers lines; summary answers line and tier.
+      properties:
+        on: { type: boolean }
+        ready: { type: boolean }
+        recording: { type: boolean }
+        recording_until: { type: [string, "null"], format: date-time }
+        has_note: { type: boolean }
+        my_ok: { type: [boolean, "null"] }
+        is_host: { type: boolean }
+        note_ct: { type: [string, "null"] }
+        lines: { type: [array, "null"], items: { type: object, properties: { speaker: { type: string }, text: { type: string } } } }
+        line: { type: [string, "null"] }
+        tier: { type: string, enum: [hub, none] }
     Error:
       type: object
       required: [code, message]
@@ -1252,6 +1467,7 @@ components:
             - too_large
             - not_jpeg
             - not_audio
+            - not_ready
             - rate_limited
             - not_configured
         message:

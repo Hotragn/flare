@@ -43,6 +43,14 @@ export const VoiceJob = JobHeader.extend({
   bytes: z.number().int().positive().max(400_000),
 });
 
+/** Remember this (ADR-0031, asyncapi `summaryJob`): a consented transcript to one line. Text only, 8 s. */
+export const SummaryJob = z.object({
+  type: z.literal("job"),
+  id: z.string().uuid(),
+  kind: z.literal("summary-draft"),
+  text: z.string().min(1).max(4000),
+});
+
 export const HubLadderStep = z.object({
   step: z.number().int().min(1).max(4),
   label: z.string(),
@@ -56,6 +64,7 @@ export const JobResult = z.object({
   draft: z.object({ invite: z.string().min(1), alt: z.string().min(1) }).optional(),
   ladder: z.array(HubLadderStep).length(4).optional(), // ICR-BE-1
   tags: z.record(z.string(), z.string()).optional(), // ICR-ML5, after enforceOsmTags
+  summary: z.string().max(140).optional(), // ADR-0031, after enforceSummary
   error: z.enum(["model_unavailable", "unusable_answer", "timeout", "bad_image", "bad_audio"]).optional(),
   ms: z.number().int().nonnegative(),
   model: z.string(),
@@ -68,7 +77,7 @@ export const FromHub = z.discriminatedUnion("type", [HelloFromHub, JobResult, Po
 export const ToHub = z.discriminatedUnion("type", [JobHeader, Ping]);
 /** ICR-BE-1: everything the server may send once the hub handles ladder jobs. A hub on
  * plain ToHub ignores ladder jobs, and the server falls back to the template after 8 s. */
-export const ToHubV11 = z.union([JobHeader, LadderJob, TagsJob, VoiceJob, Ping]);
+export const ToHubV11 = z.union([JobHeader, LadderJob, TagsJob, VoiceJob, SummaryJob, Ping]);
 
 export type JobHeaderT = z.infer<typeof JobHeader>;
 export type JobResultT = z.infer<typeof JobResult>;
@@ -77,4 +86,5 @@ export type ToHubT = z.infer<typeof ToHub>;
 export type LadderJobT = z.infer<typeof LadderJob>;
 export type TagsJobT = z.infer<typeof TagsJob>;
 export type VoiceJobT = z.infer<typeof VoiceJob>;
+export type SummaryJobT = z.infer<typeof SummaryJob>;
 export type ToHubV11T = z.infer<typeof ToHubV11>;

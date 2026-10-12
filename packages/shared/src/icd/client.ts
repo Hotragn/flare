@@ -10,7 +10,8 @@ export type Aad =
   | `m:${string}:${string}`
   | `s:${string}:${string}`
   | `h:${string}`
-  | `l:${string}`;
+  | `l:${string}`
+  | `r:${string}`; // Remember this note (ADR-0031), per gathering
 
 export interface Crypto {
   newGroupKey(): Promise<{ key: CryptoKey; fragment: string }>; // fragment = base64url raw key

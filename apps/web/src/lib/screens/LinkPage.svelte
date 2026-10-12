@@ -184,6 +184,13 @@
   {/if}
 {/if}
 
+<!-- Remember this (ADR-0031): consent and the recording sign, only while the gathering is live. -->
+{#if flow.view && flow.view.state !== "gone" && flow.rememberCtx()}
+  {#await import("#lib/components/RememberPanel.svelte") then { default: RememberPanel }}
+    <RememberPanel ctx={flow.rememberCtx() as NonNullable<ReturnType<typeof flow.rememberCtx>>} lit={flow.view.state === "lit"} />
+  {/await}
+{/if}
+
 <style>
   .center { flex: 1; display: grid; place-items: center; text-align: center; }
 </style>

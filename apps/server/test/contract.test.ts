@@ -744,9 +744,110 @@ describe("draftFromVoice", () => {
   });
 });
 
+describe("setRemember", () => {
+  it("Remember this (ADR-0031): host-only on, everyone's consent, a no stops it, never who", async () => {
+    const lit = await litFlare();
+    const [, friend, other] = lit.members as TestMember[];
+    const R = (p = "") => G(lit.id, `/remember${p}`);
+    expect((await h.call("GET", R(), { as: friend })).body).toMatchObject({
+      on: false,
+      ready: false,
+      recording: false,
+    });
+    expect((await h.call("PUT", R(), { as: friend, body: { on: true } })).status).toBe(403);
+    expect((await h.call("PUT", R(), { as: lit.host, body: { on: true } })).body).toMatchObject({
+      on: true,
+      ready: false,
+    });
+    expect((await h.call("POST", R("/record"), { as: friend, body: { action: "start" } })).body.code).toBe("not_ready");
+    expect((await h.call("PUT", R("/consent"), { as: friend, body: { ok: true } })).body).toMatchObject({
+      ready: true,
+    });
+    const got = await h.call("GET", R(), { as: friend });
+    expect(got.body).toMatchObject({ my_ok: true, is_host: false, ready: true });
+    for (const m of lit.members as TestMember[]) expect(JSON.stringify(got.body)).not.toContain(m.id);
+    expect((await h.call("POST", R("/record"), { as: other, body: { action: "start" } })).body).toMatchObject({
+      recording: true,
+    });
+    // A no from anyone: off for everyone, the recording stops at once.
+    expect((await h.call("PUT", R("/consent"), { as: friend, body: { ok: false } })).body).toMatchObject({
+      ready: false,
+      recording: false,
+    });
+    await h.call("PUT", R("/consent"), { as: friend, body: { ok: true } });
+    expect((await h.call("POST", R("/record"), { as: friend, body: { action: "start" } })).body.recording).toBe(true);
+    expect((await h.call("POST", R("/record"), { as: lit.host, body: { action: "stop" } })).body.recording).toBe(false);
+    expect((await h.call("PUT", R("/note"), { as: friend, body: { note_ct: "c2VhbGVk" } })).body.has_note).toBe(true);
+    expect((await h.call("GET", R(), { as: lit.host })).body.note_ct).toBe("c2VhbGVk");
+  });
+});
+// One gathering for the small Remember this cases (the group create limit is per IP).
+let remShared: Awaited<ReturnType<typeof litFlare>> | null = null;
+const remLit = async () => (remShared ??= await litFlare());
+describe("getRemember", () => {
+  it("401 without a member token", async () => {
+    const lit = await remLit();
+    expect((await h.call("GET", G(lit.id, "/remember"))).status).toBe(401);
+  });
+});
+describe("consentRemember", () => {
+  it("the host agrees by turning it on, not here (400)", async () => {
+    const lit = await remLit();
+    expect((await h.call("PUT", G(lit.id, "/remember/consent"), { as: lit.host, body: { ok: true } })).status).toBe(
+      400,
+    );
+  });
+});
+describe("recordRemember", () => {
+  it("400 on an unknown action", async () => {
+    const lit = await remLit();
+    expect(
+      (await h.call("POST", G(lit.id, "/remember/record"), { as: lit.host, body: { action: "pause" } })).status,
+    ).toBe(400);
+  });
+});
+describe("transcribeRemember", () => {
+  it("503 without an ElevenLabs key", async () => {
+    const lit = await remLit();
+    const r = await h.call("POST", G(lit.id, "/remember/transcribe"), {
+      as: lit.host,
+      raw: Buffer.alloc(100, 1),
+      type: "audio/webm",
+    });
+    expect(r.status).toBe(503);
+  });
+});
+describe("noteRemember", () => {
+  it("409 when not everyone agreed", async () => {
+    const lit = await remLit();
+    await h.call("PUT", G(lit.id, "/remember"), { as: lit.host, body: { on: true } });
+    expect((await h.call("PUT", G(lit.id, "/remember/note"), { as: lit.host, body: { note_ct: "eA" } })).status).toBe(
+      409,
+    );
+  });
+});
+describe("summarizeRemember", () => {
+  it("no hub, no summary: the text never goes to a cloud model", async () => {
+    const lit = await remLit();
+    await h.call("PUT", G(lit.id, "/remember"), { as: lit.host, body: { on: true } });
+    await h.call("PUT", G(lit.id, "/remember/consent"), { as: lit.members[1], body: { ok: true } });
+    const r = await h.call("POST", G(lit.id, "/remember/summary"), {
+      as: lit.host,
+      body: { text: "Speaker 1: geese" },
+    });
+    expect(r.body).toEqual({ line: null, tier: "none" });
+  });
+});
+
 describe("transcribeSpark", () => {
   it("503 when this server has no ElevenLabs key (ADR-0027); the full path is in voice.test.ts", async () => {
-    const r = await h.call("POST", "/api/v1/voice/spark", { raw: Buffer.alloc(100, 1), type: "audio/webm", key: null });
+    // Its own address: the per-IP write limit is shared across this file's many calls.
+    const r = await h.call("POST", "/api/v1/voice/spark", {
+      raw: Buffer.alloc(100, 1),
+      type: "audio/webm",
+      key: null,
+      headers: { "x-forwarded-for": "203.0.113.9" },
+    });
     expect(r.status).toBe(503);
     expect(r.body.code).toBe("not_configured");
   });

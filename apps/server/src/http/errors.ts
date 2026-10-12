@@ -27,6 +27,7 @@ export type ErrorCode =
   | "too_large"
   | "not_jpeg"
   | "not_audio"
+  | "not_ready"
   | "rate_limited"
   | "not_configured";
 

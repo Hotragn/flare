@@ -244,6 +244,13 @@
   <p class="t-small t-muted foot">{t("menu.foot")}</p>
 </Sheet>
 
+<!-- Remember this (ADR-0031): the host turns it on; the recording sign shows here too. -->
+{#if (flow.screen === "kindling" || flow.screen === "lit") && flow.rememberCtx()}
+  {#await import("#lib/components/RememberPanel.svelte") then { default: RememberPanel }}
+    <RememberPanel ctx={flow.rememberCtx() as NonNullable<ReturnType<typeof flow.rememberCtx>>} lit={flow.screen === "lit"} />
+  {/await}
+{/if}
+
 <style>
   .menu { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
   .row { width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 6px; border: 0; background: transparent; color: var(--text); text-decoration: none; font: inherit; text-align: left; border-radius: var(--r-md); }

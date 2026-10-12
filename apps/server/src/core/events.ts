@@ -2,7 +2,12 @@
 // One server instance (ADR-0004), so a Map of listeners is the whole bus.
 export type LiveMessage =
   | { type: "gathering"; version: number; view: Record<string, unknown> }
-  | { type: "gone"; id: string; ended: "not_this_time" | "thanks_for_coming" };
+  | { type: "gone"; id: string; ended: "not_this_time" | "thanks_for_coming" }
+  // ADR-0031: the recording sign, live on every phone. Flags only, never who.
+  | {
+      type: "remember";
+      state: { on: boolean; ready: boolean; recording: boolean; recording_until: string | null; has_note: boolean };
+    };
 
 export type Listener = (m: LiveMessage) => void;
 

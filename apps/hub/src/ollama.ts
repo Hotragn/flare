@@ -7,12 +7,15 @@ import {
   enforce,
   enforceLadder,
   enforceOsmTags,
+  enforceSummary,
   LADDER_PROMPT,
   type LadderJobT,
   type LadderT,
   ladderUserPrompt,
   OSM_PROMPT,
+  SUMMARY_SYSTEM,
   SYSTEM_PROMPT,
+  summaryUserPrompt,
   USER_PROMPT,
   VOICE_SYSTEM_PROMPT,
   VOICE_USER_PROMPT,
@@ -88,6 +91,24 @@ export async function draftFromVoice(cfg: OllamaConfig, wav: Uint8Array, signal?
     signal,
   );
   return enforce(text);
+}
+
+/** Remember this (ADR-0031): a consented transcript to one guarded line, or null. */
+export async function summaryFromTranscript(
+  cfg: OllamaConfig,
+  text: string,
+  signal?: AbortSignal,
+): Promise<string | null> {
+  const out = await post(
+    cfg,
+    [
+      { role: "system", content: SUMMARY_SYSTEM },
+      { role: "user", content: summaryUserPrompt(text) },
+    ],
+    96,
+    signal,
+  );
+  return enforceSummary(out);
 }
 
 /** Ask line to four steps with ML's ladder prompt v2 and enforceLadder(). No retry by default (ADR-0025). */

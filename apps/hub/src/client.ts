@@ -9,6 +9,7 @@ import {
   isModelReady,
   ladderFromAsk,
   type OllamaConfig,
+  summaryFromTranscript,
   tagsFromPhoto,
 } from "./ollama.ts";
 
@@ -133,6 +134,23 @@ export function startHub(opts: HubOptions): { stop: () => void } {
     send(result, "ladder-draft");
   };
 
+  // ADR-0031: a consented transcript to one line; the text lives only in this call.
+  const runSummary = async (job: { id: string; text: string }, arrived: number) => {
+    const t = performance.now();
+    let result: HubResult;
+    try {
+      const left = remaining(arrived, "ladder");
+      if (left <= 0) throw Object.assign(new Error("stale"), { name: "TimeoutError" });
+      const line = await summaryFromTranscript(opts.ollama, job.text, AbortSignal.timeout(left));
+      result = line
+        ? { ...base(job.id, t), ok: true, summary: line }
+        : { ...base(job.id, t), ok: false, error: "unusable_answer" };
+    } catch (e) {
+      result = { ...base(job.id, t), ok: false, error: isTimeout(e) ? "timeout" : "model_unavailable" };
+    }
+    send(result, "summary-draft");
+  };
+
   const connect = () => {
     if (stopped) return;
     ws = new WebSocket(`${opts.serverUrl.replace(/\/$/, "")}/hub`, {
@@ -165,7 +183,10 @@ export function startHub(opts: HubOptions): { stop: () => void } {
         if (msg.type === "ping") ws?.send(JSON.stringify({ type: "pong", t: msg.t }));
         else if (msg.kind === "photo-draft" || msg.kind === "tags-draft" || msg.kind === "voice-draft")
           waitingFor = { id: msg.id, bytes: msg.bytes, kind: msg.kind };
-        else {
+        else if (msg.kind === "summary-draft") {
+          const arrived = performance.now();
+          enqueue(() => runSummary(msg, arrived));
+        } else {
           const arrived = performance.now();
           enqueue(() => runLadder(msg, arrived));
         }

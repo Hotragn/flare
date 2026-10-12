@@ -226,6 +226,8 @@ export function mountGatherings(app: Hono, ctx: Ctx, rl: RateLimiter): void {
             if (msg.version <= sent) return;
             sent = msg.version;
             await stream.writeSSE({ event: "gathering", id: String(msg.version), data: JSON.stringify(msg.view) });
+          } else if (msg.type === "remember") {
+            await stream.writeSSE({ event: "remember", data: JSON.stringify(msg.state) });
           } else {
             await stream.writeSSE({ event: "gone", data: JSON.stringify({ id: msg.id, ended: msg.ended }) });
             finish();

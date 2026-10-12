@@ -59,6 +59,7 @@ channels:
       ladderJob: { $ref: "#/components/messages/ladderJob" }
       tagsJob: { $ref: "#/components/messages/tagsJob" }
       voiceJob: { $ref: "#/components/messages/voiceJob" }
+      summaryJob: { $ref: "#/components/messages/summaryJob" }
       voiceBytes: { $ref: "#/components/messages/voiceBytes" }
       result: { $ref: "#/components/messages/result" }
       ping: { $ref: "#/components/messages/ping" }
@@ -133,6 +134,12 @@ operations:
     messages:
       - $ref: "#/channels/hub/messages/voiceJob"
       - $ref: "#/channels/hub/messages/voiceBytes"
+  serverSendsSummaryJob:
+    action: receive
+    channel: { $ref: "#/channels/hub" }
+    summary: "ADR-0031: a consented Remember this transcript to one line (text only, 8 s)"
+    messages:
+      - $ref: "#/channels/hub/messages/summaryJob"
   hubSendsResult:
     security:
       - $ref: "#/components/securitySchemes/hubSecret"
@@ -266,6 +273,21 @@ components:
           kind: { const: voice-draft }
           bytes: { type: integer, minimum: 1, maximum: 400000 }
           mime: { const: audio/wav }
+
+    summaryJob:
+      name: job
+      title: Summary job (ADR-0031)
+      contentType: application/json
+      description: A transcript everyone agreed to record, speaker-labelled, at most 4000 characters. The hub answers with result.summary after enforceSummary(). Nothing is kept.
+      payload:
+        type: object
+        additionalProperties: false
+        required: [type, id, kind, text]
+        properties:
+          type: { const: job }
+          id: { type: string, format: uuid }
+          kind: { const: summary-draft }
+          text: { type: string, maxLength: 4000 }
 
     voiceBytes:
       name: voiceBytes
