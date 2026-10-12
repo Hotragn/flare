@@ -5,8 +5,9 @@ tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
-     FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, NEW TONIGHT, ROUND 6, COMPASS FIX,
+     FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), ROUND 6,
      VIDEO, MASTRA LIVE, SENTRY TRACE, AGENT SESSION, ENTIRE, THANKS, and the repo line.
+     Prose is 1,713 words without the holes: keep everything you add under about 185 words.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
 
@@ -42,11 +43,12 @@ A plan in a group chat dies when nobody wants to be the one who says yes first, 
 | You say it instead, and Gemma writes it | 3.3 s, no audio kept | [Gemma](#gemma-4-sees-hears-and-writes) |
 | A plan that gets smaller instead of failing | 11 of 12 lit (Simulation: 48 friends) | [Testing](#how-i-tested-it) |
 | Everything about the meetup deleted | within 5 min; worst case 90 s | [Privacy](#privacy-built-in) |
+| Real friends on the live app | 3 people, 1 gathering, live audit pass | [Testing](#how-i-tested-it) |
 | Strangers with no context | 5, 6, 5, 6, 6 out of 10 over 5 rounds | [Testing](#how-i-tested-it) |
 
 ## Demo
 
-- **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). The real rules engine runs in your browser with three demo friends, and nothing is sent. In 60 seconds: tap I'm in as Amor, Skip 30 min to watch it shrink, then Find them.
+- **Try it with no setup:** [flare-outside.onrender.com/app/demo/](https://flare-outside.onrender.com/app/demo/). The real rules engine runs in your browser, and nothing is sent. In 60 seconds: tap I'm in as Amor, Skip 30 min to watch it shrink, then Find them.
 - **The app:** [flare-outside.onrender.com/app/](https://flare-outside.onrender.com/app/). **The site:** [flare-outside.onrender.com](https://flare-outside.onrender.com/), Lighthouse 100 in all four categories on all five pages.
 - **Telegram:** [@FairlaneFlareBot](https://t.me/FairlaneFlareBot). Add it to a group chat from the app's "Post in Telegram" screen.
 - **Video:** [VIDEO: 60 to 90 s screen recording, see docs/post/shot-list.md]
@@ -57,7 +59,7 @@ One evening, in four frames:
 
 ### How I tested it
 
-I haven't run a group meetup with it yet, so I won't claim one.
+**Field test 1, Sun Oct 11, 8:20 PM:** I sent a real Flare to 2 real friends on the live app. 3 people, 1 gathering, 3 responses and 1 Spark, the live audit passing at 8:36 PM, and 6 bugs found, all fixed below. [FIELD: met in person?]
 
 | What | How | Result |
 | --- | --- | --- |
@@ -96,9 +98,9 @@ The phone talks only to the server on Render. Our Mac dials out over a WebSocket
 
 ### Gemma 4 sees, hears and writes
 
-The photo goes to **Gemma 4 E4B** (`gemma4:e4b-it-q4_K_M`) on **Ollama**: 20/20 valid JSON, 39/40 scenes right, 3.0 s median. It also writes Plan ladders, a big plan and three smaller versions: 13/13 valid, p95 5.5 s.
+The photo goes to **Gemma 4 E4B** (`gemma4:e4b-it-q4_K_M`) on **Ollama**: 20/20 valid JSON, 39/40 scenes right, 3.0 s median. It also writes Plan ladders: 13/13 valid, p95 5.5 s.
 
-The audio surprised me. Ollama 0.40.2 lists `audio` for this model, and it hears 16 kHz WAV passed in the same `images` field a photo uses. A field named `audio` is ignored. A Voice Flare records up to 10 s, and "Meet at the pond bench" comes back in 3.3 s. The voice never leaves our laptop.
+The audio surprised me: it hears 16 kHz WAV passed in the same `images` field a photo uses. A 10 s Voice Flare becomes "Meet at the pond bench" in 3.3 s, and the voice never leaves our laptop.
 
 I picked the model by measuring the options on one test set, and the smaller ones lost:
 
@@ -109,16 +111,18 @@ I picked the model by measuring the options on one test set, and the smaller one
 | SmolVLM-500M | Chrome and Safari | 16/40 scenes, 6/20 misleading | No |
 | Qwen3-0.6B (conditions) | Safari | 26/40 | No: rules got 40/40 in under 1 ms |
 
+Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at best, so Sounds of the spot didn't ship.
+
 **The model picks the words; code owns the facts.** Every answer passes `enforce()` before anyone sees it: six words at most, no names, no invented places. If the model is slow or the answer fails, the app shows typed words. Nobody waits on the AI.
 
 ### The rest of the stack
 
-- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop. By default it thinks first: a Plan draft took 21.7 s and 1,021 thought tokens with no answer. With `thinkingLevel: "minimal"`, 1.4 s. A photo goes only when the host taps. DigitalOcean is wired in, paused for billing.
-- **Mastra.** An agent drafts the Plan ladder with four local tools: sunset, weather window, nearby places, step templates. On 13 asks: p95 5.1 s against 5.5 s, weather 7/7, 12 ms of overhead, same guard.
+- **Google AI Studio.** Gemma 4 26B A4B covers for our laptop. It thinks first by default: a Plan draft took 21.7 s with no answer. With `thinkingLevel: "minimal"`, 1.4 s. Photos go only on the host's tap. DigitalOcean is wired in, paused for billing.
+- **Mastra.** An agent drafts the Plan ladder with four local tools (sunset, weather, nearby places, step templates). On 13 asks: p95 5.1 s against 5.5 s, weather 7/7, 12 ms of overhead.
 - **Tinker.** The phone's rules read 15/40 new condition phrasings. A Qwen3.5-4B LoRA (3,000 examples, 6 minutes, about $2.40) read 38/40 but can't run on the phone, so its errors taught the rules: 20/40 to 30/40, blind.
 - **ElevenLabs.** 54 compass lines recorded once: 698 characters, 684 KB, offline, no names. Voice Spark sends up to 10 s of your own voice to Scribe on a tap (0.72 s). No audio kept.
-- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only an allow-list leaves the server: tier, model, timing, ok, error class. A test fails if marker phrases or UUIDs sent through the real routes reach Sentry.
-- **Telegram.** The bot posts a card drawn in 15 to 60 ms, with no names and no photo unless the group opts in, and deletes it at Gone. Real-stack test: 14/14.
+- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing, ok and error class leave the server, and a test fails if marker phrases or UUIDs reach Sentry.
+- **Telegram.** The bot posts a card drawn in 15 to 60 ms, with no names, and deletes it at Gone. Real-stack test: 14/14.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
 [SENTRY TRACE: a screenshot of a live trace, a Plan draft with the hub away, `gen_ai.provider.name: google`, and its latency]
@@ -132,22 +136,35 @@ I picked the model by measuring the options on one test set, and the smaller one
 
 ### New tonight
 
-[NEW TONIGHT: ≤150 words, only what shipped with a test; Remember this, if shipped, opens with its consent rule]
+- **Again** on Home sends the last Flare again in one tap.
+- **Telegram-linked Send** posts straight to the group chat.
+- **I'm here by itself** within 30 m of the spot, with a 10 s Undo.
+- **Rule chips** fill a condition with a tap.
+- **Since launch** totals on the site come from `GET /api/v1/stats`, which holds no ids.
+- **The motion:** sparks for each yes, the lighting, the shrink to an Ember and Gone. All run at 60 fps at 4x CPU slowdown in Chrome, except the host's lit at 58.6. That is not an iPhone trace.
+
+![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
+
+**Remember this** stays off. A conversation note needs everyone's yes on their own phone, and I want a real group to try that rule before it ships.
 
 ## What I got wrong
 
-- **The compass.** Testers saw rings and no arrow, so it now has an arrowhead that goes gold when you face the right way. On one real iPhone walk it said "close" 49 times; now it repeats only when the distance halves. On both real heading streams it moves less than 30° per 100 ms event. [COMPASS FIX: if tonight's wrong-way fix shipped, what was wrong in real use and its replay numbers]
-- **Sparks never reached Hot spots.** Three bugs: the record was never written, "met here" was always empty, and it fired three times.
-- **DigitalOcean was blocked for billing** on the last day, so I added Google AI Studio and skip a refusing provider for an hour.
-- **The small model didn't fit** iPhone Safari's 1 GiB buffer cap.
-- **The first UI looked dated,** so I redesigned it around a full-bleed photo and a glass sheet.
-- **I was stuck at 5 and 6 out of 10.** The website's CSS hid the app's photo under a navy block, and the demo never said who you were. I scoped the CSS and added "You: Fuego, the host".
+Field test 1 found these first:
+
+- **The headline and sheet covered the photo,** 73% of it. Now 0%, and a new `e2e:photo-fit` gate checks 3 viewports with a dark photo.
+- **"After 10min" read as 10 AM.** It now reads "you can come in 10 min", and words the parser misses are said back. The blind set stays 30/40.
+- **"Fuego is at Near Heather Drive."** Now "is near".
+- **Share did nothing in Brave.** The tap's activation was lost after an await. Share now runs in the tap, with a Copy link fallback, tested in WebKit but not on a real iPhone.
+- **"We'll buzz you" with no push.** That line now shows only with a live subscription.
+- **Returning phones got old pages** from the service worker. Pages now load network first and the new worker takes over at once (two-build test, 8/8).
+
+Before that: the compass showed no arrow and said "close" 49 times on one walk, and DigitalOcean's billing block sent me to Google AI Studio.
 
 ## Honest limits
 
 - **No background location or mic.** An iPhone web app can't use either.
 - **No server pushes for golden hour or a weekly recap.** The server never knows where a crew is or its time zone.
-- **No group meetup test yet.**
+- **One real group so far,** and I can't yet say it met in person.
 - **In a small group, the count can give away who said yes.** If two people are invited and the count says 1, you can guess.
 
 ## Next steps
@@ -158,7 +175,7 @@ I picked the model by measuring the options on one test set, and the smaller one
 
 ## Why Does Open Innovation Matter?
 
-A photo of where you stand, or your voice saying it, is about as personal as data gets. The friend with low vision who says where they are sends that voice only to an open model on our own laptop, where it lives in memory and is gone after the call. A free app can't pay per call either: the laptop costs $0 per photo. And open let me look inside: I saw why the small model failed on an iPhone (a 1.17 GB buffer) and fine-tuned one in 6 minutes. Open lost on speed on a busy laptop, which is what the fallback is for.
+A photo of where you stand, or your voice saying it, is about as personal as data gets. The friend with low vision who says where they are sends that voice only to an open model on our own laptop, where it lives in memory and is gone after the call. A free app can't pay per call either: the laptop costs $0 per photo. And open let me look inside: I saw why the small model failed on an iPhone (a 1.17 GB buffer). Open lost on speed on a busy laptop, which is what the fallback is for.
 
 ## My Agent Session
 
@@ -168,9 +185,9 @@ A photo of where you stand, or your voice saying it, is about as personal as dat
 
 ## Prize Categories
 
-- **Gemma:** Gemma 4 E4B sees (39/40), hears (3.3 s) and writes, with code checking every answer. [Details](#gemma-4-sees-hears-and-writes)
+- **Gemma:** sees (39/40), hears (3.3 s) and writes, with code checking every answer. [Details](#gemma-4-sees-hears-and-writes)
 - **Tinker:** a $2.40 LoRA read 38/40 and taught the rules 20/40 to 30/40, blind. [Details](#the-rest-of-the-stack)
-- **ElevenLabs:** a compass voice for 698 characters that sends nothing, and Scribe for your own 10 s Spark. [Details](#the-rest-of-the-stack)
+- **ElevenLabs:** a compass voice for 698 characters that sends nothing. [Details](#the-rest-of-the-stack)
 - **Mastra:** four local tools, p95 5.1 s vs 5.5 s, weather 7/7. [MASTRA LIVE: keep this line only if the agent is switched on live] [Details](#the-rest-of-the-stack)
 - **Sentry Agent Tracing:** every AI job traced, under an allow-list a test proves. [Details](#the-rest-of-the-stack)
 - **Entire:** [ENTIRE: one line with the session links]
