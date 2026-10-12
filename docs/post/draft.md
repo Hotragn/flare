@@ -44,7 +44,7 @@ A plan in a group chat dies when nobody wants to be the one who says yes first, 
 | A plan that gets smaller instead of failing | 11 of 12 lit (Simulation: 48 friends) | [Testing](#how-i-tested-it) |
 | Everything about the meetup deleted | within 5 min; worst case 90 s | [Privacy](#privacy-built-in) |
 | Real friends on the live app | 3 people, 1 gathering, live audit pass | [Testing](#how-i-tested-it) |
-| AI testers with no context | 5, 6, 5, 6, 6, 6 out of 10 over 6 rounds | [Testing](#how-i-tested-it) |
+| AI testers with no context | 5, 6, 5, 6, 6, 6, then 7 out of 10 over 7 rounds | [Testing](#how-i-tested-it) |
 
 ## Demo
 
@@ -74,7 +74,7 @@ The fresh-eyes testers are AI agents, not people: each round, a new agent with n
 | --- | --- | --- | --- | --- | --- | --- |
 | Score out of 10 | 5 | 6 | 5 | 6 | 6 | 6 |
 
-Round 6 scored 6/10 on live 68afd9b. On a WhatsApp poll, the AI tester said:
+Round 6 scored 6/10 on live 68afd9b, and a recheck after its fixes scored 7/10. On a WhatsApp poll, the AI tester said:
 
 > For a quick "anyone free for a walk now?", maybe. The private yes and the "only happens if enough come" rule are real wins over a poll, where everyone sees who said no. For a normal meetup I'd still use the WhatsApp poll. It sits inside the chat where everyone already is, it's never lost, and nobody needs to keep a tab open with the sound on. Here, losing my own invite on reload would put me off for good.
 
