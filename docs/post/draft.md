@@ -2,6 +2,7 @@
 title: "Flare: snap where you are, and it only lights if enough friends quietly say yes"
 published: false
 tags: devchallenge, hf26challenge, gemma, opensource
+cover_image: https://flare-outside.onrender.com/post/cover.png
 ---
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
@@ -31,13 +32,13 @@ For a friend with low vision, Gemma turns the photo into a line their screen rea
 
 **When the signal ends.** Once it's lit, the compass needs no signal. The invite fits a 200-byte text for SMS or iPhone satellite texting; friends reply "IN" and the code, and the host counts them. Taps made offline send when signal returns.
 
-![A Flare lights on a friend's phone](docs/post/media/app-motion/after/3-lit.gif)
+![A Flare lights on a friend's phone](https://flare-outside.onrender.com/post/lit.gif)
 
 ### Why it matters
 
 A plan in a group chat dies when nobody wants to be the one who says yes first, and Flare's private count is built for exactly that.
 
-![Time with friends fell by two thirds from 2003 to 2020: 60 to 20 minutes a day, while time alone rose from 285 to 333](docs/post/media/22-why-friends.png)
+![Time with friends fell by two thirds from 2003 to 2020: 60 to 20 minutes a day, while time alone rose from 285 to 333](https://flare-outside.onrender.com/post/why-friends.png)
 
 *Source: Kannan and Veazie, 2023, [SSM Population Health](https://doi.org/10.1016/j.ssmph.2022.101331), from the American Time Use Survey. More on the [site](https://flare-outside.onrender.com/).*
 
@@ -60,11 +61,11 @@ A plan in a group chat dies when nobody wants to be the one who says yes first, 
 
 One evening, in four frames:
 
-![Kindling, Lit, Ember, Gone: one evening in Flare](docs/post/media/21-storyboard.png)
+![Kindling, Lit, Ember, Gone: one evening in Flare](https://flare-outside.onrender.com/post/storyboard.png)
 
 Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrome.
 
-![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
+![A Flare shrinks to an Ember, then lights](https://flare-outside.onrender.com/post/shrink.gif)
 
 ### How I tested it
 
@@ -76,7 +77,7 @@ Too few said yes, so it shrinks, then lights: 60 fps at 4x CPU slowdown in Chrom
 | --- | --- | --- |
 | The full loop | Chrome at iPhone size against the real server, the real Gemma 4 hub and Postgres | 10 end-to-end suites pass, including the field run (27/27) |
 | Real phones | A device-check page on an iPhone 16 Pro Max and an iPhone 13: compass, haptics, sound | 3 compass bugs found and fixed |
-| Simulation: 48 friends | 48 made-up friends in 4 groups against the real server ([GIF](docs/post/media/sim/fairlane-sim-42.gif)) | 11 of 12 lit; median 14.75 min to Lit; all 12 deleted after, audit pass |
+| Simulation: 48 friends | 48 made-up friends in 4 groups against the real server ([GIF](https://flare-outside.onrender.com/post/sim.gif)) | 11 of 12 lit; median 14.75 min to Lit; all 12 deleted after, audit pass |
 | Accessibility | axe on 88 page views (22 pages, 2 widths, light and dark) | 0 findings; every target 44 px or more |
 
 The fresh-eyes testers are AI agents with no context, not people.
@@ -91,7 +92,7 @@ Flare is for "anyone free right now?". A poll still wins for a planned meetup. T
 
 ## Code
 
-{% github Hotragn/flare %}
+[github.com/Hotragn/flare](https://github.com/Hotragn/flare)
 
 [REPO: delete this line once the repo is public.] AGPL-3.0. Using Flare needs nothing, and hosting your own copy has three levels: no AI keys (you write the words), a free Google AI Studio key (Gemma 4 in the cloud), or Ollama on your own machine (the photo never leaves it).
 
@@ -105,7 +106,7 @@ I'm one founder running Claude Code sessions in roles: research, product, design
 
 ### Architecture
 
-![The phone, the server on Render, and my laptop running Gemma 4](docs/post/media/20-architecture.png)
+![The phone, the server on Render, and my laptop running Gemma 4](https://flare-outside.onrender.com/post/architecture.png)
 
 The phone talks only to the server on Render. My Mac dials out over a WebSocket, so nothing on it is open to the internet. When the Mac is off, Gemma 4 on Google AI Studio answers.
 
@@ -158,11 +159,11 @@ My own test found the hardest ones:
 - **On the friend's side, it showed the place and buttons to finish fast,** without saying what each step is for.
 - **Remember this passed every automated check, then failed on my iPhone:** "Couldn't write it down." The logs show no upload. My tests had faked the mic. "Say it" for a Spark failed the same way in Safari, so both are off. I expected a card of the day, with the voice only by choice.
 
-  ![A Remember this card from a 46 s recording in Telugu and English](docs/post/media/23-day-card.png)
+  ![A Remember this card from a 46 s recording in Telugu and English](https://flare-outside.onrender.com/post/day-card.png)
 
   *The phone's recorder failed, so here is what the same server code makes from a 46 s recording of me in Telugu and English: Scribe 1.5 s, Gemma's line 2.8 s. Gemma's line is close but calls it a discussion and a device.*
 
-  ![A Remember this card from a public meeting recording](docs/post/media/24-day-card-ami.png)
+  ![A Remember this card from a public meeting recording](https://flare-outside.onrender.com/post/day-card-ami.png)
 
   *The same code on 45 s of a public meeting recording (AMI Meeting Corpus, ES2002a, CC BY 4.0): Scribe found 2 speakers in 1.7 s, and Gemma's line took 2.3 s.*
 
