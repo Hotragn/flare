@@ -5,7 +5,8 @@
   import { t } from "#lib/copy/site.ts";
   import Seo from "../Seo.svelte";
   import Walkthrough from "../Walkthrough.svelte";
-  import Story from "../Story.svelte";
+  import StoryText from "../StoryText.svelte";
+  import Lazy from "../Lazy.svelte";
   import Hood from "../Hood.svelte";
   import { reveal } from "../reveal.ts";
 
@@ -21,7 +22,7 @@
 </section>
 
 <section class="band">
-  <Story />
+  <Lazy load={() => import("../Story.svelte")}><StoryText /></Lazy>
   <p>{t("site.shrink.plan")}</p>
 </section>
 

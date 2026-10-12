@@ -6,7 +6,7 @@
   import Icon from "#lib/components/Icon.svelte";
   import { t, type CopyKey } from "#lib/copy/site.ts";
   import Seo from "./Seo.svelte";
-  import Story from "./Story.svelte";
+  import StoryText from "./StoryText.svelte";
   import SunLine from "./SunLine.svelte";
   import Start from "./Start.svelte";
   import Crew from "./Crew.svelte";
@@ -42,19 +42,19 @@
   </div>
 </section>
 
-<section class="band" use:reveal>
+<section class="band cv" use:reveal>
   <Why />
 </section>
 
-<section class="band alt" use:reveal>
+<section class="band cv alt" use:reveal>
   <Start />
 </section>
 
-<section class="band" use:reveal>
+<section class="band cv" use:reveal>
   <Crew />
 </section>
 
-<section class="band live-band">
+<section class="band cv live-band">
   <Lazy load={() => import("./Live.svelte")}>
     <div class="live-fallback">
       <h2 class="t-heading">{t("site.live.title")}</h2>
@@ -64,7 +64,7 @@
   </Lazy>
 </section>
 
-<section class="band alt">
+<section class="band cv alt">
   <Lazy load={() => import("./TryPhoto.svelte")}>
     <h2 class="t-title">{t("site.try.title")}</h2>
     <p class="lead">{t("site.try.lead")}</p>
@@ -72,15 +72,15 @@
 </section>
 
 <section class="band story-band">
-  <Story />
+  <Lazy load={() => import("./Story.svelte")}><StoryText /></Lazy>
   <p class="more"><a href="/how/">{t("site.home.readHow")}</a></p>
 </section>
 
-<section class="band alt" use:reveal>
+<section class="band cv alt" use:reveal>
   <Spot />
 </section>
 
-<section class="band" use:reveal>
+<section class="band cv" use:reveal>
   <h2 class="t-title">{t("site.privacy.title")}</h2>
   <ul class="checks">
     {#each promises as key}<li><Icon name="here" /><span>{t(key)}</span></li>{/each}
@@ -88,7 +88,7 @@
   <p class="more"><a href="/privacy/">{t("site.home.readPrivacy")}</a></p>
 </section>
 
-<section class="band alt" use:reveal>
+<section class="band cv alt" use:reveal>
   <h2 class="t-title">{t("site.access.title")}</h2>
   <ul class="checks">
     {#each access as [icon, key]}<li><Icon name={icon} /><span>{t(key)}</span></li>{/each}
@@ -96,18 +96,21 @@
   <p class="more"><a href="/accessibility/">{t("site.home.readAccess")}</a></p>
 </section>
 
-<section class="band alt" use:reveal>
+<section class="band cv alt" use:reveal>
   <BuiltWith />
   <p class="more"><a href="/how/#hood">{t("site.home.readBuilt")}</a></p>
 </section>
 
-<section class="band" use:reveal>
+<section class="band cv" use:reveal>
   <h2 class="t-title">{t("site.run.title")}</h2>
   <p>{t("site.run.body")}</p>
   <p class="more"><a href="/run/">{t("site.home.readRun")}</a></p>
 </section>
 
 <style>
+  /* Sections below the first screen skip layout and paint until they come near it (less work
+     before the first paint on a phone); the browser remembers each one's size once drawn. */
+  .cv { content-visibility: auto; contain-intrinsic-size: auto 900px; }
   .live-fallback { border-radius: var(--r-lg); padding: 18px 20px; background: var(--c-dusk-900); color: var(--c-birch-100); display: flex; flex-direction: column; gap: 10px; }
   .live-fallback h2 { margin: 0; color: var(--c-gold-300); }
   .live-fallback a { color: var(--c-gold-300) !important; }
