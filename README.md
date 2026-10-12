@@ -41,7 +41,10 @@
 > - `8cb11ab`, Oct 12 07:52 UTC: docs only. The longer post draft: a voice pass, with facts, numbers and links unchanged.
 > - `2b16791`, Oct 12 07:55 UTC: docs, plus one static image. A "What's inside" table in the longer post draft, and the live Crew space screenshot at /post/crew.jpg (the site was redeployed for it, static image only).
 > - `09bb986`, Oct 12 07:59 UTC: README only. This list.
-> - The next commit: README only. Exact times in this list.
+> - `84fde2e`, Oct 12 08:01 UTC: README only. Exact times in this list.
+> - `2878bd6`, Oct 12 08:21 UTC: docs, plus one static image. Evidence files for the post's numbers (counts and timings only), and the Crew image is now the site's labelled sample crew (/post/crew-sample.png; the real-meetup screenshot is removed). The site was redeployed for the image.
+> - `ad7547e`, Oct 12 08:29 UTC: docs only. Version 3 of the longer post draft, after a review.
+> - The next commit: README only. This list.
 
 <p align="center">
   <a href="https://flare-outside.onrender.com/app/demo/">60-second demo</a> ·
