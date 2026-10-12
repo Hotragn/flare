@@ -117,7 +117,11 @@ try {
   // The browser checks for a new worker on each navigation; it must take over with no prompt.
   let v = "";
   const t0 = Date.now();
-  while (Date.now() - t0 < 15000 && (v = await swVersion()) !== "buildN100000") await page.waitForTimeout(250);
+  while (Date.now() - t0 < 15000) {
+    v = await swVersion();
+    if (v === "buildN100000") break;
+    await page.waitForTimeout(250);
+  }
   check("the new service worker took over with no waiting step", v === "buildN100000", `${v} in ${Date.now() - t0} ms`);
   await page.goto(`${ORIGIN}/how/`);
   check("after the takeover, another page is N+1 too", (await build()) === "Build buildN100000");
