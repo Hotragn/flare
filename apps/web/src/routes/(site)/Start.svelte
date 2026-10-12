@@ -90,7 +90,7 @@
   .ok { width: 28px; height: 28px; border-radius: 50%; background: #2F6B52; position: relative; }
   .ok::after { content: ""; position: absolute; left: 10px; top: 5px; width: 7px; height: 13px; border: solid #FBF8F2; border-width: 0 3px 3px 0; rotate: 45deg; }
   .mflame { width: 54px; height: 54px; fill: #E2622A; transform-origin: 50% 96%; }
-  .send { padding: 6px 14px; border-radius: 999px; background: #E2622A; font-size: 12px; font-weight: 800; }
+  .send { padding: 6px 14px; border-radius: 999px; background: #A93C12; font-size: 12px; font-weight: 800; }
   .chips { display: flex; gap: 4px; font-size: 9px; font-weight: 700; }
   .chips span { padding: 4px 6px; border-radius: 6px; background: rgb(251 248 242 / 0.16); }
   .tap { position: absolute; left: 50%; top: 58%; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: rgb(251 248 242 / 0.5); opacity: 0; }
