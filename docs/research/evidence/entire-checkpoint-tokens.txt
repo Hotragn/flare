@@ -1,0 +1,12 @@
+Checkpoint tokens
+
+Checkpoint: 01M4NXQZFTTGWVNDECY5S75K0E
+Session:    904c52d9-f200-4552-8ce5-05e400952efa
+Agent:      Claude Code
+Model:      claude-opus-5-5
+Branch:     main
+
+Token usage
+Total:  827898k tokens
+  Input: 3.1k | Cache read: 820893.2k | Cache write: 5407.9k | Output: 1593.8k | API calls: 1546
+

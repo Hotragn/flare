@@ -1,0 +1,5 @@
+# Remember this server path, run on my laptop (lab reports 11 and 11b), timings only
+Founder's clip (recorded on the phone in Voice Memos, 46 s, Telugu and English): Scribe 1.5 s, Gemma summary 2.8 s, total 4.4 s
+AMI Meeting Corpus ES2002a, 45 s (CC BY 4.0): Scribe 1.7 s, 2 speakers, Gemma summary 2.3 s, total 4.0 s
+Path: apps/server/src/voice.ts (Scribe scribe_v2, diarize) -> apps/hub/src/ollama.ts summaryFromTranscript (gemma4:e4b-it-q4_K_M) -> enforceSummary()
+Not live: REMEMBER_THIS and voice input are off on the live app (the iPhone recorder failed).

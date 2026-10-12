@@ -1,0 +1,8 @@
+# Sentry Agent Tracing, read from the live trace 91adbc1cab8c (Agent Activity, Timeline)
+flare-photo: gemma4:e4b chat 6.00 s
+flare-ladder (whole job): 10.58 s
+tools: sunset 327 ms, weather_window 975 ms, nearby_places 3.6 ms, step_templates 0.3 ms
+gemma chat (ladder): 3.05 s; enforce_ladder: 7.4 ms
+agent span input panel: "No input for this span"
+trace root: http.server GET:health with 110 spans (agent spans share a parent trace)
+cold start flagged by Sentry: first ladder draft 10.6 s, 271% over its 2.85 s average

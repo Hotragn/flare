@@ -1,0 +1,7 @@
+# npm run scan-sessions -- --public (dry run, Sun Oct 11 2026 ~17:20 ET), counts only
+checkpoints scanned: 166
+checkpoints with matches: 101
+email-address matches: 1539
+phone-number matches: 22
+secrets found: 0
+Later (Oct 12): a scrubber cleaned all 266 checkpoints now on GitHub (refs/entire/checkpoints).
