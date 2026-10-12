@@ -84,6 +84,31 @@ To me these rules are about dignity more than data. The private count means nobo
 
 Gemma 4 on my laptop does the AI work. I call it the hub: a small program on my Mac runs the model and dials out to the server, so the phone never talks to it directly.
 
+### What's inside
+
+Everything a person can do in Flare, and whether it works on the live site today.
+
+| Feature | What it does | Why it matters | Status |
+| --- | --- | --- | --- |
+| Flare | A photo of where you are becomes an invite for now. | One tap to ask, no group chat poll. | Live |
+| Plan for later | Pick a time and a deadline; Gemma writes a ladder of smaller plans it can shrink to. | A plan that can get smaller instead of dying. | Live |
+| Conditions | "I'm in if…", like "after 9" or "only with you", read on the phone. | Say yes with your own terms. | Live |
+| Crew space | Your places, time outside together this week, Sparks, and Manage crew. | The crew's story, without a feed. | Live |
+| Sparks | One line after a meetup, sealed for the crew. | The invite next time remembers this place. | Live |
+| Hot spots | The places your crew met, sealed on the phone. | Good places come back, no one else sees them. | Live |
+| Crew Atlas | A map of those places, drawn on the phone. | No map tiles, no requests, nothing sent. | Live |
+| Talking compass | Speaks the way in, offline, with a tone when you face the right way. | Look up, not at a map. | Live |
+| Walking loops | Bench to bench routes, with rest stops. | A walk anyone can finish. | Live |
+| Needs profile | Avoid steps, the distance between rests, a restroom. It stays on the phone. | Plans that fit your body. | Live |
+| Spoken scene | Gemma describes the photo for screen readers. | A friend with low vision knows the place. | Live |
+| Telegram card | The bot posts the invite and the count to your group. | Flare inside the chat you already use. | Live |
+| Plain text | The invite in 200 bytes for SMS or satellite texting; reply "IN" and the code. | Works where the signal ends. | Live |
+| Again | One tap sends your last Flare again. | The usual meetup in one tap. | Live |
+| Automatic I'm here | Within 30 m of the spot, with a 10 s Undo. | No tap needed when you arrive. | Live |
+| Remember this, Say it | A note of the conversation; a Spark said out loud. | Voice, only by choice. | Off: the iPhone recorder failed |
+
+![The Crew space on the live app: two friends by an unlit fire, your crew's map drawn on the phone, and the place you met](https://flare-outside.onrender.com/post/crew.jpg)
+
 ## Code
 
 [github.com/Hotragn/flare](https://github.com/Hotragn/flare), AGPL-3.0.
