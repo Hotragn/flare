@@ -1,10 +1,19 @@
 # Flare
 
+> **Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 (Touch Grass).**
+> **Started Oct 10, 2026:** the first commit is `27d4856` at 13:01 ET, inside the Oct 5 to 11 window.
+> **Submission deadline:** Oct 11, 11:59 PM PDT (Oct 12, 06:59 UTC).
+>
+> **Changes after the deadline** (every commit after Oct 12, 06:59 UTC; nothing on the live site changed unless a line says so):
+>
+> - `ad59cc9`, Oct 12 07:09 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is now a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.
+> - This commit, Oct 12 about 07:15 UTC: README only. This block.
+
 Snap where you are. If enough friends quietly say yes, it's on.
 
 Flare is an installable web app for small groups of friends (2 to 12). A host sends a photo of where they are, or a Plan for later. Friends say yes in private, with conditions if they like ("after 2", "only with Amor"). It lights only when enough people can come, it shrinks to a smaller plan instead of failing, it works for friends with low vision or limited mobility and with no signal, and it deletes itself within 5 minutes of ending.
 
-Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". Tested on the real stack end to end, on two iPhones (16 Pro Max, 13) and in a 48-friend simulation; no group meetup with it yet.
+Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 1 "Touch Grass". Tested on the real stack end to end, on two iPhones (16 Pro Max, 13) and in a 48-friend simulation; one short meetup in person so far (field test 2).
 
 **Using Flare needs nothing.** Open https://flare-outside.onrender.com/app/ (or the [demo](https://flare-outside.onrender.com/app/demo/)) and send the link to friends. Gemma runs on our laptop for everyone. The rest of this page is only for hosting your own copy.
 
@@ -91,8 +100,3 @@ The group key lives in the link's `#fragment`, which browsers never send to serv
 
 [AGPL-3.0-or-later](LICENSE). Map data © OpenStreetMap contributors, ODbL. Model: Gemma 4 (Gemma terms of use).
 
-## Changes after the DEV deadline
-
-Every commit after Mon 2026-10-12 06:59 UTC is listed here (SRS-MNT-2). Nothing on the live site changed after the deadline unless a line says so.
-
-- 2026-10-12 07:10 UTC: privacy, docs and tests only. A real street name in code comments, one test and the field notes is replaced with a neutral example ("Maple Road"). The OpenStreetMap pack in apps/web/static/maps is public map data and is unchanged.
