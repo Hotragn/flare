@@ -1,5 +1,17 @@
 # Resume note
 
+## Now: Sun 2026-10-11, 11:55 PM ET. Read this first.
+- **Live:** 0e7a81825764. Smoke passes. Lighthouse is 100 on all 5 pages, mobile and desktop. npm test passes 830/830. /app 149.1 KB, /g 148.2 KB.
+- **Main is stable for the 1:00 AM freeze.** Nothing is open on any branch, and every subagent branch is merged.
+- **Fresh-eyes rounds** (AI testers with no context): 5, 6, 5, 6, 6, 6, then 7 after the fixes. Details in docs/research/fresh-eyes-2026-10-11.md.
+- **Post:** docs/post/draft.md. docs/post/REVIEW.md lists the founder's holes and decisions: Mastra (LADDER_AGENT is off live), ATUS microdata (a next step), the repo going public, the session scrub, DigitalOcean.
+- **Left for after the deadline:**
+  - the host's screens should show the photo and the words
+  - the host should see when a friend adds a condition
+  - stop asking returning users for their name again
+  - the desktop QR code carries the full invite link
+  - "Here: 1" shows when nobody tapped I'm here
+
 ## Now: Sun 2026-10-11, ~10:35 PM ET. Read this first.
 Freeze 1:00 AM ET. Deadline Mon 06:59 UTC.
 
