@@ -10,3 +10,12 @@ Scenic photos used in the app and on the website (backlog #6). Only CC0 or publi
 | pictured-rocks-autumn | Autumn Views at Pictured Rocks National Lakeshore, Michigan (1b64dfd9-8bf2-463d-8458-3ab74d3a7d8c).jpg | NPS staff | Public domain | https://commons.wikimedia.org/wiki/File:Autumn_Views_at_Pictured_Rocks_National_Lakeshore,_Michigan_(1b64dfd9-8bf2-463d-8458-3ab74d3a7d8c).jpg |
 | sleeping-bear-dunes | Sleeping Bear Dunes National Lakeshore SLBE0162.jpg | National Park Service Digital Image Archives | Public domain | https://commons.wikimedia.org/wiki/File:Sleeping_Bear_Dunes_National_Lakeshore_SLBE0162.jpg |
 | autumn-trail | Autumn trail (Unsplash).jpg | Taylor Swayze taylorgswayze | CC0 | https://commons.wikimedia.org/wiki/File:Autumn_trail_(Unsplash).jpg |
+
+## Test photos (photo-fit gate)
+
+Two derivatives of the photos above, made with sharp from `scripts/scenic-src/` for `apps/web/test/e2e/photo-fit.ts`. Nothing was downloaded. The repo has no real indoor photo, so the dark one is labelled "darkened real photo" in the test.
+
+| File | Made from | Change |
+| --- | --- | --- |
+| `apps/web/test/fixtures/photo-dark-autumn-trail.jpg` | autumn-trail (CC0) | 1024 px wide, light cut to 22% (mean luma about 0.10) |
+| `apps/web/test/fixtures/photo-tall-pictured-rocks.jpg` | pictured-rocks-cliffs (public domain) | 9:16 centre crop, 720 x 1280 |

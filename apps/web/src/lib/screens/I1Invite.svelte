@@ -8,6 +8,7 @@
   import Tip from "../components/Tip.svelte";
   import Flame from "../components/Flame.svelte";
   import { t } from "#lib/copy/index.ts";
+  import { lit, zoom } from "#lib/photo-fit.ts";
   import type { InviteInfo, Theme } from "../components/parts";
   let {
     view = "kindling",
@@ -47,9 +48,11 @@
 </script>
 
 <Screen {theme} sound {onclose} title={host ? t("invite.title", { host }) : ""} heading={view === "loading" ? t("app.loading") : ""}
-  stage={(view === "kindling" || view === "lit") && !!info} backdrop={info?.photo ?? ""} backdropAlt={info?.scene ?? ""}>
+  stage={(view === "kindling" || view === "lit") && !!info}>
   {#snippet hero()}
     {#if info && (view === "kindling" || view === "lit")}
+      <!-- Photo-fit: the photo is the content, shown whole at the top; words and sheet sit below it. -->
+      {#if info.photo}<button class="pf" type="button" onclick={zoom}><img src={info.photo} alt={info.scene || t("invite.photoFallback")} onload={lit} /></button>{/if}
       <h1 class="t-invite words">{info.words}</h1>
     {/if}
   {/snippet}
@@ -96,6 +99,13 @@
 
 <style>
   .words { margin: 0; font-size: calc(2.5rem * var(--text-scale)); line-height: 1.08; max-width: 14ch; }
+  /* Photo-fit: the photo at its own shape, capped so I'm in still fits on a 375 x 667 phone.
+     The words sit under it and the sheet takes the rest, so nothing covers the place. */
+  .pf { display: block; margin: 0 auto; padding: 0; border: 0; background: none; border-radius: 16px; overflow: hidden; max-width: 100%; cursor: zoom-in; flex: none; }
+  .pf img { display: block; max-width: 100%; max-height: min(38dvh, 420px); width: auto; height: auto; }
+  .pf + .words { font-size: calc(2rem * var(--text-scale)); max-width: none; }
+  :global(.staged > .hero:has(.pf)) { flex: none; justify-content: flex-start; gap: 10px; padding-top: 4px; }
+  :global(.staged:has(> .hero .pf) > .sheet) { flex: 1; max-height: none; min-height: 0; }
   .where { display: flex; gap: 8px; align-items: flex-start; }
   .where p { margin: 0; }
   .spark { display: flex; gap: 6px; align-items: center; color: var(--accent-text); font-weight: 700; margin-top: 4px !important; }

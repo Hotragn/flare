@@ -52,6 +52,7 @@
     "gen:guide": "node scripts/gen-guide.ts",
     "e2e:kit-a11y": "node apps/web/test/e2e/kit-a11y.ts",
     "e2e:demo": "node apps/web/test/e2e/demo.ts",
+    "e2e:photo-fit": "node apps/web/test/e2e/photo-fit.ts",
     "e2e:plan": "node apps/web/test/e2e/plan.ts",
     "e2e:voice": "node apps/web/test/e2e/voice-flare.ts",
     "e2e:cloud-only": "node apps/web/test/e2e/cloud-only.ts",

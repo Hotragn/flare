@@ -105,7 +105,7 @@ Variants in force: `privacy.coords` = B, `og.link` = safe. A = server holds spot
 | Key | Text | Kind | Words | Grade | Where | Source or status |
 | --- | --- | --- | --- | --- | --- | --- |
 | `tip.home` | Light a Flare from where you are. Friends get a link. | hint | 11 | -1.6 | H0 |  |
-| `tip.invite` | Your yes is private. Only the count shows. | hint | 8 | 0.7 | I1 |  |
+| `tip.invite` | Your yes is private. | hint | 4 | 0.7 | I1 |  |
 | `tip.compass` | Hold the phone flat and turn slowly. | hint | 7 | 0.6 | I7 |  |
 | `tip.send` | It goes ahead only if this many say yes. | hint | 9 | 3.7 | H3 |  |
 | `tip.dismiss` | Dismiss tip | aria | 2 | 2.9 | Tip close button (fresh-eyes round 4: two buttons named Close) |  |

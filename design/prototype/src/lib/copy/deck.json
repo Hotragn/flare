@@ -382,7 +382,7 @@
       "where": "H0"
     },
     "tip.invite": {
-      "text": "Your yes is private. Only the count shows.",
+      "text": "Your yes is private.",
       "kind": "hint",
       "where": "I1"
     },

@@ -59,7 +59,7 @@
 </script>
 
 <Screen {theme} heading={t("develop.heading")} offline={view === "offline" ? t("develop.offline") : ""}>
-  <PhotoPrint state={view === "developing" ? "developing" : "developed"} {scene} src={photo} {sample} height={290} />
+  <PhotoPrint state={view === "developing" ? "developing" : "developed"} {scene} src={photo} {sample} height={askLocation ? 210 : 290} />
   {#if spot}<p class="spot"><Icon name="hotspots" size={20} /><span>{spot}</span></p>{/if}
   {#if view === "developing"}
     <p class="t-invite pending" role="status">{t("develop.writing")}</p>
