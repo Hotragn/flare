@@ -173,7 +173,10 @@ async function run(name: string, browser: Browser, real: boolean) {
     });
     await sendFlare(page);
     check(tag("slow Send: no share call after the await"), (await sharesOf(page)).length === 0);
-    check(tag("H4: Share is the main button"), await page.locator("button", { hasText: /^Share$/ }).first().isVisible());
+    const order = await page.evaluate(() =>
+      [...document.querySelectorAll("button")].map((b) => b.textContent?.trim()).filter((x) => x === "Share" || x === "Pocket it"),
+    );
+    check(tag("H4: Share comes before Pocket it"), order[0] === "Share", order.join(", "));
     const before = (await logOf(page)).length;
     await page.getByRole("button", { name: "Share", exact: true }).click();
     await page.waitForTimeout(300);
