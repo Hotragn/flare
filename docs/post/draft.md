@@ -6,7 +6,7 @@ tags: devchallenge, hf26challenge, gemma, opensource
 
 <!-- DRAFT for the founder. Every [CAPS: ...] hole is yours to fill or delete before publishing:
      FOUNDER WHY, FRIEND QUOTE, HERO GIF, WHY IT MATTERS, FIELD (met in person?), FIELD (outdoor test),
-     VIDEO, SENTRY TRACE, AGENT SESSION, ENTIRE, THANKS, and the repo line.
+     VIDEO, AGENT SESSION, ENTIRE, THANKS, and the repo line.
      Prose is 1,765 words without the holes: keep everything you add under about 135 words.
      Images: upload the files in docs/post/media/ in DEV's editor and replace each path.
      Every number is measured, and its proof is named or linked. Remove this comment before publishing. -->
@@ -19,7 +19,9 @@ It's 4 PM on a Saturday. Someone in the group chat writes "we should go for a wa
 
 [FOUNDER WHY: the founder writes this tonight, in their own words]
 
-[FRIEND QUOTE: the friend's real words and screenshot, with their OK]
+> "Last week I was busy working from home and haven't really got a chance or felt free to go out … I got this and saw that he was nearby next to me and used this, and we met to talk about flare … it really felt this is good for friends and people to go out"
+>
+> A friend, after field test 2
 
 Almost every entry this week is one person on one walk. Flare gets a group out. You take a photo of where you are, and Gemma 4, an open model on our own laptop, writes the invite: "Meet by the quiet water's edge". Friends tap **I'm in** in private, and everyone sees the count, never who. It lights only if enough can come. If too few say yes in 30 minutes, it shrinks to a smaller plan, like 15 minutes at a bench nearby, instead of dying. Afterwards it shows your minutes outside together and deletes itself.
 
@@ -59,9 +61,9 @@ One evening, in four frames:
 
 ### How I tested it
 
-**Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below. [FIELD: met in person?]
+**Field test 1, Sun Oct 11, 8:20 PM:** a real Flare to 2 real friends on the live app: 3 responses, 1 Spark, the live audit passing, 6 bugs found and fixed below.
 
-**Field test 2, Mon Oct 12, 12:38 AM:** sent, a yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone, We're done at 12:43; the public audit showed it gone within about 90 seconds. [FIELD: outdoor meetup?]
+**Field test 2, Mon Oct 12, 12:38 AM,** the first real meetup: sent, a nearby friend's yes at 12:39 (it needed 2, so it lit), I'm here at 12:40, Remember this agreed at 12:41 and the mic failed on my iPhone. We met in person and talked; We're done at 12:43, and the public audit showed it gone within about 90 seconds.
 
 | What | How | Result |
 | --- | --- | --- |
@@ -94,7 +96,7 @@ That's the honest position. Flare is for "anyone free right now?". A poll still 
 
 I'm one founder running Claude Code sessions in roles: research, product, design, architecture, specialists, QA. A manager session set the order, and each role left a handoff for the next. The architect froze [14 interfaces](https://github.com/Hotragn/flare/blob/main/docs/engineering/02-interface-control.md) first, so specialists built against contracts. Decisions live in 31 ADRs, and 159 requirements are traced to code and tests by [`trace.py`](https://github.com/Hotragn/flare/blob/main/docs/requirements/tools/trace.py). Every push runs a secret scan, lint, types (with svelte-check), 775 unit and contract tests and the build.
 
-**Disclosure:** I built this with Claude Code. The manager session, acting as CTO for me, sent many of the prompts. Product and privacy decisions were mine, and anything public waited for my yes.
+**Disclosure:** I built this with Claude Code; a manager session, acting as my CTO, sent many prompts. Product and privacy calls were mine.
 
 ### Architecture
 
@@ -119,19 +121,21 @@ Measured on one test set:
 
 Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at best, so Sounds of the spot didn't ship.
 
-**The model picks the words; code owns the facts.** Every answer passes `enforce()` before anyone sees it: six words at most, no names, no invented places. If it's slow or fails, you type. Nobody waits on the AI.
+**The model picks the words; code owns the facts.** Every answer passes `enforce()`: six words at most, no names, no invented places. If it's slow, you type.
 
 ### The rest of the stack
 
 - **Google AI Studio.** Gemma 4 26B A4B covers for our laptop: 1.4 s a Plan draft with `thinkingLevel: "minimal"`, against 21.7 s and no answer by default. DigitalOcean is wired in, paused for billing.
 - **Mastra.** An agent drafts the Plan ladder with four local tools. On 13 asks: p95 5.1 s against 5.5 s, weather 7/7. On live since Oct 12.
-- **Tinker.** The phone's rules read 15/40 new phrasings. A Qwen3.5-4B LoRA (about $2.40) read 38/40 but can't run on the phone, so its errors taught the rules: 20/40 to 30/40, blind.
-- **ElevenLabs.** 54 compass lines recorded once: 698 characters, offline, no names. Voice Spark sends 10 s of your own voice to Scribe on a tap. No audio kept.
-- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing, ok and error class leave the server, and a test fails if marker phrases or UUIDs reach Sentry.
-- **Telegram.** The bot posts a card drawn in 15 to 60 ms, with no names, and deletes it at Gone. Real-stack test: 14/14.
+- **Tinker.** A Qwen3.5-4B LoRA (about $2.40) read 38/40 new phrasings but can't run on a phone, so its errors taught the phone's rules: 20/40 to 30/40, blind.
+- **ElevenLabs.** 54 compass lines recorded once (698 characters, offline, no names); Voice Spark sends 10 s of your voice to Scribe on a tap.
+- **Sentry.** Agent Tracing follows every AI job, model call and guard. Only tier, model, timing and error class leave; a test fails if our words or ids reach Sentry.
+- **Telegram.** The bot posts a nameless card, drawn in 15 to 60 ms, and deletes it at Gone.
 - **Entire.** [ENTIRE: one line with the checkpoint links and what they show]
 
-[SENTRY TRACE: a screenshot of a live trace, a Plan draft with the hub away, `gen_ai.provider.name: google`, and its latency]
+![Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings](media/sentry-agent-trace.png)
+
+*Sentry Agent Tracing on the live server: each tool, the Gemma call and the guard, with timings. "No input for this span": our words never reach Sentry.*
 
 ### Privacy, built in
 
@@ -158,23 +162,22 @@ My own test found the hardest ones:
 - **As the host, after sending, all I could see was a lot of animation.** It was unclear whether my friends would come, and whether ElevenLabs had worked.
 - **"Pocket it" felt like a button I had to press.** Nothing said to wait until my friend arrives, or that the app should stay open even in my pocket.
 - **On the friend's side, it showed the place and buttons to finish fast,** without saying what each step is for.
-- **Remember this passed every automated check and failed on my iPhone.** On live, two test browsers, a real Scribe call and the sealed note all passed. On my iPhone, Record said "Couldn't write it down." The server logs show no upload: the mic or recorder failed on the phone, and my tests had faked the mic. It's off. What I expected was a neat card of what we said, a summary of the day, with the voice attached only if I want it.
+- **Remember this passed every automated check and failed on my iPhone:** "Couldn't write it down." The logs show no upload; the mic failed on the phone, and my tests had faked it. It's off. I expected a neat card of what we said, a summary of the day, with the voice only if I want it.
 
 Field test 1 found these:
 
-- **The headline and sheet covered the photo,** 73% of it. Now 0%, and a new `e2e:photo-fit` gate checks 3 viewports with a dark photo.
-- **"After 10min" read as 10 AM.** Now "you can come in 10 min", and missed words are said back. Blind set: 30/40, unchanged.
-- **"Fuego is at Near Heather Drive."** Now "is near".
-- **Share did nothing in Brave:** the tap was lost after an await. It runs in the tap now, with Copy link as a fallback (WebKit tested, not a real iPhone).
-- **"We'll buzz you" with no push.** That line now shows only with a live subscription.
-- **Returning phones got old pages** from the service worker. Now network first, and a new worker takes over at once (two-build test, 8/8).
+- **The headline and sheet covered 73% of the photo.** Now 0%, checked by a new gate on 3 viewports.
+- **"After 10min" read as 10 AM.** Now "you can come in 10 min" (blind set 30/40, unchanged).
+- **Share did nothing in Brave:** the tap was lost after an await. It runs in the tap now, with a Copy link fallback.
+- **Returning phones got old pages** from the service worker; a new one now takes over at once (two-build test, 8/8).
+- Also "Fuego is at Near Heather Drive", and "We'll buzz you" with no push.
 - **Round 6 caught 4 more,** fixed before the freeze: the invite lost on reload, "Sent." before sharing, size buttons hidden at 375×667 (a new gate failed before the fix, passes now), and location asked twice.
 
 ## Honest limits
 
 - **No background location or mic.** An iPhone web app can't use either.
 - **No server pushes for golden hour or a weekly recap.** The server never knows where a crew is or its time zone.
-- **One real group so far,** and I can't yet say it met in person.
+- **Two real tests so far,** and one short meetup in person.
 - **In a small group, the count can give away who said yes.**
 
 ## Next steps
@@ -182,6 +185,7 @@ Field test 1 found these:
 - Once it's lit, show the host who's coming, with each yes-sayer's OK.
 - A clear host status line: "1 friend coming. Keep Flare open; your phone can stay in your pocket."
 - Remember this as a day card, with the voice only by choice.
+- Agent spans share a parent trace in Sentry; each AI job should be its own.
 - "My usual" conditions you save once.
 - Plans that repeat every week.
 - Golden-hour nudges inside the app.
@@ -202,7 +206,7 @@ A photo of where you stand, or your voice, is about as personal as data gets; wi
 - **Tinker:** a $2.40 LoRA read 38/40 and taught the rules 20/40 to 30/40, blind. [Details](#the-rest-of-the-stack)
 - **ElevenLabs:** a compass voice for 698 characters that sends nothing. [Details](#the-rest-of-the-stack)
 - **Mastra:** four local tools, p95 5.1 s vs 5.5 s, weather 7/7. On live since Oct 12. [Details](#the-rest-of-the-stack)
-- **Sentry Agent Tracing:** every AI job traced, under an allow-list a test proves. [Details](#the-rest-of-the-stack)
+- **Sentry Agent Tracing:** every AI job traced; a test proves our words never leave. [Details](#the-rest-of-the-stack)
 - **Entire:** [ENTIRE: one line with the session links]
 
 [THANKS: name anyone who tried it, with their OK, or delete this line]
