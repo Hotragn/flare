@@ -29,7 +29,7 @@
   {
     "moment": "yes spark on the invite (I1)",
     "fps": 60,
-    "frames": 77,
+    "frames": 82,
     "dropped": 0,
     "worstFrameMs": 17,
     "longTasks": 0,
@@ -38,7 +38,7 @@
   {
     "moment": "it's lit: ignition (I6)",
     "fps": 60,
-    "frames": 83,
+    "frames": 84,
     "dropped": 0,
     "worstFrameMs": 17,
     "longTasks": 0,
@@ -46,17 +46,17 @@
   },
   {
     "moment": "it's lit: host (H6)",
-    "fps": 60,
-    "frames": 83,
-    "dropped": 0,
-    "worstFrameMs": 17,
+    "fps": 58.6,
+    "frames": 84,
+    "dropped": 2,
+    "worstFrameMs": 50,
     "longTasks": 0,
     "longestTaskMs": 0
   },
   {
     "moment": "shrink to an Ember (I9)",
     "fps": 60,
-    "frames": 84,
+    "frames": 87,
     "dropped": 0,
     "worstFrameMs": 17,
     "longTasks": 0,
@@ -65,7 +65,7 @@
   {
     "moment": "gone: ember cools, minutes count up (I12)",
     "fps": 60,
-    "frames": 83,
+    "frames": 84,
     "dropped": 0,
     "worstFrameMs": 17,
     "longTasks": 0,

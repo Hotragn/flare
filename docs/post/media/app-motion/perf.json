@@ -1,0 +1,101 @@
+[
+  {
+    "moment": "demo: friend's I'm in (I1 count ring)",
+    "fps": 59.4,
+    "frames": 96,
+    "dropped": 1,
+    "worstFrameMs": 33,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "demo: shrink to an Ember, lit at the bench (I6)",
+    "fps": 60,
+    "frames": 195,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "yes spark feeds the flame (H5)",
+    "fps": 60,
+    "frames": 77,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "yes spark on the invite (I1)",
+    "fps": 60,
+    "frames": 82,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "it's lit: ignition (I6)",
+    "fps": 60,
+    "frames": 84,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "it's lit: host (H6)",
+    "fps": 58.6,
+    "frames": 84,
+    "dropped": 2,
+    "worstFrameMs": 50,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "shrink to an Ember (I9)",
+    "fps": 60,
+    "frames": 87,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "gone: ember cools, minutes count up (I12)",
+    "fps": 60,
+    "frames": 84,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "gone: not this time (I10)",
+    "fps": 60,
+    "frames": 83,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "crew scene, ambient (wind)",
+    "fps": 60,
+    "frames": 119,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  },
+  {
+    "moment": "home sky, rain and wind (ambient)",
+    "fps": 60,
+    "frames": 119,
+    "dropped": 0,
+    "worstFrameMs": 17,
+    "longTasks": 0,
+    "longestTaskMs": 0
+  }
+]

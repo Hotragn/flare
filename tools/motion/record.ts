@@ -14,7 +14,7 @@ const { GIFEncoder, quantize, applyPalette } = gifenc;
 const [base, out, query, action = "", msArg = "1600"] = process.argv.slice(2);
 if (!base || !out || !query) throw new Error("usage: record.ts <base-url> <out.gif> <query> <action-js> [ms]");
 const MS = Number(msArg);
-const WIDTH = 260;
+const WIDTH = Number(process.env.GIF_WIDTH ?? 260);
 
 const browser = await chromium.launch({ channel: "chrome" });
 const ctx = await browser.newContext({
@@ -47,6 +47,11 @@ await cdp.send("Page.stopScreencast");
 await page.screenshot({ path: out.replace(/\.gif$/, "-end.png") });
 await browser.close();
 if (frames.length < 2) throw new Error(`only ${frames.length} frames`);
+// Keep every Nth frame (GIF_STEP, default 2: about 30 fps) so a moment stays under 2 MB.
+const STEP = Number(process.env.GIF_STEP ?? 2);
+const kept = frames.filter((_, i) => i % STEP === 0);
+frames.length = 0;
+frames.push(...kept);
 
 const raw = await Promise.all(
   frames.map((f) => sharp(f.data).resize({ width: WIDTH }).ensureAlpha().raw().toBuffer({ resolveWithObject: true })),

@@ -103,8 +103,8 @@
   {:else if s.phase === "dusk" && !s.rain}
     <ellipse cx={W * 0.7} cy={H * hz} rx={W * 0.5} ry={H * 0.05} fill="#E58A4E" opacity="0.45" />
   {:else if s.phase === "night" && !s.rain}
-    <circle cx={W * 0.74} cy={H * hz * 0.3} r={18 * u} fill="#F4EEDC" />
-    <circle cx={W * 0.74 + 8 * u} cy={H * hz * 0.3 - 4 * u} r={16 * u} fill={bands[1]} />
+    <circle cx={W * 0.86} cy={H * hz * 0.72} r={16 * u} fill="#F4EEDC" />
+    <circle cx={W * 0.86 + 7 * u} cy={H * hz * 0.72 - 4 * u} r={14 * u} fill={bands[7]} />
   {/if}
   {#if s.rain}
     <g fill="#5C6673" opacity="0.8">

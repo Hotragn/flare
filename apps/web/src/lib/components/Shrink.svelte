@@ -69,14 +69,14 @@
     background: radial-gradient(closest-side, rgb(255 236 190 / 0.9), rgb(242 179 61 / 0.45) 20%, rgb(226 98 42 / 0.12) 45%, transparent 70%);
     opacity: 0; animation: flash 700ms var(--ease-out) 1100ms both; }
   @keyframes flash { 0% { opacity: 0; transform: scale(0.08); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1); } }
-  .trail { fill: none; stroke: #f7e3b0; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; animation: draw 700ms var(--ease-in-out) 1300ms both; }
+  .trail { fill: none; stroke: #f7e3b0; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; animation: draw 560ms var(--ease-in-out) 1180ms both; }
   .trail.glow { stroke: var(--c-gold-400); stroke-width: 10; opacity: 0.35; }
   @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
   /* Once lit, the scene brightens and the buttons settle in after the path. */
   :global(.screen:has(.shrink.lit) > .backdrop) { animation: brighten 900ms var(--ease-out) 1150ms both; }
   @keyframes brighten { from { filter: none; } to { filter: brightness(1.16) saturate(1.12); } }
-  :global(.screen:has(.shrink.lit) .actions) { animation: settle-in 2.1s var(--ease-out) both; }
-  @keyframes settle-in { 0%, 85% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: none; } }
+  :global(.screen:has(.shrink.lit) .actions) { animation: settle-in 1.9s var(--ease-out) both; }
+  @keyframes settle-in { 0%, 82% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: none; } }
 
   @media (prefers-reduced-motion: reduce) {
     .big, .flash { display: none; }
