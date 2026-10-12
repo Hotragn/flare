@@ -2,14 +2,15 @@
 
 **Deadline:** Mon Oct 12, 06:59 UTC (Sun 11:59 PM PDT, Mon 2:59 AM ET).
 **The post:** [draft.md](draft.md) (about 1,770 words; about 130 left for your holes under the 1,900 cap)
-**Live:** https://flare-outside.onrender.com, build 0e7a81825764 (the footer shows the build; smoke passes)
+**Live:** https://flare-outside.onrender.com, build e398bd8a967d (the footer shows the build; smoke passes)
 
 **State at hand-off (Sun Oct 11, 11:55 PM ET, main frozen for the 1:00 AM freeze):**
 - **Field test 1 live bugs:** all six are fixed and live (photo covered, 10min read as 10 AM, "is at Near", share in Brave, the buzz promise, the stale service worker).
 - **Fresh-eyes (AI testers with no context):** rounds scored 5, 6, 5, 6, 6, 6, then 7/10 on the recheck. Every fix from rounds 6 and 6b, and from your leftover list, is live.
 - **Gates:** Lighthouse 100 on all 5 pages, mobile and desktop. JS: /app 149.1 KB, /g 148.2 KB, both under the 150 budget. npm test passes 830/830. e2e passes: photo-fit (including a new "every control visible" gate), share (Chrome and WebKit), demo, loop, telegram, sparks, flow, pwa and sw-update.
 - **Shipped and live tonight:** Again; Telegram direct send; auto I'm here; rule chips; Since launch totals; the app motion; Why it matters on BLS ATUS 2025 and WHO 2025.
-- **Cut or off:** Sounds of the spot (it failed the 100% voice-drop bar); Remember this (off).
+- **Cut:** Sounds of the spot (it failed the 100% voice-drop bar).
+- **Turned on live after the freeze, with the manager's OK:** Mastra (`LADDER_AGENT=1`, 12:03 AM) and Remember this (`REMEMBER_THIS=1`, 12:16 AM). Both passed live checks. Remember this goes in the post only if it worked for real people (line 152 hole). To turn either off, delete the line from .env and run `npm run deploy:render -- --yes`.
 
 ## 1. Decisions only you can make
 

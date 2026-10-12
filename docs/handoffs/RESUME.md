@@ -2,6 +2,7 @@
 
 ## Now: Sun 2026-10-11, 11:55 PM ET. Read this first.
 - **Live:** 0e7a81825764. Smoke passes. Lighthouse is 100 on all 5 pages, mobile and desktop. npm test passes 830/830. /app 149.1 KB, /g 148.2 KB.
+- **After 11:55 PM, with the manager's OK:** Mastra on (LADDER_AGENT), Remember this on (REMEMBER_THIS; the note goes only to the host and the people who agreed), "waiting near" grammar. Live e398bd8a967d. Since launch deleted_on_time = 1 (the field-test Flare, 00:18).
 - **Main is stable for the 1:00 AM freeze.** Nothing is open on any branch, and every subagent branch is merged.
 - **Fresh-eyes rounds** (AI testers with no context): 5, 6, 5, 6, 6, 6, then 7 after the fixes. Details in docs/research/fresh-eyes-2026-10-11.md.
 - **Post:** docs/post/draft.md. docs/post/REVIEW.md lists the founder's holes and decisions: Mastra (LADDER_AGENT is off live), ATUS microdata (a next step), the repo going public, the session scrub, DigitalOcean.

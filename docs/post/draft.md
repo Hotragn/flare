@@ -149,7 +149,7 @@ Gemma 4 E4B heard birds in almost everything and caught 8 of 12 voice clips at b
 
 ![A Flare shrinks to an Ember, then lights](docs/post/media/app-motion/after/4-shrink-then-lit.gif)
 
-**Remember this** stays off until a real group tries its rule: everyone agrees on their own phone.
+**Remember this** went on live for the outdoor test: up to 60 s of a conversation, only if everyone agrees on their own phone. [FIELD: did it work for real people? If not, say it stays off.]
 
 ## What I got wrong
 
