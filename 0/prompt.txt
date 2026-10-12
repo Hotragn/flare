@@ -3587,3 +3587,12 @@ One small docs change, then hold again. Copy flare/lab/reports/11-day-card.png t
 
 The founder has agreed (it's their own voice). Commit, push main only, and tell me the word count.
 </cross-session-message>
+
+---
+
+<cross-session-message from="uds:<socket>" from-session="local_beb3cc8c-e162-46cc-bd0a-f870e8717ebd" from-name="Flare Manager(founders CTO)" from-mode="prompting">
+Two image fixes, docs only, by 2:25 AM.
+1. 20-architecture.png still shows "ElevenLabs Scribe: Only when you tap Say it", and Say it is OFF on live. Change that box to "ElevenLabs: the compass voice, 54 lines recorded once, shipped with the app, offline", and add the line "Voice input: off, the iPhone recorder failed". Also change "Our laptop" to "My laptop", then regenerate the PNG.
+2. 21-storyboard.png frames 1–3 show the old layout, with the headline over the photo, which we fixed tonight. If you can recapture them from live in 10 minutes or less, do that. If not, add to the caption: "Frames captured before tonight's layout fix."
+Commit, push main only, and reply in one line.
+</cross-session-message>
