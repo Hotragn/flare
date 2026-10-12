@@ -488,9 +488,9 @@ The build session, 153 messages.
 
 The Lab's risk spikes, 20 messages: where the browser models failed and the 1.17 GB buffer showed up.
 
-{% agent_session flare-manager-my-prompts-the-cto-sessions-work-orders-and-the-team-reports-f0aprm %}
+{% agent_session flare-manager-my-key-prompts-the-work-orders-and-the-team-reports-xefvhu %}
 
-My prompts, marked Me:, the work orders the manager session sent, and the reports that came back, 214 messages. Small talk and anything private were left out.
+Four of my structured prompts (the idea, the brainstorm brief, the night re-plan, the tone brief), the work orders the manager session sent, and the reports that came back, 153 messages. Our back-and-forth chat is left out.
 
 ## Prize Categories
 
