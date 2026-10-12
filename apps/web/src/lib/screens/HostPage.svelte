@@ -186,10 +186,10 @@
 
   async function send() {
     if (!flow.spot?.name && typedSpot.trim()) flow.typeSpot(typedSpot);
-    const ok = await flow.send(kind);
-    // The share sheet opens on its own (H4), unless the crew is linked to Telegram: then the server
-    // already posted the card to the group, one tap fewer (automations, ADR-0030).
-    if (ok && !flow.postedToTelegram) void flow.share();
+    await flow.send(kind);
+    // No share sheet here: Send awaits the seal and the POST, and iOS drops the tap by then, so the
+    // sheet would fail with nothing on screen. H4's Share is the next tap, with the link ready.
+    // Linked to Telegram, the server already posted the card to the group (automations, ADR-0030).
   }
 
   // Plans: datetime-local values in this phone's zone.
@@ -247,11 +247,11 @@
 {:else if flow.screen === "send"}
   <H3Send view={flow.sending ? "sending" : flow.error ? "error" : "ready"} photo={flow.photo} scene={flow.alt} words={flow.words} spot={flow.spot?.name ?? ""} bind:quorum={flow.quorum} bind:hostLine={flow.hostLine} bind:hostName={flow.hostName} askName={flow.askName} askSpot={!flow.spot?.name} bind:typedSpot access={flow.access} nature={flow.nature} error={flow.error} onsend={send} onclose={exit} />
 {:else if flow.screen === "sent"}
-  <H4Sent buzz={buzzMode({ push: pushOn, telegram: flow.postedToTelegram })} installed={installed()} kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
+  <H4Sent buzz={buzzMode({ push: pushOn, telegram: flow.postedToTelegram })} installed={installed()} kind={flow.view?.kind ?? kind} deadline={flow.deadlineAt ? clock(flow.deadlineAt, flow.tz) : ""} copied={flow.copied} linkOnly={flow.linkOnly} shareFirst={!flow.postedToTelegram} ondone={() => flow.pocket()} onshare={() => flow.share()} oncopy={() => flow.copyText()} />
 {:else if flow.screen === "kindling"}
-  <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} onclose={exit} />
+  <H5HostKindling photo={flow.photo} scene={flow.alt} have={flow.have} quorum={flow.view?.quorum ?? 2} sentMin={flow.sentMin} shrinkMin={flow.shrinkMin} hostLine={flow.hostLine} code={flow.view?.short_code ?? ""} textYesUsed={flow.textYesUsed} error={flow.error} busy={flow.busy} ontextyes={(c) => flow.textYes(c)} oncancel={() => flow.cancel()} onshare={() => flow.share()} linkOnly={flow.linkOnly} onclose={exit} />
 {:else if flow.screen === "lit"}
-  <H6HostLit ontell={() => void flow.shareLit()} coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
+  <H6HostLit ontell={() => void flow.shareLit()} linkOnly={flow.linkOnly} coming={Math.max(0, flow.have - 1)} spot={flow.spot?.name ?? ""} here={flow.view?.headcount ?? 0} members={flow.members} marked={flow.marked} error={flow.error} busy={flow.busy} onplusone={(w) => flow.plusOne(w)} ondone={() => flow.done()} onclose={exit} />
 {:else if flow.screen === "outside"}
   <I12Outside view="end" sunset={flow.nature} minutes={flow.outsideMin} photo={flow.photo} onclose={exit} />
 {:else if flow.screen === "gone"}
@@ -285,6 +285,7 @@
 {#if flow.screen === "sent" && flow.postedToTelegram}
   <p class="posted" role="status">{t("sent.telegram")}</p>
 {/if}
+<p class="toast" role="status">{flow.note}</p>
 
 <!-- Remember this (ADR-0031): the host turns it on; the recording sign shows here too. -->
 {#if (flow.screen === "kindling" || flow.screen === "lit") && flow.rememberCtx()}
@@ -299,4 +300,7 @@
   .row { width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 6px; border: 0; background: transparent; color: var(--text); text-decoration: none; font: inherit; text-align: left; border-radius: var(--r-md); }
   .txt { flex: 1; display: flex; flex-direction: column; }
   .foot { margin: 0; }
+  .toast { position: fixed; top: calc(env(safe-area-inset-top, 0) + 72px); left: 16px; right: 16px; z-index: 30; margin: 0 auto; width: fit-content; max-width: 100%; overflow-wrap: anywhere;
+    padding: 10px 18px; border-radius: 20px; background: var(--c-gold-400); color: #111; font-weight: 700; }
+  .toast:empty { display: none; }
 </style>

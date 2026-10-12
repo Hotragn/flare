@@ -3921,6 +3921,29 @@
       "kind": "message",
       "where": "H6 lit, Tell the chat (automations)"
     },
+    "share.copyLink": {
+      "text": "Copy link",
+      "kind": "button",
+      "where": "H4 H5 H6, in place of Share when this browser has no share sheet or it failed"
+    },
+    "share.linkCopied": {
+      "text": "Link copied. Paste it in your chat.",
+      "kind": "status",
+      "where": "toast after Copy link (H4 H5 H6)"
+    },
+    "share.failed": {
+      "text": "Share did not open. Tap Copy link.",
+      "kind": "status",
+      "where": "toast when the share sheet fails (H4 H5 H6)"
+    },
+    "share.copyFailed": {
+      "text": "Could not copy. Here is the link: {url}",
+      "kind": "status",
+      "where": "toast when the clipboard is blocked (H4 H5 H6)",
+      "sample": {
+        "url": "https://flare.example/g/1/#k=x"
+      }
+    },
     "push.planSoon": {
       "text": "{step} starts at {time}. Time to head out.",
       "kind": "message",
